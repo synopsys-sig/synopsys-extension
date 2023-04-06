@@ -1,0 +1,36 @@
+{
+  "manifestVersion": 1,
+  "id": "synopys-extension",
+  "name": "Downloader Executor",
+  "version": "0.0.3",
+  "publisher": "syno-kk",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Tools for downloading/executing commands.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/icon.png"
+  },
+  "files": [
+    {
+      "path": "downloaderexecutortask"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "synopys-extension",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "downloaderexecutortask"
+      }
+    }
+  ]
+}
