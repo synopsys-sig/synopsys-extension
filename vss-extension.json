@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "synopsys-extension",
   "name": "synopsys-executor",
-  "version": "0.0.225",
+  "version": "0.0.236",
   "publisher": "synopsysplugin",
   "targets": [
     {
