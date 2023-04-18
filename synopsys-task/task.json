@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "93e975a2-b8c6-40b9-946a-1ca8e1303359",
+  "name": "synopsys-executor",
+  "friendlyName": "Downloader Executor",
+  "description": "Downloads specified executor and executes specified command",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "kishori",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Echo $(samplestring)",
+  "inputs": [
+    {
+      "name": "samplestring",
+      "type": "string",
+      "label": "Sample String",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A sample string"
+    },
+    {
+      "name": "bridge_download_url",
+      "type": "string",
+      "label": "bridge_download_url",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A bridge_download_url"
+    }
+    
+  ],
+  "execution": {
+    "Node": {
+      "target": "./dist/index.js"
+    }
+  }
+}
