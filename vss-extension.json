@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "synopsys-extension",
   "name": "synopsys-executor",
-  "version": "0.0.220",
+  "version": "0.0.225",
   "publisher": "synopsysplugin",
   "targets": [
     {
@@ -18,7 +18,7 @@
   },
   "files": [
     {
-      "path": "synopsystask"
+      "path": "synopsys-task"
     }
   ],
   "contributions": [
@@ -29,7 +29,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "synopsysTask"
+        "name": "synopsys-task"
       }
     }
   ]
