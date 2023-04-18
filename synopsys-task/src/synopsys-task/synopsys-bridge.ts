@@ -112,15 +112,8 @@ async prepareCommand(tempDir: string): Promise<string> {
     bridgeUrl = inputs.SYNOPSYS_BRIDGE_PATH  !== undefined ? inputs.SYNOPSYS_BRIDGE_PATH : "";
     console.log("BRIDGE_DOWNLOAD_URL:::" + bridgeUrl)
     bridgeVersion = BRIDGE_DOWNLOAD_VERSION
-    const downloadResponse: DownloadFileResponse = await getRemoteFile(tempDir, bridgeUrl)
-    console.log("downloadResponse.fileName" + downloadResponse.fileName)
-    console.log("downloadResponse.filePath" + downloadResponse.filePath)
+    getRemoteFile(tempDir, bridgeUrl,this.getBridgeDefaultPath())
    
-
-
-    const extractZippedFilePath: string = inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath()
-    console.log("extractZippedFilePath::::::::::---------------stat-" + extractZippedFilePath)
-    await extractZipped(downloadResponse.filePath, extractZippedFilePath)
   }
     catch(error){
       console.log("error:"+error)

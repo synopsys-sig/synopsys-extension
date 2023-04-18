@@ -7,6 +7,7 @@ var https = require('https');
 import * as os from 'os'
 import * as taskLib from 'azure-pipelines-task-lib/task';
 import * as toolLib from 'azure-pipelines-tool-lib/tool';
+import * as inputs from './synopsys-task/inputs'
 
 export async function run() {
 
@@ -16,7 +17,7 @@ export async function run() {
 
   try {
     const sb = new SynopsysBridge()
-console.log("download bridge")
+    console.log("download bridge")
     // Download bridge
     sb.downloadBridge(tempDir)
     // Execute bridge command
@@ -24,7 +25,10 @@ console.log("download bridge")
   } catch (error) {
     throw error
   } finally {
-    
+    // if (inputs.INCLUDE_DIAGNOSTICS) {
+    //   await uploadDiagnostics()
+    // }
+   // await cleanupTempDir(tempDir)
 }
 }
 
