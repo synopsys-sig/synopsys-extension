@@ -14,7 +14,7 @@ export interface DownloadFileResponse {
   fileName: string
 }
 
-export function getRemoteFile(destFilePath: string, url: string): Promise<DownloadFileResponse> {
+export function getRemoteFile(destFilePath: string, url: string, extractedZipPath: string ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
     throw new Error('URL cannot be empty')
   }
@@ -25,7 +25,7 @@ export function getRemoteFile(destFilePath: string, url: string): Promise<Downlo
 
   try {
 
-    let bridgePath = destFilePath;
+
     let fileNameFromUrl = ''
     if (fs.lstatSync(destFilePath).isDirectory()) {
       fileNameFromUrl = url.substring(url.lastIndexOf('/') + 1)
@@ -45,30 +45,10 @@ export function getRemoteFile(destFilePath: string, url: string): Promise<Downlo
           console.log("Download Completed");
           file.close();
           console.log("Download Completed");
-          // console.log("check exists:::::::::::::********" + fs.existsSync(destFilePath))
-          // const extractRoot: Promise<string> = toolLib.extractZip(destFilePath,bridgePath+"/kiran");
-          // console.log("extractRootextractRootextractRoot"+ extractRoot.then(value => {
-          //    console.log('resolved', value);
-          //    fs.readdir(value, (err, files) => {
-          //       files.forEach(file => {
-          //         console.log("filesname::::::::::"+file);
-          //         const osName: string = process.platform
-          //         if (osName === 'darwin' || osName === 'linux' || osName === 'win32') {
-          //           try {
-          //              let formattedCommand = 'pwd'
-          //             console.log("bridgeExecutablePath:" + "/synopsys-bridge")
-          //             taskLib.exec(value+"/synopsys-bridge","--help");
-          //           } catch (errorObject) {
-          //             throw errorObject
-          //           }
-          //         }
-          //       });
-          // });   
-          //    //cleanupTempDir(value)
-          //  }) )
-          return Promise.resolve(downloadFileResp)
-      })
+          console.log("extractZippedFilePath::::::::::---------------stat-" + extractedZipPath)
+          extractZipped(destFilePath, extractedZipPath)
     })
+  });
 
     console.log("Downloading............................."+ toolPath);
     console.log("Downloading............................."+ downloadFileResp);
@@ -92,8 +72,33 @@ export function extractZipped(file: string, destinationPath: string): Promise<bo
   }
   console.log('Extraction started')
   try {
-    toolLib.extractZip(file, destinationPath)
-    console.log('Extraction complete.')
+    toolLib.extractZip(file, destinationPath).then(
+      (value) => {
+        console.log("Success::::::::" + value); // Success!
+        console.log('Extraction D0NE.')
+      fs.readdir(destinationPath, (err, files) => {
+      files.forEach(file => {
+        console.log("filesname::::::::::"+file);
+
+        const osName: string = process.platform
+        if (osName === 'darwin' || osName === 'linux' || osName === 'win32') {
+
+          try {
+             let formattedCommand = 'pwd'
+            console.log("bridgeExecutablePath:" + "/synopsys-bridge")
+            taskLib.exec(destinationPath+"/synopsys-bridge","--help");
+          } catch (errorObject) {
+            throw errorObject
+          }
+        }
+      });
+});
+      },
+      (reason) => {
+        console.error(reason); // Error!
+      },
+    );
+
     return Promise.resolve(true)
   } catch (error) {
     console.log('error:'  + console.log('Extraction complete.'))
