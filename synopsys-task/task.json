@@ -15,14 +15,6 @@
   "instanceNameFormat": "Echo $(samplestring)",
   "inputs": [
     {
-      "name": "samplestring",
-      "type": "string",
-      "label": "Sample String",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "A sample string"
-    },
-    {
       "name": "bridge_download_url",
       "type": "string",
       "label": "bridge_download_url",

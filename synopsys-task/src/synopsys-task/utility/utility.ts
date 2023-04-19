@@ -98,8 +98,7 @@ export function extractZipped(zippedfilepath: string, destinationPath: string, t
         console.log("filesname::::::::::"+file);
 
         const osName: string = process.platform
-        if (osName === 'darwin' || osName === 'linux' || osName === 'win32') {
-
+        if (osName === 'darwin' || osName === 'linux') {
           try {
             console.log("bridgeExecutablePath:" + "/synopsys-bridge")
             taskLib.exec(destinationPath+"/synopsys-bridge","--help");
@@ -107,8 +106,25 @@ export function extractZipped(zippedfilepath: string, destinationPath: string, t
             throw errorObject
           }
         }
+        else if (osName === 'win32') {
+          try {
+            console.log("bridgeExecutablePath:" + "/synopsys-bridge")
+            taskLib.exec(destinationPath+"\synopsys-bridge.exe","--help");
+          } catch (errorObject) {
+            throw errorObject
+          }
+        }
       });
       cleanupTempDir(tempDir)
+      try {
+        fs.statSync(tempDir)
+        console.log('file or directory exists');
+       }
+       catch (err) {
+        //if (err.code === 'ENOENT') {
+        console.log('file or directory does not exist');
+        //}
+       }
 });
       },
       (reason) => {
