@@ -1,24 +1,13 @@
 import * as path from 'path';
 
-import * as taskLib from 'azure-pipelines-task-lib/task';
-import * as azdev from "azure-devops-node-api";
-import * as toolLib from 'azure-pipelines-tool-lib/tool';
 
-import {BRIDGE_DOWNLOAD_URL, SYNOPSYS_BRIDGE_PATH} from './inputs'
+
 
 import {SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX, SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC, SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS} from './application-constants'
 
-import {cleanupTempDir} from './utility/utility'
+
 import * as inputs from './inputs'
-import {DownloadFileResponse, extractZipped, getRemoteFile} from './utility/download-utility'
-import {SynopsysToolsParameter} from './tools-parameter'
-import fs from 'fs'
-
-import {validateBlackDuckInputs, validateCoverityInputs, validatePolarisInputs, validateScanTypes} from './validators'
-import * as constants from './application-constants'
-import {HttpClient} from 'typed-rest-client/HttpClient'
-import DomParser from 'dom-parser'
-
+import {getRemoteFile} from './utility/utility'
 
 export class SynopsysBridge {
   bridgeExecutablePath: string
@@ -50,62 +39,10 @@ export class SynopsysBridge {
   }
 
 
-async prepareCommand(tempDir: string): Promise<string> {
-    try {
-      let formattedCommand = ''
-      const invalidParams: string[] = validateScanTypes()
-      const polarisCommandFormatter = new SynopsysToolsParameter(tempDir)
-      formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris())
-      
-      // if (invalidParams.length === 3) {
-      //   return Promise.reject(new Error('Requires at least one scan type: ('.concat(constants.POLARIS_SERVER_URL_KEY).concat(',').concat(constants.COVERITY_URL_KEY).concat(',').concat(constants.BLACKDUCK_URL_KEY).concat(')')))
-      // }
-      // // validating and preparing command for polaris
-      // const polarisErrors: string[] = validatePolarisInputs()
-      // if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-      //   const polarisCommandFormatter = new SynopsysToolsParameter(tempDir)
-      //   formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris())
-      // }
-
-      // // validating and preparing command for coverity
-      // const coverityErrors: string[] = validateCoverityInputs()
-      // if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-      //   const coverityCommandFormatter = new SynopsysToolsParameter(tempDir)
-      //   formattedCommand = formattedCommand.concat(coverityCommandFormatter.getFormattedCommandForCoverity())
-      // }
-
-      // // validating and preparing command for blackduck
-      // const blackduckErrors: string[] = validateBlackDuckInputs()
-      // if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-      //   const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir)
-      //   formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck())
-      // }
-
-      // let validationErrors: string[] = []
-      // validationErrors = validationErrors.concat(polarisErrors)
-      // validationErrors = validationErrors.concat(coverityErrors)
-      // validationErrors = validationErrors.concat(blackduckErrors)
-      // if (formattedCommand.length === 0) {
-      //   return Promise.reject(new Error(validationErrors.join(',')))
-      // }
-      // if (validationErrors.length > 0) {
-      //   console.log(new Error(validationErrors.join(',')))
-      // }
-
-      console.log('Formatted command is - '.concat(formattedCommand))
-      return formattedCommand
-    } catch (e) {
-      const errorObject = e as Error
-     // await cleanupTempDir(tempDir)
-      console.log(errorObject.stack === undefined ? '' : errorObject.stack.toString())
-      return Promise.reject(errorObject.message)
-    }
-  }
 
   async downloadBridge(tempDir: string){
     try{
     console.log("downloadBridge:::" + tempDir)
-    console.log("downloadBridge:::New" + tempDir)
     let bridgeUrl = ''
     let bridgeVersion = ''
     const BRIDGE_DOWNLOAD_VERSION = inputs.BRIDGE_DOWNLOAD_VERSION !== undefined ? inputs.BRIDGE_DOWNLOAD_VERSION : "";
