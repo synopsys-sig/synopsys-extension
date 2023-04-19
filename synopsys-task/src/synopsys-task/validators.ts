@@ -3,6 +3,38 @@ import * as constants from "./application-constants";
 import * as inputs from "./inputs";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
+export function validateScanTypes(): string[] {
+  const paramsMap = new Map();
+  paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
+  return isNullOrEmpty(paramsMap);
+}
+
+export function validatePolarisInputs(): string[] {
+  let errors: string[] = [];
+  if (inputs.POLARIS_SERVER_URL) {
+    const paramsMap = new Map();
+    paramsMap.set(
+        constants.POLARIS_ACCESS_TOKEN_KEY,
+        inputs.POLARIS_ACCESS_TOKEN
+    );
+    paramsMap.set(
+        constants.POLARIS_APPLICATION_NAME_KEY,
+        inputs.POLARIS_APPLICATION_NAME
+    );
+    paramsMap.set(
+        constants.POLARIS_PROJECT_NAME_KEY,
+        inputs.POLARIS_PROJECT_NAME
+    );
+    paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
+    paramsMap.set(
+        constants.POLARIS_ASSESSMENT_TYPES_KEY,
+        inputs.POLARIS_ASSESSMENT_TYPES
+    );
+    errors = validateParameters(paramsMap, constants.POLARIS_KEY);
+  }
+  return errors;
+}
+
 export function validateParameters(
   params: Map<string, string>,
   toolName: string
