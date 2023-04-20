@@ -2,11 +2,10 @@ import * as fs from 'fs'
 import * as os from 'os'
 import path from 'path'
 import {APPLICATION_NAME} from '../application-constants'
-import * as toolLib from 'azure-pipelines-tool-lib/tool';
+import * as toolLib from 'azure-pipelines-tool-lib';
 import * as taskLib from 'azure-pipelines-task-lib/task';
 import {validateBridgeUrl} from '../validators'
 var https = require('https');
-
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith('/')) {
@@ -19,7 +18,7 @@ export async function createTempDir(): Promise<string> {
   const appPrefix = APPLICATION_NAME
   
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix))
-  console.log("tempDir::::::::::::::::::tempDir" + tempDir);
+  taskLib.debug("tempDir::::::::::::::::::tempDir" + tempDir);
 
   return tempDir
 }
@@ -29,6 +28,55 @@ export async function createTempDir(): Promise<string> {
 export interface DownloadFileResponse {
   filePath: string
   fileName: string
+}
+
+
+export async function downloadBridgeFromURL(destFilePath: string, url: string): Promise<DownloadFileResponse>{
+  return new Promise((resolve, reject) => {
+    
+    let downloadFileResp:DownloadFileResponse = {
+      filePath: '',
+      fileName: ''
+    };
+
+    let fileNameFromUrl = ''
+     taskLib.debug("url:" + url)
+    if (fs.lstatSync(destFilePath).isDirectory()) {
+      fileNameFromUrl = url.substring(url.lastIndexOf('/') + 1)
+       destFilePath = path.join(destFilePath, fileNameFromUrl || 'bridge.zip')
+       taskLib.debug("destFilePath:" + destFilePath);
+       taskLib.debug("fileNameFromUrl:" + fileNameFromUrl)
+
+    }
+    const file = fs.createWriteStream(destFilePath);
+   
+    const request = https.get(url, (response:any) => {
+      if (response.statusCode !== 200) {
+        fs.unlink(destFilePath, () => {
+          reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
+        });
+        return;
+      }
+      downloadFileResp = {
+        filePath: destFilePath,
+        fileName: fileNameFromUrl
+      }
+      response.pipe(file);
+    });
+
+    // The destination stream is ended by the time it's called
+    file.on('finish', () => resolve(downloadFileResp));
+
+    request.on('error', (err:any) => {
+      fs.unlink(destFilePath, () => reject(err));
+    });
+
+    file.on('error', err => {
+      fs.unlink(destFilePath, () => reject(err));
+    });
+
+    request.end();
+  });
 }
 
 export function getRemoteFile(destFilePath: string, url: string, extractedZipPath: string ): Promise<DownloadFileResponse> {
@@ -49,26 +97,26 @@ export function getRemoteFile(destFilePath: string, url: string, extractedZipPat
       fileNameFromUrl = url.substring(url.lastIndexOf('/') + 1)
       destFilePath = path.join(destFilePath, fileNameFromUrl || 'bridge.zip')
     }
-    console.log("destfilePath:::" + destFilePath)
+     taskLib.debug("destfilePath:::" + destFilePath)
     const fileWriteStream = fs.createWriteStream(destFilePath);
      const downloadFileResp: DownloadFileResponse = {
             filePath: destFilePath,
             fileName: fileNameFromUrl
           }
-    const toolPath = https.get(url, function(response:any) {
+     const toolPath =  https.get(url, function(response:any) {
       response.pipe(fileWriteStream);
-      console.log("Downloading.............................");
+       taskLib.debug("Downloading.............................");
       // after download completed close filestream
       fileWriteStream.on("finish", () => {
-          console.log("Download Completed");
+           taskLib.debug("Download Completed");
           fileWriteStream.close();
-          console.log("extractZippedFilePath::::::::::-------------" + extractedZipPath)
+           taskLib.debug("extractZippedFilePath::::::::::-------------" + extractedZipPath)
           extractZipped(destFilePath, extractedZipPath,tempDir)
     })
   });
 
-    console.log("Downloading............................."+ toolPath);
-    console.log("Downloading............................."+ downloadFileResp);
+     taskLib.debug("Downloading............................."+ toolPath);
+     taskLib.debug("Downloading............................."+ downloadFileResp);
     return Promise.resolve(downloadFileResp)
   } catch (error) {
     throw error
@@ -76,9 +124,9 @@ export function getRemoteFile(destFilePath: string, url: string, extractedZipPat
 }
 
 export function extractZipped(zippedfilepath: string, destinationPath: string, tempDir:string): Promise<boolean> {
-  console.log('Extraction started')
-  console.log('zippedfilepath:' + zippedfilepath)
-  console.log('Extraction started:destinationPath' + destinationPath)
+   taskLib.debug('Extraction started')
+   taskLib.debug('zippedfilepath:' + zippedfilepath)
+   taskLib.debug('Extraction started:destinationPath' + destinationPath)
   if (zippedfilepath == null || zippedfilepath.length === 0) {
     return Promise.reject(new Error('File does not exist'))
   }
@@ -87,20 +135,20 @@ export function extractZipped(zippedfilepath: string, destinationPath: string, t
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(new Error('No destination directory found'))
   }
-  console.log('Extraction started')
+   taskLib.debug('Extraction started')
   try {
     toolLib.extractZip(zippedfilepath, destinationPath).then(
       (value) => {
-        console.log("Success::::::::" + value); // Success!
-        console.log('Extraction DONE.')
+         taskLib.debug("Success::::::::" + value); // Success!
+         taskLib.debug('Extraction DONE.')
       fs.readdir(destinationPath, (err, files) => {
       files.forEach(file => {
-        console.log("filesname::::::::::"+file);
+         taskLib.debug("filesname::::::::::"+file);
 
         const osName: string = process.platform
         if (osName === 'darwin' || osName === 'linux') {
           try {
-            console.log("bridgeExecutablePath:" + "/synopsys-bridge")
+             taskLib.debug("bridgeExecutablePath:" + "/synopsys-bridge")
             taskLib.exec(destinationPath+"/synopsys-bridge","--help");
           } catch (errorObject) {
             throw errorObject
@@ -108,7 +156,7 @@ export function extractZipped(zippedfilepath: string, destinationPath: string, t
         }
         else if (osName === 'win32') {
           try {
-            console.log("bridgeExecutablePath:" + "/synopsys-bridge")
+             taskLib.debug("bridgeExecutablePath:" + "/synopsys-bridge")
             taskLib.exec(destinationPath+"\synopsys-bridge.exe","--help");
           } catch (errorObject) {
             throw errorObject
@@ -118,30 +166,30 @@ export function extractZipped(zippedfilepath: string, destinationPath: string, t
       cleanupTempDir(tempDir)
       try {
         fs.statSync(tempDir)
-        console.log('file or directory exists');
+         taskLib.debug('file or directory exists');
        }
        catch (err) {
         //if (err.code === 'ENOENT') {
-        console.log('file or directory does not exist');
+         taskLib.error('file or directory does not exist');
         //}
        }
 });
       },
       (reason) => {
-        console.error(reason); // Error!
+        taskLib.error('reason' + reason);
       },
     );
     
     return Promise.resolve(true)
   } catch (error) {
-    console.log('error:'  + console.log('Extraction complete.'))
+     taskLib.debug('error:'  +  taskLib.debug('Extraction complete.'))
     return Promise.reject(error)
   }
 }
 
 
 export async function cleanupTempDir(tempDir: string): Promise<void> {
-  console.log("cleaning up tempDir:" + tempDir)
+   taskLib.debug("cleaning up tempDir:" + tempDir)
   if (tempDir && fs.existsSync(tempDir)) {
     await taskLib.rmRF(tempDir)
   }
