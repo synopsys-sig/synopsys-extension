@@ -1,3 +1,3 @@
 export interface InputData<Type> {
-  data: Type
+  data: Type;
 }

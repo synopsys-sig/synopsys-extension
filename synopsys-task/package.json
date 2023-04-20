@@ -4,9 +4,10 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "package": "ncc build --source-map",
-    "all": "npm run build && npm run package"
+    "test": "tsc tests/_suite.ts && mocha tests/_suite.js",
+    "all": "npm run build && npm run package && npm run test",
+    "prettier-format": "prettier 'src/**/*.ts' --write"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,7 @@
     "eslint-plugin-jest": "^26.0.0",
     "mocha": "^10.2.0",
     "path": "^0.12.7",
+    "prettier": "^2.8.7",
     "sync-request": "^6.1.0",
     "typed-rest-client": "^1.8.9",
     "unzipper": "^0.10.11",
