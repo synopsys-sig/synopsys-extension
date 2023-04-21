@@ -72,22 +72,25 @@ export class SynopsysBridge {
     return Promise.resolve(bridgeDefaultPath);
   }
 
-  async executeBridgeCommand(extractedPath: any): Promise<number> {
+  async executeBridgeCommand(executablePath: string, workspace: string, command: string): Promise<number> {
     const osName: string = process.platform;
-    if (osName === "darwin" || osName === "linux" || osName === "win32") {
-      try {
-        taskLib.debug("extractedPath:" + extractedPath);
-        taskLib.filePathSupplied(extractedPath);
-        //  console.log("path.join(extractedPath, " + path.join(extractedPath, "synopsys-bridge"))
-        // taskLib.which(path.join(extractedPath, "synopsys-bridge"),true)
-        return taskLib.exec(
-          path.join(extractedPath, "synopsys-bridge"),
-          "--help"
-        );
-      } catch (errorObject) {
-        taskLib.error("errorObject:" + errorObject);
-        throw errorObject;
-      }
+    let executable: string = "";
+    taskLib.debug("extractedPath:" + executablePath);
+
+    if (osName === "darwin" || osName === "linux") {
+      executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
+    } else if (osName === "win32") {
+      executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
+    }
+
+    try {
+      // taskLib.filePathSupplied(extractedPath);
+      //  console.log("path.join(extractedPath, " + path.join(extractedPath, "synopsys-bridge"))
+      // taskLib.which(path.join(extractedPath, "synopsys-bridge"),true)
+      return await taskLib.exec(executable.concat(' ', command),  "", {cwd: workspace});
+    } catch (errorObject) {
+      taskLib.error("errorObject:" + errorObject);
+      throw errorObject;
     }
     return -1;
   }
