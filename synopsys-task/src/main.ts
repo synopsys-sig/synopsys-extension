@@ -13,18 +13,17 @@ export async function run() {
     // taskLib.debug("download bridge")
     const bridgeDownload: any = await sb.downloadBridge(tempDir);
     // taskLib.debug("downloadBridge:" +bridgeDownload.filePath)
-    const extractedPath: any = await sb.extractBridge(bridgeDownload.filePath);
+    const bridgePath: string = await sb.extractBridge(bridgeDownload.filePath);
     // taskLib.debug("extractBridge:" + JSON.stringify(extractedPath))
-    const execCommand: any = await sb.executeBridgeCommand(extractedPath);
-    if (execCommand != -1) {
-      await cleanupTempDir(extractedPath);
-    }
+    const response: any = await sb.executeBridgeCommand(bridgePath, "", "");
+
     // taskLib.debug("executeBridgeCommand:" + JSON.stringify(execCommand))
   } catch (error) {
     taskLib.error("download bridge" + error);
     throw error;
   } finally {
     taskLib.debug("finally executed");
+    await cleanupTempDir(tempDir);
   }
 }
 
