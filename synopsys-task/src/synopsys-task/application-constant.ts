@@ -11,6 +11,7 @@ export const APPLICATION_NAME = "synopsys-extension";
 
 // Scan Types
 export const POLARIS_KEY = "polaris";
+export const BLACKDUCK_KEY = 'blackduck'
 
 // Polaris
 export const POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
@@ -28,3 +29,16 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ["8", "The config option bridge.break has been set to true"],
   ["9", "Bridge initialization failed"],
 ]);
+
+export const COVERITY_AUTOMATION_PRCOMMENT_KEY = 'coverity_automation_prcomment'
+
+// Blackduck
+export const BLACKDUCK_URL_KEY = 'blackduck_url'
+export const BLACKDUCK_API_TOKEN_KEY = 'blackduck_apiToken'
+export const BLACKDUCK_INSTALL_DIRECTORY_KEY = 'blackduck_install_directory'
+export const BLACKDUCK_SCAN_FULL_KEY = 'blackduck_scan_full'
+export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = 'blackduck_scan_failure_severities'
+export const BLACKDUCK_AUTOMATION_FIXPR_KEY = 'blackduck_automation_fixpr'
+export const BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = 'blackduck_automation_prcomment'
+
+export const GITHUB_TOKEN_KEY = 'github_token'
