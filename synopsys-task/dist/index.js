@@ -50,12 +50,12 @@ function run() {
         const tempDir = (0, utility_1.getTempDir)();
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
+            // Prepare tool commands
+            const command = yield sb.prepareCommand(tempDir);
             // Download synopsys bridge
             const downloadedBridgeInfo = yield sb.downloadBridge(tempDir);
             // Unzip bridge
             const bridgePath = yield sb.extractBridge(downloadedBridgeInfo);
-            // Prepare tool commands
-            const command = yield sb.prepareCommand(tempDir);
             // Execute prepared commands
             const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
@@ -638,7 +638,6 @@ function isNullOrEmpty(params) {
 }
 exports.isNullOrEmpty = isNullOrEmpty;
 function validateBridgeUrl(url) {
-    taskLib.debug("url:::url:::url:::url:::" + url.match(".*\\.(zip|ZIP)$"));
     if (!url.match(".*\\.(zip|ZIP)$")) {
         return false;
     }
