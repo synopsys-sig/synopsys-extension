@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import * as constants from "./application-constants";
 import * as inputs from "./inputs";
 import * as taskLib from "azure-pipelines-task-lib/task";

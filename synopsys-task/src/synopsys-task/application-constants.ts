@@ -20,7 +20,7 @@ export const POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 
 // Bridge Exit Codes
-export let EXIT_CODE_MAP = new Map<string, string>([
+export const EXIT_CODE_MAP = new Map<string, string>([
   ["0", "Bridge execution successfully completed"],
   ["1", "Undefined error, check error logs"],
   ["2", "Error from adapter end"],

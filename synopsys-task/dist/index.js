@@ -40,7 +40,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.logBridgeExitCodes = exports.run = void 0;
-const utility_1 = __nccwpck_require__(5199);
+const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(5020));
@@ -212,7 +212,7 @@ const tools_parameter_1 = __nccwpck_require__(6233);
 const validators_1 = __nccwpck_require__(1291);
 const constants = __importStar(__nccwpck_require__(5020));
 const inputs = __importStar(__nccwpck_require__(712));
-const utility_1 = __nccwpck_require__(5199);
+const utility_1 = __nccwpck_require__(837);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 class SynopsysBridge {
     constructor() {
@@ -254,7 +254,7 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             const osName = process.platform;
             let executable = "";
-            taskLib.debug("extractedPath:" + executablePath);
+            taskLib.debug("extractedPath: ".concat(executablePath));
             if (osName === "darwin" || osName === "linux") {
                 executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
             }
@@ -268,7 +268,6 @@ class SynopsysBridge {
                 taskLib.debug("errorObject:" + errorObject);
                 throw errorObject;
             }
-            return -1;
         });
     }
     prepareCommand(tempDir) {
@@ -276,7 +275,7 @@ class SynopsysBridge {
             try {
                 let formattedCommand = "";
                 const invalidParams = (0, validators_1.validateScanTypes)();
-                if (invalidParams.length === 3) {
+                if (invalidParams.length === 1) {
                     return Promise.reject(new Error("Requires at least one scan type: ("
                         .concat(constants.POLARIS_SERVER_URL_KEY)
                         .concat(")")));
@@ -321,13 +320,13 @@ class SynopsysBridge {
                     // TODO: Download bridge latest version
                 }
                 const downloadBridge = yield (0, utility_1.getRemoteFile)(tempDir, bridgeUrl);
+                console.log("Download of Synopsys Bridge completed");
                 return Promise.resolve(downloadBridge);
             }
             catch (error) {
                 taskLib.debug("error:" + error);
                 return Promise.reject(new Error("Bridge could not be downloaded"));
             }
-            console.log("Download of Synopsys Bridge completed");
         });
     }
 }
@@ -434,7 +433,7 @@ exports.SynopsysToolsParameter = SynopsysToolsParameter;
 
 /***/ }),
 
-/***/ 5199:
+/***/ 837:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -480,9 +479,7 @@ const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constants_1 = __nccwpck_require__(5020);
 const toolLib = __importStar(__nccwpck_require__(3681));
-const validators_1 = __nccwpck_require__(1291);
 const process = __importStar(__nccwpck_require__(7282));
-var https = __nccwpck_require__(5687);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -518,9 +515,6 @@ function getRemoteFile(destFilePath, url) {
         if (url == null || url.length === 0) {
             Promise.reject(new Error("URL cannot be empty"));
         }
-        if (!(0, validators_1.validateBridgeUrl)(url)) {
-            return Promise.reject(new Error("Invalid URL"));
-        }
         try {
             let fileNameFromUrl = "";
             if (fs.lstatSync(destFilePath).isDirectory()) {
@@ -535,7 +529,7 @@ function getRemoteFile(destFilePath, url) {
             return Promise.resolve(downloadFileResp);
         }
         catch (error) {
-            throw error;
+            return Promise.reject(error);
         }
     });
 }
