@@ -1,15 +1,15 @@
 {
   "manifestVersion": 1,
   "id": "synopsys-extension",
-  "name": "synopsys-executor",
-  "version": "0.0.6",
-  "publisher": "synopsysplugin",
+  "name": "synopsys-extension",
+  "version": "0.1.0",
+  "publisher": "syno-kk",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "Tools for downloading/executing commands.",
+  "description": "Tools for running synopsys scans commands.",
   "categories": [
     "Azure Pipelines"
   ],
@@ -23,7 +23,7 @@
   ],
   "contributions": [
     {
-      "id": "synopsys-extension",
+      "id": "synopsys-task",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"

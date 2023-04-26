@@ -3,7 +3,9 @@ export const SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 export const SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
 
 export const SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = "synopsys-bridge.exe";
-export const SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = "synopsys-bridge"
+export const SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = "synopsys-bridge";
+
+export const SYNOPSYS_BRIDGE_ZIP_FILE_NAME = "synopsys-bridge.zip";
 
 export const APPLICATION_NAME = "synopsys-extension";
 
