@@ -4,7 +4,7 @@ import * as inputs from "./inputs";
 import { Polaris } from "./input-data/polaris";
 import { InputData } from "./input-data/input-data";
 import * as constants from "./application-constants";
-import {debug} from "azure-pipelines-task-lib";
+import { debug } from "azure-pipelines-task-lib";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -22,6 +22,7 @@ export class SynopsysToolsParameter {
     let command = "";
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
+    console.log(assessmentTypes);
     if (assessmentTypes != null && assessmentTypes.length > 0) {
       try {
         // converting provided assessmentTypes to uppercase
@@ -61,6 +62,7 @@ export class SynopsysToolsParameter {
     );
     fs.writeFileSync(stateFilePath, inputJson);
 
+    debug("Generated state json file content is - ".concat(inputJson));
     debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(

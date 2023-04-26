@@ -14,21 +14,21 @@ export function validatePolarisInputs(): string[] {
   if (inputs.POLARIS_SERVER_URL) {
     const paramsMap = new Map();
     paramsMap.set(
-        constants.POLARIS_ACCESS_TOKEN_KEY,
-        inputs.POLARIS_ACCESS_TOKEN
+      constants.POLARIS_ACCESS_TOKEN_KEY,
+      inputs.POLARIS_ACCESS_TOKEN
     );
     paramsMap.set(
-        constants.POLARIS_APPLICATION_NAME_KEY,
-        inputs.POLARIS_APPLICATION_NAME
+      constants.POLARIS_APPLICATION_NAME_KEY,
+      inputs.POLARIS_APPLICATION_NAME
     );
     paramsMap.set(
-        constants.POLARIS_PROJECT_NAME_KEY,
-        inputs.POLARIS_PROJECT_NAME
+      constants.POLARIS_PROJECT_NAME_KEY,
+      inputs.POLARIS_PROJECT_NAME
     );
     paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
     paramsMap.set(
-        constants.POLARIS_ASSESSMENT_TYPES_KEY,
-        inputs.POLARIS_ASSESSMENT_TYPES
+      constants.POLARIS_ASSESSMENT_TYPES_KEY,
+      inputs.POLARIS_ASSESSMENT_TYPES
     );
     errors = validateParameters(paramsMap, constants.POLARIS_KEY);
   }
@@ -64,7 +64,6 @@ export function isNullOrEmpty(params: Map<string, string>): string[] {
 }
 
 export function validateBridgeUrl(url: string): boolean {
-  taskLib.debug("url:::url:::url:::url:::" + url.match(".*\\.(zip|ZIP)$"));
   if (!url.match(".*\\.(zip|ZIP)$")) {
     return false;
   }
@@ -78,7 +77,6 @@ export function validateBridgeUrl(url: string): boolean {
   } else if (osName === "win32") {
     return fileNameComponent.toLowerCase().includes("win");
   } else {
-    return true;
-    //Need to change to false
+    return false;
   }
 }
