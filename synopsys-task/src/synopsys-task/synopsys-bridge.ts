@@ -1,20 +1,18 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
-import { SynopsysToolsParameter } from "./tools-parameter";
 import {
-  validatePolarisInputs,
-  validateScanTypes,
-  validateBridgeUrl,
-  validateCoverityInputs,
-} from "./validator";
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC,
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS,
+} from "./application-constants";
+
+import { SynopsysToolsParameter } from "./tools-parameter";
 
 import * as constants from "./application-constant";
 
-import * as inputs from "./input";
-import { extractZipped, getRemoteFile } from "./utility";
-import fs from "fs";
-import { DownloadFileResponse } from "./model/download-file-response";
+import * as inputs from "./inputs";
+import { downloadBridgeFromURL, cleanupTempDir } from "./utility/utility";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -135,12 +133,10 @@ export class SynopsysBridge {
         );
       }
 
-      const blackduckErrors: string[] = validateBlackDuckInputs();
+      const blackduckErrors: string[] = validateBlackDuckInputs()
       if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
-        formattedCommand = formattedCommand.concat(
-          blackDuckCommandFormatter.getFormattedCommandForBlackduck()
-        );
+        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir)
+        formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck())
       }
 
       let validationErrors: string[] = [];
