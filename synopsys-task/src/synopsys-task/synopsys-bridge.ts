@@ -1,6 +1,5 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as toolLib from "azure-pipelines-tool-lib";
 
 import {
   SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
@@ -18,12 +17,7 @@ import {
 import * as constants from "./application-constants";
 
 import * as inputs from "./inputs";
-import {
-  DownloadFileResponse,
-  extractZipped,
-  getRemoteFile,
-} from "./utility/utility";
-import DomParser from "dom-parser";
+import { DownloadFileResponse, extractZipped, getRemoteFile } from "./utility";
 import fs from "fs";
 
 export class SynopsysBridge {
@@ -87,8 +81,8 @@ export class SynopsysBridge {
     command: string
   ): Promise<number> {
     const osName: string = process.platform;
-    let executable: string = "";
-    taskLib.debug("extractedPath:" + executablePath);
+    let executable = "";
+    taskLib.debug("extractedPath: ".concat(executablePath));
 
     if (osName === "darwin" || osName === "linux") {
       executable = path.join(
@@ -108,7 +102,6 @@ export class SynopsysBridge {
       taskLib.debug("errorObject:" + errorObject);
       throw errorObject;
     }
-    return -1;
   }
 
   async prepareCommand(tempDir: string): Promise<string> {
@@ -116,7 +109,7 @@ export class SynopsysBridge {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
 
-      if (invalidParams.length === 3) {
+      if (invalidParams.length === 1) {
         return Promise.reject(
           new Error(
             "Requires at least one scan type: ("
@@ -159,7 +152,7 @@ export class SynopsysBridge {
 
   async downloadBridge(tempDir: string): Promise<DownloadFileResponse> {
     try {
-      let bridgeUrl: string = "";
+      let bridgeUrl = "";
       if (inputs.BRIDGE_DOWNLOAD_URL) {
         console.log("Downloading and configuring Synopsys Bridge");
         console.log("Bridge URL is - ".concat(bridgeUrl));
@@ -175,12 +168,11 @@ export class SynopsysBridge {
         tempDir,
         bridgeUrl
       );
+      console.log("Download of Synopsys Bridge completed");
       return Promise.resolve(downloadBridge);
     } catch (error) {
       taskLib.debug("error:" + error);
       return Promise.reject(new Error("Bridge could not be downloaded"));
     }
-
-    console.log("Download of Synopsys Bridge completed");
   }
 }

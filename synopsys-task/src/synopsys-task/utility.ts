@@ -1,15 +1,8 @@
 import * as fs from "fs";
-import * as os from "os";
 import path from "path";
-import {
-  APPLICATION_NAME,
-  SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
-} from "../application-constants";
+import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constants";
 import * as toolLib from "azure-pipelines-tool-lib";
-import * as taskLib from "azure-pipelines-task-lib/task";
-import { validateBridgeUrl } from "../validators";
 import * as process from "process";
-var https = require("https");
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -56,10 +49,6 @@ export async function getRemoteFile(
     Promise.reject(new Error("URL cannot be empty"));
   }
 
-  if (!validateBridgeUrl(url)) {
-    return Promise.reject(new Error("Invalid URL"));
-  }
-
   try {
     let fileNameFromUrl = "";
     if (fs.lstatSync(destFilePath).isDirectory()) {
@@ -78,7 +67,7 @@ export async function getRemoteFile(
 
     return Promise.resolve(downloadFileResp);
   } catch (error) {
-    throw error;
+    return Promise.reject(error);
   }
 }
 
