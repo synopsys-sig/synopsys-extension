@@ -1,6 +1,8 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib";
+import {validateBlackDuckInputs,  validateScanTypes,validatePolarisInputs} from './validators'
+
 
 import {
   SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
@@ -9,16 +11,11 @@ import {
 } from "./application-constants";
 
 import { SynopsysToolsParameter } from "./tools-parameter";
-import {
-  validatePolarisInputs,
-  validateScanTypes,
-} from "./validators";
 
 import * as constants from "./application-constants";
 
 import * as inputs from "./inputs";
 import { downloadBridgeFromURL, cleanupTempDir } from "./utility/utility";
-import DomParser from "dom-parser";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -121,6 +118,12 @@ export class SynopsysBridge {
         formattedCommand = formattedCommand.concat(
             polarisCommandFormatter.getFormattedCommandForPolaris()
         );
+      }
+
+      const blackduckErrors: string[] = validateBlackDuckInputs()
+      if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir)
+        formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck())
       }
 
       let validationErrors: string[] = [];
