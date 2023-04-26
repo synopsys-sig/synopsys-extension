@@ -13,6 +13,9 @@ export async function run() {
   try {
     const sb = new SynopsysBridge();
 
+    // Prepare tool commands
+    const command: string = await sb.prepareCommand(tempDir);
+
     // Download synopsys bridge
     const downloadedBridgeInfo: DownloadFileResponse = await sb.downloadBridge(
       tempDir
@@ -20,9 +23,6 @@ export async function run() {
 
     // Unzip bridge
     const bridgePath: string = await sb.extractBridge(downloadedBridgeInfo);
-
-    // Prepare tool commands
-    const command: string = await sb.prepareCommand(tempDir);
 
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
