@@ -3,6 +3,7 @@ import path from "path";
 import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constants";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as process from "process";
+import { DownloadFileResponse } from "./bean/download-file-response";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -13,11 +14,6 @@ export function cleanUrl(url: string): string {
 
 export function getTempDir(): string {
   return process.env["AGENT_TEMPDIRECTORY"] || "";
-}
-
-export interface DownloadFileResponse {
-  filePath: string;
-  fileName: string;
 }
 
 export async function extractZipped(
