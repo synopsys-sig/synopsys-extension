@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import path from "path";
 import * as inputs from "./inputs";
-import { Polaris } from "./bean/polaris";
-import { InputData } from "./bean/input-data";
+import { Polaris } from "./models/polaris";
+import { InputData } from "./models/input-data";
 import * as constants from "./application-constants";
 import { debug } from "azure-pipelines-task-lib";
 
