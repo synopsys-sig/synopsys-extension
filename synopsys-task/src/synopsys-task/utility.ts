@@ -1,9 +1,9 @@
 import * as fs from "fs";
 import path from "path";
-import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constants";
+import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as process from "process";
-import { DownloadFileResponse } from "./models/download-file-response";
+import { DownloadFileResponse } from "./model/download-file-response";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {

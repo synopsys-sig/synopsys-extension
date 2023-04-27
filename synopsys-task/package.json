@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "package": "ncc build --source-map",
-    "test": "tsc tests/_suite.ts && mocha tests/_suite.js",
+    "test": "mocha test/_suite.js",
     "lint": "eslint src/**/*.ts",
     "all": "npm run format && npm run lint && npm run build && npm run package",
     "format": "prettier 'src/**/*.ts' --write"

@@ -1,25 +1,19 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
-import {
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC,
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS,
-} from "./application-constants";
-
 import { SynopsysToolsParameter } from "./tools-parameter";
 import {
   validatePolarisInputs,
   validateScanTypes,
   validateBridgeUrl,
-} from "./validators";
+} from "./validator";
 
-import * as constants from "./application-constants";
+import * as constants from "./application-constant";
 
-import * as inputs from "./inputs";
+import * as inputs from "./input";
 import { extractZipped, getRemoteFile } from "./utility";
 import fs from "fs";
-import { DownloadFileResponse } from "./models/download-file-response";
+import { DownloadFileResponse } from "./model/download-file-response";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -45,17 +39,17 @@ export class SynopsysBridge {
     if (osName === "darwin") {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
-        SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
       );
     } else if (osName === "linux") {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
-        SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
       );
     } else if (osName === "win32") {
       bridgeDefaultPath = path.join(
         process.env["USERPROFILE"] as string,
-        SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
       );
     }
     taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);

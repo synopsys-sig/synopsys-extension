@@ -1,5 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as constants from "./application-constants";
+import * as constants from "./application-constant";
 
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
