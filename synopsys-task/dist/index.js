@@ -43,7 +43,7 @@ exports.logBridgeExitCodes = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
-const constants = __importStar(__nccwpck_require__(5020));
+const constants = __importStar(__nccwpck_require__(3051));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Action started...");
@@ -83,7 +83,7 @@ run().catch((error) => {
 
 /***/ }),
 
-/***/ 5020:
+/***/ 3051:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -118,7 +118,7 @@ exports.EXIT_CODE_MAP = new Map([
 
 /***/ }),
 
-/***/ 712:
+/***/ 7533:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -149,7 +149,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
-const constants = __importStar(__nccwpck_require__(5020));
+const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path");
@@ -207,11 +207,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysBridge = void 0;
 const path = __importStar(__nccwpck_require__(1017));
 const taskLib = __importStar(__nccwpck_require__(347));
-const application_constants_1 = __nccwpck_require__(5020);
 const tools_parameter_1 = __nccwpck_require__(6233);
-const validators_1 = __nccwpck_require__(1291);
-const constants = __importStar(__nccwpck_require__(5020));
-const inputs = __importStar(__nccwpck_require__(712));
+const validator_1 = __nccwpck_require__(6717);
+const constants = __importStar(__nccwpck_require__(3051));
+const inputs = __importStar(__nccwpck_require__(7533));
 const utility_1 = __nccwpck_require__(837);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 class SynopsysBridge {
@@ -228,13 +227,13 @@ class SynopsysBridge {
         let bridgeDefaultPath = "";
         const osName = process.platform;
         if (osName === "darwin") {
-            bridgeDefaultPath = path.join(process.env["HOME"], application_constants_1.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC);
+            bridgeDefaultPath = path.join(process.env["HOME"], constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC);
         }
         else if (osName === "linux") {
-            bridgeDefaultPath = path.join(process.env["HOME"], application_constants_1.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX);
+            bridgeDefaultPath = path.join(process.env["HOME"], constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX);
         }
         else if (osName === "win32") {
-            bridgeDefaultPath = path.join(process.env["USERPROFILE"], application_constants_1.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS);
+            bridgeDefaultPath = path.join(process.env["USERPROFILE"], constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS);
         }
         taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
         return bridgeDefaultPath;
@@ -274,14 +273,14 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let formattedCommand = "";
-                const invalidParams = (0, validators_1.validateScanTypes)();
+                const invalidParams = (0, validator_1.validateScanTypes)();
                 if (invalidParams.length === 1) {
                     return Promise.reject(new Error("Requires at least one scan type: ("
                         .concat(constants.POLARIS_SERVER_URL_KEY)
                         .concat(")")));
                 }
                 // validating and preparing command for polaris
-                const polarisErrors = (0, validators_1.validatePolarisInputs)();
+                const polarisErrors = (0, validator_1.validatePolarisInputs)();
                 if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
                     const polarisCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
                     formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris());
@@ -312,7 +311,7 @@ class SynopsysBridge {
                     console.log("Downloading and configuring Synopsys Bridge");
                     console.log("Bridge URL is - ".concat(bridgeUrl));
                     bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
-                    if (!(0, validators_1.validateBridgeUrl)(bridgeUrl)) {
+                    if (!(0, validator_1.validateBridgeUrl)(bridgeUrl)) {
                         return Promise.reject(new Error("Invalid URL"));
                     }
                 }
@@ -370,8 +369,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysToolsParameter = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const inputs = __importStar(__nccwpck_require__(712));
-const constants = __importStar(__nccwpck_require__(5020));
+const inputs = __importStar(__nccwpck_require__(7533));
+const constants = __importStar(__nccwpck_require__(3051));
 const azure_pipelines_task_lib_1 = __nccwpck_require__(347);
 class SynopsysToolsParameter {
     constructor(tempDir) {
@@ -477,7 +476,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const application_constants_1 = __nccwpck_require__(5020);
+const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
 const process = __importStar(__nccwpck_require__(7282));
 function cleanUrl(url) {
@@ -519,7 +518,7 @@ function getRemoteFile(destFilePath, url) {
             let fileNameFromUrl = "";
             if (fs.lstatSync(destFilePath).isDirectory()) {
                 fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
-                destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constants_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
+                destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
             }
             const toolPath = yield toolLib.downloadTool(url, destFilePath);
             const downloadFileResp = {
@@ -557,7 +556,7 @@ exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
 
 /***/ }),
 
-/***/ 1291:
+/***/ 6717:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -587,8 +586,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
-const constants = __importStar(__nccwpck_require__(5020));
-const inputs = __importStar(__nccwpck_require__(712));
+const constants = __importStar(__nccwpck_require__(3051));
+const inputs = __importStar(__nccwpck_require__(7533));
 const taskLib = __importStar(__nccwpck_require__(347));
 function validateScanTypes() {
     const paramsMap = new Map();

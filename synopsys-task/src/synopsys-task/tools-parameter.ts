@@ -1,9 +1,9 @@
 import * as fs from "fs";
 import path from "path";
-import * as inputs from "./inputs";
-import { Polaris } from "./models/polaris";
-import { InputData } from "./models/input-data";
-import * as constants from "./application-constants";
+import * as inputs from "./input";
+import { Polaris } from "./model/polaris";
+import { InputData } from "./model/input-data";
+import * as constants from "./application-constant";
 import { debug } from "azure-pipelines-task-lib";
 
 export class SynopsysToolsParameter {

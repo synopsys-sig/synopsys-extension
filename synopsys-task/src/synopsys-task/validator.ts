@@ -1,5 +1,5 @@
-import * as constants from "./application-constants";
-import * as inputs from "./inputs";
+import * as constants from "./application-constant";
+import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
 export function validateScanTypes(): string[] {
