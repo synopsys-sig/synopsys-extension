@@ -17,8 +17,9 @@ import {
 import * as constants from "./application-constants";
 
 import * as inputs from "./inputs";
-import { DownloadFileResponse, extractZipped, getRemoteFile } from "./utility";
+import { extractZipped, getRemoteFile } from "./utility";
 import fs from "fs";
+import { DownloadFileResponse } from "./bean/download-file-response";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
