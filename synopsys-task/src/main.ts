@@ -2,7 +2,7 @@ import { getWorkSpaceDirectory, getTempDir } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constants";
-import { DownloadFileResponse } from "./synopsys-task/bean/download-file-response";
+import { DownloadFileResponse } from "./synopsys-task/models/download-file-response";
 
 export async function run() {
   console.log("Synopsys Action started...");
