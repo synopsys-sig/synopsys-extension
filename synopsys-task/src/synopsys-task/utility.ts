@@ -46,6 +46,7 @@ export async function getRemoteFile(
   }
 
   try {
+    console.log("destFilePath :: " + destFilePath);
     let fileNameFromUrl = "";
     if (fs.lstatSync(destFilePath).isDirectory()) {
       fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
