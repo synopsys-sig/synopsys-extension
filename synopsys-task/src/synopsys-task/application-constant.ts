@@ -11,7 +11,6 @@ export const APPLICATION_NAME = "synopsys-extension";
 
 // Scan Types
 export const POLARIS_KEY = "polaris";
-export const BLACKDUCK_KEY = "blackduck";
 
 // Polaris
 export const POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
@@ -19,6 +18,16 @@ export const POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 export const POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 export const POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
+
+// Coverity
+export const COVERITY_URL_KEY = "bridge_coverity_url";
+export const COVERITY_USER_KEY = "bridge_coverity_user";
+export const COVERITY_PASSPHRASE_KEY = "bridge_coverity_passphrase";
+export const COVERITY_PROJECT_NAME_KEY = "bridge_coverity_project_name";
+export const COVERITY_STREAM_NAME_KEY = "bridge_coverity_stream_name";
+export const COVERITY_INSTALL_DIRECTORY_KEY =
+  "bridge_coverity_install_directory";
+export const COVERITY_POLICY_VIEW_KEY = "bridge_coverity_policy_view";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
