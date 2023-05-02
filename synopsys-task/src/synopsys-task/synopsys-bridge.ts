@@ -136,8 +136,7 @@ export class SynopsysBridge {
       }
 
       let validationErrors: string[] = [];
-      validationErrors = validationErrors.concat(polarisErrors);
-      validationErrors = validationErrors.concat(coverityErrors);
+      validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
 
       if (formattedCommand.length === 0) {
         return Promise.reject(new Error(validationErrors.join(",")));
@@ -164,7 +163,6 @@ export class SynopsysBridge {
       if (inputs.BRIDGE_DOWNLOAD_URL) {
         console.log("Downloading and configuring Synopsys Bridge");
         bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
-        console.log("Bridge URL is - ".concat(bridgeUrl));
 
         if (!validateBridgeUrl(bridgeUrl)) {
           return Promise.reject(new Error("Invalid URL"));
