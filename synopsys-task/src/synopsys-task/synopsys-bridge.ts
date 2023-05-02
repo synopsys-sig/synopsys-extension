@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as toolLib from "azure-pipelines-tool-lib";
 
 import {
   SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
@@ -8,11 +9,19 @@ import {
 } from "./application-constants";
 
 import { SynopsysToolsParameter } from "./tools-parameter";
+import {
+  validatePolarisInputs,
+  validateScanTypes,
+  validateBridgeUrl,
+  validateBlackDuckInputs,
+} from "./validator";
 
 import * as constants from "./application-constant";
 
-import * as inputs from "./inputs";
-import { downloadBridgeFromURL, cleanupTempDir } from "./utility/utility";
+import * as inputs from "./input";
+import { extractZipped, getRemoteFile } from "./utility";
+import fs from "fs";
+import { DownloadFileResponse } from "./model/download-file-response";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -135,12 +144,14 @@ export class SynopsysBridge {
 
       const blackduckErrors: string[] = validateBlackDuckInputs()
       if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir)
-        formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck())
+        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
+        formattedCommand = formattedCommand.concat(
+          blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+        );
       }
 
       let validationErrors: string[] = [];
-      validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
+      validationErrors = validationErrors.concat(polarisErrors);
 
       if (formattedCommand.length === 0) {
         return Promise.reject(new Error(validationErrors.join(",")));
@@ -166,6 +177,7 @@ export class SynopsysBridge {
       let bridgeUrl = "";
       if (inputs.BRIDGE_DOWNLOAD_URL) {
         console.log("Downloading and configuring Synopsys Bridge");
+        console.log("Bridge URL is - ".concat(bridgeUrl));
         bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
 
         if (!validateBridgeUrl(bridgeUrl)) {

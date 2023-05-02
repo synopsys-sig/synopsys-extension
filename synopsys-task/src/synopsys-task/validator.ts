@@ -5,7 +5,6 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
   paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
-  paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
   return isNullOrEmpty(paramsMap);
 }
 
@@ -81,25 +80,32 @@ export function validateBridgeUrl(url: string): boolean {
   }
 }
 
-
-export function validateBlackduckFailureSeverities(severities: string[]): boolean {
+export function validateBlackduckFailureSeverities(
+  severities: string[]
+): boolean {
   if (severities == null || severities.length === 0) {
-    taskLib.error('Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES')
-    return false
+    taskLib.error(
+      "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
+    );
+    return false;
   }
-  return true
+  return true;
 }
 
 export function validateBlackDuckInputs(): string[] {
-  let errors: string[] = []
+  let errors: string[] = [];
   if (inputs.BLACKDUCK_URL) {
-    const paramsMap = new Map()
-    paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_URL)
-    paramsMap.set(constants.BLACKDUCK_API_TOKEN_KEY, inputs.BLACKDUCK_API_TOKEN)
-    errors = validateParameters(paramsMap, constants.BLACKDUCK_KEY)
+    const paramsMap = new Map();
+    paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_URL);
+    paramsMap.set(
+      constants.BLACKDUCK_API_TOKEN_KEY,
+      inputs.BLACKDUCK_API_TOKEN
+    );
+    errors = validateParameters(paramsMap, constants.BLACKDUCK_KEY);
   }
-  return errors
+  return errors;
 }
+
 export function validateCoverityInputs(): string[] {
   let errors: string[] = [];
   if (inputs.COVERITY_URL) {
