@@ -88,3 +88,10 @@ export function getWorkSpaceDirectory(): string {
     throw new Error("Workspace directory could not be located");
   }
 }
+
+export function checkIfPathExists(fileOrDirectoryPath: string): boolean {
+  if (fileOrDirectoryPath && fs.existsSync(fileOrDirectoryPath.trim())) {
+    return true;
+  }
+  return false;
+}

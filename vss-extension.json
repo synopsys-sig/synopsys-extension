@@ -3,7 +3,7 @@
   "id": "synopsys-extension",
   "name": "synopsys-extension",
   "version": "0.1.0",
-  "publisher": "syno-kk",
+  "publisher": "syno-la",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"

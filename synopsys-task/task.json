@@ -6,7 +6,7 @@
   "description": "Downloads specified executor and executes specified command",
   "helpMarkDown": "",
   "category": "Utility",
-  "author": "kishori",
+  "author": "lsynopsys",
   "version": {
     "Major": 0,
     "Minor": 1,

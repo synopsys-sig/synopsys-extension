@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import { HttpClient } from "typed-rest-client/HttpClient";
 
 import { SynopsysToolsParameter } from "./tools-parameter";
 import {
@@ -11,9 +12,10 @@ import {
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import { extractZipped, getRemoteFile } from "./utility";
-import fs from "fs";
+import { checkIfPathExists, extractZipped, getRemoteFile } from "./utility";
+import fs, { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
+import DomParser from "dom-parser";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -30,30 +32,6 @@ export class SynopsysBridge {
     this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
       "/$version/synopsys-bridge-$version-$platform.zip "
     );
-  }
-
-  private getBridgeDefaultPath(): string {
-    let bridgeDefaultPath = "";
-    const osName = process.platform;
-
-    if (osName === "darwin") {
-      bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
-      );
-    } else if (osName === "linux") {
-      bridgeDefaultPath = path.join(
-        process.env["HOME"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
-      );
-    } else if (osName === "win32") {
-      bridgeDefaultPath = path.join(
-        process.env["USERPROFILE"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
-      );
-    }
-    taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
-    return bridgeDefaultPath;
   }
 
   async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
@@ -145,29 +123,264 @@ export class SynopsysBridge {
     }
   }
 
-  async downloadBridge(tempDir: string): Promise<DownloadFileResponse> {
-    try {
-      let bridgeUrl = "";
-      if (inputs.BRIDGE_DOWNLOAD_URL) {
-        console.log("Downloading and configuring Synopsys Bridge");
-        console.log("Bridge URL is - ".concat(bridgeUrl));
-        bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
+  async validateBridgeVersion(version: string): Promise<boolean> {
+    const versions = await this.getAllAvailableBridgeVersions();
+    return versions.includes(version.trim());
+  }
 
-        if (!validateBridgeUrl(bridgeUrl)) {
-          return Promise.reject(new Error("Invalid URL"));
-        }
-      } else {
-        // TODO: Download bridge latest version
-      }
+  async downloadBridge(tempDir: string): Promise<string> {
+    if (
+      inputs.SYNOPSYS_BRIDGE_PATH &&
+      this.checkIfSynopsysBridgeExistsInPath(
+        inputs.SYNOPSYS_BRIDGE_PATH,
+        inputs.BRIDGE_DOWNLOAD_VERSION
+      ) &&
+      !inputs.BRIDGE_DOWNLOAD_URL
+    ) {
+      console.info("Bridge already exists, download has been skipped");
+      return inputs.SYNOPSYS_BRIDGE_PATH;
+    }
+
+    try {
+      const bridgeUrl = await this.getBridgeUrl();
       const downloadBridge: DownloadFileResponse = await getRemoteFile(
         tempDir,
         bridgeUrl
       );
-      console.log("Download of Synopsys Bridge completed");
-      return Promise.resolve(downloadBridge);
+      console.info("Download of Synopsys Bridge completed");
+
+      // Extracting bridge
+      await this.extractBridge(downloadBridge);
+      return downloadBridge.filePath;
     } catch (error) {
       taskLib.debug("error:" + error);
       return Promise.reject(new Error("Bridge could not be downloaded"));
     }
+  }
+
+  async getBridgeUrl(): Promise<string> {
+    let bridgeUrl: string;
+    if (inputs.BRIDGE_DOWNLOAD_URL) {
+      bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
+      console.info("Downloading and configuring Synopsys Bridge");
+      console.info("Bridge URL is - ".concat(bridgeUrl));
+      if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
+        return Promise.reject(new Error("Invalid URL"));
+      }
+    } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
+      if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
+        bridgeUrl = this.getVersionUrl(
+          inputs.BRIDGE_DOWNLOAD_VERSION.trim()
+        ).trim();
+      } else {
+        return Promise.reject(
+          new Error("Provided bridge version not found in artifactory")
+        );
+      }
+    } else {
+      console.info(
+        "Checking for latest version of Bridge to download and configure"
+      );
+      const latestVersion = await this.getLatestVersion();
+      bridgeUrl = this.getVersionUrl(latestVersion).trim();
+    }
+    return bridgeUrl;
+  }
+
+  async checkIfSynopsysBridgeVersionExists(
+    bridgeVersion: string
+  ): Promise<boolean> {
+    if (inputs.SYNOPSYS_BRIDGE_PATH) {
+      let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+      const osName = process.platform;
+      let versionFilePath: string;
+      let versionFileExists: boolean;
+
+      if (!synopsysBridgePath) {
+        console.info("Looking for synopsys bridge in default path");
+        synopsysBridgePath = this.getBridgeDefaultPath();
+      }
+
+      if (osName === "win32") {
+        this.bridgeExecutablePath = synopsysBridgePath.concat(
+          "\\synopsys-bridge.exe"
+        );
+        versionFilePath = synopsysBridgePath.concat("\\versions.txt");
+        versionFileExists = checkIfPathExists(versionFilePath);
+      } else {
+        this.bridgeExecutablePath =
+          synopsysBridgePath.concat("/synopsys-bridge");
+        versionFilePath = synopsysBridgePath.concat("/versions.txt");
+        versionFileExists = checkIfPathExists(versionFilePath);
+      }
+
+      if (versionFileExists && this.bridgeExecutablePath) {
+        console.debug("Bridge executable found at ".concat(synopsysBridgePath));
+        console.debug("Version file found at ".concat(synopsysBridgePath));
+        if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
+          return true;
+        }
+      } else {
+        console.info(
+          "Bridge executable and version file could not be found at ".concat(
+            synopsysBridgePath
+          )
+        );
+      }
+    }
+    return false;
+  }
+
+  // Private methods
+  private async getAllAvailableBridgeVersions(): Promise<string[]> {
+    let htmlResponse = "";
+
+    const httpClient = new HttpClient("synopsys-action");
+    const httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
+      Accept: "text/html",
+    });
+    htmlResponse = await httpResponse.readBody();
+
+    const domParser = new DomParser();
+    const doms = domParser.parseFromString(htmlResponse);
+    const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+    const versionArray: string[] = [];
+
+    if (elems != null) {
+      for (const el of elems) {
+        const content = el.textContent;
+        if (content != null) {
+          const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
+
+          if (v != null && v.length === 1) {
+            versionArray.push(v[0]);
+          }
+        }
+      }
+    }
+    return versionArray;
+  }
+
+  async getLatestVersion(): Promise<string> {
+    const versionArray: string[] = await this.getAllAvailableBridgeVersions();
+    let latestVersion = "0.0.0";
+
+    for (const version of versionArray) {
+      if (
+        version.localeCompare(latestVersion, undefined, {
+          numeric: true,
+          sensitivity: "base",
+        }) === 1
+      ) {
+        latestVersion = version;
+      }
+    }
+
+    console.info("Available latest version is - ".concat(latestVersion));
+
+    return latestVersion;
+  }
+
+  private getSynopsysBridgeFileName(): string {
+    const osName = process.platform;
+    if (osName === "darwin") {
+      return constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC;
+    } else if (osName === "linux") {
+      return constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX;
+    } else if (osName === "win32") {
+      return constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS;
+    }
+    return "";
+  }
+
+  async checkIfVersionExists(
+    bridgeVersion: string,
+    bridgeVersionFilePath: string
+  ): Promise<boolean> {
+    try {
+      const contents = readFileSync(bridgeVersionFilePath, "utf-8");
+      return contents.includes(
+        "Synopsys Bridge Package: ".concat(bridgeVersion)
+      );
+    } catch (e) {
+      console.info(
+        "Error reading version file content: ".concat((e as Error).message)
+      );
+    }
+    return false;
+  }
+
+  private getBridgeDefaultPath(): string {
+    let bridgeDefaultPath = "";
+    const osName = process.platform;
+
+    if (osName === "darwin") {
+      bridgeDefaultPath = path.join(
+        process.env["HOME"] as string,
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
+      );
+    } else if (osName === "linux") {
+      bridgeDefaultPath = path.join(
+        process.env["HOME"] as string,
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
+      );
+    } else if (osName === "win32") {
+      bridgeDefaultPath = path.join(
+        process.env["USERPROFILE"] as string,
+        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
+      );
+    }
+    taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
+    return bridgeDefaultPath;
+  }
+
+  //
+  /**
+   * Check if SYNOPSYS_BRIDGE_PATH is consists of bridge
+   * @param path bridge path
+   * @param bridgeVersion bridge version - optional
+   * @private
+   */
+  private checkIfSynopsysBridgeExistsInPath(
+    path: string,
+    bridgeVersion: string | undefined
+  ) {
+    if (path) {
+      if (fs.existsSync(path.concat(this.getSynopsysBridgeFileName()))) {
+        return true;
+      } else if (
+        bridgeVersion &&
+        !this.checkIfSynopsysBridgeVersionExists(bridgeVersion)
+      ) {
+        return this.bridgeExecutablePath;
+      } else {
+        return Promise.reject(Error("Path ".concat(path, " does not exists")));
+      }
+    }
+    return false;
+  }
+
+  // Get bridge version url
+  getVersionUrl(version: string): string {
+    const osName = process.platform;
+    let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
+    bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
+    if (osName === "darwin") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.MAC_PLATFORM
+      );
+    } else if (osName === "linux") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.LINUX_PLATFORM
+      );
+    } else if (osName === "win32") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.WINDOWS_PLATFORM
+      );
+    }
+    return bridgeDownloadUrl;
   }
 }
