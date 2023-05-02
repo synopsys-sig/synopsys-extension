@@ -1,19 +1,21 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as toolLib from "azure-pipelines-tool-lib";
+import {validateBlackDuckInputs,  validateScanTypes,validatePolarisInputs} from './validators'
+
+
+import {
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC,
+  SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS,
+} from "./application-constants";
 
 import { SynopsysToolsParameter } from "./tools-parameter";
-import {
-  validatePolarisInputs,
-  validateScanTypes,
-  validateBridgeUrl,
-} from "./validator";
 
-import * as constants from "./application-constant";
+import * as constants from "./application-constants";
 
-import * as inputs from "./input";
-import { extractZipped, getRemoteFile } from "./utility";
-import fs from "fs";
-import { DownloadFileResponse } from "./model/download-file-response";
+import * as inputs from "./inputs";
+import { downloadBridgeFromURL, cleanupTempDir } from "./utility/utility";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -39,78 +41,73 @@ export class SynopsysBridge {
     if (osName === "darwin") {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
+        SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
       );
     } else if (osName === "linux") {
       bridgeDefaultPath = path.join(
         process.env["HOME"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
+        SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
       );
     } else if (osName === "win32") {
       bridgeDefaultPath = path.join(
         process.env["USERPROFILE"] as string,
-        constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
+        SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
       );
     }
     taskLib.debug("bridgeDefaultPath:" + bridgeDefaultPath);
     return bridgeDefaultPath;
   }
 
-  async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
-    const extractZippedFilePath: string =
-      inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
+  async extractBridge(tempDir: string): Promise<string> {
+    const bridgeDefaultPath = this.getBridgeDefaultPath();
+    const extractzip: any = await toolLib.extractZip(
+      tempDir,
+      bridgeDefaultPath
+    );
+    taskLib.debug("extractzip" + extractzip);
 
-    // Clear the existing bridge, if available
-    if (fs.existsSync(extractZippedFilePath)) {
-      await taskLib.rmRF(extractZippedFilePath);
-    }
-
-    await extractZipped(path.join(fileInfo.filePath), extractZippedFilePath);
-
-    return Promise.resolve(extractZippedFilePath);
+    return Promise.resolve(bridgeDefaultPath);
   }
 
-  async executeBridgeCommand(
-    executablePath: string,
-    workspace: string,
-    command: string
-  ): Promise<number> {
+  async executeBridgeCommand(executablePath: string, workspace: string, command: string): Promise<number> {
     const osName: string = process.platform;
-    let executable = "";
-    taskLib.debug("extractedPath: ".concat(executablePath));
+    let executable: string = "";
+    taskLib.debug("extractedPath:" + executablePath);
 
     if (osName === "darwin" || osName === "linux") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX
-      );
+      executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
     } else if (osName === "win32") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS
-      );
+      executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
     }
 
     try {
-      return await taskLib.exec(executable, command, { cwd: workspace });
+      // taskLib.filePathSupplied(extractedPath);
+      //  console.log("path.join(extractedPath, " + path.join(extractedPath, "synopsys-bridge"))
+      // taskLib.which(path.join(extractedPath, "synopsys-bridge"),true)
+      return await taskLib.exec(executable.concat(' ', command),  "", {cwd: workspace});
     } catch (errorObject) {
-      taskLib.debug("errorObject:" + errorObject);
+      taskLib.error("errorObject:" + errorObject);
       throw errorObject;
     }
+    return -1;
   }
 
   async prepareCommand(tempDir: string): Promise<string> {
     try {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
+      const polarisCommandFormatter = new SynopsysToolsParameter(tempDir);
+      formattedCommand = formattedCommand.concat(
+          polarisCommandFormatter.getFormattedCommandForPolaris()
+      );
 
-      if (invalidParams.length === 1) {
+      if (invalidParams.length === 3) {
         return Promise.reject(
-          new Error(
-            "Requires at least one scan type: ("
-              .concat(constants.POLARIS_SERVER_URL_KEY)
-              .concat(")")
-          )
+            new Error(
+                "Requires at least one scan type: ("
+                    .concat(constants.POLARIS_SERVER_URL_KEY)
+                    .concat(")")
+            )
         );
       }
 
@@ -119,8 +116,14 @@ export class SynopsysBridge {
       if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
         const polarisCommandFormatter = new SynopsysToolsParameter(tempDir);
         formattedCommand = formattedCommand.concat(
-          polarisCommandFormatter.getFormattedCommandForPolaris()
+            polarisCommandFormatter.getFormattedCommandForPolaris()
         );
+      }
+
+      const blackduckErrors: string[] = validateBlackDuckInputs()
+      if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir)
+        formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck())
       }
 
       let validationErrors: string[] = [];
@@ -138,36 +141,59 @@ export class SynopsysBridge {
       return formattedCommand;
     } catch (e) {
       const errorObject = e as Error;
-      taskLib.debug(
-        errorObject.stack === undefined ? "" : errorObject.stack.toString()
+      console.log(
+          errorObject.stack === undefined ? "" : errorObject.stack.toString()
       );
       return Promise.reject(errorObject.message);
+    } finally {
+      await cleanupTempDir(tempDir);
     }
   }
 
-  async downloadBridge(tempDir: string): Promise<DownloadFileResponse> {
+  async downloadBridge(tempDir: string) {
     try {
+      taskLib.debug("downloadBridge:::" + tempDir);
       let bridgeUrl = "";
-      if (inputs.BRIDGE_DOWNLOAD_URL) {
-        console.log("Downloading and configuring Synopsys Bridge");
-        console.log("Bridge URL is - ".concat(bridgeUrl));
-        bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
-
-        if (!validateBridgeUrl(bridgeUrl)) {
-          return Promise.reject(new Error("Invalid URL"));
-        }
-      } else {
-        // TODO: Download bridge latest version
-      }
-      const downloadBridge: DownloadFileResponse = await getRemoteFile(
+      let bridgeVersion = "";
+      //const BRIDGE_DOWNLOAD_VERSION = inputs.BRIDGE_DOWNLOAD_VERSION !== undefined ? inputs.BRIDGE_DOWNLOAD_VERSION : "";
+      bridgeUrl =
+        inputs.BRIDGE_DOWNLOAD_URL !== undefined
+          ? inputs.BRIDGE_DOWNLOAD_URL
+          : "";
+      taskLib.debug("BRIDGE_DOWNLOAD_URL:::" + bridgeUrl);
+      //  bridgeVersion = BRIDGE_DOWNLOAD_VERSION
+      const downloadBridge: any = await downloadBridgeFromURL(
         tempDir,
         bridgeUrl
       );
-      console.log("Download of Synopsys Bridge completed");
-      return Promise.resolve(downloadBridge);
+      return downloadBridge;
     } catch (error) {
       taskLib.debug("error:" + error);
-      return Promise.reject(new Error("Bridge could not be downloaded"));
     }
+  }
+
+  getVersionUrl(version: string): string {
+    const osName = process.platform;
+
+    let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
+    bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
+    if (osName === "darwin") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.MAC_PLATFORM
+      );
+    } else if (osName === "linux") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.LINUX_PLATFORM
+      );
+    } else if (osName === "win32") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.WINDOWS_PLATFORM
+      );
+    }
+
+    return bridgeDownloadUrl;
   }
 }
