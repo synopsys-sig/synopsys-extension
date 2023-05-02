@@ -29,10 +29,9 @@ export const POLARIS_SERVER_URL =
 
 // Coverity related inputs
 export const COVERITY_URL = taskLib.getInput(constants.COVERITY_URL_KEY) || "";
-export const COVERITY_USER =
-  taskLib.getInput(constants.COVERITY_USER_KEY) || "";
-export const COVERITY_PASSPHRASE =
-  taskLib.getInput(constants.COVERITY_PASSPHRASE_KEY) || "";
+export const COVERITY_USER = taskLib.getInput(constants.COVERITY_URL_KEY) || "";
+export const COVERITY_USER_PASSWORD =
+  taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY) || "";
 export const COVERITY_PROJECT_NAME =
   taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY) || "";
 export const COVERITY_STREAM_NAME =

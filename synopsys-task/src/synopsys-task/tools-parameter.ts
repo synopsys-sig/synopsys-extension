@@ -5,7 +5,7 @@ import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
-import { debug } from "azure-pipelines-task-lib";
+import * as taskLib from "azure-pipelines-task-lib/task";
 import { validateCoverityInstallDirectoryParam } from "./validator";
 
 export class SynopsysToolsParameter {
@@ -64,10 +64,10 @@ export class SynopsysToolsParameter {
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
     );
-    fs.writeFileSync(stateFilePath, inputJson);
+    taskLib.writeFile(stateFilePath, inputJson);
 
-    debug("Generated state json file content is - ".concat(inputJson));
-    debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
@@ -89,7 +89,7 @@ export class SynopsysToolsParameter {
           connect: {
             user: {
               name: inputs.COVERITY_USER,
-              password: inputs.COVERITY_PASSPHRASE,
+              password: inputs.COVERITY_USER_PASSWORD,
             },
             url: inputs.COVERITY_URL,
             project: { name: inputs.COVERITY_PROJECT_NAME },
@@ -118,13 +118,13 @@ export class SynopsysToolsParameter {
     const inputJson = JSON.stringify(covData);
 
     const stateFilePath = path.join(
-      "/Users/spurohit/code/synopsys-extension/synopsys-task/",
+      this.tempDir,
       SynopsysToolsParameter.COVERITY_STATE_FILE_NAME
     );
-    fs.writeFileSync(stateFilePath, inputJson);
+    taskLib.writeFile(stateFilePath, inputJson);
 
-    debug("Generated state json file at - ".concat(stateFilePath));
-    debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
