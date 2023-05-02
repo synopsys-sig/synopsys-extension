@@ -1,4 +1,5 @@
 import {assert, expect} from "chai";
+import { assert, expect } from "chai";
 import * as sinon from "sinon";
 import { SynopsysBridge } from "../../../src/synopsys-task/synopsys-bridge";
 import * as utility from "../../../src/synopsys-task/utility";
@@ -21,6 +22,13 @@ import {SinonStub} from "sinon";
 describe("Synopsys Bridge test", () => {
     let sandbox: sinon.SinonSandbox;
     context('Bridge command preparation', () => {
+import * as constants from "../../../src/synopsys-task/application-constant";
+import * as inputs from "../../../src/synopsys-task/input";
+import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
+import * as validator from "../../../src/synopsys-task/validator";
+describe("Synopsys Bridge test", () => {
+    context('Bridge command preparation', () => {
+        let sandbox: sinon.SinonSandbox;
         let synopsysBridge: SynopsysBridge;
 
         beforeEach(() => {
@@ -45,8 +53,8 @@ describe("Synopsys Bridge test", () => {
         });
 
         it('should fail with no scan type provied error', async function () {
-            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url"]);
-            // sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl"]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Requires at least one scan type");
@@ -566,3 +574,6 @@ describe("Download Bridge", () => {
         })
     })
 })
+
+    });
+});
