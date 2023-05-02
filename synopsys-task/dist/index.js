@@ -262,7 +262,7 @@ class SynopsysBridge {
             if (fs_1.default.existsSync(extractZippedFilePath)) {
                 yield taskLib.rmRF(extractZippedFilePath);
             }
-            yield (0, utility_1.extractZipped)(path.join(fileInfo.filePath), extractZippedFilePath);
+            yield (0, utility_1.extractZipped)(fileInfo.filePath, extractZippedFilePath);
             return Promise.resolve(extractZippedFilePath);
         });
     }
@@ -298,11 +298,11 @@ class SynopsysBridge {
                         .concat(constants.COVERITY_URL_KEY)
                         .concat(")")));
                 }
+                const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
                 // validating and preparing command for polaris
                 const polarisErrors = (0, validator_1.validatePolarisInputs)();
                 if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-                    const polarisCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-                    formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris());
+                    formattedCommand = formattedCommand.concat(commandFormatter.getFormattedCommandForPolaris());
                 }
                 // validating and preparing command for coverity
                 const coverityErrors = (0, validator_1.validateCoverityInputs)();
@@ -319,7 +319,7 @@ class SynopsysBridge {
                     console.log(new Error(validationErrors.join(",")));
                 }
                 console.log("Formatted command is - ".concat(formattedCommand));
-                return formattedCommand;
+                return Promise.resolve(formattedCommand);
             }
             catch (e) {
                 const errorObject = e;

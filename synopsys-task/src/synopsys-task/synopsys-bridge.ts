@@ -66,7 +66,7 @@ export class SynopsysBridge {
       await taskLib.rmRF(extractZippedFilePath);
     }
 
-    await extractZipped(path.join(fileInfo.filePath), extractZippedFilePath);
+    await extractZipped(fileInfo.filePath, extractZippedFilePath);
 
     return Promise.resolve(extractZippedFilePath);
   }
@@ -117,12 +117,13 @@ export class SynopsysBridge {
         );
       }
 
+      const commandFormatter = new SynopsysToolsParameter(tempDir);
+
       // validating and preparing command for polaris
       const polarisErrors: string[] = validatePolarisInputs();
       if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-        const polarisCommandFormatter = new SynopsysToolsParameter(tempDir);
         formattedCommand = formattedCommand.concat(
-          polarisCommandFormatter.getFormattedCommandForPolaris()
+          commandFormatter.getFormattedCommandForPolaris()
         );
       }
 
@@ -147,7 +148,7 @@ export class SynopsysBridge {
       }
 
       console.log("Formatted command is - ".concat(formattedCommand));
-      return formattedCommand;
+      return Promise.resolve(formattedCommand);
     } catch (e) {
       const errorObject = e as Error;
       taskLib.debug(
