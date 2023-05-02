@@ -160,7 +160,7 @@ exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVE
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
-exports.BRIDGE_DOWNLOAD_URL = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
+exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path");
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
@@ -169,12 +169,12 @@ exports.POLARIS_PROJECT_NAME = taskLib.getInput(constants.POLARIS_PROJECT_NAME_K
 exports.POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ",");
 exports.POLARIS_SERVER_URL = taskLib.getInput(constants.POLARIS_SERVER_URL_KEY) || "";
 // Coverity related inputs
-exports.COVERITY_URL = "https://cnc.chuckaude.com";
-exports.COVERITY_USER = "siguser";
-exports.COVERITY_USER_PASSWORD = "SIGpass8!";
-exports.COVERITY_PROJECT_NAME = "synopsys-action";
-exports.COVERITY_STREAM_NAME = "synopsys_action_stream";
-exports.COVERITY_INSTALL_DIRECTORY = "";
+exports.COVERITY_URL = taskLib.getInput(constants.COVERITY_URL_KEY) || "";
+exports.COVERITY_USER = taskLib.getInput(constants.COVERITY_USER_NAME_KEY) || "";
+exports.COVERITY_USER_PASSWORD = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY) || "";
+exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY) || "";
+exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
+exports.COVERITY_INSTALL_DIRECTORY = taskLib.getInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
 
 
@@ -739,8 +739,7 @@ function validateCoverityInstallDirectoryParam(installDir) {
     if (installDir != null &&
         installDir.length > 0 &&
         !taskLib.exist(installDir)) {
-        console.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is missing`);
-        //error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`)
+        taskLib.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`);
         return false;
     }
     return true;
