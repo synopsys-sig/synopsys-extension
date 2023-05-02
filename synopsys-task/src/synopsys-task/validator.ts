@@ -1,7 +1,6 @@
 import * as constants from "./application-constant";
 import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as fs from "fs";
 
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
@@ -86,10 +85,10 @@ export function validateCoverityInputs(): string[] {
   let errors: string[] = [];
   if (inputs.COVERITY_URL) {
     const paramsMap = new Map();
-    paramsMap.set(constants.COVERITY_USER_KEY, inputs.COVERITY_USER);
+    paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
     paramsMap.set(
-      constants.COVERITY_PASSPHRASE_KEY,
-      inputs.COVERITY_PASSPHRASE
+      constants.COVERITY_USER_PASSWORD_KEY,
+      inputs.COVERITY_USER_PASSWORD
     );
     paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
     paramsMap.set(
@@ -111,12 +110,11 @@ export function validateCoverityInstallDirectoryParam(
   if (
     installDir != null &&
     installDir.length > 0 &&
-    !fs.existsSync(installDir)
+    !taskLib.exist(installDir)
   ) {
-    console.error(
-      `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is missing`
+    taskLib.error(
+      `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
     );
-    //error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`)
     return false;
   }
   return true;
