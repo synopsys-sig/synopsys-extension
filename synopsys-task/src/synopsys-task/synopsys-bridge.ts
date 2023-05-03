@@ -132,7 +132,7 @@ export class SynopsysBridge {
       taskLib.debug(
         errorObject.stack === undefined ? "" : errorObject.stack.toString()
       );
-      return Promise.reject(errorObject.message);
+      return Promise.reject(errorObject);
     }
   }
 
