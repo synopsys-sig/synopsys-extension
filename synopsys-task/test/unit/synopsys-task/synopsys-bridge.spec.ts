@@ -35,8 +35,8 @@ describe("Synopsys Bridge test", () => {
         });
 
         it('should fail with no scan type provied error', async function () {
-            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl"]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url"]);
+            // sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Requires at least one scan type");
