@@ -6,6 +6,7 @@ import {
   validatePolarisInputs,
   validateScanTypes,
   validateBridgeUrl,
+  validateCoverityInputs,
 } from "./validator";
 
 import * as constants from "./application-constant";
@@ -104,11 +105,13 @@ export class SynopsysBridge {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
 
-      if (invalidParams.length === 1) {
+      if (invalidParams.length === 2) {
         return Promise.reject(
           new Error(
             "Requires at least one scan type: ("
               .concat(constants.POLARIS_SERVER_URL_KEY)
+              .concat(",")
+              .concat(constants.COVERITY_URL_KEY)
               .concat(")")
           )
         );
@@ -123,8 +126,17 @@ export class SynopsysBridge {
         );
       }
 
+      // validating and preparing command for coverity
+      const coverityErrors: string[] = validateCoverityInputs();
+      if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
+        const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
+        formattedCommand = formattedCommand.concat(
+          coverityCommandFormatter.getFormattedCommandForCoverity()
+        );
+      }
+
       let validationErrors: string[] = [];
-      validationErrors = validationErrors.concat(polarisErrors);
+      validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
 
       if (formattedCommand.length === 0) {
         return Promise.reject(new Error(validationErrors.join(",")));
@@ -150,7 +162,6 @@ export class SynopsysBridge {
       let bridgeUrl = "";
       if (inputs.BRIDGE_DOWNLOAD_URL) {
         console.log("Downloading and configuring Synopsys Bridge");
-        console.log("Bridge URL is - ".concat(bridgeUrl));
         bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
 
         if (!validateBridgeUrl(bridgeUrl)) {

@@ -1,3 +1,6 @@
 /.idea/
 /synopsys-task/node_modules/
 /synopsys-task/lib/
+/synopsys-task/.bridge/
+/synopsys-task/.taskkey
+/synopsys-task/coverity_input.json
