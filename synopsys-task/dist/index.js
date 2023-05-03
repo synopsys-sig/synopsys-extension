@@ -324,7 +324,7 @@ class SynopsysBridge {
             catch (e) {
                 const errorObject = e;
                 taskLib.debug(errorObject.stack === undefined ? "" : errorObject.stack.toString());
-                return Promise.reject(errorObject.message);
+                return Promise.reject(errorObject);
             }
         });
     }
@@ -404,20 +404,17 @@ class SynopsysToolsParameter {
         let command = "";
         const assessmentTypeArray = [];
         const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
-        console.log(assessmentTypes);
         if (assessmentTypes != null && assessmentTypes.length > 0) {
-            try {
-                // converting provided assessmentTypes to uppercase
-                for (const assessmentType of assessmentTypes) {
-                    const regEx = new RegExp("^[a-zA-Z]+$");
-                    if (assessmentType.trim().length > 0 &&
-                        regEx.test(assessmentType.trim())) {
-                        assessmentTypeArray.push(assessmentType.trim());
-                    }
+            for (const assessmentType of assessmentTypes) {
+                console.log(assessmentType);
+                const regEx = new RegExp("^[a-zA-Z]+$");
+                if (assessmentType.trim().length > 0 &&
+                    regEx.test(assessmentType.trim())) {
+                    assessmentTypeArray.push(assessmentType.trim());
                 }
-            }
-            catch (error) {
-                throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
+                else {
+                    throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
+                }
             }
         }
         const polData = {
