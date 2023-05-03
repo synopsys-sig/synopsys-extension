@@ -5,6 +5,7 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
   paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
+  paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
   return isNullOrEmpty(paramsMap);
 }
 
@@ -78,4 +79,43 @@ export function validateBridgeUrl(url: string): boolean {
   } else {
     return false;
   }
+}
+
+export function validateCoverityInputs(): string[] {
+  let errors: string[] = [];
+  if (inputs.COVERITY_URL) {
+    const paramsMap = new Map();
+    paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
+    paramsMap.set(
+      constants.COVERITY_USER_PASSWORD_KEY,
+      inputs.COVERITY_USER_PASSWORD
+    );
+    paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
+    paramsMap.set(
+      constants.COVERITY_PROJECT_NAME_KEY,
+      inputs.COVERITY_PROJECT_NAME
+    );
+    paramsMap.set(
+      constants.COVERITY_STREAM_NAME_KEY,
+      inputs.COVERITY_STREAM_NAME
+    );
+    errors = validateParameters(paramsMap, constants.COVERITY_KEY);
+  }
+  return errors;
+}
+
+export function validateCoverityInstallDirectoryParam(
+  installDir: string
+): boolean {
+  if (
+    installDir != null &&
+    installDir.length > 0 &&
+    !taskLib.exist(installDir)
+  ) {
+    taskLib.error(
+      `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
+    );
+    return false;
+  }
+  return true;
 }
