@@ -10,10 +10,13 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: []})
+
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: ''})
         });
 
         it('should return empty array for validateScanType', function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).equals(0);
         });
