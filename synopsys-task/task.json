@@ -112,7 +112,7 @@
     },
     {
       "name": "bridge_coverity_install_directory",
-      "type": "string",
+      "type": "filePath",
       "label": "Coverity Install Directory",
       "defaultValue": "",
       "required": false,

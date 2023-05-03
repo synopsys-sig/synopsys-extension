@@ -34,6 +34,6 @@ export const COVERITY_PROJECT_NAME =
 export const COVERITY_STREAM_NAME =
   taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
 export const COVERITY_INSTALL_DIRECTORY =
-  taskLib.getInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
+  taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";

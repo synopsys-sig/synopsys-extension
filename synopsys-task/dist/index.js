@@ -174,7 +174,7 @@ exports.COVERITY_USER = taskLib.getInput(constants.COVERITY_USER_NAME_KEY) || ""
 exports.COVERITY_USER_PASSWORD = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY) || "";
 exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY) || "";
 exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
-exports.COVERITY_INSTALL_DIRECTORY = taskLib.getInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
+exports.COVERITY_INSTALL_DIRECTORY = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
 
 
