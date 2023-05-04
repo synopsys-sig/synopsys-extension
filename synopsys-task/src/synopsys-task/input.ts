@@ -10,7 +10,7 @@ console.log(
 //   taskLib.getInput("bridge_download_url") || "";
 
 export const BRIDGE_DOWNLOAD_URL =
-  taskLib.getInput("bridge_download_url") || "";
+  "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
 
 export const SYNOPSYS_BRIDGE_PATH =
   taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
