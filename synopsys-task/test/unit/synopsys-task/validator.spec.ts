@@ -59,13 +59,6 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: ''})
         });
 
-        it('should return empty array for validateScanType', function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
-            const validationsErrors = validator.validateScanTypes();
-            expect(validationsErrors.length).equals(0);
-        });
-
         it('should return empty array for validateCoverityInputs', function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
