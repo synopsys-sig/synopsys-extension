@@ -5,9 +5,8 @@ import * as constants from "./application-constant";
 export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url") || "";
 
-export const SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput(
-  "synopsys_bridge_path"
-);
+export const SYNOPSYS_BRIDGE_PATH =
+  taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 
 export const BRIDGE_DOWNLOAD_VERSION = taskLib.getPathInput(
   "bridge_download_version"
