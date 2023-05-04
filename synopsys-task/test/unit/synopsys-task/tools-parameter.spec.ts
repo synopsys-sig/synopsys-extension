@@ -155,6 +155,5 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--stage connect');
             expect(formattedCommand).contains('--state '.concat(coverityStateFile));
         });
-
     });
 });
