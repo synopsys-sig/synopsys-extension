@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "synopsys-extension",
   "name": "synopsys-extension",
-  "version": "0.1.5",
+  "version": "0.1.29",
   "publisher": "syno-kiran",
   "targets": [
     {

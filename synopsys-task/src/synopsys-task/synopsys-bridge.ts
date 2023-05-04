@@ -1,14 +1,6 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib";
-import {validateBlackDuckInputs,  validateScanTypes,validatePolarisInputs} from './validators'
-
-
-import {
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC,
-  SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS,
-} from "./application-constants";
 
 import { SynopsysToolsParameter } from "./tools-parameter";
 import {
@@ -134,16 +126,6 @@ export class SynopsysBridge {
       }
 
       const blackduckErrors: string[] = validateBlackDuckInputs();
-      // validating and preparing command for coverity
-      const coverityErrors: string[] = validateCoverityInputs();
-      if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-        const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
-        formattedCommand = formattedCommand.concat(
-          coverityCommandFormatter.getFormattedCommandForCoverity()
-        );
-      }
-
-      const blackduckErrors: string[] = validateBlackDuckInputs()
       if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
         const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
         formattedCommand = formattedCommand.concat(

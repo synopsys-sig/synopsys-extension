@@ -95,7 +95,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GITHUB_TOKEN_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.COVERITY_KEY = exports.BLACKDUCK_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.EXIT_CODE_MAP = exports.GITHUB_TOKEN_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.COVERITY_KEY = exports.BLACKDUCK_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -121,15 +121,6 @@ exports.COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 exports.COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 exports.COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
 exports.COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
-// Bridge Exit Codes
-exports.EXIT_CODE_MAP = new Map([
-    ["0", "Bridge execution successfully completed"],
-    ["1", "Undefined error, check error logs"],
-    ["2", "Error from adapter end"],
-    ["3", "Failed to shutdown the bridge"],
-    ["8", "The config option bridge.break has been set to true"],
-    ["9", "Bridge initialization failed"],
-]);
 exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
 // Blackduck
 exports.BLACKDUCK_URL_KEY = "blackduck_url";
@@ -140,6 +131,15 @@ exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severiti
 exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
 exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
 exports.GITHUB_TOKEN_KEY = "github_token";
+// Bridge Exit Codes
+exports.EXIT_CODE_MAP = new Map([
+    ["0", "Bridge execution successfully completed"],
+    ["1", "Undefined error, check error logs"],
+    ["2", "Error from adapter end"],
+    ["3", "Failed to shutdown the bridge"],
+    ["8", "The config option bridge.break has been set to true"],
+    ["9", "Bridge initialization failed"],
+]);
 
 
 /***/ }),
@@ -350,12 +350,9 @@ class SynopsysBridge {
             try {
                 let formattedCommand = "";
                 const invalidParams = (0, validator_1.validateScanTypes)();
-                console.log("invalidParams.length--------:" + invalidParams.length);
-                if (invalidParams.length === 2) {
+                if (invalidParams.length === 1) {
                     return Promise.reject(new Error("Requires at least one scan type: ("
                         .concat(constants.POLARIS_SERVER_URL_KEY)
-                        .concat(",")
-                        .concat(constants.BLACKDUCK_URL_KEY)
                         .concat(")")));
                 }
                 // validating and preparing command for polaris
@@ -365,20 +362,12 @@ class SynopsysBridge {
                     formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris());
                 }
                 const blackduckErrors = (0, validator_1.validateBlackDuckInputs)();
-                console.log("blackduckErrors:" + blackduckErrors.length);
-                console.log("inputs.BLACKDUCK_URL:" + inputs.BLACKDUCK_URL);
                 if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-                    console.log(" blackDuckCommandFormatter.getFormattedCommandForBlackduck():" +
-                        inputs.BLACKDUCK_URL);
                     const blackDuckCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-                    console.log(" blackDuckCommandFormatter.getFormattedCommandForBlackduck():" +
-                        blackDuckCommandFormatter.getFormattedCommandForBlackduck());
                     formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck());
-                    console.log("inputs.formattedCommand:" + formattedCommand);
                 }
                 let validationErrors = [];
                 validationErrors = validationErrors.concat(polarisErrors);
-                validationErrors = validationErrors.concat(blackduckErrors);
                 if (formattedCommand.length === 0) {
                     return Promise.reject(new Error(validationErrors.join(",")));
                 }
@@ -464,8 +453,9 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(7533));
 const blackduck_1 = __nccwpck_require__(5467);
 const constants = __importStar(__nccwpck_require__(3051));
-const taskLib = __importStar(__nccwpck_require__(347));
+const azure_pipelines_task_lib_1 = __nccwpck_require__(347);
 const validator_1 = __nccwpck_require__(6717);
+const taskLib = __importStar(__nccwpck_require__(347));
 const utility_1 = __nccwpck_require__(837);
 class SynopsysToolsParameter {
     constructor(tempDir) {
@@ -607,8 +597,8 @@ class SynopsysToolsParameter {
         const inputJson = JSON.stringify(blackduckData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
         fs.writeFileSync(stateFilePath, inputJson);
-        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        (0, azure_pipelines_task_lib_1.debug)("Generated state json file at - ".concat(stateFilePath));
+        (0, azure_pipelines_task_lib_1.debug)("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
             .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
             .concat(SynopsysToolsParameter.SPACE)
