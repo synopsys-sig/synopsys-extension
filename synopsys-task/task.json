@@ -24,7 +24,7 @@
     },
     {
       "name": "synopsys_bridge_path",
-      "type": "filePath",
+      "type": "string",
       "label": "Synopsys Bridge Path",
       "defaultValue": "",
       "required": false,
@@ -112,7 +112,7 @@
     },
     {
       "name": "bridge_coverity_install_directory",
-      "type": "filePath",
+      "type": "string",
       "label": "Coverity Install Directory",
       "defaultValue": "",
       "required": false,
