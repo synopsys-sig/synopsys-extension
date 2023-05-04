@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
+import * as mocha from 'mocha';
 import { SynopsysBridge } from "../../../src/synopsys-task/synopsys-bridge";
 import * as utility from "../../../src/synopsys-task/utility";
 import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
@@ -75,5 +76,29 @@ describe("Synopsys Bridge test", () => {
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
         });
+
+        // coverity test cases
+        it('should run successfully for coverity command preparation', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage coverity --state coverity_input.json");
+            sandbox.stub(validator, "validateCoverityInputs").returns([]);
+
+            await synopsysBridge.prepareCommand("/temp");
+
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: null});
+        });
+
+        it('should fail with mandatory parameter missing fields for coverity', async function () {
+            
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            sandbox.stub(validator, "validateCoverityInputs").returns(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing']);
+            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
+                expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
+            })
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: null})
+        });
+
     });
 });
