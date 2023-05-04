@@ -22,7 +22,9 @@ export class SynopsysToolsParameter {
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
   private static SPACE = " ";
+  private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static BD_STATE_FILE_NAME = "bd_input.json";
+  private static COVERITY_STAGE = "connect";
   private static BLACKDUCK_STAGE = "blackduck";
 
   constructor(tempDir: string) {
@@ -71,10 +73,10 @@ export class SynopsysToolsParameter {
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
     );
-    fs.writeFileSync(stateFilePath, inputJson);
+    taskLib.writeFile(stateFilePath, inputJson);
 
-    debug("Generated state json file content is - ".concat(inputJson));
-    debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
@@ -491,6 +493,63 @@ export class SynopsysToolsParameter {
       SynopsysToolsParameter.SPACE
     )
       .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(SynopsysToolsParameter.STATE_OPTION)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(stateFilePath)
+      .concat(SynopsysToolsParameter.SPACE);
+    return command;
+  }
+
+  getFormattedCommandForCoverity(): string {
+    let command = "";
+    const covData: InputData<Coverity> = {
+      data: {
+        coverity: {
+          connect: {
+            user: {
+              name: inputs.COVERITY_USER,
+              password: inputs.COVERITY_USER_PASSWORD,
+            },
+            url: inputs.COVERITY_URL,
+            project: { name: inputs.COVERITY_PROJECT_NAME },
+            stream: { name: inputs.COVERITY_STREAM_NAME },
+          },
+        },
+      },
+    };
+
+    if (inputs.COVERITY_INSTALL_DIRECTORY) {
+      if (
+        validateCoverityInstallDirectoryParam(inputs.COVERITY_INSTALL_DIRECTORY)
+      ) {
+        covData.data.coverity.install = {
+          directory: inputs.COVERITY_INSTALL_DIRECTORY,
+        };
+      }
+    }
+
+    if (inputs.COVERITY_POLICY_VIEW) {
+      covData.data.coverity.connect.policy = {
+        view: inputs.COVERITY_POLICY_VIEW,
+      };
+    }
+
+    const inputJson = JSON.stringify(covData);
+
+    const stateFilePath = path.join(
+      this.tempDir,
+      SynopsysToolsParameter.COVERITY_STATE_FILE_NAME
+    );
+    taskLib.writeFile(stateFilePath, inputJson);
+
+    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
+
+    command = SynopsysToolsParameter.STAGE_OPTION.concat(
+      SynopsysToolsParameter.SPACE
+    )
+      .concat(SynopsysToolsParameter.COVERITY_STAGE)
       .concat(SynopsysToolsParameter.SPACE)
       .concat(SynopsysToolsParameter.STATE_OPTION)
       .concat(SynopsysToolsParameter.SPACE)

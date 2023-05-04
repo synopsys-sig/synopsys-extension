@@ -11,9 +11,8 @@ export const APPLICATION_NAME = "synopsys-extension";
 
 // Scan Types
 export const POLARIS_KEY = "polaris";
+export const BLACKDUCK_KEY = "blackduck";
 export const COVERITY_KEY = "coverity";
-export const BLACKDUCK_KEY = 'blackduck'
-
 // Polaris
 export const POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 export const POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";

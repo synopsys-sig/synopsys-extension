@@ -46,18 +46,24 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Synopsys Action started...");
+        console.log("Synopsys Action started...!!!!!!!!");
         const tempDir = (0, utility_1.getTempDir)();
+        console.log("tempDird...123" + tempDir);
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             // Prepare tool commands
             const command = yield sb.prepareCommand(tempDir);
+            console.log("command:" + command);
             // Download synopsys bridge
             const downloadedBridgeInfo = yield sb.downloadBridge(tempDir);
             // Unzip bridge
             const bridgePath = yield sb.extractBridge(downloadedBridgeInfo);
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            // const response: any = await sb.executeBridgeCommand(
+            //   bridgePath,
+            //   getWorkSpaceDirectory(),
+            //   command
+            // );
         }
         catch (error) {
             throw error;
@@ -89,7 +95,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GITHUB_TOKEN_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.EXIT_CODE_MAP = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.GITHUB_TOKEN_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.COVERITY_KEY = exports.BLACKDUCK_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -100,12 +106,21 @@ exports.APPLICATION_NAME = "synopsys-extension";
 // Scan Types
 exports.POLARIS_KEY = "polaris";
 exports.BLACKDUCK_KEY = "blackduck";
+exports.COVERITY_KEY = "coverity";
 // Polaris
 exports.POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 exports.POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 exports.POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 exports.POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
+// Coverity
+exports.COVERITY_URL_KEY = "bridge_coverity_connect_url";
+exports.COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
+exports.COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
+exports.COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
+exports.COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
+exports.COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
+exports.COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
 // Bridge Exit Codes
 exports.EXIT_CODE_MAP = new Map([
     ["0", "Bridge execution successfully completed"],
@@ -158,9 +173,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GITHUB_TOKEN = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.GITHUB_TOKEN = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
+console.log('taskLib.getInput("bridge_download_url)' +
+    taskLib.getInput("bridge_download_url"));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path");
@@ -179,6 +196,14 @@ exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getInput(constants.BLACKDUCK
 exports.BLACKDUCK_AUTOMATION_FIXPR = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
 exports.BLACKDUCK_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
 exports.GITHUB_TOKEN = taskLib.getInput(constants.GITHUB_TOKEN_KEY) || "";
+// Coverity related inputs
+exports.COVERITY_URL = taskLib.getInput(constants.COVERITY_URL_KEY) || "";
+exports.COVERITY_USER = taskLib.getInput(constants.COVERITY_USER_NAME_KEY) || "";
+exports.COVERITY_USER_PASSWORD = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY) || "";
+exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY) || "";
+exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
+exports.COVERITY_INSTALL_DIRECTORY = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
+exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
 
 
 /***/ }),
@@ -325,9 +350,12 @@ class SynopsysBridge {
             try {
                 let formattedCommand = "";
                 const invalidParams = (0, validator_1.validateScanTypes)();
-                if (invalidParams.length === 1) {
+                console.log("invalidParams.length--------:" + invalidParams.length);
+                if (invalidParams.length === 2) {
                     return Promise.reject(new Error("Requires at least one scan type: ("
                         .concat(constants.POLARIS_SERVER_URL_KEY)
+                        .concat(",")
+                        .concat(constants.BLACKDUCK_URL_KEY)
                         .concat(")")));
                 }
                 // validating and preparing command for polaris
@@ -337,12 +365,20 @@ class SynopsysBridge {
                     formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris());
                 }
                 const blackduckErrors = (0, validator_1.validateBlackDuckInputs)();
+                console.log("blackduckErrors:" + blackduckErrors.length);
+                console.log("inputs.BLACKDUCK_URL:" + inputs.BLACKDUCK_URL);
                 if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+                    console.log(" blackDuckCommandFormatter.getFormattedCommandForBlackduck():" +
+                        inputs.BLACKDUCK_URL);
                     const blackDuckCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
+                    console.log(" blackDuckCommandFormatter.getFormattedCommandForBlackduck():" +
+                        blackDuckCommandFormatter.getFormattedCommandForBlackduck());
                     formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck());
+                    console.log("inputs.formattedCommand:" + formattedCommand);
                 }
                 let validationErrors = [];
                 validationErrors = validationErrors.concat(polarisErrors);
+                validationErrors = validationErrors.concat(blackduckErrors);
                 if (formattedCommand.length === 0) {
                     return Promise.reject(new Error(validationErrors.join(",")));
                 }
@@ -428,9 +464,8 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(7533));
 const blackduck_1 = __nccwpck_require__(5467);
 const constants = __importStar(__nccwpck_require__(3051));
-const azure_pipelines_task_lib_1 = __nccwpck_require__(347);
-const validator_1 = __nccwpck_require__(6717);
 const taskLib = __importStar(__nccwpck_require__(347));
+const validator_1 = __nccwpck_require__(6717);
 const utility_1 = __nccwpck_require__(837);
 class SynopsysToolsParameter {
     constructor(tempDir) {
@@ -469,9 +504,9 @@ class SynopsysToolsParameter {
         };
         const inputJson = JSON.stringify(polData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
-        fs.writeFileSync(stateFilePath, inputJson);
-        (0, azure_pipelines_task_lib_1.debug)("Generated state json file content is - ".concat(inputJson));
-        (0, azure_pipelines_task_lib_1.debug)("Generated state json file content is - ".concat(inputJson));
+        taskLib.writeFile(stateFilePath, inputJson);
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
             .concat(SynopsysToolsParameter.POLARIS_STAGE)
             .concat(SynopsysToolsParameter.SPACE)
@@ -572,10 +607,53 @@ class SynopsysToolsParameter {
         const inputJson = JSON.stringify(blackduckData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
         fs.writeFileSync(stateFilePath, inputJson);
-        (0, azure_pipelines_task_lib_1.debug)("Generated state json file at - ".concat(stateFilePath));
-        (0, azure_pipelines_task_lib_1.debug)("Generated state json file content is - ".concat(inputJson));
+        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
             .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.STATE_OPTION)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(stateFilePath)
+            .concat(SynopsysToolsParameter.SPACE);
+        return command;
+    }
+    getFormattedCommandForCoverity() {
+        let command = "";
+        const covData = {
+            data: {
+                coverity: {
+                    connect: {
+                        user: {
+                            name: inputs.COVERITY_USER,
+                            password: inputs.COVERITY_USER_PASSWORD,
+                        },
+                        url: inputs.COVERITY_URL,
+                        project: { name: inputs.COVERITY_PROJECT_NAME },
+                        stream: { name: inputs.COVERITY_STREAM_NAME },
+                    },
+                },
+            },
+        };
+        if (inputs.COVERITY_INSTALL_DIRECTORY) {
+            if ((0, validator_1.validateCoverityInstallDirectoryParam)(inputs.COVERITY_INSTALL_DIRECTORY)) {
+                covData.data.coverity.install = {
+                    directory: inputs.COVERITY_INSTALL_DIRECTORY,
+                };
+            }
+        }
+        if (inputs.COVERITY_POLICY_VIEW) {
+            covData.data.coverity.connect.policy = {
+                view: inputs.COVERITY_POLICY_VIEW,
+            };
+        }
+        const inputJson = JSON.stringify(covData);
+        const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
+        taskLib.writeFile(stateFilePath, inputJson);
+        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.COVERITY_STAGE)
             .concat(SynopsysToolsParameter.SPACE)
             .concat(SynopsysToolsParameter.STATE_OPTION)
             .concat(SynopsysToolsParameter.SPACE)
@@ -640,7 +718,9 @@ SynopsysToolsParameter.STATE_OPTION = "--state";
 SynopsysToolsParameter.POLARIS_STAGE = "polaris";
 SynopsysToolsParameter.POLARIS_STATE_FILE_NAME = "polaris_input.json";
 SynopsysToolsParameter.SPACE = " ";
+SynopsysToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
 SynopsysToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
+SynopsysToolsParameter.COVERITY_STAGE = "connect";
 SynopsysToolsParameter.BLACKDUCK_STAGE = "blackduck";
 exports.SynopsysToolsParameter = SynopsysToolsParameter;
 
@@ -800,7 +880,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.validateBlackDuckInputs = exports.validateBlackduckFailureSeverities = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
+exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBlackDuckInputs = exports.validateBlackduckFailureSeverities = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -885,6 +965,30 @@ function validateBlackDuckInputs() {
     return errors;
 }
 exports.validateBlackDuckInputs = validateBlackDuckInputs;
+function validateCoverityInputs() {
+    let errors = [];
+    if (inputs.COVERITY_URL) {
+        const paramsMap = new Map();
+        paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
+        paramsMap.set(constants.COVERITY_USER_PASSWORD_KEY, inputs.COVERITY_USER_PASSWORD);
+        paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
+        paramsMap.set(constants.COVERITY_PROJECT_NAME_KEY, inputs.COVERITY_PROJECT_NAME);
+        paramsMap.set(constants.COVERITY_STREAM_NAME_KEY, inputs.COVERITY_STREAM_NAME);
+        errors = validateParameters(paramsMap, constants.COVERITY_KEY);
+    }
+    return errors;
+}
+exports.validateCoverityInputs = validateCoverityInputs;
+function validateCoverityInstallDirectoryParam(installDir) {
+    if (installDir != null &&
+        installDir.length > 0 &&
+        !taskLib.exist(installDir)) {
+        taskLib.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`);
+        return false;
+    }
+    return true;
+}
+exports.validateCoverityInstallDirectoryParam = validateCoverityInstallDirectoryParam;
 
 
 /***/ }),

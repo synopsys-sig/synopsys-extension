@@ -5,14 +5,15 @@ import * as constants from "./synopsys-task/application-constant";
 import { DownloadFileResponse } from "./synopsys-task/model/download-file-response";
 
 export async function run() {
-  console.log("Synopsys Action started...");
+  console.log("Synopsys Action started...!!!!!!!!");
   const tempDir = getTempDir();
+  console.log("tempDird...123" + tempDir);
   try {
     const sb = new SynopsysBridge();
 
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
-
+    console.log("command:" + command);
     // Download synopsys bridge
     const downloadedBridgeInfo: DownloadFileResponse = await sb.downloadBridge(
       tempDir
@@ -22,11 +23,11 @@ export async function run() {
     const bridgePath: string = await sb.extractBridge(downloadedBridgeInfo);
 
     // Execute prepared commands
-    const response: any = await sb.executeBridgeCommand(
-      bridgePath,
-      getWorkSpaceDirectory(),
-      command
-    );
+    // const response: any = await sb.executeBridgeCommand(
+    //   bridgePath,
+    //   getWorkSpaceDirectory(),
+    //   command
+    // );
   } catch (error) {
     throw error;
   }

@@ -1,6 +1,8 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib";
+import {validateBlackDuckInputs,  validateScanTypes,validatePolarisInputs} from './validators'
+
 
 import {
   SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX,
@@ -112,13 +114,11 @@ export class SynopsysBridge {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
 
-      if (invalidParams.length === 2) {
+      if (invalidParams.length === 1) {
         return Promise.reject(
           new Error(
             "Requires at least one scan type: ("
               .concat(constants.POLARIS_SERVER_URL_KEY)
-              .concat(",")
-              .concat(constants.COVERITY_URL_KEY)
               .concat(")")
           )
         );
@@ -133,6 +133,7 @@ export class SynopsysBridge {
         );
       }
 
+      const blackduckErrors: string[] = validateBlackDuckInputs();
       // validating and preparing command for coverity
       const coverityErrors: string[] = validateCoverityInputs();
       if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
