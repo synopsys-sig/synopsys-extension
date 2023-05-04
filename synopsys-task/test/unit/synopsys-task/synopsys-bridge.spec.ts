@@ -82,11 +82,11 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage coverity --state coverity_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
             sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage coverity --state coverity_input.json")
+            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: null});
         });
