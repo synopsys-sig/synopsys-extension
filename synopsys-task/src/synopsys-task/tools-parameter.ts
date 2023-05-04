@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import path from "path";
 import * as inputs from "./input";
 import { Polaris } from "./model/polaris";
@@ -26,23 +25,20 @@ export class SynopsysToolsParameter {
     let command = "";
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
-    console.log(assessmentTypes);
     if (assessmentTypes != null && assessmentTypes.length > 0) {
-      try {
-        // converting provided assessmentTypes to uppercase
-        for (const assessmentType of assessmentTypes) {
-          const regEx = new RegExp("^[a-zA-Z]+$");
-          if (
-            assessmentType.trim().length > 0 &&
-            regEx.test(assessmentType.trim())
-          ) {
-            assessmentTypeArray.push(assessmentType.trim());
-          }
+      for (const assessmentType of assessmentTypes) {
+        console.log(assessmentType);
+        const regEx = new RegExp("^[a-zA-Z]+$");
+        if (
+          assessmentType.trim().length > 0 &&
+          regEx.test(assessmentType.trim())
+        ) {
+          assessmentTypeArray.push(assessmentType.trim());
+        } else {
+          throw new Error(
+            "Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+          );
         }
-      } catch (error) {
-        throw new Error(
-          "Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
-        );
       }
     }
 
