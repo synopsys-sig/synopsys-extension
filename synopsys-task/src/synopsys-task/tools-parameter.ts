@@ -1,15 +1,7 @@
 import path from "path";
 import * as inputs from "./input";
-import * as fs from "fs";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
-import {
-  Blackduck,
-  BLACKDUCK_SCAN_FAILURE_SEVERITIES,
-  FIXPR_ENVIRONMENT_VARIABLES,
-  GithubData,
-} from "./model/blackduck";
-
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -92,6 +84,10 @@ export class SynopsysToolsParameter {
   }
 
   getFormattedCommandForBlackduck(): string {
+    console.log(
+      "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
+        inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
+    );
     const failureSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
