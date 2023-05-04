@@ -3,7 +3,7 @@ import * as constants from "./application-constant";
 
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
-  "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
+  taskLib.getInput("bridge_download_url") || "";
 
 export const SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput(
   "synopsys_bridge_path"
