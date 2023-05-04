@@ -79,7 +79,7 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         afterEach(() => {
-            //taskLib.rmRF(coverityStateFile);
+            taskLib.rmRF(coverityStateFile);
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: ''})
