@@ -262,7 +262,7 @@ class SynopsysBridge {
             if (fs_1.default.existsSync(extractZippedFilePath)) {
                 yield taskLib.rmRF(extractZippedFilePath);
             }
-            yield (0, utility_1.extractZipped)(path.join(fileInfo.filePath), extractZippedFilePath);
+            yield (0, utility_1.extractZipped)(fileInfo.filePath, extractZippedFilePath);
             return Promise.resolve(extractZippedFilePath);
         });
     }
@@ -298,11 +298,11 @@ class SynopsysBridge {
                         .concat(constants.COVERITY_URL_KEY)
                         .concat(")")));
                 }
+                const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
                 // validating and preparing command for polaris
                 const polarisErrors = (0, validator_1.validatePolarisInputs)();
                 if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-                    const polarisCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-                    formattedCommand = formattedCommand.concat(polarisCommandFormatter.getFormattedCommandForPolaris());
+                    formattedCommand = formattedCommand.concat(commandFormatter.getFormattedCommandForPolaris());
                 }
                 // validating and preparing command for coverity
                 const coverityErrors = (0, validator_1.validateCoverityInputs)();
@@ -319,12 +319,12 @@ class SynopsysBridge {
                     console.log(new Error(validationErrors.join(",")));
                 }
                 console.log("Formatted command is - ".concat(formattedCommand));
-                return formattedCommand;
+                return Promise.resolve(formattedCommand);
             }
             catch (e) {
                 const errorObject = e;
                 taskLib.debug(errorObject.stack === undefined ? "" : errorObject.stack.toString());
-                return Promise.reject(errorObject.message);
+                return Promise.reject(errorObject);
             }
         });
     }
@@ -404,20 +404,17 @@ class SynopsysToolsParameter {
         let command = "";
         const assessmentTypeArray = [];
         const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
-        console.log(assessmentTypes);
         if (assessmentTypes != null && assessmentTypes.length > 0) {
-            try {
-                // converting provided assessmentTypes to uppercase
-                for (const assessmentType of assessmentTypes) {
-                    const regEx = new RegExp("^[a-zA-Z]+$");
-                    if (assessmentType.trim().length > 0 &&
-                        regEx.test(assessmentType.trim())) {
-                        assessmentTypeArray.push(assessmentType.trim());
-                    }
+            for (const assessmentType of assessmentTypes) {
+                console.log(assessmentType);
+                const regEx = new RegExp("^[a-zA-Z]+$");
+                if (assessmentType.trim().length > 0 &&
+                    regEx.test(assessmentType.trim())) {
+                    assessmentTypeArray.push(assessmentType.trim());
                 }
-            }
-            catch (error) {
-                throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
+                else {
+                    throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
+                }
             }
         }
         const polData = {
@@ -8241,11 +8238,6 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                             .on('error', (err) => {
                             file.end();
                             reject(err);
-                        })
-                            .on('aborted', () => {
-                            // this block is for Node10 compatibility since it doesn't emit 'error' event after 'aborted' one
-                            file.end();
-                            reject(new Error('Aborted'));
                         })
                             .pipe(file);
                     }
@@ -22117,7 +22109,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.4","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
+module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.2","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
 
 /***/ })
 
