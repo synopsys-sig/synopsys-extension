@@ -149,18 +149,12 @@ describe("Download Bridge", () => {
             process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC)
         bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
     }
-    Object.defineProperty(process, 'platform', {
-        value: process.platform
-    })
 
     context("extractBridge", () => {
         let synopsysBridge: SynopsysBridge;
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
-            Object.defineProperty(process, 'platform', {
-                value: process.platform
-            })
         });
 
         afterEach(() => {
@@ -192,9 +186,6 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
-            Object.defineProperty(process, 'platform', {
-                value: process.platform
-            })
         });
 
         afterEach(() => {
@@ -224,9 +215,6 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
-            Object.defineProperty(process, 'platform', {
-                value: process.platform
-            })
         });
 
         afterEach(() => {
@@ -314,9 +302,6 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
-            Object.defineProperty(process, 'platform', {
-                value: process.platform
-            })
         });
 
         afterEach(() => {

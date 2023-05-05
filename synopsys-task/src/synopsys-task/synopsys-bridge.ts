@@ -31,7 +31,7 @@ export class SynopsysBridge {
     this.bridgeArtifactoryURL =
       "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
     this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
-      "/$version/synopsys-bridge-$version-$platform.zip "
+      "/$version/synopsys-bridge-$version-$platform.zip"
     );
   }
 
@@ -317,7 +317,7 @@ export class SynopsysBridge {
     return false;
   }
 
-  private getBridgeDefaultPath(): string {
+  getBridgeDefaultPath(): string {
     let bridgeDefaultPath = "";
     const osName = process.platform;
 
