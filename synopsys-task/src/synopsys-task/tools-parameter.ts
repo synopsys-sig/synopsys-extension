@@ -92,6 +92,10 @@ export class SynopsysToolsParameter {
   }
 
   getFormattedCommandForBlackduck(): string {
+    console.log(
+      "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
+        inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
+    );
     const failureSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
@@ -154,8 +158,16 @@ export class SynopsysToolsParameter {
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
+      console.log("failureSeverities:" + JSON.stringify(failureSeverities));
       const failureSeverityEnums: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] = [];
       for (const failureSeverity of failureSeverities) {
+        console.log("failureSeverity:" + failureSeverity);
+        console.log(
+          "!Object.values(BLACKDUCK_SCAN_FAILURE_SEVERITIES).includes(failureSeverity as BLACKDUCK_SCAN_FAILURE_SEVERITIES )" +
+            !Object.values(BLACKDUCK_SCAN_FAILURE_SEVERITIES).includes(
+              failureSeverity as BLACKDUCK_SCAN_FAILURE_SEVERITIES
+            )
+        );
         if (
           !Object.values(BLACKDUCK_SCAN_FAILURE_SEVERITIES).includes(
             failureSeverity as BLACKDUCK_SCAN_FAILURE_SEVERITIES
@@ -175,6 +187,9 @@ export class SynopsysToolsParameter {
         }
       }
 
+      console.log(
+        "failureSeverityEnums" + JSON.stringify(failureSeverityEnums)
+      );
       if (blackduckData.data.blackduck.scan) {
         blackduckData.data.blackduck.scan.failure = {
           severities: failureSeverityEnums,

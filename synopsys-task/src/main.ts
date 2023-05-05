@@ -11,7 +11,8 @@ export async function run() {
     const sb = new SynopsysBridge();
 
     // Prepare tool commands
-    const command: string = await sb.prepareCommand(tempDir);
+    const command: string =
+      (await sb.prepareCommand(tempDir)) + "  --diagnostics";
 
     // Download synopsys bridge
     const downloadedBridgeInfo: DownloadFileResponse = await sb.downloadBridge(
