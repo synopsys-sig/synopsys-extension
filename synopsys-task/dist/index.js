@@ -46,14 +46,14 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Synopsys Extension started...");
+        console.log("Synopsys Task started...");
         const tempDir = (0, utility_1.getTempDir)();
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             // Prepare tool commands
             const command = yield sb.prepareCommand(tempDir);
             // Download synopsys bridge
-            const bridgePath = yield sb.downloadBridge(tempDir);
+            const bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             // Execute prepared commands
             const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
@@ -160,7 +160,7 @@ const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
-exports.BRIDGE_DOWNLOAD_VERSION = taskLib.getPathInput("bridge_download_version");
+exports.BRIDGE_DOWNLOAD_VERSION = taskLib.getPathInput("bridge_download_version") || "";
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
 exports.POLARIS_APPLICATION_NAME = taskLib.getInput(constants.POLARIS_APPLICATION_NAME_KEY) || "";
@@ -320,7 +320,7 @@ class SynopsysBridge {
             return Promise.resolve(versions.indexOf(version.trim()) !== -1);
         });
     }
-    downloadBridge(tempDir) {
+    downloadAndExtractBridge(tempDir) {
         return __awaiter(this, void 0, void 0, function* () {
             if (inputs.BRIDGE_DOWNLOAD_VERSION &&
                 (yield this.checkIfSynopsysBridgeVersionExists(inputs.BRIDGE_DOWNLOAD_VERSION))) {
@@ -328,7 +328,7 @@ class SynopsysBridge {
             }
             try {
                 const bridgeUrl = yield this.getBridgeUrl();
-                if (bridgeUrl !== undefined) {
+                if (bridgeUrl != "" && bridgeUrl != null) {
                     const downloadBridge = yield (0, utility_1.getRemoteFile)(tempDir, bridgeUrl);
                     console.info("Download of Synopsys Bridge completed");
                     // Extracting bridge
@@ -391,12 +391,12 @@ class SynopsysBridge {
             if (osName === "win32") {
                 this.bridgeExecutablePath = synopsysBridgePath.concat("\\synopsys-bridge.exe");
                 versionFilePath = synopsysBridgePath.concat("\\versions.txt");
-                versionFileExists = (0, utility_1.checkIfPathExists)(versionFilePath);
+                versionFileExists = taskLib.exist(versionFilePath);
             }
             else {
                 this.bridgeExecutablePath = synopsysBridgePath.concat("/synopsys-bridge");
                 versionFilePath = synopsysBridgePath.concat("/versions.txt");
-                versionFileExists = (0, utility_1.checkIfPathExists)(versionFilePath);
+                versionFileExists = taskLib.exist(versionFilePath);
             }
             if (versionFileExists && this.bridgeExecutablePath) {
                 console.debug("Bridge executable found at ".concat(synopsysBridgePath));
@@ -683,7 +683,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkIfPathExists = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
@@ -722,7 +722,7 @@ exports.extractZipped = extractZipped;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {
-            yield Promise.reject(new Error("URL cannot be empty"));
+            return Promise.reject(new Error("URL cannot be empty"));
         }
         try {
             let fileNameFromUrl = "";
@@ -762,13 +762,6 @@ function getWorkSpaceDirectory() {
     }
 }
 exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
-function checkIfPathExists(fileOrDirectoryPath) {
-    if (fileOrDirectoryPath && fs.existsSync(fileOrDirectoryPath.trim())) {
-        return true;
-    }
-    return false;
-}
-exports.checkIfPathExists = checkIfPathExists;
 
 
 /***/ }),

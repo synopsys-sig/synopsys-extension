@@ -42,7 +42,7 @@ export async function getRemoteFile(
   url: string
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
-    await Promise.reject(new Error("URL cannot be empty"));
+    return Promise.reject(new Error("URL cannot be empty"));
   }
 
   try {
@@ -87,11 +87,4 @@ export function getWorkSpaceDirectory(): string {
   } else {
     throw new Error("Workspace directory could not be located");
   }
-}
-
-export function checkIfPathExists(fileOrDirectoryPath: string): boolean {
-  if (fileOrDirectoryPath && fs.existsSync(fileOrDirectoryPath.trim())) {
-    return true;
-  }
-  return false;
 }

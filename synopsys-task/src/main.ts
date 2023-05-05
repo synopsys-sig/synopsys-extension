@@ -4,7 +4,7 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 
 export async function run() {
-  console.log("Synopsys Extension started...");
+  console.log("Synopsys Task started...");
   const tempDir = getTempDir();
   try {
     const sb = new SynopsysBridge();
@@ -13,7 +13,7 @@ export async function run() {
     const command: string = await sb.prepareCommand(tempDir);
 
     // Download synopsys bridge
-    const bridgePath = await sb.downloadBridge(tempDir);
+    const bridgePath = await sb.downloadAndExtractBridge(tempDir);
 
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(

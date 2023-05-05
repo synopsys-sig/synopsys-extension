@@ -13,7 +13,7 @@ import {
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import { checkIfPathExists, extractZipped, getRemoteFile } from "./utility";
+import { extractZipped, getRemoteFile } from "./utility";
 import fs, { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
@@ -141,7 +141,7 @@ export class SynopsysBridge {
     return Promise.resolve(versions.indexOf(version.trim()) !== -1);
   }
 
-  async downloadBridge(tempDir: string): Promise<string> {
+  async downloadAndExtractBridge(tempDir: string): Promise<string> {
     if (
       inputs.BRIDGE_DOWNLOAD_VERSION &&
       (await this.checkIfSynopsysBridgeVersionExists(
@@ -154,7 +154,7 @@ export class SynopsysBridge {
     try {
       const bridgeUrl = await this.getBridgeUrl();
 
-      if (bridgeUrl !== undefined) {
+      if (bridgeUrl != "" && bridgeUrl != null) {
         const downloadBridge = await getRemoteFile(tempDir, bridgeUrl);
         console.info("Download of Synopsys Bridge completed");
         // Extracting bridge
@@ -228,11 +228,11 @@ export class SynopsysBridge {
         "\\synopsys-bridge.exe"
       );
       versionFilePath = synopsysBridgePath.concat("\\versions.txt");
-      versionFileExists = checkIfPathExists(versionFilePath);
+      versionFileExists = taskLib.exist(versionFilePath);
     } else {
       this.bridgeExecutablePath = synopsysBridgePath.concat("/synopsys-bridge");
       versionFilePath = synopsysBridgePath.concat("/versions.txt");
-      versionFileExists = checkIfPathExists(versionFilePath);
+      versionFileExists = taskLib.exist(versionFilePath);
     }
 
     if (versionFileExists && this.bridgeExecutablePath) {

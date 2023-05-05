@@ -42,7 +42,7 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
         });
 
         it('should fail with no scan type provied error', async function () {
@@ -62,7 +62,7 @@ describe("Synopsys Bridge test", () => {
                 expect(errorObje.message).includes("required parameters for polaris is missing");
             })
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
         });
 
         it('should fail with mandatory parameter missing fields for polaris', async function () {
@@ -83,7 +83,7 @@ describe("Synopsys Bridge test", () => {
                 expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
             })
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
         });
 
         // coverity test cases
@@ -97,7 +97,7 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
 
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: null});
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
         });
 
         it('should fail with mandatory parameter missing fields for coverity', async function () {
@@ -107,7 +107,7 @@ describe("Synopsys Bridge test", () => {
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
             })
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: null})
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
 
     });
@@ -156,7 +156,7 @@ describe("Download Bridge", () => {
             const result = await synopsysBridge.extractBridge(downloadFileResponse);
             assert.equal(result, bridgeDefaultPath);
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_PATH", {
-                value: null,
+                value: "",
             });
         });
 
@@ -214,7 +214,7 @@ describe("Download Bridge", () => {
             const result = await synopsysBridge.getBridgeUrl();
             assert.equal(result, bridgeUrl);
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
-                value: null,
+                value: "",
             });
         });
 
@@ -229,7 +229,7 @@ describe("Download Bridge", () => {
             const result = await synopsysBridge.getBridgeUrl();
             assert.equal(result, "");
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
-                value: null,
+                value: "",
             });
         });
 
@@ -242,7 +242,7 @@ describe("Download Bridge", () => {
             })
 
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
-                value: undefined,
+                value: "",
             });
         });
 
@@ -251,7 +251,7 @@ describe("Download Bridge", () => {
                 value: "0.1.244",
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(true));
-            //sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
+            sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
             const result = await synopsysBridge.getBridgeUrl();
             expect(result).equals(bridgeUrl);
         });
@@ -323,11 +323,11 @@ describe("Download Bridge", () => {
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
 
-            const result = await synopsysBridge.downloadBridge("/");
+            const result = await synopsysBridge.downloadAndExtractBridge("/");
             assert.equal(result, bridgeDefaultPath);
 
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
-                value: null,
+                value: "",
             });
             synopsysBridge.bridgeExecutablePath = "";
         });
@@ -342,7 +342,7 @@ describe("Download Bridge", () => {
             sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
             sandbox.stub(synopsysBridge, "extractBridge").returns(Promise.resolve(bridgeDefaultPath))
 
-            const result = await synopsysBridge.downloadBridge("/")
+            const result = await synopsysBridge.downloadAndExtractBridge("/")
             assert.equal(result, bridgeDefaultPath);
         });
 
@@ -351,11 +351,11 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             sandbox.stub(synopsysBridge, "getBridgeUrl").returns(Promise.resolve(undefined));
 
-            const result = await synopsysBridge.downloadBridge("/");
+            const result = await synopsysBridge.downloadAndExtractBridge("/");
             assert.equal(result, bridgeDefaultPath);
 
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
-                value: null,
+                value: "",
             });
         });
 
@@ -364,7 +364,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             sandbox.stub(synopsysBridge, "getBridgeUrl").throws(new Error());
 
-            await synopsysBridge.downloadBridge("/").catch(errorObj => {
+            await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
                 expect(errorObj.message).includes("Bridge could not be downloaded");
             })
         });
@@ -385,13 +385,12 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_PATH", {value: bridgeDefaultPath});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
-            sandbox.stub(utility, "checkIfPathExists").returns(true);
 
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, true);
 
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_PATH", {
-                value: null,
+                value: "",
             });
             synopsysBridge.bridgeExecutablePath = "";
         });
@@ -404,13 +403,12 @@ describe("Download Bridge", () => {
             assert.equal(result, false);
 
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_PATH", {
-                value: null,
+                value: "",
             });
             synopsysBridge.bridgeExecutablePath = "";
         });
 
         it("SYNOPSYS_BRIDGE_PATH is not defined", async () => {
-            sandbox.stub(utility, "checkIfPathExists").returns(true);
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, true);
