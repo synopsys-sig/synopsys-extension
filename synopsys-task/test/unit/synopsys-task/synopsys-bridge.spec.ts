@@ -29,7 +29,7 @@ describe("Synopsys Bridge test", () => {
         });
 
         afterEach(() => {
-            sandbox.restore();
+           sandbox.restore();
         });
 
         it('should run successfully for polaris command preparation', async function () {
@@ -111,6 +111,7 @@ describe("Synopsys Bridge test", () => {
         });
 
     });
+
 });
 
 describe("Download Bridge", () => {

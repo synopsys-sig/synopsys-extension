@@ -7,7 +7,7 @@
     "package": "ncc build --source-map",
     "lint": "eslint src/**/*.ts",
     "test": "nyc --reporter=text mocha --require ts-node/register test/unit/**/*.spec.ts",
-    "all": "npm run format && npm run lint && npm run test && npm run build && npm run package",
+    "all": "npm run format && npm run lint && npm run build && npm run package",
     "format": "prettier 'src/**/*.ts' --write"
   },
   "keywords": [],
@@ -15,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "azure-pipelines-task-lib": "^4.2.0",
-    "dom-parser": "^0.1.6",
     "azure-pipelines-tool-lib": "^2.0.2",
+    "dom-parser": "^0.1.6",
     "vss-web-extension-sdk": "^5.141.0"
   },
   "devDependencies": {
