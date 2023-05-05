@@ -1,33 +1,22 @@
 import {assert, expect} from "chai";
-import { assert, expect } from "chai";
-import { expect } from "chai";
 import * as sinon from "sinon";
-import * as mocha from 'mocha';
-import { SynopsysBridge } from "../../../src/synopsys-task/synopsys-bridge";
+import {SinonStub} from "sinon";
+import {SynopsysBridge} from "../../../src/synopsys-task/synopsys-bridge";
 import * as utility from "../../../src/synopsys-task/utility";
-import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
+import {extractZipped} from "../../../src/synopsys-task/utility";
+import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/synopsys-task/input";
-import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
+import {SynopsysToolsParameter} from "../../../src/synopsys-task/tools-parameter";
 import * as validator from "../../../src/synopsys-task/validator";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
-import {extractZipped} from "../../../src/synopsys-task/utility";
 import * as Q from "q";
 import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
 import {Socket} from "net";
-import {SinonStub} from "sinon";
-
-describe("Synopsys Bridge test", () => {
-    let sandbox: sinon.SinonSandbox;
-    context('Bridge command preparation', () => {
-import * as constants from "../../../src/synopsys-task/application-constant";
-import * as inputs from "../../../src/synopsys-task/input";
-import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
-import * as validator from "../../../src/synopsys-task/validator";
 
 describe("Synopsys Bridge test", () => {
     context('Bridge command preparation', () => {
@@ -40,7 +29,7 @@ describe("Synopsys Bridge test", () => {
         });
 
         afterEach(() => {
-           sandbox.restore();
+            sandbox.restore();
         });
 
         it('should run successfully for polaris command preparation', async function () {
@@ -97,38 +86,30 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
         });
 
-        it('should fail with mandatory parameter missing fields for polaris', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
-
-            sandbox.stub(validator, "validatePolarisInputs").returns(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing']);
-
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).includes("required parameters for polaris is missing");
-            })
-
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
-        });
-
-        it('should fail with mandatory parameter missing fields for polaris', async function () {
-            expect(true).to.be.true;
-            // TODO: Implement me once other scanning tools are also implemented
-        });
-
-        it('should fail with invalid assessment type error', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+        // coverity test cases
+        it('should run successfully for coverity command preparation', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => {
-                throw new Error("Invalid value for bridge_polaris_assessment_types")
-            });
-            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
+            sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
-            })
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: null});
         });
+
+        it('should fail with mandatory parameter missing fields for coverity', async function () {
+
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            sandbox.stub(validator, "validateCoverityInputs").returns(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing']);
+            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
+                expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
+            })
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: null})
+        });
+
     });
 });
 
@@ -137,14 +118,14 @@ describe("Download Bridge", () => {
     let bridgeUrl: string
     const osName = process.platform
     let bridgeDefaultPath = "";
-    if ( osName === "linux") {
+    if (osName === "linux") {
         bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX);
         bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-linux64.zip"
     } else if (osName === "win32") {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS)
         bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-win64.zip"
-    } else if(osName === "darwin") {
+    } else if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC)
         bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
@@ -518,9 +499,8 @@ describe("Download Bridge", () => {
             } as any);
 
             const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result,['0.1.114'])
+            assert.includeMembers(result, ['0.1.114'])
         })
-
 
 
         it('Test getLatestVersion - Minor version', async () => {
@@ -538,41 +518,41 @@ describe("Download Bridge", () => {
             } as any);
 
             const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result,['0.2.1'])
+            assert.includeMembers(result, ['0.2.1'])
         })
 
-      it('Test getLatestVersion - Minor version without sequence', async () => {
-          const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-          const responseBody = "'\\n' +\n" +
-              "                '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' +\n" +
-              "                '<html>\\n' +\n" +
-              "                '<head><meta name=\"robots\" content=\"noindex\" />\\n' +\n" +
-              "                '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' +\n" +
-              "                '</head>\\n' +\n" +
-              "                '<body>\\n' +\n" +
-              "                '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' +\n" +
-              "                '<pre>Name     Last modified      Size</pre><hr/>\\n' +\n" +
-              "                '<pre><a href=\"../\">../</a>\\n' +\n" +
-              "                '<a href=\"0.1.114/\">0.1.114/</a>  16-Dec-2022 16:45    -\\n' +\n" +
-              "                '<a href=\"0.1.162/\">0.1.162/</a>  24-Jan-2023 18:41    -\\n' +\n" +
-              "                '<a href=\"0.1.61/\">0.1.61/</a>   04-Oct-2022 23:05    -\\n' +\n" +
-              "                '<a href=\"0.1.67/\">0.1.67/</a>   07-Oct-2022 00:35    -\\n' +\n" +
-              "                '<a href=\"0.1.72/\">0.1.72/</a>   17-Oct-2022 19:46    -\\n' +\n" +
-              "                '</pre>\\n' +\n" +
-              "                '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address><script type=\"text/javascript\" src=\"/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=1&cb=1747967294\" async></script></body></html>'"
+        it('Test getLatestVersion - Minor version without sequence', async () => {
+            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
+            const responseBody = "'\\n' +\n" +
+                "                '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' +\n" +
+                "                '<html>\\n' +\n" +
+                "                '<head><meta name=\"robots\" content=\"noindex\" />\\n' +\n" +
+                "                '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' +\n" +
+                "                '</head>\\n' +\n" +
+                "                '<body>\\n' +\n" +
+                "                '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' +\n" +
+                "                '<pre>Name     Last modified      Size</pre><hr/>\\n' +\n" +
+                "                '<pre><a href=\"../\">../</a>\\n' +\n" +
+                "                '<a href=\"0.1.114/\">0.1.114/</a>  16-Dec-2022 16:45    -\\n' +\n" +
+                "                '<a href=\"0.1.162/\">0.1.162/</a>  24-Jan-2023 18:41    -\\n' +\n" +
+                "                '<a href=\"0.1.61/\">0.1.61/</a>   04-Oct-2022 23:05    -\\n' +\n" +
+                "                '<a href=\"0.1.67/\">0.1.67/</a>   07-Oct-2022 00:35    -\\n' +\n" +
+                "                '<a href=\"0.1.72/\">0.1.72/</a>   17-Oct-2022 19:46    -\\n' +\n" +
+                "                '</pre>\\n' +\n" +
+                "                '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address><script type=\"text/javascript\" src=\"/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=1&cb=1747967294\" async></script></body></html>'"
 
-          const response: ifm.IHttpClientResponse = {
-              message: incomingMessage,
-              readBody: sinon.stub().resolves(responseBody)
-          };
+            const response: ifm.IHttpClientResponse = {
+                message: incomingMessage,
+                readBody: sinon.stub().resolves(responseBody)
+            };
 
-          httpClientStub.resolves(response)
-          sinon.stub(httpc, 'HttpClient').returns({
-              get: httpClientStub,
-          } as any);
+            httpClientStub.resolves(response)
+            sinon.stub(httpc, 'HttpClient').returns({
+                get: httpClientStub,
+            } as any);
 
-          const result = await synopsysBridge.getAllAvailableBridgeVersions()
-          assert.includeMembers(result,['0.1.162'])
+            const result = await synopsysBridge.getAllAvailableBridgeVersions()
+            assert.includeMembers(result, ['0.1.162'])
         })
 
         it('Test getLatestVersion - Major version', async () => {
@@ -590,36 +570,8 @@ describe("Download Bridge", () => {
             } as any);
 
             const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result,['1.0.0'])
+            assert.includeMembers(result, ['1.0.0'])
 
         })
     })
-})
-
-
-        // coverity test cases
-        it('should run successfully for coverity command preparation', async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-
-            sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
-            sandbox.stub(validator, "validateCoverityInputs").returns([]);
-
-            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
-
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: null});
-        });
-
-        it('should fail with mandatory parameter missing fields for coverity', async function () {
-
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateCoverityInputs").returns(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing']);
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
-            })
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: null})
-        });
-
-    });
 });

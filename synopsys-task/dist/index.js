@@ -159,7 +159,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
-exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path");
+exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = taskLib.getPathInput("bridge_download_version");
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
@@ -239,7 +239,7 @@ class SynopsysBridge {
         this.bridgeExecutablePath = "";
         this.bridgeArtifactoryURL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
-        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/synopsys-bridge-$version-$platform.zip ");
+        this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/synopsys-bridge-$version-$platform.zip");
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
