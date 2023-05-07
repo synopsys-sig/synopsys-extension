@@ -155,12 +155,19 @@ export class SynopsysToolsParameter {
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
       const failureSeverityEnums: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] = [];
+
+      const values: string[] = [];
+
+      (
+        Object.keys(BLACKDUCK_SCAN_FAILURE_SEVERITIES) as Array<
+          keyof typeof BLACKDUCK_SCAN_FAILURE_SEVERITIES
+        >
+      ).map(function (key) {
+        values.push(BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
+      });
+
       for (const failureSeverity of failureSeverities) {
-        if (
-          !Object.values(BLACKDUCK_SCAN_FAILURE_SEVERITIES).includes(
-            failureSeverity as BLACKDUCK_SCAN_FAILURE_SEVERITIES
-          )
-        ) {
+        if (values.indexOf(failureSeverity) == -1) {
           throw new Error(
             "Invalid value for ".concat(
               constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
