@@ -2,8 +2,8 @@
   "manifestVersion": 1,
   "id": "synopsys-extension",
   "name": "synopsys-extension",
-  "version": "1.1.8",
-  "publisher": "syno-kiran",
+  "version": "0.1.0",
+  "publisher": "syno-kk",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
