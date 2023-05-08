@@ -1,7 +1,14 @@
 import path from "path";
 import * as inputs from "./input";
+import * as fs from "fs";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
+import {
+  Blackduck,
+  BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  FIXPR_ENVIRONMENT_VARIABLES,
+  GithubData,
+} from "./model/blackduck";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
