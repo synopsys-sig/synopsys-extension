@@ -22,9 +22,7 @@ export interface BlackduckData {
     full?: boolean;
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
   };
-  automation: AutomationData;
 }
-
 
 export interface AutomationData {
   prcomment?: boolean;
