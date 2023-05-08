@@ -51,7 +51,7 @@ function run() {
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             // Prepare tool commands
-            const command = yield sb.prepareCommand(tempDir);
+            const command = (yield sb.prepareCommand(tempDir)) + "  --diagnostics";
             // Download synopsys bridge
             const downloadedBridgeInfo = yield sb.downloadBridge(tempDir);
             // Unzip bridge
@@ -172,12 +172,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.COVERITY_USER_PASSWORD = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_URL = exports.COVERITY_USER = exports.GITHUB_TOKEN = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
-console.log('taskLib.getInput("bridge_download_url)' +
-    taskLib.getInput("bridge_download_url"));
 //Bridge download url
-// export const BRIDGE_DOWNLOAD_URL =
-//   taskLib.getInput("bridge_download_url") || "";
-exports.BRIDGE_DOWNLOAD_URL = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
+exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path");
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
@@ -222,7 +218,7 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["MINOR"] = "MINOR";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["OK"] = "OK";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
-    BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
+    BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED123";
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
 exports.FIXPR_ENVIRONMENT_VARIABLES = {
     GITHUB_TOKEN: "GITHUB_TOKEN",
@@ -509,6 +505,8 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
+        console.log("inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
+            inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES);
         const failureSeverities = [];
         if (inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0) {
@@ -559,8 +557,12 @@ class SynopsysToolsParameter {
         if (failureSeverities && failureSeverities.length > 0) {
             (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
             const failureSeverityEnums = [];
+            const values = [];
+            Object.keys(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES).map(function (key) {
+                values.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
+            });
             for (const failureSeverity of failureSeverities) {
-                if (!Object.values(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES).includes(failureSeverity)) {
+                if (values.indexOf(failureSeverity) == -1) {
                     throw new Error("Invalid value for ".concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
                 }
                 else {
