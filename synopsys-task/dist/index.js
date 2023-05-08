@@ -89,7 +89,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GITHUB_TOKEN_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -129,13 +129,10 @@ exports.EXIT_CODE_MAP = new Map([
 exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
 // Blackduck
 exports.BLACKDUCK_URL_KEY = "bridge_blackduck_url";
-exports.BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_apiToken";
+exports.BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
-exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
-exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
-exports.GITHUB_TOKEN_KEY = "github_token";
 
 
 /***/ }),
@@ -169,11 +166,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GITHUB_TOKEN = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
-exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
+exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") ||
+    "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
@@ -190,14 +188,13 @@ exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_K
 exports.COVERITY_INSTALL_DIRECTORY = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
 exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
-exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
+exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) ||
+    "https://testing.blackduck.synopsys.com";
+exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) ||
+    "MDQxNjNjMTAtMGY4NS00YmMzLTgyOTMtYmM5ZTYwM2E5NTY1OjkzYmExMThiLTdmOTctNDk4ZS04ZGU0LTNhNmJlYmM0MWM5OA==";
 exports.BLACKDUCK_INSTALL_DIRECTORY = taskLib.getInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 exports.BLACKDUCK_SCAN_FULL = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY) || "";
-exports.BLACKDUCK_AUTOMATION_FIXPR = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
-exports.BLACKDUCK_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.GITHUB_TOKEN = taskLib.getInput(constants.GITHUB_TOKEN_KEY) || "";
 
 
 /***/ }),
@@ -458,7 +455,6 @@ const blackduck_1 = __nccwpck_require__(5467);
 const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
 const validator_1 = __nccwpck_require__(6717);
-const utility_1 = __nccwpck_require__(837);
 class SynopsysToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
@@ -581,24 +577,6 @@ class SynopsysToolsParameter {
                 };
             }
         }
-        // Check and put environment variable for fix pull request
-        if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR)) {
-            taskLib.debug("Blackduck Automation Fix PR is enabled");
-            blackduckData.data.github = this.getGithubRepoInfo();
-            blackduckData.data.blackduck.automation.fixpr = true;
-        }
-        else {
-            // Disable fix pull request for adapters
-            blackduckData.data.blackduck.automation.fixpr = false;
-        }
-        if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-            taskLib.debug("Blackduck Automation comment is enabled");
-            blackduckData.data.github = this.getGithubRepoInfo();
-            blackduckData.data.blackduck.automation.prcomment = true;
-        }
-        else {
-            blackduckData.data.blackduck.automation.prcomment = false;
-        }
         const inputJson = JSON.stringify(blackduckData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
         fs.writeFileSync(stateFilePath, inputJson);
@@ -655,57 +633,6 @@ class SynopsysToolsParameter {
             .concat(stateFilePath)
             .concat(SynopsysToolsParameter.SPACE);
         return command;
-    }
-    getGithubRepoInfo() {
-        const githubToken = inputs.GITHUB_TOKEN;
-        const githubRepo = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.GITHUB_REPOSITORY];
-        const githubRepoName = githubRepo !== undefined
-            ? githubRepo
-                .substring(githubRepo.indexOf("/") + 1, githubRepo.length)
-                .trim()
-            : "";
-        const githubBranchName = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.GITHUB_REF_NAME];
-        const githubRef = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.GITHUB_REF];
-        // pr number will be part of "refs/pull/<pr_number>/merge"
-        // if there is manual run without raising pr then GITHUB_REF will return refs/heads/branch_name
-        const githubPrNumber = githubRef !== undefined ? githubRef.split("/")[2].trim() : "";
-        const githubRepoOwner = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.GITHUB_REPOSITORY_OWNER];
-        if (githubToken == null) {
-            throw new Error("Missing required github token for fix pull request/automation comment");
-        }
-        if (((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT) ||
-            (0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) &&
-            isNaN(Number(githubPrNumber))) {
-            throw new Error("Coverity/Blackduck automation PR comment can only be triggered on a pull request.");
-        }
-        // This condition is required as per ts-lint as these fields may have undefined as well
-        if (githubRepoName != null &&
-            githubBranchName != null &&
-            githubRepoOwner != null) {
-            return this.setGithubData(githubToken, githubRepoName, githubRepoOwner, githubBranchName, githubPrNumber);
-        }
-        return undefined;
-    }
-    setGithubData(githubToken, githubRepoName, githubRepoOwner, githubBranchName, githubPrNumber) {
-        const githubData = {
-            user: {
-                token: githubToken,
-            },
-            repository: {
-                name: githubRepoName,
-                owner: {
-                    name: githubRepoOwner,
-                },
-                pull: {},
-                branch: {
-                    name: githubBranchName,
-                },
-            },
-        };
-        if (githubPrNumber != null) {
-            githubData.repository.pull.number = Number(githubPrNumber);
-        }
-        return githubData;
     }
 }
 SynopsysToolsParameter.STAGE_OPTION = "--stage";
