@@ -2,10 +2,9 @@ import { getWorkSpaceDirectory, getTempDir } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
-import { DownloadFileResponse } from "./synopsys-task/model/download-file-response";
 
 export async function run() {
-  console.log("Synopsys Action started...");
+  console.log("Synopsys Task started...");
   const tempDir = getTempDir();
   try {
     const sb = new SynopsysBridge();
@@ -14,12 +13,7 @@ export async function run() {
     const command: string = await sb.prepareCommand(tempDir);
 
     // Download synopsys bridge
-    const downloadedBridgeInfo: DownloadFileResponse = await sb.downloadBridge(
-      tempDir
-    );
-
-    // Unzip bridge
-    const bridgePath: string = await sb.extractBridge(downloadedBridgeInfo);
+    const bridgePath = await sb.downloadAndExtractBridge(tempDir);
 
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(

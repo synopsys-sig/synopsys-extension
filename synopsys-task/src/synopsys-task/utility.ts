@@ -42,7 +42,7 @@ export async function getRemoteFile(
   url: string
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
-    Promise.reject(new Error("URL cannot be empty"));
+    return Promise.reject(new Error("URL cannot be empty"));
   }
 
   try {
