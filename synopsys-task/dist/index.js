@@ -199,7 +199,7 @@ exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FIXPR_ENVIRONMENT_VARIABLES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
 var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 (function (BLACKDUCK_SCAN_FAILURE_SEVERITIES) {
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["ALL"] = "ALL";
@@ -212,14 +212,6 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
-exports.FIXPR_ENVIRONMENT_VARIABLES = {
-    GITHUB_TOKEN: "GITHUB_TOKEN",
-    GITHUB_REPOSITORY: "GITHUB_REPOSITORY",
-    GITHUB_HEAD_REF: "GITHUB_HEAD_REF",
-    GITHUB_REF: "GITHUB_REF",
-    GITHUB_REF_NAME: "GITHUB_REF_NAME",
-    GITHUB_REPOSITORY_OWNER: "GITHUB_REPOSITORY_OWNER",
-};
 
 
 /***/ }),
@@ -646,8 +638,6 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
-        console.log("inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
-            inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES);
         let failureSeverities = [];
         if (inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0) {
@@ -668,7 +658,6 @@ class SynopsysToolsParameter {
                 blackduck: {
                     url: inputs.BLACKDUCK_URL,
                     token: inputs.BLACKDUCK_API_TOKEN,
-                    automation: {},
                 },
             },
         };

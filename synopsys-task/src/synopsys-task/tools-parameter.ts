@@ -88,10 +88,6 @@ export class SynopsysToolsParameter {
   }
 
   getFormattedCommandForBlackduck(): string {
-    console.log(
-      "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
-        inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
-    );
     let failureSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
@@ -119,7 +115,6 @@ export class SynopsysToolsParameter {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
           token: inputs.BLACKDUCK_API_TOKEN,
-          automation: {},
         },
       },
     };
