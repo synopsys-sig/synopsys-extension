@@ -1,15 +1,25 @@
 import path from "path";
 import * as inputs from "./input";
+import * as fs from "fs";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
+import {
+  Blackduck,
+  BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+} from "./model/blackduck";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import { validateCoverityInstallDirectoryParam } from "./validator";
+import {
+  validateCoverityInstallDirectoryParam,
+  validateBlackduckFailureSeverities,
+} from "./validator";
 
 export class SynopsysToolsParameter {
   tempDir: string;
   private static STAGE_OPTION = "--stage";
+  private static BLACKDUCK_STAGE = "blackduck";
+  private static BD_STATE_FILE_NAME = "bd_input.json";
   private static STATE_OPTION = "--state";
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
@@ -69,6 +79,128 @@ export class SynopsysToolsParameter {
       SynopsysToolsParameter.SPACE
     )
       .concat(SynopsysToolsParameter.POLARIS_STAGE)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(SynopsysToolsParameter.STATE_OPTION)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(stateFilePath)
+      .concat(SynopsysToolsParameter.SPACE);
+    return command;
+  }
+
+  getFormattedCommandForBlackduck(): string {
+    console.log(
+      "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
+        inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
+    );
+    let failureSeverities: string[] = [];
+    if (
+      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
+      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0
+    ) {
+      try {
+        const failureSeveritiesInput = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
+        if (
+          failureSeveritiesInput != null &&
+          failureSeveritiesInput.length > 0
+        ) {
+          failureSeverities = failureSeveritiesInput;
+        }
+      } catch (error) {
+        throw new Error(
+          "Invalid value for ".concat(
+            constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
+          )
+        );
+      }
+    }
+    let command = "";
+    const blackduckData: InputData<Blackduck> = {
+      data: {
+        blackduck: {
+          url: inputs.BLACKDUCK_URL,
+          token: inputs.BLACKDUCK_API_TOKEN,
+          automation: {},
+        },
+      },
+    };
+
+    if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
+      blackduckData.data.blackduck.install = {
+        directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
+      };
+    }
+
+    if (inputs.BLACKDUCK_SCAN_FULL) {
+      let scanFullValue = false;
+      if (
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false"
+      ) {
+        scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+      } else {
+        throw new Error(
+          "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+        );
+      }
+      blackduckData.data.blackduck.scan = { full: scanFullValue };
+    }
+
+    if (failureSeverities && failureSeverities.length > 0) {
+      validateBlackduckFailureSeverities(failureSeverities);
+      const failureSeverityEnums: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] = [];
+
+      const values: string[] = [];
+
+      (
+        Object.keys(BLACKDUCK_SCAN_FAILURE_SEVERITIES) as Array<
+          keyof typeof BLACKDUCK_SCAN_FAILURE_SEVERITIES
+        >
+      ).map(function (key) {
+        values.push(BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
+      });
+
+      for (const failureSeverity of failureSeverities) {
+        if (values.indexOf(failureSeverity) == -1) {
+          throw new Error(
+            "Invalid value for ".concat(
+              constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
+            )
+          );
+        } else {
+          failureSeverityEnums.push(
+            BLACKDUCK_SCAN_FAILURE_SEVERITIES[
+              failureSeverity as keyof typeof BLACKDUCK_SCAN_FAILURE_SEVERITIES
+            ]
+          );
+        }
+      }
+
+      if (blackduckData.data.blackduck.scan) {
+        blackduckData.data.blackduck.scan.failure = {
+          severities: failureSeverityEnums,
+        };
+      } else {
+        blackduckData.data.blackduck.scan = {
+          failure: { severities: failureSeverityEnums },
+        };
+      }
+    }
+
+    const inputJson = JSON.stringify(blackduckData);
+
+    const stateFilePath = path.join(
+      this.tempDir,
+      SynopsysToolsParameter.BD_STATE_FILE_NAME
+    );
+    fs.writeFileSync(stateFilePath, inputJson);
+
+    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+    taskLib.debug("Generated state json file content is - ".concat(inputJson));
+
+    command = SynopsysToolsParameter.STAGE_OPTION.concat(
+      SynopsysToolsParameter.SPACE
+    )
+      .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
       .concat(SynopsysToolsParameter.SPACE)
       .concat(SynopsysToolsParameter.STATE_OPTION)
       .concat(SynopsysToolsParameter.SPACE)

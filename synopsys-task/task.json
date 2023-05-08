@@ -125,8 +125,32 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity Connect Policy View"
+    },
+    {
+      "name": "bridge_blackduck_url",
+      "type": "string",
+      "label": "Blackduck URL ",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck URL "
     }
-    
+    ,
+    {
+      "name": "bridge_blackduck_token",
+      "type": "string",
+      "label": "Blackduck URL API Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck URL API Token"
+    }
+    , {
+      "name": "bridge_blackduck_scan_failure_severities",
+      "type": "string",
+      "label": "Blackduck Scan Failure Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Scan Failure Severities"
+    }
   ],
   "execution": {
     "Node": {
