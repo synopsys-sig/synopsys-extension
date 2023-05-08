@@ -6,8 +6,6 @@ import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
-  FIXPR_ENVIRONMENT_VARIABLES,
-  GithubData,
 } from "./model/blackduck";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
@@ -16,7 +14,6 @@ import {
   validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
 } from "./validator";
-import { parseToBoolean } from "./utility";
 
 export class SynopsysToolsParameter {
   tempDir: string;
