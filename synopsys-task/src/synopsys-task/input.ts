@@ -8,6 +8,9 @@ export const BRIDGE_DOWNLOAD_URL =
 export const SYNOPSYS_BRIDGE_PATH =
   taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 
+export const BRIDGE_DOWNLOAD_VERSION =
+  taskLib.getPathInput("bridge_download_version") || "";
+
 // Polaris related inputs
 export const POLARIS_ACCESS_TOKEN =
   taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
