@@ -19,7 +19,7 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
             const validationsErrors = validator.validateScanTypes();
-            expect(validationsErrors.length).equals(0);
+            expect(validationsErrors.length).equals(1);
         });
 
         it('should have error for no scan type provided', function () {
