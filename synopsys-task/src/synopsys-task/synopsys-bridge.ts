@@ -148,7 +148,7 @@ export class SynopsysBridge {
       }
 
       let validationErrors: string[] = [];
-      validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
+      validationErrors = validationErrors.concat(polarisErrors, coverityErrors, blackduckErrors);
 
       if (formattedCommand.length === 0) {
         return Promise.reject(new Error(validationErrors.join(",")));
