@@ -36,7 +36,8 @@ export const COVERITY_INSTALL_DIRECTORY =
   taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
-
+export const COVERITY_AUTOMATION_PRCOMMENT =
+  taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 
 export const BLACKDUCK_URL =
   taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
