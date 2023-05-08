@@ -1,10 +1,9 @@
-import {assert, expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
-import {SinonStub} from "sinon";
-import {SynopsysBridge} from "../../../src/synopsys-task/synopsys-bridge";
+import * as mocha from 'mocha';
+import { SynopsysBridge } from "../../../src/synopsys-task/synopsys-bridge";
 import * as utility from "../../../src/synopsys-task/utility";
-import {extractZipped} from "../../../src/synopsys-task/utility";
-import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/synopsys-task/input";
 import {SynopsysToolsParameter} from "../../../src/synopsys-task/tools-parameter";
@@ -83,12 +82,12 @@ describe("Synopsys Bridge test", () => {
                 expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
             })
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: null})
         });
 
         it('should fail with invalid failureSeverities type error', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-
+           
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
