@@ -23,8 +23,3 @@ export interface BlackduckData {
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
   };
 }
-
-export interface AutomationData {
-  prcomment?: boolean;
-  fixpr?: boolean;
-}

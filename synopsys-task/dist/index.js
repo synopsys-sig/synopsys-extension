@@ -489,8 +489,6 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
-        console.log("inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
-            inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES);
         let failureSeverities = [];
         if (inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0) {
