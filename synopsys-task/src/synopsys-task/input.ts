@@ -46,4 +46,7 @@ export const BLACKDUCK_INSTALL_DIRECTORY =
 export const BLACKDUCK_SCAN_FULL =
   taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
-  taskLib.getInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY) || "";
+  taskLib.getDelimitedInput(
+    constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
+    ","
+  ) || "";
