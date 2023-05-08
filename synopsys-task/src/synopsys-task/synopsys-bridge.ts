@@ -185,31 +185,24 @@ export class SynopsysBridge {
 
   async getBridgeUrl(): Promise<string | undefined> {
     let bridgeUrl: string;
+    let version = "";
     if (inputs.BRIDGE_DOWNLOAD_URL) {
       bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
 
       if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
         return Promise.reject(new Error("Invalid URL"));
       }
-
       // To check whether bridge already exists with same version mentioned in bridge url
-      const versionInfo = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
-      if (versionInfo) {
-        if (await this.checkIfSynopsysBridgeVersionExists(versionInfo[0])) {
-          console.info(
-            "Skipping download as same Synopsys Bridge version found"
-          );
-          return Promise.resolve("");
-        }
+      const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
+      if (versionsArray) {
+        version = versionsArray[0];
       }
-
-      console.info("Downloading and configuring Synopsys Bridge");
-      console.info("Bridge URL is - ".concat(bridgeUrl));
     } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
       if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
         bridgeUrl = this.getVersionUrl(
           inputs.BRIDGE_DOWNLOAD_VERSION.trim()
         ).trim();
+        version = inputs.BRIDGE_DOWNLOAD_VERSION;
       } else {
         return Promise.reject(
           new Error("Provided bridge version not found in artifactory")
@@ -219,9 +212,19 @@ export class SynopsysBridge {
       console.info(
         "Checking for latest version of Bridge to download and configure"
       );
-      const latestVersion = await this.getLatestVersion();
-      bridgeUrl = this.getVersionUrl(latestVersion).trim();
+      version = await this.getLatestVersion();
+      bridgeUrl = this.getVersionUrl(version).trim();
     }
+
+    if (version != "") {
+      if (await this.checkIfSynopsysBridgeVersionExists(version)) {
+        console.info("Skipping download as same Synopsys Bridge version found");
+        return Promise.resolve("");
+      }
+    }
+
+    console.info("Downloading and configuring Synopsys Bridge");
+    console.info("Bridge URL is - ".concat(bridgeUrl));
     return bridgeUrl;
   }
 

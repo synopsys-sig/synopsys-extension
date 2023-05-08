@@ -252,8 +252,25 @@ describe("Download Bridge", () => {
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(true));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
+            sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
+            const result = await synopsysBridge.getBridgeUrl();
+            expect(result).equals("");
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
+                value: "",
+            });
+        });
+
+        it("returns empty url when BRIDGE_DOWNLOAD_VERSION is defined, valid and exists", async () => {
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
+                value: "0.1.244",
+            });
+            sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(true));
+            sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
             const result = await synopsysBridge.getBridgeUrl();
             expect(result).equals(bridgeUrl);
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
+                value: "",
+            });
         });
 
 
@@ -266,7 +283,7 @@ describe("Download Bridge", () => {
                 expect(errorObj.message).includes("Provided bridge version not found in artifactory")
             })
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
-                value: undefined,
+                value: "",
             });
         });
 
