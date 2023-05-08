@@ -185,7 +185,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: false})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: 'true'})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
              sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
@@ -197,6 +197,17 @@ describe("Synopsys Tools Parameter test", () => {
              expect(formattedCommand).contains('--stage blackduck');
              expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
          });
+
+         it('should fail for invalid bridge_blackduck_scan_failure_severities', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
+
+            try {
+                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains('Invalid value for bridge_blackduck_scan_failure_severities')
+            }
+        });
 
         it('should success for blackduck command formation with mandatory parameters', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
@@ -215,7 +226,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: false})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: 'false'})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
 

@@ -189,7 +189,7 @@ exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
 exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
 exports.BLACKDUCK_INSTALL_DIRECTORY = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 exports.BLACKDUCK_SCAN_FULL = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY) || "";
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
 
 
 /***/ }),
@@ -200,7 +200,7 @@ exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getInput(constants.BLACKDUCK
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FIXPR_ENVIRONMENT_VARIABLES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
 var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 (function (BLACKDUCK_SCAN_FAILURE_SEVERITIES) {
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["ALL"] = "ALL";
@@ -211,16 +211,8 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["MINOR"] = "MINOR";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["OK"] = "OK";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
-    BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED123";
+    BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
-exports.FIXPR_ENVIRONMENT_VARIABLES = {
-    GITHUB_TOKEN: "GITHUB_TOKEN",
-    GITHUB_REPOSITORY: "GITHUB_REPOSITORY",
-    GITHUB_HEAD_REF: "GITHUB_HEAD_REF",
-    GITHUB_REF: "GITHUB_REF",
-    GITHUB_REF_NAME: "GITHUB_REF_NAME",
-    GITHUB_REPOSITORY_OWNER: "GITHUB_REPOSITORY_OWNER",
-};
 
 
 /***/ }),
@@ -497,23 +489,17 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
+        var _a;
         console.log("inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES);
-        const failureSeverities = [];
+        let failureSeverities = [];
         if (inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0) {
             try {
                 const failureSeveritiesInput = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
                 if (failureSeveritiesInput != null &&
                     failureSeveritiesInput.length > 0) {
-                    const failureSeveritiesArray = failureSeveritiesInput
-                        .toUpperCase()
-                        .split(",");
-                    for (const failureSeverity of failureSeveritiesArray) {
-                        if (failureSeverity.trim().length > 0) {
-                            failureSeverities.push(failureSeverity.trim());
-                        }
-                    }
+                    failureSeverities = failureSeveritiesInput;
                 }
             }
             catch (error) {
@@ -526,7 +512,6 @@ class SynopsysToolsParameter {
                 blackduck: {
                     url: inputs.BLACKDUCK_URL,
                     token: inputs.BLACKDUCK_API_TOKEN,
-                    automation: {},
                 },
             },
         };
@@ -535,6 +520,7 @@ class SynopsysToolsParameter {
                 directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
             };
         }
+        console.log("inputs.BLACKDUCK_SCAN_FULL:" + inputs.BLACKDUCK_SCAN_FULL);
         if (inputs.BLACKDUCK_SCAN_FULL) {
             let scanFullValue = false;
             if (inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
@@ -561,6 +547,8 @@ class SynopsysToolsParameter {
                     failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
                 }
             }
+            console.log("blackduckData.data.blackduck.scan:" +
+                ((_a = blackduckData.data.blackduck.scan) === null || _a === void 0 ? void 0 : _a.failure));
             if (blackduckData.data.blackduck.scan) {
                 blackduckData.data.blackduck.scan.failure = {
                     severities: failureSeverityEnums,
