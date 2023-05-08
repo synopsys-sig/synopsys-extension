@@ -4,7 +4,7 @@ import * as constants from "./application-constant";
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url") ||
-  "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
+  "";
 
 export const SYNOPSYS_BRIDGE_PATH =
   taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
@@ -41,14 +41,18 @@ export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 
 export const BLACKDUCK_URL =
-  taskLib.getInput(constants.BLACKDUCK_URL_KEY) ||
-  "https://testing.blackduck.synopsys.com";
+  taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
 export const BLACKDUCK_API_TOKEN =
-  taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) ||
-  "MDQxNjNjMTAtMGY4NS00YmMzLTgyOTMtYmM5ZTYwM2E5NTY1OjkzYmExMThiLTdmOTctNDk4ZS04ZGU0LTNhNmJlYmM0MWM5OA==";
+  taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
 export const BLACKDUCK_INSTALL_DIRECTORY =
   taskLib.getInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 export const BLACKDUCK_SCAN_FULL =
   taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
   taskLib.getInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY) || "";
+export const BLACKDUCK_AUTOMATION_FIXPR =
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
+export const BLACKDUCK_AUTOMATION_PRCOMMENT =
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
+
+export const GITHUB_TOKEN = taskLib.getInput(constants.GITHUB_TOKEN_KEY) || "";
