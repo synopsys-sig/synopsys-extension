@@ -42,7 +42,7 @@ export const BLACKDUCK_URL =
 export const BLACKDUCK_API_TOKEN =
   taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
 export const BLACKDUCK_INSTALL_DIRECTORY =
-  taskLib.getInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
+  taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 export const BLACKDUCK_SCAN_FULL =
   taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
