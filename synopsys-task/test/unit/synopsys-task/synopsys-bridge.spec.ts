@@ -89,6 +89,24 @@ describe("Synopsys Bridge test", () => {
         it('should fail with invalid failureSeverities type error', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
 
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
+                throw new Error("Invalid value for failureSeverities")
+            });
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+
+            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
+                expect(errorObje.message).includes("Invalid value for failureSeverities");
+            })
+
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+        });
+
+        it('should fail with invalid failureSeverities type error', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
@@ -295,7 +313,6 @@ describe("Download Bridge", () => {
         it('should fail with mandatory parameter missing fields for blackduck', async function () {
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
             sandbox.stub(validator, "validateBlackDuckInputs").returns(['[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing']);
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals('[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing');
