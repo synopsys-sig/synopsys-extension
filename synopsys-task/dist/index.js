@@ -166,12 +166,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
-exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") ||
-    "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip";
+exports.BRIDGE_DOWNLOAD_URL = taskLib.getInput("bridge_download_url") || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 // Polaris related inputs
 exports.POLARIS_ACCESS_TOKEN = taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY) || "";
@@ -187,11 +186,8 @@ exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME
 exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
 exports.COVERITY_INSTALL_DIRECTORY = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
-exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) ||
-    "https://testing.blackduck.synopsys.com";
-exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) ||
-    "MDQxNjNjMTAtMGY4NS00YmMzLTgyOTMtYmM5ZTYwM2E5NTY1OjkzYmExMThiLTdmOTctNDk4ZS04ZGU0LTNhNmJlYmM0MWM5OA==";
+exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
+exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
 exports.BLACKDUCK_INSTALL_DIRECTORY = taskLib.getInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 exports.BLACKDUCK_SCAN_FULL = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY) || "";
@@ -368,7 +364,7 @@ class SynopsysBridge {
                     formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck());
                 }
                 let validationErrors = [];
-                validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
+                validationErrors = validationErrors.concat(polarisErrors, coverityErrors, blackduckErrors);
                 if (formattedCommand.length === 0) {
                     return Promise.reject(new Error(validationErrors.join(",")));
                 }
