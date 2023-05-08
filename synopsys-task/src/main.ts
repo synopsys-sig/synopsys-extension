@@ -12,7 +12,7 @@ export async function run() {
 
     // Prepare tool commands
     const command: string =
-      (await sb.prepareCommand(tempDir)) + "  --diagnostics";
+      (await sb.prepareCommand(tempDir));
 
     // Download synopsys bridge
     const downloadedBridgeInfo: DownloadFileResponse = await sb.downloadBridge(
