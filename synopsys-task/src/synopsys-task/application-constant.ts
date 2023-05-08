@@ -47,14 +47,14 @@ export const COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "coverity_automation_prcomment";
 
 // Blackduck
-export const BLACKDUCK_URL_KEY = "blackduck_url";
-export const BLACKDUCK_API_TOKEN_KEY = "blackduck_apiToken";
-export const BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
-export const BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
+export const BLACKDUCK_URL_KEY = "bridge_blackduck_url";
+export const BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_apiToken";
+export const BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
+export const BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
-  "blackduck_scan_failure_severities";
-export const BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
+  "bridge_blackduck_scan_failure_severities";
+export const BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
 export const BLACKDUCK_AUTOMATION_PRCOMMENT_KEY =
-  "blackduck_automation_prcomment";
+  "bridge_blackduck_automation_prcomment";
 
 export const GITHUB_TOKEN_KEY = "github_token";
