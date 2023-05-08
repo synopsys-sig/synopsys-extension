@@ -92,7 +92,7 @@ export class SynopsysToolsParameter {
       "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
         inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
     );
-    const failureSeverities: string[] = [];
+    let failureSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0
@@ -103,14 +103,7 @@ export class SynopsysToolsParameter {
           failureSeveritiesInput != null &&
           failureSeveritiesInput.length > 0
         ) {
-          const failureSeveritiesArray = failureSeveritiesInput
-            .toUpperCase()
-            .split(",");
-          for (const failureSeverity of failureSeveritiesArray) {
-            if (failureSeverity.trim().length > 0) {
-              failureSeverities.push(failureSeverity.trim());
-            }
-          }
+          failureSeverities = failureSeveritiesInput;
         }
       } catch (error) {
         throw new Error(

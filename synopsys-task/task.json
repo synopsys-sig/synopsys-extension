@@ -143,6 +143,14 @@
       "required": false,
       "helpMarkDown": "Blackduck URL API Token"
     }
+    , {
+      "name": "bridge_blackduck_scan_failure_severities",
+      "type": "string",
+      "label": "Blackduck Scan Failure Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Scan Failure Severities"
+    }
   ],
   "execution": {
     "Node": {
