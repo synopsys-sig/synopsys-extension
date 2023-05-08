@@ -119,7 +119,6 @@ export class SynopsysToolsParameter {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
           token: inputs.BLACKDUCK_API_TOKEN,
-          automation: {},
         },
       },
     };
