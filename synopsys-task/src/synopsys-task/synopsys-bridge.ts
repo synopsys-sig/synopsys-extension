@@ -7,6 +7,7 @@ import {
   validateScanTypes,
   validateBridgeUrl,
   validateCoverityInputs,
+  validateBlackDuckInputs,
 } from "./validator";
 
 import * as constants from "./application-constant";
@@ -105,13 +106,15 @@ export class SynopsysBridge {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
 
-      if (invalidParams.length === 2) {
+      if (invalidParams.length === 3) {
         return Promise.reject(
           new Error(
             "Requires at least one scan type: ("
               .concat(constants.POLARIS_SERVER_URL_KEY)
               .concat(",")
               .concat(constants.COVERITY_URL_KEY)
+              .concat(",")
+              .concat(constants.BLACKDUCK_URL_KEY)
               .concat(")")
           )
         );
@@ -136,8 +139,20 @@ export class SynopsysBridge {
         );
       }
 
+      const blackduckErrors: string[] = validateBlackDuckInputs();
+      if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
+        formattedCommand = formattedCommand.concat(
+          blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+        );
+      }
+
       let validationErrors: string[] = [];
-      validationErrors = validationErrors.concat(polarisErrors, coverityErrors);
+      validationErrors = validationErrors.concat(
+        polarisErrors,
+        coverityErrors,
+        blackduckErrors
+      );
 
       if (formattedCommand.length === 0) {
         return Promise.reject(new Error(validationErrors.join(",")));
