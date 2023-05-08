@@ -92,7 +92,7 @@ export class SynopsysToolsParameter {
       "inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
         inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES
     );
-    let failureSeverities: string[] = [];
+    const failureSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0
