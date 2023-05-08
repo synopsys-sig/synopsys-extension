@@ -136,7 +136,7 @@
     }
     ,
     {
-      "name": "bridge_blackduck_apiToken",
+      "name": "bridge_blackduck_token",
       "type": "string",
       "label": "Blackduck URL API Token",
       "defaultValue": "",
