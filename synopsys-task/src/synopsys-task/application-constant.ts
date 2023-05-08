@@ -43,9 +43,6 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ["9", "Bridge initialization failed"],
 ]);
 
-export const COVERITY_AUTOMATION_PRCOMMENT_KEY =
-  "coverity_automation_prcomment";
-
 // Blackduck
 export const BLACKDUCK_URL_KEY = "bridge_blackduck_url";
 export const BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
