@@ -45,6 +45,24 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
         });
 
+        it('should run successfully for polaris and blackduck command preparation', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => " --stage blackduck --state bd_input.json");
+            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --stage blackduck --state bd_input.json")
+
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+        });
+
+        
         it('should fail with no scan type provied error', async function () {
             sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url","bridge_blackduck_url"]);
 
