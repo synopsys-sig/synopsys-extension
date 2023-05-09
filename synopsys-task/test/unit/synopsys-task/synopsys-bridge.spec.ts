@@ -100,7 +100,7 @@ describe("Synopsys Bridge test", () => {
                 expect(errorObje.message).includes("Invalid value for failureSeverities");
             })
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
         });
 
@@ -119,7 +119,7 @@ describe("Synopsys Bridge test", () => {
                 expect(errorObje.message).includes("Invalid value for failureSeverities");
             })
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
         });
 
