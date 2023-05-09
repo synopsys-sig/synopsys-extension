@@ -24,9 +24,7 @@ export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 // Coverity
 export const COVERITY_URL_KEY = "bridge_coverity_connect_url";
 export const COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
-export const COVERITY_PASSPHRASE_KEY = "bridge_coverity_passphrase";
-export const COVERITY_USER_PASSWORD_KEY =
-  "bridge_coverity_connect_user_password";
+export const COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
 export const COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 export const COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 export const COVERITY_INSTALL_DIRECTORY_KEY =
