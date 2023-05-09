@@ -121,7 +121,6 @@ describe("Synopsys Bridge test", () => {
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
->>>>>>>>> Temporary merge branch 2
         });
 
         // coverity test cases
