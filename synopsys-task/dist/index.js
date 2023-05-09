@@ -638,9 +638,6 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
-        var _a;
-        console.log("inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES:" +
-            inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES);
         let failureSeverities = [];
         if (inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
             inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0) {
@@ -669,7 +666,6 @@ class SynopsysToolsParameter {
                 directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
             };
         }
-        console.log("inputs.BLACKDUCK_SCAN_FULL:" + inputs.BLACKDUCK_SCAN_FULL);
         if (inputs.BLACKDUCK_SCAN_FULL) {
             let scanFullValue = false;
             if (inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
@@ -696,8 +692,6 @@ class SynopsysToolsParameter {
                     failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
                 }
             }
-            console.log("blackduckData.data.blackduck.scan:" +
-                ((_a = blackduckData.data.blackduck.scan) === null || _a === void 0 ? void 0 : _a.failure));
             if (blackduckData.data.blackduck.scan) {
                 blackduckData.data.blackduck.scan.failure = {
                     severities: failureSeverityEnums,
