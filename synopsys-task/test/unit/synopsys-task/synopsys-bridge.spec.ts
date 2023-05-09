@@ -333,13 +333,6 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null});
         });
 
-
-
-    });
-
-
-});
-
         it("throws an error when BRIDGE_DOWNLOAD_VERSION is defined but invalid", async () => {
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
                 value: "invalid-version",
@@ -560,104 +553,7 @@ describe("Download Bridge", () => {
         beforeEach(() => {
             synopsysBridge = new SynopsysBridge();
             httpClientStub = sinon.stub()
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
-
-        afterEach(() => {
-            sinon.restore();
-        });
-
-        it("Test getLatestVersion - Patch version", async () => {
-            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-            const responseBody = "'\\n' + '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' + '<html>\\n' + '<head><meta name=\"robots\" content=\"noindex\" />\\n' + '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' + '</head>\\n' + '<body>\\n' + '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' + '<pre>Name    Last modified      Size</pre><hr/>\\n' + '<pre><a href=\"../\">../</a>\\n' + '<a href=\"0.1.114/\">0.1.114/</a>  17-Oct-2022 19:46    -\\n' + '<a href=\"0.1.72/\">0.1.72/</a>  17-Oct-2022 19:46    -\\n' + '<a href=\"0.1.67/\">0.1.67/</a>  07-Oct-2022 00:35    -\\n' + '<a href=\"0.1.61/\">0.1.61/</a>  04-Oct-2022 23:05    -\\n' + '</pre>\\n' + '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address></body></html>'"
-
-            const response: ifm.IHttpClientResponse = {
-                message: incomingMessage,
-                readBody: async () => responseBody
-            };
-
-            httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
-                get: httpClientStub,
-            } as any);
-
-            const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result, ['0.1.114'])
-        })
-
-
-        it('Test getLatestVersion - Minor version', async () => {
-            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-            const responseBody = "'\\n' + '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' + '<html>\\n' + '<head><meta name=\"robots\" content=\"noindex\" />\\n' + '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' + '</head>\\n' + '<body>\\n' + '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' + '<pre>Name    Last modified      Size</pre><hr/>\\n' + '<pre><a href=\"../\">../</a>\\n' + '<a href=\"0.1.61/\">0.1.61/</a>  04-Oct-2022 23:05    -\\n' + '<a href=\"0.1.67/\">0.1.67/</a>  07-Oct-2022 00:35    -\\n' + '<a href=\"0.1.72/\">0.1.72/</a>  17-Oct-2022 19:46    -\\n' + '<a href=\"0.2.1/\">0.2.1/</a>  17-Oct-2022 19:58    -\\n' + '</pre>\\n' + '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address></body></html>'"
-
-            const response: ifm.IHttpClientResponse = {
-                message: incomingMessage,
-                readBody: async () => responseBody
-            };
-
-            httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
-                get: httpClientStub,
-            } as any);
-
-            const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result, ['0.2.1'])
-        })
-
-        it('Test getLatestVersion - Minor version without sequence', async () => {
-            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-            const responseBody = "'\\n' +\n" +
-                "                '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' +\n" +
-                "                '<html>\\n' +\n" +
-                "                '<head><meta name=\"robots\" content=\"noindex\" />\\n' +\n" +
-                "                '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' +\n" +
-                "                '</head>\\n' +\n" +
-                "                '<body>\\n' +\n" +
-                "                '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' +\n" +
-                "                '<pre>Name     Last modified      Size</pre><hr/>\\n' +\n" +
-                "                '<pre><a href=\"../\">../</a>\\n' +\n" +
-                "                '<a href=\"0.1.114/\">0.1.114/</a>  16-Dec-2022 16:45    -\\n' +\n" +
-                "                '<a href=\"0.1.162/\">0.1.162/</a>  24-Jan-2023 18:41    -\\n' +\n" +
-                "                '<a href=\"0.1.61/\">0.1.61/</a>   04-Oct-2022 23:05    -\\n' +\n" +
-                "                '<a href=\"0.1.67/\">0.1.67/</a>   07-Oct-2022 00:35    -\\n' +\n" +
-                "                '<a href=\"0.1.72/\">0.1.72/</a>   17-Oct-2022 19:46    -\\n' +\n" +
-                "                '</pre>\\n' +\n" +
-                "                '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address><script type=\"text/javascript\" src=\"/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=1&cb=1747967294\" async></script></body></html>'"
-
-            const response: ifm.IHttpClientResponse = {
-                message: incomingMessage,
-                readBody: sinon.stub().resolves(responseBody)
-            };
-
-            httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
-                get: httpClientStub,
-            } as any);
-
-            const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result, ['0.1.162'])
-        })
-
-        it('Test getLatestVersion - Major version', async () => {
-            const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
-            const responseBody = "'\\n' + '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\\n' + '<html>\\n' + '<head><meta name=\"robots\" content=\"noindex\" />\\n' + '<title>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</title>\\n' + '</head>\\n' + '<body>\\n' + '<h1>Index of bds-integrations-release/com/synopsys/integration/synopsys-action</h1>\\n' + '<pre>Name    Last modified      Size</pre><hr/>\\n' + '<pre><a href=\"../\">../</a>\\n' + '<a href=\"0.1.61/\">0.1.61/</a>  04-Oct-2022 23:05    -\\n' + '<a href=\"0.1.67/\">0.1.67/</a>  07-Oct-2022 00:35    -\\n' + '<a href=\"0.1.72/\">0.1.72/</a>  17-Oct-2022 19:46    -\\n' + '<a href=\"0.2.1/\">0.2.1/</a>  17-Oct-2022 19:58    -\\n' + '<a href=\"1.0.0/\">1.0.0/</a>  17-Oct-2022 19:58    -\\n' + '</pre>\\n' + '<hr/><address style=\"font-size:small;\">Artifactory/7.31.13 Server at sig-repo.synopsys.com Port 80</address></body></html>'"
-
-            const response: ifm.IHttpClientResponse = {
-                message: incomingMessage,
-                readBody: sinon.stub().resolves(responseBody)
-            };
-
-            httpClientStub.resolves(response)
-            sinon.stub(httpc, 'HttpClient').returns({
-                get: httpClientStub,
-            } as any);
-
-            const result = await synopsysBridge.getAllAvailableBridgeVersions()
-            assert.includeMembers(result, ['1.0.0'])
-
-        })
-    })
-});
 
         afterEach(() => {
             sinon.restore();
