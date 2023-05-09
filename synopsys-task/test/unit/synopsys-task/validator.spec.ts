@@ -126,6 +126,15 @@ describe("Validator test", () => {
             expect(bdValidationErrors.length).equals(0);
         });
 
+        it('should return boolean for invalid Blackduck Failure Severities', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: []});
+
+            const isValid = validator.validateBlackduckFailureSeverities([]);
+            expect(isValid).equals(false);
+        });
+
         it('should return mandatory fields missing error for validatePolarisInputs', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
 
@@ -134,5 +143,5 @@ describe("Validator test", () => {
             expect(bdValidationErrors[0]).contains(['[bridge_blackduck_token] - required parameters for blackduck is missing'])
         });
     });
-    
+
 });
