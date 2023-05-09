@@ -106,6 +106,7 @@ describe("Synopsys Bridge test", () => {
 
         it('should fail with invalid failureSeverities type error', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
@@ -331,43 +332,6 @@ describe("Download Bridge", () => {
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null});
         });
-
-
-
-    });
-
-
-});
-        it('should fail with mandatory parameter missing fields for blackduck', async function () {
-
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
-            sandbox.stub(validator, "validateBlackDuckInputs").returns(['[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing']);
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing');
-            })
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
-        });
-
-        it('should run successfully for blackduck command preparation', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
-            sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => "./bridge --stage blackduck --state bd_input.json");
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
-
-            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
-            expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
-
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null});
-        });
-
-
-
-    });
-
-
-});
 
         it("throws an error when BRIDGE_DOWNLOAD_VERSION is defined but invalid", async () => {
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
