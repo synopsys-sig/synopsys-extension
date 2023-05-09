@@ -88,27 +88,8 @@ export class SynopsysToolsParameter {
   }
 
   getFormattedCommandForBlackduck(): string {
-    let failureSeverities: string[] = [];
-    if (
-      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES != null &&
-      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES.length > 0
-    ) {
-      try {
-        const failureSeveritiesInput = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
-        if (
-          failureSeveritiesInput != null &&
-          failureSeveritiesInput.length > 0
-        ) {
-          failureSeverities = failureSeveritiesInput;
-        }
-      } catch (error) {
-        throw new Error(
-          "Invalid value for ".concat(
-            constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
-          )
-        );
-      }
-    }
+    const failureSeverities: string[] =
+      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
     const blackduckData: InputData<Blackduck> = {
       data: {
