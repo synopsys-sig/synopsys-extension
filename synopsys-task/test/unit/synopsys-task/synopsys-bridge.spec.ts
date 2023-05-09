@@ -317,7 +317,7 @@ describe("Download Bridge", () => {
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).equals('[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing');
             })
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
         });
 
         it('should run successfully for blackduck command preparation', async function () {
@@ -330,7 +330,7 @@ describe("Download Bridge", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: null});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
         });
 
         it("throws an error when BRIDGE_DOWNLOAD_VERSION is defined but invalid", async () => {

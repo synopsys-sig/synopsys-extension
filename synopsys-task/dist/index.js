@@ -375,7 +375,8 @@ class SynopsysBridge {
                     const downloadBridge = yield (0, utility_1.getRemoteFile)(tempDir, bridgeUrl);
                     console.info("Download of Synopsys Bridge completed");
                     // Extracting bridge
-                    return yield this.extractBridge(downloadBridge);
+                    yield this.extractBridge(downloadBridge);
+                    return downloadBridge.filePath;
                 }
                 return this.bridgeExecutablePath;
             }
