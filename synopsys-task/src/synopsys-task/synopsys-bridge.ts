@@ -173,8 +173,7 @@ export class SynopsysBridge {
         const downloadBridge = await getRemoteFile(tempDir, bridgeUrl);
         console.info("Download of Synopsys Bridge completed");
         // Extracting bridge
-        await this.extractBridge(downloadBridge);
-        return downloadBridge.filePath;
+        return await this.extractBridge(downloadBridge);
       }
       return this.bridgeExecutablePath;
     } catch (error) {
