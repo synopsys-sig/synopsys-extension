@@ -89,24 +89,6 @@ describe("Synopsys Bridge test", () => {
         it('should fail with invalid failureSeverities type error', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
 
-
-            sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
-                throw new Error("Invalid value for failureSeverities")
-            });
-            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
-
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).includes("Invalid value for failureSeverities");
-            })
-
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
-        });
-
-        it('should fail with invalid failureSeverities type error', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
@@ -329,6 +311,27 @@ describe("Download Bridge", () => {
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
+
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+        });
+
+
+        it('should run successfully for blackduck and polaris command preparation', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+            
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => " --stage blackduck --state bd_input.json");
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            console.log("preparedCommand::::" + preparedCommand)
+            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --stage blackduck --state bd_input.json")
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
         });
