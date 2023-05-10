@@ -92,5 +92,56 @@ describe("Validator test", () => {
         });
 
     });
-    
+
+    context('Blackduck validation', () => {
+        afterEach(() => {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: []})
+
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
+        });
+
+        it('should return empty array for validateScanType', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
+            const validationsErrors = validator.validateScanTypes();
+            expect(validationsErrors.length).equals(2);
+        });
+
+        it('should have error for no scan type provided', function () {
+            const validationsErrors = validator.validateScanTypes();
+            expect(validationsErrors.length).greaterThan(0);
+            expect(validationsErrors[1]).contains('bridge_blackduck_url');
+        });
+
+        it('should return empty array for validateBlackduckInputs', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ["BLOCKER","CRITICAL","TRIVIAL"]});
+
+            const bdValidationErrors = validator.validateBlackDuckInputs();
+            expect(bdValidationErrors.length).equals(0);
+        });
+
+        it('should return boolean for invalid Blackduck Failure Severities', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: []});
+
+            const isValid = validator.validateBlackduckFailureSeverities([]);
+            expect(isValid).equals(false);
+        });
+
+        it('should return mandatory fields missing error for validatePolarisInputs', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
+
+            const bdValidationErrors = validator.validateBlackDuckInputs();
+            expect(bdValidationErrors.length).greaterThan(0);
+            expect(bdValidationErrors[0]).contains(['[bridge_blackduck_token] - required parameters for blackduck is missing'])
+        });
+    });
+
 });
