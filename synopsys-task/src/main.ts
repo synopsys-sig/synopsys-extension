@@ -2,10 +2,13 @@ import { getWorkSpaceDirectory, getTempDir } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
+import * as inputs from "./synopsys-task/input";
+import { uploadDiagnostics } from "./synopsys-task/diagnostics";
 
 export async function run() {
   console.log("Synopsys Task started...");
   const tempDir = getTempDir();
+  const workSpaceDir = getWorkSpaceDirectory();
   try {
     const sb = new SynopsysBridge();
 
@@ -18,11 +21,16 @@ export async function run() {
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
-      getWorkSpaceDirectory(),
+      workSpaceDir,
       command
     );
   } catch (error) {
     throw error;
+  } finally {
+    if (inputs.INCLUDE_DIAGNOSTICS) {
+      console.log("Uploading synopsys-bridge diagnostic file...");
+      await uploadDiagnostics(workSpaceDir);
+    }
   }
 
   console.log("Synopsys Action workflow execution completed");

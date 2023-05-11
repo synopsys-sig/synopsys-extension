@@ -53,3 +53,8 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
     constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
     ","
   ) || "";
+
+export const INCLUDE_DIAGNOSTICS =
+  taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY) || "";
+export const DIAGNOSTICS_RETENTION_DAYS =
+  taskLib.getInput(constants.DIAGNOSTICS_RETENTION_DAYS_KEY) || "";

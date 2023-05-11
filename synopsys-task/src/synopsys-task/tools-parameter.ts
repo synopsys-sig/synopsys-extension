@@ -23,9 +23,10 @@ export class SynopsysToolsParameter {
   private static STATE_OPTION = "--state";
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
-  private static SPACE = " ";
+  static SPACE = " ";
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
+  static DIAGNOSTICS_OPTION = "--diagnostics";
 
   constructor(tempDir: string) {
     this.tempDir = tempDir;
