@@ -44,10 +44,13 @@ const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
+const inputs = __importStar(__nccwpck_require__(7533));
+const diagnostics_1 = __nccwpck_require__(2926);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
         const tempDir = (0, utility_1.getTempDir)();
+        const workSpaceDir = (0, utility_1.getWorkSpaceDirectory)();
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             // Prepare tool commands
@@ -55,10 +58,16 @@ function run() {
             // Download synopsys bridge
             const bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            const response = yield sb.executeBridgeCommand(bridgePath, workSpaceDir, command);
         }
         catch (error) {
             throw error;
+        }
+        finally {
+            if (inputs.INCLUDE_DIAGNOSTICS) {
+                console.log("Uploading synopsys-bridge diagnostic file...");
+                yield (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
+            }
         }
         console.log("Synopsys Action workflow execution completed");
     });
@@ -87,7 +96,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.UPLOAD_ARTIFACT_NAEME = exports.DIAGNOSTICS_RETENTION_DAYS_KEY = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -107,8 +116,7 @@ exports.POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 // Coverity
 exports.COVERITY_URL_KEY = "bridge_coverity_connect_url";
-exports.COVERITY_USER_KEY = "bridge_coverity_connect_user_name";
-exports.COVERITY_PASSPHRASE_KEY = "bridge_coverity_passphrase";
+exports.COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
 exports.COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
 exports.COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 exports.COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
@@ -129,6 +137,69 @@ exports.BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
+exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+exports.DIAGNOSTICS_RETENTION_DAYS_KEY = "diagnostics_retention_days";
+exports.UPLOAD_ARTIFACT_NAEME = "bridge_diagnostics";
+
+
+/***/ }),
+
+/***/ 2926:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.uploadDiagnostics = void 0;
+const taskLib = __importStar(__nccwpck_require__(347));
+const constants = __importStar(__nccwpck_require__(3051));
+function uploadDiagnostics(workspaceDir) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const uploadArtifactPath = workspaceDir.concat(getBridgeDiagnosticsFolder());
+        yield taskLib.uploadArtifact(constants.UPLOAD_ARTIFACT_NAEME, uploadArtifactPath, constants.UPLOAD_ARTIFACT_NAEME);
+    });
+}
+exports.uploadDiagnostics = uploadDiagnostics;
+function getBridgeDiagnosticsFolder() {
+    if (process.platform === "win32") {
+        return "\\.bridge";
+    }
+    else {
+        return "/.bridge";
+    }
+}
 
 
 /***/ }),
@@ -162,7 +233,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.DIAGNOSTICS_RETENTION_DAYS = exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
@@ -177,7 +248,7 @@ exports.POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(constants.POLARIS_A
 exports.POLARIS_SERVER_URL = taskLib.getInput(constants.POLARIS_SERVER_URL_KEY) || "";
 // Coverity related inputs
 exports.COVERITY_URL = taskLib.getInput(constants.COVERITY_URL_KEY) || "";
-exports.COVERITY_USER = taskLib.getInput(constants.COVERITY_USER_KEY) || "";
+exports.COVERITY_USER = taskLib.getInput(constants.COVERITY_USER_NAME_KEY) || "";
 exports.COVERITY_USER_PASSWORD = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY) || "";
 exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY) || "";
 exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
@@ -188,6 +259,8 @@ exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY
 exports.BLACKDUCK_INSTALL_DIRECTORY = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 exports.BLACKDUCK_SCAN_FULL = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
+exports.INCLUDE_DIAGNOSTICS = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY) || "";
+exports.DIAGNOSTICS_RETENTION_DAYS = taskLib.getInput(constants.DIAGNOSTICS_RETENTION_DAYS_KEY) || "";
 
 
 /***/ }),
@@ -346,6 +419,11 @@ class SynopsysBridge {
                 }
                 if (validationErrors.length > 0) {
                     console.log(new Error(validationErrors.join(",")));
+                }
+                if (inputs.INCLUDE_DIAGNOSTICS) {
+                    formattedCommand = formattedCommand
+                        .concat(tools_parameter_1.SynopsysToolsParameter.SPACE)
+                        .concat(tools_parameter_1.SynopsysToolsParameter.DIAGNOSTICS_OPTION);
                 }
                 console.log("Formatted command is - ".concat(formattedCommand));
                 return Promise.resolve(formattedCommand);
@@ -755,6 +833,7 @@ SynopsysToolsParameter.POLARIS_STATE_FILE_NAME = "polaris_input.json";
 SynopsysToolsParameter.SPACE = " ";
 SynopsysToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
 SynopsysToolsParameter.COVERITY_STAGE = "connect";
+SynopsysToolsParameter.DIAGNOSTICS_OPTION = "--diagnostics";
 exports.SynopsysToolsParameter = SynopsysToolsParameter;
 
 
@@ -985,7 +1064,7 @@ function validateCoverityInputs() {
     let errors = [];
     if (inputs.COVERITY_URL) {
         const paramsMap = new Map();
-        paramsMap.set(constants.COVERITY_USER_KEY, inputs.COVERITY_USER);
+        paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
         paramsMap.set(constants.COVERITY_USER_PASSWORD_KEY, inputs.COVERITY_USER_PASSWORD);
         paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
         paramsMap.set(constants.COVERITY_PROJECT_NAME_KEY, inputs.COVERITY_PROJECT_NAME);

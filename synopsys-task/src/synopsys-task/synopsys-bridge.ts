@@ -140,6 +140,12 @@ export class SynopsysBridge {
         console.log(new Error(validationErrors.join(",")));
       }
 
+      if (inputs.INCLUDE_DIAGNOSTICS) {
+        formattedCommand = formattedCommand
+          .concat(SynopsysToolsParameter.SPACE)
+          .concat(SynopsysToolsParameter.DIAGNOSTICS_OPTION);
+      }
+
       console.log("Formatted command is - ".concat(formattedCommand));
       return Promise.resolve(formattedCommand);
     } catch (e) {
