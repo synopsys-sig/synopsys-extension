@@ -3,7 +3,7 @@ import * as tmrm from "azure-pipelines-task-lib/mock-run";
 import * as ta from "azure-pipelines-task-lib/mock-answer";
 
 
-let taskPath = "/Users/kirann/IdeaProjects/synopsys-extension-bduck/synopsys-task/dist/kiranindex.js"
+let taskPath = path.join(__dirname, "..", "dist" , "index.js");
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 
 tmr.setInput('samplestring', 'human');
