@@ -188,7 +188,11 @@ const constants = __importStar(__nccwpck_require__(3051));
 function uploadDiagnostics(workspaceDir) {
     return __awaiter(this, void 0, void 0, function* () {
         const uploadArtifactPath = workspaceDir.concat(getBridgeDiagnosticsFolder());
-        yield taskLib.uploadArtifact(constants.UPLOAD_ARTIFACT_NAEME, uploadArtifactPath, constants.UPLOAD_ARTIFACT_NAEME);
+        let isBridgeDirectoryExists = false;
+        isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
+        if (isBridgeDirectoryExists) {
+            yield taskLib.uploadArtifact(constants.UPLOAD_ARTIFACT_NAEME, uploadArtifactPath, constants.UPLOAD_ARTIFACT_NAEME);
+        }
     });
 }
 exports.uploadDiagnostics = uploadDiagnostics;
@@ -524,8 +528,8 @@ class SynopsysBridge {
                 versionFileExists = taskLib.exist(versionFilePath);
             }
             if (versionFileExists && this.bridgeExecutablePath) {
-                console.debug("Bridge executable found at ".concat(synopsysBridgePath));
-                console.debug("Version file found at ".concat(synopsysBridgePath));
+                taskLib.debug("Bridge executable found at ".concat(synopsysBridgePath));
+                taskLib.debug("Version file found at ".concat(synopsysBridgePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
                     return Promise.resolve(true);
                 }

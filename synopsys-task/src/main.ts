@@ -28,7 +28,6 @@ export async function run() {
     throw error;
   } finally {
     if (inputs.INCLUDE_DIAGNOSTICS) {
-      console.log("Uploading synopsys-bridge diagnostic file...");
       await uploadDiagnostics(workSpaceDir);
     }
   }
