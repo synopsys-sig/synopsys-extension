@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 14
+    "Patch": 16
   },
   "instanceNameFormat": "synopsystask",
   "inputs": [
@@ -158,6 +158,14 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Blackduck Scan Failure Severities"
+    }, 
+    {
+      "name": "include_diagnostics",
+      "type": "string",
+      "label": "Include Diagnostics",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Include Diagnostics"
     }
   ],
   "execution": {
