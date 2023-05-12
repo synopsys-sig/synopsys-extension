@@ -259,8 +259,8 @@ export class SynopsysBridge {
     }
 
     if (versionFileExists && this.bridgeExecutablePath) {
-      console.debug("Bridge executable found at ".concat(synopsysBridgePath));
-      console.debug("Version file found at ".concat(synopsysBridgePath));
+      taskLib.debug("Bridge executable found at ".concat(synopsysBridgePath));
+      taskLib.debug("Version file found at ".concat(synopsysBridgePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
       }

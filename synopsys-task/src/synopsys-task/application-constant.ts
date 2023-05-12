@@ -52,5 +52,4 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "bridge_blackduck_scan_failure_severities";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-export const DIAGNOSTICS_RETENTION_DAYS_KEY = "diagnostics_retention_days";
 export const UPLOAD_ARTIFACT_NAEME = "bridge_diagnostics";
