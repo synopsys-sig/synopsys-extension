@@ -29,7 +29,7 @@ describe("Synopsys Bridge test", () => {
         });
 
         afterEach(() => {
-           sandbox.restore();
+            sandbox.restore();
         });
 
         it('should run successfully for polaris command preparation', async function () {
@@ -193,16 +193,13 @@ describe("Download Bridge", () => {
             sandbox.restore();
         });
         it("Execute Bridge Command - linux/mac success", async () => {
-            const integer = Q.Promise<number>((resolve) => {
-                resolve(0)
-            });
-            sandbox.stub(taskLib, "exec").returns(integer)
-
+            sandbox.stub(taskLib, "exec").resolves(0)
             const res = await synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
             assert.equal(res, 0)
         });
 
         it("Execute Bridge Command - linux/mac failure", async () => {
+            sandbox.stub(taskLib, "exec").resolves(9)
             await synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
                 .catch(errorObj => {
                     console.log(errorObj.message)
@@ -284,6 +281,7 @@ describe("Download Bridge", () => {
                 value: "0.1.244",
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(true));
+            sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
             const result = await synopsysBridge.getBridgeUrl();
             expect(result).equals("");
@@ -319,7 +317,7 @@ describe("Download Bridge", () => {
         it('should run successfully for blackduck and polaris command preparation', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
-            
+
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
@@ -465,6 +463,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_PATH", {value: bridgeDefaultPath});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(taskLib, "exist").returns(true);
 
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, true);
@@ -490,6 +489,7 @@ describe("Download Bridge", () => {
 
         it("SYNOPSYS_BRIDGE_PATH is not defined", async () => {
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
+            sandbox.stub(taskLib, "exist").returns(true);
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, true);
         });
