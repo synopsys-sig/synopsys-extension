@@ -24,7 +24,8 @@ export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 // Coverity
 export const COVERITY_URL_KEY = "bridge_coverity_connect_url";
 export const COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
-export const COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
+export const COVERITY_USER_PASSWORD_KEY =
+  "bridge_coverity_connect_user_password";
 export const COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 export const COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 export const COVERITY_INSTALL_DIRECTORY_KEY =
@@ -49,3 +50,7 @@ export const BLACKDUCK_INSTALL_DIRECTORY_KEY =
 export const BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "bridge_blackduck_scan_failure_severities";
+
+export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
+export const BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";

@@ -4,3 +4,5 @@
 /synopsys-task/.bridge/
 /synopsys-task/.taskkey
 /synopsys-task/coverity_input.json
+/synopsys-task/.nyc_output/
+/synopsys-task/coverage//
