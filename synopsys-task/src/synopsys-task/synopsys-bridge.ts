@@ -14,7 +14,7 @@ import {
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import { extractZipped, getRemoteFile } from "./utility";
+import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import fs, { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
@@ -140,6 +140,12 @@ export class SynopsysBridge {
         console.log(new Error(validationErrors.join(",")));
       }
 
+      if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
+        formattedCommand = formattedCommand
+          .concat(SynopsysToolsParameter.SPACE)
+          .concat(SynopsysToolsParameter.DIAGNOSTICS_OPTION);
+      }
+
       console.log("Formatted command is - ".concat(formattedCommand));
       return Promise.resolve(formattedCommand);
     } catch (e) {
@@ -253,8 +259,8 @@ export class SynopsysBridge {
     }
 
     if (versionFileExists && this.bridgeExecutablePath) {
-      console.debug("Bridge executable found at ".concat(synopsysBridgePath));
-      console.debug("Version file found at ".concat(synopsysBridgePath));
+      taskLib.debug("Bridge executable found at ".concat(synopsysBridgePath));
+      taskLib.debug("Version file found at ".concat(synopsysBridgePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
       }

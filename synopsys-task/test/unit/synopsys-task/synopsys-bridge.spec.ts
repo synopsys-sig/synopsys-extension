@@ -446,6 +446,37 @@ describe("Download Bridge", () => {
                 expect(errorObj.message).includes("Bridge could not be downloaded");
             })
         });
+
+        // include diagnostics test case
+        it('should run successfully for include diagnostics command preparation', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --diagnostics")
+
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+        });
+
+        it('should not add --diagnostics with invalid value in synopsys-bridge command', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
+
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+        });
+
+
     });
 
     context("checkIfSynopsysBridgeVersionExists", () => {
