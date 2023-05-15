@@ -46,6 +46,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const diagnostics_1 = __nccwpck_require__(2926);
+const utility_2 = __nccwpck_require__(837);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
@@ -64,8 +65,8 @@ function run() {
             throw error;
         }
         finally {
-            if (inputs.INCLUDE_DIAGNOSTICS) {
-                yield (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
+            if ((0, utility_2.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
+                (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
             }
         }
         console.log("Synopsys Action workflow execution completed");
@@ -95,7 +96,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UPLOAD_ARTIFACT_NAEME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -137,7 +138,8 @@ exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-exports.UPLOAD_ARTIFACT_NAEME = "bridge_diagnostics";
+exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
+exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
 
 
 /***/ }),
@@ -170,42 +172,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadDiagnostics = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
+const path = __importStar(__nccwpck_require__(1017));
 function uploadDiagnostics(workspaceDir) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // try {
-        const uploadArtifactPath = workspaceDir.concat(getBridgeDiagnosticsFolder());
-        let isBridgeDirectoryExists = false;
-        isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
-        if (isBridgeDirectoryExists) {
-            yield taskLib.uploadArtifact(constants.UPLOAD_ARTIFACT_NAEME, uploadArtifactPath, constants.UPLOAD_ARTIFACT_NAEME);
-        }
-        // } catch (error) {
-        //   throw error;
-        // }
-    });
+    const uploadArtifactPath = path.join(workspaceDir, constants.BRIDGE_DIAGNOSTICS_FOLDER);
+    let isBridgeDirectoryExists = false;
+    isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
+    if (isBridgeDirectoryExists) {
+        taskLib.uploadArtifact(constants.UPLOAD_FOLDER_ARTIFACT_NAME, uploadArtifactPath, constants.UPLOAD_FOLDER_ARTIFACT_NAME);
+    }
 }
 exports.uploadDiagnostics = uploadDiagnostics;
-function getBridgeDiagnosticsFolder() {
-    if (process.platform === "win32") {
-        return "\\.bridge";
-    }
-    else {
-        return "/.bridge";
-    }
-}
 
 
 /***/ }),
@@ -425,7 +405,7 @@ class SynopsysBridge {
                 if (validationErrors.length > 0) {
                     console.log(new Error(validationErrors.join(",")));
                 }
-                if (inputs.INCLUDE_DIAGNOSTICS) {
+                if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                     formattedCommand = formattedCommand
                         .concat(tools_parameter_1.SynopsysToolsParameter.SPACE)
                         .concat(tools_parameter_1.SynopsysToolsParameter.DIAGNOSTICS_OPTION);

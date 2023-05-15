@@ -4,6 +4,7 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 import * as inputs from "./synopsys-task/input";
 import { uploadDiagnostics } from "./synopsys-task/diagnostics";
+import { parseToBoolean } from "./synopsys-task/utility";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -27,8 +28,8 @@ export async function run() {
   } catch (error) {
     throw error;
   } finally {
-    if (inputs.INCLUDE_DIAGNOSTICS) {
-      await uploadDiagnostics(workSpaceDir);
+    if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
+      uploadDiagnostics(workSpaceDir);
     }
   }
 

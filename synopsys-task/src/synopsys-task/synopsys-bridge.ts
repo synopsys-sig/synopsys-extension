@@ -14,7 +14,7 @@ import {
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import { extractZipped, getRemoteFile } from "./utility";
+import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import fs, { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
@@ -140,7 +140,7 @@ export class SynopsysBridge {
         console.log(new Error(validationErrors.join(",")));
       }
 
-      if (inputs.INCLUDE_DIAGNOSTICS) {
+      if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
         formattedCommand = formattedCommand
           .concat(SynopsysToolsParameter.SPACE)
           .concat(SynopsysToolsParameter.DIAGNOSTICS_OPTION);
