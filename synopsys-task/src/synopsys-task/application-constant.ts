@@ -52,4 +52,5 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "bridge_blackduck_scan_failure_severities";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-export const UPLOAD_ARTIFACT_NAEME = "bridge_diagnostics";
+export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
+export const BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
