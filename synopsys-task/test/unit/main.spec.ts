@@ -13,7 +13,7 @@ import {IncomingMessage} from "http";
 import {Socket} from "net";
 import * as mocha from "mocha";
 
-describe("Main method test cases", () => {
+describe("Main function test cases", () => {
     
     let sandbox: sinon.SinonSandbox;
     let synopsysBridge: SynopsysBridge;
@@ -28,7 +28,7 @@ describe("Main method test cases", () => {
 
     context('uploadDiagnostics', () => {
 
-        it('should call upload diagnostics: success', async () => {
+        it('should call upload diagnostics: success with value true', async () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
             sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
             sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
@@ -37,6 +37,18 @@ describe("Main method test cases", () => {
             main.run()
             assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);  
         });
+
+
+        it('should call upload diagnostics: success with value false', async () => {
+            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
+            sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
+            sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
+            sandbox.stub(diagnostics, 'uploadDiagnostics').returns(undefined)
+            main.run()
+            assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);  
+        });
+
 
         it('should call upload diagnostics: failure', async () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
@@ -51,4 +63,11 @@ describe("Main method test cases", () => {
 
     });
 
+    context('main function', () => {
+        it('main failure', async () => {
+            main.run().catch(errorObj => {
+                expect(errorObj.message).includes("Requires at least one scan type");
+            }) 
+        });
+    });
 });
