@@ -15,7 +15,7 @@ import * as constants from "./application-constant";
 
 import * as inputs from "./input";
 import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
-import fs, { readFileSync } from "fs";
+import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
 
