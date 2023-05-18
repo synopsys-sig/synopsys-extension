@@ -4,6 +4,7 @@ import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
+import * as taskLib from "azure-pipelines-task-lib/task";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -47,7 +48,7 @@ export async function getRemoteFile(
 
   try {
     let fileNameFromUrl = "";
-    if (fs.lstatSync(destFilePath).isDirectory()) {
+    if (taskLib.stats(destFilePath).isDirectory()) {
       fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
       destFilePath = path.join(
         destFilePath,
