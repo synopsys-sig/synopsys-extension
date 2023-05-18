@@ -41,7 +41,7 @@ export class SynopsysBridge {
       inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
 
     // Clear the existing bridge, if available
-    if (fs.existsSync(extractZippedFilePath)) {
+    if (taskLib.exist(extractZippedFilePath)) {
       await taskLib.rmRF(extractZippedFilePath);
     }
 
@@ -176,7 +176,10 @@ export class SynopsysBridge {
       const bridgeUrl = await this.getBridgeUrl();
 
       if (bridgeUrl != "" && bridgeUrl != null) {
-        const downloadBridge = await getRemoteFile(tempDir, bridgeUrl);
+        const downloadBridge: DownloadFileResponse = await getRemoteFile(
+          tempDir,
+          bridgeUrl
+        );
         console.info("Download of Synopsys Bridge completed");
         // Extracting bridge
         return await this.extractBridge(downloadBridge);
