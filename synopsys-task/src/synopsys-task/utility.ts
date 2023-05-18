@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import path from "path";
 import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
