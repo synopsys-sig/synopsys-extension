@@ -47,6 +47,6 @@ describe("Sample task tests", function () {
         tr.run();
         assert.equal(tr.failed, true, "should have failed");
         assert.equal(tr.errorIssues.length, 2, "should have 1 error issue");
-        assert.equal(tr.errorIssues[1], "Workflow failed! Exit Code: 8 The config option bridge.break has been set to true");
+        assert.equal(tr.errorIssues[1], "Workflow failed! Exit Code: 2 Error from adapter end");
     });
 });
