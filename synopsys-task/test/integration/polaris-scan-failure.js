@@ -56,7 +56,7 @@ const toolLibMock = {
 };
 tmr.registerMock("azure-pipelines-tool-lib", toolLibMock);
 tmr.registerMockExport("exec", () => {
-    throw new Error("Policy violated with exit code 8");
+    throw new Error("synopsys-bridge failed with exit code 2");
 });
 tmr.setInput('bridge_polaris_serverUrl', 'http://testurl.com');
 tmr.setInput('bridge_polaris_accessToken', 'accessTokenTest');
