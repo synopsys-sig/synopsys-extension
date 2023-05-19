@@ -323,7 +323,7 @@ const validator_1 = __nccwpck_require__(6717);
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const utility_1 = __nccwpck_require__(837);
-const fs_1 = __importStar(__nccwpck_require__(7147));
+const fs_1 = __nccwpck_require__(7147);
 const dom_parser_1 = __importDefault(__nccwpck_require__(9592));
 class SynopsysBridge {
     constructor() {
@@ -339,7 +339,7 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             const extractZippedFilePath = inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
             // Clear the existing bridge, if available
-            if (fs_1.default.existsSync(extractZippedFilePath)) {
+            if (taskLib.exist(extractZippedFilePath)) {
                 yield taskLib.rmRF(extractZippedFilePath);
             }
             yield (0, utility_1.extractZipped)(fileInfo.filePath, extractZippedFilePath);
@@ -866,11 +866,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
-const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
 const process = __importStar(__nccwpck_require__(7282));
+const taskLib = __importStar(__nccwpck_require__(347));
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -908,7 +908,7 @@ function getRemoteFile(destFilePath, url) {
         }
         try {
             let fileNameFromUrl = "";
-            if (fs.lstatSync(destFilePath).isDirectory()) {
+            if (taskLib.stats(destFilePath).isDirectory()) {
                 fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
                 destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
             }
