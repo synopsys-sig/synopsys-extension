@@ -30,8 +30,6 @@ const constants = __importStar(require("../../src/synopsys-task/application-cons
 let taskPath = path.join(__dirname, "..", "..", "lib", "main.js");
 let tmr = new tmrm.TaskMockRunner(taskPath);
 tmr.registerMockExport("downloadTool", __dirname.concat("synopsys-bridge.zip"));
-const versionFile = '"'.concat(path.join(getBridgeDefaultPath(), "versions.txt")).concat('"');
-console.log("Found version file is ".concat(versionFile));
 tmr.registerMockExport("exist", () => { return true; });
 tmr.registerMockExport("stats", () => {
     return {
