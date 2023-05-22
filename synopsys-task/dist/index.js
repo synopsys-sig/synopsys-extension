@@ -647,7 +647,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(7533));
-const fs = __importStar(__nccwpck_require__(7147));
 const blackduck_1 = __nccwpck_require__(5467);
 const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -753,7 +752,7 @@ class SynopsysToolsParameter {
         }
         const inputJson = JSON.stringify(blackduckData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
-        fs.writeFileSync(stateFilePath, inputJson);
+        taskLib.writeFile(stateFilePath, inputJson);
         taskLib.debug("Generated state json file at - ".concat(stateFilePath));
         taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)

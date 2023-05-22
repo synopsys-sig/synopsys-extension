@@ -169,8 +169,7 @@ export class SynopsysToolsParameter {
       this.tempDir,
       SynopsysToolsParameter.BD_STATE_FILE_NAME
     );
-    fs.writeFileSync(stateFilePath, inputJson);
-
+    taskLib.writeFile(stateFilePath, inputJson);
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
     taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
