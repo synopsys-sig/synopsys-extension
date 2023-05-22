@@ -4,6 +4,58 @@ import { expect } from 'chai';
 import * as mocha from 'mocha';
 
 describe("Validator test", () => {
+    context('validator context',() => {
+        afterEach(() => {
+            Object.defineProperty(process, 'platform', {
+                value: ''
+              });
+        });
+
+        it('should return boolean validateBridgeUrl mac ', function () {
+            Object.defineProperty(process, 'platform', {
+                value: 'darwin'
+              });
+          
+            const isValidURL = validator.validateBridgeUrl("https://test.com/test.zip")
+            expect(isValidURL).equals(false);
+        });
+
+        it('should return boolean validateBridgeUrl wins32 ', function () {
+          
+            Object.defineProperty(process, 'platform', {
+              value: 'win32'
+            });
+        
+            const isValidURL = validator.validateBridgeUrl("https://test.com/test.zip")
+            expect(isValidURL).equals(false);
+        });
+
+        it('should return boolean validateBridgeUrl linux ', function () {
+         
+            Object.defineProperty(process, 'platform', {
+              value: 'linux'
+            });
+        
+            const isValidURL = validator.validateBridgeUrl("https://test.com/test.zip")
+            expect(isValidURL).equals(false);
+        });
+
+        it('should return boolean validateBridgeUrl linux ', function () {
+          
+            // redefine process.platform
+            Object.defineProperty(process, 'platform', {
+              value: ''
+            });
+        
+            const isValidURL = validator.validateBridgeUrl("https:\\test.com\.zip")
+            expect(isValidURL).equals(false);
+        });
+
+
+
+
+    });
+
     context('Polaris validation', () => {
         afterEach(() => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ''})
@@ -143,5 +195,4 @@ describe("Validator test", () => {
             expect(bdValidationErrors[0]).contains(['[bridge_blackduck_token] - required parameters for blackduck is missing'])
         });
     });
-
 });
