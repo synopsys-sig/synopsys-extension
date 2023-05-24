@@ -274,7 +274,7 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
 exports.FIXPR_ENVIRONMENT_VARIABLES = {
     AZURE_USER_TOKEN: "System.AccessToken",
-    AZURE_ORGANIZATION: "System.CollectionId",
+    AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
     AZURE_PROJECT: "System.TeamProject",
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
@@ -830,15 +830,25 @@ class SynopsysToolsParameter {
         return command;
     }
     getAzureRepoInfo() {
-        const azureToken = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN];
+        let azureOrganization;
+        //const azureToken = process.env.SYSTEM_ACCESSTOKEN;
+        const azureToken = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
         console.log("azureToken::", azureToken);
-        const azureOrganization = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION];
-        console.log("azureOrganization::", azureOrganization);
-        const azureProject = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT];
+        //const collectionUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
+        const collectionUri = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        if (collectionUri != "") {
+            const azureOrganization = collectionUri.split("/")[3];
+            console.log("azureOrganization::", azureOrganization);
+        }
+        //const azureProject = process.env.SYSTEM_TEAMPROJECT;
+        const azureProject = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
         console.log("azureProject::", azureProject);
-        const azureRepo = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY];
+        //const azureRepo = process.env.BUILD_REPOSITORY_NAME;
+        const azureRepo = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
         console.log("azureRepo::", azureRepo);
-        const azureRepoBranchName = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH];
+        //const azureRepoBranchName = process.env.BUILD_SOURCEBRANCHNAME;
+        const azureRepoBranchName = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+            "";
         console.log("azureRepoBranchName::", azureRepoBranchName);
         if (azureToken == null) {
             throw new Error("Missing required azure token for fix pull request/automation comment");

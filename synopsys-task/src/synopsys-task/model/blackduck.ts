@@ -60,7 +60,7 @@ export interface Branch {
 
 export const FIXPR_ENVIRONMENT_VARIABLES = {
   AZURE_USER_TOKEN: "System.AccessToken",
-  AZURE_ORGANIZATION: "System.CollectionId",
+  AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
   AZURE_PROJECT: "System.TeamProject",
   AZURE_REPOSITORY: "Build.Repository.Name",
   AZURE_SOURCE_BRANCH: "Build.SourceBranchName",

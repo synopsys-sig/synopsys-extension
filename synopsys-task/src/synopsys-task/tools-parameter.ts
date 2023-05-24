@@ -257,18 +257,30 @@ export class SynopsysToolsParameter {
   }
 
   private getAzureRepoInfo(): AzureData | undefined {
+    let azureOrganization;
+    //const azureToken = process.env.SYSTEM_ACCESSTOKEN;
     const azureToken =
-      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN];
+      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
     console.log("azureToken::", azureToken);
-    const azureOrganization =
-      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION];
-    console.log("azureOrganization::", azureOrganization);
-    const azureProject = process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT];
+    //const collectionUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
+    const collectionUri =
+      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+    if (collectionUri != "") {
+      const azureOrganization = collectionUri.split("/")[3];
+      console.log("azureOrganization::", azureOrganization);
+    }
+    //const azureProject = process.env.SYSTEM_TEAMPROJECT;
+    const azureProject =
+      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
     console.log("azureProject::", azureProject);
-    const azureRepo = process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY];
+    //const azureRepo = process.env.BUILD_REPOSITORY_NAME;
+    const azureRepo =
+      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
     console.log("azureRepo::", azureRepo);
+    //const azureRepoBranchName = process.env.BUILD_SOURCEBRANCHNAME;
     const azureRepoBranchName =
-      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH];
+      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+      "";
     console.log("azureRepoBranchName::", azureRepoBranchName);
 
     if (azureToken == null) {
