@@ -50,6 +50,7 @@ export const BLACKDUCK_INSTALL_DIRECTORY_KEY =
 export const BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "bridge_blackduck_scan_failure_severities";
+export const BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";

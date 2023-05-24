@@ -96,7 +96,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -137,6 +137,7 @@ exports.BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
+exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
@@ -219,7 +220,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
@@ -240,11 +241,13 @@ exports.COVERITY_PROJECT_NAME = taskLib.getInput(constants.COVERITY_PROJECT_NAME
 exports.COVERITY_STREAM_NAME = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY) || "";
 exports.COVERITY_INSTALL_DIRECTORY = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY) || "";
 exports.COVERITY_POLICY_VIEW = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
+// Blackduck related inputs
 exports.BLACKDUCK_URL = taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
 exports.BLACKDUCK_API_TOKEN = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY) || "";
 exports.BLACKDUCK_INSTALL_DIRECTORY = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY) || "";
 exports.BLACKDUCK_SCAN_FULL = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
+exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
 exports.INCLUDE_DIAGNOSTICS = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY) || "";
 
 
@@ -256,7 +259,7 @@ exports.INCLUDE_DIAGNOSTICS = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
+exports.FIXPR_ENVIRONMENT_VARIABLES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
 var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 (function (BLACKDUCK_SCAN_FAILURE_SEVERITIES) {
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["ALL"] = "ALL";
@@ -269,6 +272,13 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
+exports.FIXPR_ENVIRONMENT_VARIABLES = {
+    AZURE_USER_TOKEN: "System.AccessToken",
+    AZURE_ORGANIZATION: "System.CollectionId",
+    AZURE_PROJECT: "System.TeamProject",
+    AZURE_REPOSITORY: "Build.Repository.Name",
+    AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
+};
 
 
 /***/ }),
@@ -651,6 +661,7 @@ const blackduck_1 = __nccwpck_require__(5467);
 const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
 const validator_1 = __nccwpck_require__(6717);
+const utility_1 = __nccwpck_require__(837);
 class SynopsysToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
@@ -705,6 +716,7 @@ class SynopsysToolsParameter {
                 blackduck: {
                     url: inputs.BLACKDUCK_URL,
                     token: inputs.BLACKDUCK_API_TOKEN,
+                    automation: {},
                 },
             },
         };
@@ -749,6 +761,16 @@ class SynopsysToolsParameter {
                     failure: { severities: failureSeverityEnums },
                 };
             }
+        }
+        // Check and put environment variable for fix pull request
+        if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
+            console.log("Blackduck Automation Fix PR is enabled");
+            blackduckData.data.azureData = this.getAzureRepoInfo();
+            blackduckData.data.blackduck.automation.fixpr = true;
+        }
+        else {
+            // Disable fix pull request for adapters
+            blackduckData.data.blackduck.automation.fixpr = false;
         }
         const inputJson = JSON.stringify(blackduckData);
         const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
@@ -806,6 +828,50 @@ class SynopsysToolsParameter {
             .concat(stateFilePath)
             .concat(SynopsysToolsParameter.SPACE);
         return command;
+    }
+    getAzureRepoInfo() {
+        const azureToken = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN];
+        console.log("azureToken::", azureToken);
+        const azureOrganization = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION];
+        console.log("azureOrganization::", azureOrganization);
+        const azureProject = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT];
+        console.log("azureProject::", azureProject);
+        const azureRepo = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY];
+        console.log("azureRepo::", azureRepo);
+        const azureRepoBranchName = process.env[blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH];
+        console.log("azureRepoBranchName::", azureRepoBranchName);
+        if (azureToken == null) {
+            throw new Error("Missing required azure token for fix pull request/automation comment");
+        }
+        // This condition is required as per ts-lint as these fields may have undefined as well
+        if (azureToken != null &&
+            azureOrganization != null &&
+            azureProject != null &&
+            azureRepo != null &&
+            azureRepoBranchName != null) {
+            return this.setAzureData(azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName);
+        }
+        return undefined;
+    }
+    setAzureData(azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName) {
+        const azureData = {
+            user: {
+                token: azureToken,
+            },
+            organization: {
+                name: azureOrganization,
+            },
+            project: {
+                name: azureProject,
+            },
+            repository: {
+                name: azureRepo,
+                branch: {
+                    name: azureRepoBranchName,
+                },
+            },
+        };
+        return azureData;
     }
 }
 SynopsysToolsParameter.STAGE_OPTION = "--stage";

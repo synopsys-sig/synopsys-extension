@@ -40,6 +40,7 @@ export const COVERITY_INSTALL_DIRECTORY =
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY) || "";
 
+// Blackduck related inputs
 export const BLACKDUCK_URL =
   taskLib.getInput(constants.BLACKDUCK_URL_KEY) || "";
 export const BLACKDUCK_API_TOKEN =
@@ -53,6 +54,8 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
     constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
     ","
   ) || "";
+export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY) || "";

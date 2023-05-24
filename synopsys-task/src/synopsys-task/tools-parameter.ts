@@ -6,6 +6,8 @@ import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  FIXPR_ENVIRONMENT_VARIABLES,
+  AzureData,
 } from "./model/blackduck";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
@@ -14,6 +16,7 @@ import {
   validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
 } from "./validator";
+import { parseToBoolean } from "./utility";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -97,6 +100,7 @@ export class SynopsysToolsParameter {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
           token: inputs.BLACKDUCK_API_TOKEN,
+          automation: {},
         },
       },
     };
@@ -161,6 +165,16 @@ export class SynopsysToolsParameter {
           failure: { severities: failureSeverityEnums },
         };
       }
+    }
+
+    // Check and put environment variable for fix pull request
+    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
+      console.log("Blackduck Automation Fix PR is enabled");
+      blackduckData.data.azureData = this.getAzureRepoInfo();
+      blackduckData.data.blackduck.automation.fixpr = true;
+    } else {
+      // Disable fix pull request for adapters
+      blackduckData.data.blackduck.automation.fixpr = false;
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -240,5 +254,72 @@ export class SynopsysToolsParameter {
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
     return command;
+  }
+
+  private getAzureRepoInfo(): AzureData | undefined {
+    const azureToken =
+      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN];
+    console.log("azureToken::", azureToken);
+    const azureOrganization =
+      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION];
+    console.log("azureOrganization::", azureOrganization);
+    const azureProject = process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT];
+    console.log("azureProject::", azureProject);
+    const azureRepo = process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY];
+    console.log("azureRepo::", azureRepo);
+    const azureRepoBranchName =
+      process.env[FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH];
+    console.log("azureRepoBranchName::", azureRepoBranchName);
+
+    if (azureToken == null) {
+      throw new Error(
+        "Missing required azure token for fix pull request/automation comment"
+      );
+    }
+
+    // This condition is required as per ts-lint as these fields may have undefined as well
+    if (
+      azureToken != null &&
+      azureOrganization != null &&
+      azureProject != null &&
+      azureRepo != null &&
+      azureRepoBranchName != null
+    ) {
+      return this.setAzureData(
+        azureToken,
+        azureOrganization,
+        azureProject,
+        azureRepo,
+        azureRepoBranchName
+      );
+    }
+    return undefined;
+  }
+
+  private setAzureData(
+    azureToken: string,
+    azureOrganization: string,
+    azureProject: string,
+    azureRepo: string,
+    azureRepoBranchName: string
+  ): AzureData {
+    const azureData: AzureData = {
+      user: {
+        token: azureToken,
+      },
+      organization: {
+        name: azureOrganization,
+      },
+      project: {
+        name: azureProject,
+      },
+      repository: {
+        name: azureRepo,
+        branch: {
+          name: azureRepoBranchName,
+        },
+      },
+    };
+    return azureData;
   }
 }
