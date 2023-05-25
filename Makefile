@@ -9,7 +9,6 @@ prerequisites:
 	npm --version
 	npm config set '//registry.synopsys.npme.io/:_authToken' ${NPM_TOKEN}
 	npm i -g lerna
-	echo "env sorting command"
 ifdef POP_BLACKDUCK_INPROGRESS
 	cd synopsys-task && pwd && ls -la && npm ci --prefer-offline --no-audit && npm run build
 else
