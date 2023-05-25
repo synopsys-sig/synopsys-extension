@@ -47,14 +47,14 @@ generate_sbom:
     SBOM_ART_TOKEN_VAULT_PATH: sbom/integrations/synopsys-extension-ci-cd
     PRODUCT: synopsys-extension-ci-cd
     GENERATE_CONFIGURATION_FILE: 1
-    GENERATION_OPTIONS: "--entry integrations/mirrored-repos/synopsys-extension-ci-cd:synopsys-extension-ci-cd --provide-zip --output-zipfile Synopsys-CICD-extension.zip"
+    GENERATION_OPTIONS: "--entry integrations/mirrored-repos/synopsys-extension-ci-cd:synopsys-extension-ci-cd- --provide-zip --output-zipfile Synopsys-CICD-extension.zip"
   only:
     refs:
       - main
 
-
 pop_polaris:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+
 
 polaris_bridge:
   stage: analysis
@@ -62,6 +62,8 @@ polaris_bridge:
 
 new_pop_blackduck:
   stage: analysis
+  variables:
+    POP_BLACKDUCK_INPROGRESS: 1
   extends: .new_pop_blackduck_analysis
   dependencies:
     - build_unit_test_job

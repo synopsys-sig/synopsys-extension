@@ -9,17 +9,31 @@ prerequisites:
 	npm --version
 	npm config set '//registry.synopsys.npme.io/:_authToken' ${NPM_TOKEN}
 	npm i -g lerna
+	echo "env sorting command"
+ifdef POP_BLACKDUCK_INPROGRESS
+	cd synopsys-task && pwd && ls -la && npm ci --prefer-offline --no-audit && npm run build
+else
 	npm ci --prefer-offline --no-audit
-	npm run buid
+	npm run build
+endif
 
 build: prerequisites
 	echo "Provide the Build command like mvn install / go build / npm "
 
 dependencies: prerequisites
 	echo "Provide the Dependency command or env variables"
+ifdef POP_BLACKDUCK_INPROGRESS
+	cd synopsys-task && pwd && ls -la && npm run package
+else
 	npm run package
+endif
+
 
 image_scan:
 	echo "Provide the commands for BD Docker Image Scan"
 
 .PHONY: clean
+
+
+
+# only if blackduck scan provided , need to use suitable cd s-t
