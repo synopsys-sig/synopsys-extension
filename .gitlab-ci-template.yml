@@ -1,0 +1,81 @@
+#################################################################################
+#####  Gitlab CI Variables
+#################################################################################
+
+.retry:
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+.only:
+  only:
+    refs:
+      - master
+      - main
+      - /^release-.*$/
+
+.except:
+  except: [ ]
+
+#################################################################################
+#####  Gitlab CI Job Implementations
+#################################################################################
+
+.build_unit_tests:
+  extends:
+    - .retry
+  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .m2/
+  script:
+    - cd synopsys-task
+    - npm ci
+    - npm run all
+
+
+.code_coverage:
+  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  script:
+    - cd synopsys-task
+    - npm ci
+    - npm test -- --coverage --collectCoverageFrom='src/**/*.{ts,jxs}'
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+
+.new_pop_blackduck_analysis:
+  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  extends:
+    - .new_pop_blackduck
+    - .retry
+  before_script:
+    - |
+      apt-get update -y
+      apt-get install -y rsync make jq python3 python3-pip
+      pip3 install blackduck requests
+      export RELEASE_VERSION=`git describe --tags --abbrev=0 2>/dev/null || echo ''`
+#.changelog:
+#  image: node:17-buster-slim
+#  extends:
+#    - .only
+#  before_script:
+#    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+#    - npm install -g semantic-release @semantic-release/gitlab @semantic-release/changelog conventional-changelog-conventionalcommits @semantic-release/commit-analyzer @semantic-release/git
+#  script:
+#    - semantic-release -r https://sig-gitlab.internal.synopsys.com/integrations/synopsys-action
+#
+#.check_dist:
+#  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+#  before_script:
+#    - npm ci
+#    - npm run build
+#    - npm run package
+#  script:
+#    - |-
+#      if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+#        echo "Detected uncommitted changes after build.  See status below:"
+#        git diff
+#        exit 1
+#      fi
