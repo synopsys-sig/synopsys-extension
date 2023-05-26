@@ -64,6 +64,7 @@ new_pop_blackduck:
   stage: analysis
   variables:
     POP_BLACKDUCK_INPROGRESS: 1
+    BLACKDUCK_PROJECT_VERSION_NAME: "synopsys-extension-ci-cd-${CI_COMMIT_REF_NAME}"
   extends: .new_pop_blackduck_analysis
   dependencies:
     - build_unit_test_job
