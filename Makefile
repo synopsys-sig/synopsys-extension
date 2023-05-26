@@ -27,12 +27,7 @@ else
 	npm run package
 endif
 
-
 image_scan:
 	echo "Provide the commands for BD Docker Image Scan"
 
 .PHONY: clean
-
-
-
-# only if blackduck scan provided , need to use suitable cd s-t
