@@ -10,7 +10,7 @@ prerequisites:
 	npm config set '//registry.synopsys.npme.io/:_authToken' ${NPM_TOKEN}
 	npm i -g lerna
 ifdef POP_BLACKDUCK_INPROGRESS
-	cd synopsys-task && ls -la && npm ci --prefer-offline --no-audit && npm run build
+	cd synopsys-task && npm ci --prefer-offline --no-audit && npm run build
 else
 	npm ci --prefer-offline --no-audit
 	npm run build
@@ -22,7 +22,7 @@ build: prerequisites
 dependencies: prerequisites
 	echo "Provide the Dependency command or env variables"
 ifdef POP_BLACKDUCK_INPROGRESS
-	cd synopsys-task && ls -la && npm run package
+	cd synopsys-task && npm run package
 else
 	npm run package
 endif
