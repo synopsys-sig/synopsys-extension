@@ -247,16 +247,13 @@ export class SynopsysBridge {
     if (!synopsysBridgePath) {
       console.info("Looking for synopsys bridge in default path");
       synopsysBridgePath = this.getBridgeDefaultPath();
+      this.bridgeExecutablePath = synopsysBridgePath;
     }
 
     if (osName === "win32") {
-      this.bridgeExecutablePath = synopsysBridgePath.concat(
-        "\\synopsys-bridge.exe"
-      );
       versionFilePath = synopsysBridgePath.concat("\\versions.txt");
       versionFileExists = taskLib.exist(versionFilePath);
     } else {
-      this.bridgeExecutablePath = synopsysBridgePath.concat("/synopsys-bridge");
       versionFilePath = synopsysBridgePath.concat("/versions.txt");
       versionFileExists = taskLib.exist(versionFilePath);
     }
@@ -280,7 +277,7 @@ export class SynopsysBridge {
   async getAllAvailableBridgeVersions(): Promise<string[]> {
     let htmlResponse = "";
 
-    const httpClient = new HttpClient("synopsys-action");
+    const httpClient = new HttpClient("synopsys-task");
     const httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
       Accept: "text/html",
     });
