@@ -1,14 +1,12 @@
 import path from "path";
 import * as inputs from "./input";
-import * as fs from "fs";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
-  FIXPR_ENVIRONMENT_VARIABLES,
-  AzureData,
 } from "./model/blackduck";
+import { FIXPR_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -169,8 +167,8 @@ export class SynopsysToolsParameter {
 
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-      console.log("Blackduck Automation Fix PR is enabled");
-      blackduckData.data.azureData = this.getAzureRepoInfo();
+      console.log("Blackduck Automation Fix PR is enabled..");
+      blackduckData.data.azure = this.getAzureRepoInfo();
       blackduckData.data.blackduck.automation.fixpr = true;
     } else {
       // Disable fix pull request for adapters
@@ -257,33 +255,23 @@ export class SynopsysToolsParameter {
   }
 
   private getAzureRepoInfo(): AzureData | undefined {
-    let azureOrganization;
-    //const azureToken = process.env.SYSTEM_ACCESSTOKEN;
+    let azureOrganization = "";
     const azureToken =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
-    console.log("azureToken::", azureToken);
-    //const collectionUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
     const collectionUri =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
     if (collectionUri != "") {
-      const azureOrganization = collectionUri.split("/")[3];
-      console.log("azureOrganization::", azureOrganization);
+      azureOrganization = collectionUri.split("/")[3];
     }
-    //const azureProject = process.env.SYSTEM_TEAMPROJECT;
     const azureProject =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
-    console.log("azureProject::", azureProject);
-    //const azureRepo = process.env.BUILD_REPOSITORY_NAME;
     const azureRepo =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-    console.log("azureRepo::", azureRepo);
-    //const azureRepoBranchName = process.env.BUILD_SOURCEBRANCHNAME;
     const azureRepoBranchName =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
       "";
-    console.log("azureRepoBranchName::", azureRepoBranchName);
 
-    if (azureToken == null) {
+    if (azureToken == "") {
       throw new Error(
         "Missing required azure token for fix pull request/automation comment"
       );
@@ -291,11 +279,11 @@ export class SynopsysToolsParameter {
 
     // This condition is required as per ts-lint as these fields may have undefined as well
     if (
-      azureToken != null &&
-      azureOrganization != null &&
-      azureProject != null &&
-      azureRepo != null &&
-      azureRepoBranchName != null
+      azureToken != "" &&
+      azureOrganization != "" &&
+      azureProject != "" &&
+      azureRepo != "" &&
+      azureRepoBranchName != ""
     ) {
       return this.setAzureData(
         azureToken,
