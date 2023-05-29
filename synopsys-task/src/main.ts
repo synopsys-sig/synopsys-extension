@@ -33,7 +33,7 @@ export async function run() {
     }
   }
 
-  console.log("Synopsys Action workflow execution completed");
+  console.log("Synopsys Task workflow execution completed");
 }
 
 export function logBridgeExitCodes(message: string): string {
