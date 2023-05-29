@@ -2,7 +2,7 @@
   "modules": [
     {
       "at": "/synopsys-task",
-      "templates": ["source"]
+      "templates": ["dependencies"]
     }
   ]
 }
