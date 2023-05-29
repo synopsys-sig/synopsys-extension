@@ -253,13 +253,32 @@ exports.INCLUDE_DIAGNOSTICS = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY
 
 /***/ }),
 
+/***/ 3655:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FIXPR_ENVIRONMENT_VARIABLES = void 0;
+exports.FIXPR_ENVIRONMENT_VARIABLES = {
+    AZURE_USER_TOKEN: "System.AccessToken",
+    AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
+    AZURE_PROJECT: "System.TeamProject",
+    AZURE_REPOSITORY: "Build.Repository.Name",
+    AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
+    AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+};
+
+
+/***/ }),
+
 /***/ 5467:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FIXPR_ENVIRONMENT_VARIABLES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = void 0;
 var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 (function (BLACKDUCK_SCAN_FAILURE_SEVERITIES) {
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["ALL"] = "ALL";
@@ -272,13 +291,6 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
 })(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
-exports.FIXPR_ENVIRONMENT_VARIABLES = {
-    AZURE_USER_TOKEN: "System.AccessToken",
-    AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
-    AZURE_PROJECT: "System.TeamProject",
-    AZURE_REPOSITORY: "Build.Repository.Name",
-    AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
-};
 
 
 /***/ }),
@@ -658,6 +670,7 @@ exports.SynopsysToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(7533));
 const blackduck_1 = __nccwpck_require__(5467);
+const azure_1 = __nccwpck_require__(3655);
 const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
 const validator_1 = __nccwpck_require__(6717);
@@ -764,8 +777,8 @@ class SynopsysToolsParameter {
         }
         // Check and put environment variable for fix pull request
         if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-            console.log("Blackduck Automation Fix PR is enabled");
-            blackduckData.data.azureData = this.getAzureRepoInfo();
+            console.log("Blackduck Automation Fix PR is enabled..");
+            blackduckData.data.azure = this.getAzureRepoInfo();
             blackduckData.data.blackduck.automation.fixpr = true;
         }
         else {
@@ -830,35 +843,25 @@ class SynopsysToolsParameter {
         return command;
     }
     getAzureRepoInfo() {
-        let azureOrganization;
-        //const azureToken = process.env.SYSTEM_ACCESSTOKEN;
-        const azureToken = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
-        console.log("azureToken::", azureToken);
-        //const collectionUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
-        const collectionUri = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        let azureOrganization = "";
+        const azureToken = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
+        const collectionUri = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
         if (collectionUri != "") {
-            const azureOrganization = collectionUri.split("/")[3];
-            console.log("azureOrganization::", azureOrganization);
+            azureOrganization = collectionUri.split("/")[3];
         }
-        //const azureProject = process.env.SYSTEM_TEAMPROJECT;
-        const azureProject = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
-        console.log("azureProject::", azureProject);
-        //const azureRepo = process.env.BUILD_REPOSITORY_NAME;
-        const azureRepo = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-        console.log("azureRepo::", azureRepo);
-        //const azureRepoBranchName = process.env.BUILD_SOURCEBRANCHNAME;
-        const azureRepoBranchName = taskLib.getVariable(blackduck_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+        const azureProject = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+        const azureRepo = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+        const azureRepoBranchName = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
             "";
-        console.log("azureRepoBranchName::", azureRepoBranchName);
-        if (azureToken == null) {
+        if (azureToken == "") {
             throw new Error("Missing required azure token for fix pull request/automation comment");
         }
         // This condition is required as per ts-lint as these fields may have undefined as well
-        if (azureToken != null &&
-            azureOrganization != null &&
-            azureProject != null &&
-            azureRepo != null &&
-            azureRepoBranchName != null) {
+        if (azureToken != "" &&
+            azureOrganization != "" &&
+            azureProject != "" &&
+            azureRepo != "" &&
+            azureRepoBranchName != "") {
             return this.setAzureData(azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName);
         }
         return undefined;
