@@ -1,0 +1,8 @@
+{
+  "modules": [
+    {
+      "at": "/synopsys-task",
+      "templates": ["source"]
+    }
+  ]
+}
