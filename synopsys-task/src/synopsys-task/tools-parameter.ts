@@ -1,6 +1,5 @@
 import path from "path";
 import * as inputs from "./input";
-import * as fs from "fs";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
 import {

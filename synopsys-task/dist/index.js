@@ -461,7 +461,7 @@ class SynopsysBridge {
                 // To check whether bridge already exists with same version mentioned in bridge url
                 const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
                 if (versionsArray) {
-                    version = versionsArray[0];
+                    version = versionsArray[1];
                 }
             }
             else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
