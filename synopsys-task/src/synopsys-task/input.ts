@@ -56,7 +56,7 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
     ","
   ) || "";
 export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
-  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY) || "";
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() || "";
 
 export const INCLUDE_DIAGNOSTICS =
-  taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY) || "";
+  taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";
