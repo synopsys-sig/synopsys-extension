@@ -1,8 +1,13 @@
 export interface AzureData {
+  api: Api;
   user: User;
   organization: Organization;
   project: Project;
   repository: Repository;
+}
+
+export interface Api {
+  url: string;
 }
 
 export interface Organization {

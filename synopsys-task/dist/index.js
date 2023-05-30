@@ -675,6 +675,7 @@ const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
 const validator_1 = __nccwpck_require__(6717);
 const utility_1 = __nccwpck_require__(837);
+const url = __importStar(__nccwpck_require__(7310));
 class SynopsysToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
@@ -777,7 +778,7 @@ class SynopsysToolsParameter {
         }
         // Check and put environment variable for fix pull request
         if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-            console.log("Blackduck Automation Fix PR is enabled..");
+            console.log("Blackduck Automation Fix PR is enabled");
             blackduckData.data.azure = this.getAzureRepoInfo();
             blackduckData.data.blackduck.automation.fixpr = true;
         }
@@ -843,11 +844,15 @@ class SynopsysToolsParameter {
         return command;
     }
     getAzureRepoInfo() {
+        var _a;
         let azureOrganization = "";
+        let azureInstanceUrl = "";
         const azureToken = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
         const collectionUri = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
         if (collectionUri != "") {
-            azureOrganization = collectionUri.split("/")[3];
+            const parsedUrl = url.parse(collectionUri);
+            azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+            azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
         }
         const azureProject = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
         const azureRepo = taskLib.getVariable(azure_1.FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
@@ -857,17 +862,21 @@ class SynopsysToolsParameter {
             throw new Error("Missing required azure token for fix pull request/automation comment");
         }
         // This condition is required as per ts-lint as these fields may have undefined as well
-        if (azureToken != "" &&
+        if (azureInstanceUrl != "" &&
+            azureToken != "" &&
             azureOrganization != "" &&
             azureProject != "" &&
             azureRepo != "" &&
             azureRepoBranchName != "") {
-            return this.setAzureData(azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName);
+            return this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName);
         }
         return undefined;
     }
-    setAzureData(azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName) {
+    setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName) {
         const azureData = {
+            api: {
+                url: azureInstanceUrl,
+            },
             user: {
                 token: azureToken,
             },

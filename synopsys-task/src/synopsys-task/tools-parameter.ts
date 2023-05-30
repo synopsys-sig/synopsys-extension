@@ -15,6 +15,7 @@ import {
   validateBlackduckFailureSeverities,
 } from "./validator";
 import { parseToBoolean } from "./utility";
+import * as url from "url";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -167,7 +168,7 @@ export class SynopsysToolsParameter {
 
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-      console.log("Blackduck Automation Fix PR is enabled..");
+      console.log("Blackduck Automation Fix PR is enabled");
       blackduckData.data.azure = this.getAzureRepoInfo();
       blackduckData.data.blackduck.automation.fixpr = true;
     } else {
@@ -256,12 +257,15 @@ export class SynopsysToolsParameter {
 
   private getAzureRepoInfo(): AzureData | undefined {
     let azureOrganization = "";
+    let azureInstanceUrl = "";
     const azureToken =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
     const collectionUri =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
     if (collectionUri != "") {
-      azureOrganization = collectionUri.split("/")[3];
+      const parsedUrl = url.parse(collectionUri);
+      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
     }
     const azureProject =
       taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
@@ -279,6 +283,7 @@ export class SynopsysToolsParameter {
 
     // This condition is required as per ts-lint as these fields may have undefined as well
     if (
+      azureInstanceUrl != "" &&
       azureToken != "" &&
       azureOrganization != "" &&
       azureProject != "" &&
@@ -286,6 +291,7 @@ export class SynopsysToolsParameter {
       azureRepoBranchName != ""
     ) {
       return this.setAzureData(
+        azureInstanceUrl,
         azureToken,
         azureOrganization,
         azureProject,
@@ -297,6 +303,7 @@ export class SynopsysToolsParameter {
   }
 
   private setAzureData(
+    azureInstanceUrl: string,
     azureToken: string,
     azureOrganization: string,
     azureProject: string,
@@ -304,6 +311,9 @@ export class SynopsysToolsParameter {
     azureRepoBranchName: string
   ): AzureData {
     const azureData: AzureData = {
+      api: {
+        url: azureInstanceUrl,
+      },
       user: {
         token: azureToken,
       },
