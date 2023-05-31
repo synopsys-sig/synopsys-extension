@@ -129,13 +129,13 @@ steps:
 |`bridge_download_version`| Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.              | Optional     |
 | `include_diagnostics`      | All diagnostics files will be available to download when 'true' passed. Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings. Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
-Note - If **bridge_download_version** or **bridge_download_url** is not provided, Synopsys Action will download and configure the latest version of Bridge
+Note - If **bridge_download_version** or **bridge_download_url** is not provided, Synopsys Security Scan will download and configure the latest version of Bridge
  
 
 # Synopsys Bridge Setup
 
 - The latest version of Synopsys Bridge is available at: [Synopsys-Bridge](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/) 
-- The most common way to set up the Synopsys Bridge is to configure the action to download the small CLI utility that is then automatically run at the right stage of your pipeline.
+- The most common way to set up the Synopsys Bridge is to configure the agent to download the small CLI utility that is then automatically run at the right stage of your pipeline.
 - The latest version of Synopsys Bridge will be downloaded by default.
 
 ## Manual Synopsys Bridge
