@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "synopsys-extension",
+  "id": "synopsys-security-scan",
   "name": "synopsys-extension",
-  "version": "0.1.0",
-  "publisher": "syno-kk",
+  "version": "1.0.0",
+  "publisher": "synopsys-security-scan",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
