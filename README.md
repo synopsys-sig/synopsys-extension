@@ -84,7 +84,7 @@ steps:
 | `bridge_coverity_connect_project_name`        | Project name in Coverity          | Mandatory     |
 | `bridge_coverity_connect_stream_name`        | Stream name in Coverity           | Mandatory     |
 | `bridge_coverity_install_directory`        | Directory path to install Coverity | Optional    |
-| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
           
 ## Synopsys Security Scan - Black Duck
 
