@@ -1,6 +1,6 @@
 # Synopsys Security Scan
 
-Synopsys Security Scan allows you to configure your azure pipeline to run Synopsys security testing and take action on the security results. Synopsys Security Scan leverages Synopsys Bridge, which allows you to run tests for several Synopsys products from the command line. The latest version of Synopsys Bridge is available [[here](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/)] 
+Synopsys Security Scan allows you to configure your azure pipeline to run Synopsys security testing and take action on the security results. Synopsys Security Scan leverages Synopsys Bridge, which allows you to run tests for several Synopsys products from the command line.
 
 # Quick Start for the Synopsys Security Scan
 
@@ -16,7 +16,6 @@ Synopsys Security Scan supports the following Synopsys security testing solution
 - Validate Scanning platform-related parameters like project and stream.
 - Download the Synopsys Bridge and related adapters
 - Run corresponding Synopsys security testing solutions (Polaris, Coverity, or Black Duck).
-- Synopsys Security Scan code can be referenced from the latest release tag [[here](https://github.com/synopsys-sig/synopsys-extension)] 
 
 Synopsys solution functionality is invoked directly by Synopsys Bridge, and indirectly by the Synopsys Security Scan, which downloads Synopsys Bridge and calls the respective adapters to run corresponding scans.
 
@@ -36,7 +35,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-task@0.1.0
+- task: synopsys-task@1.0.0
   inputs:
     bridge_polaris_serverUrl: $(POLARIS_SERVER_URL)
     bridge_polaris_accessToken: $(POLARIS_ACCESS_TOKEN)
@@ -69,7 +68,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-task@0.1.0
+- task: synopsys-task@1.0.0
   inputs:
     bridge_coverity_connect_url: $(COVERITY_URL)
     bridge_coverity_connect_user_name: $(COVERITY_USER)
@@ -81,11 +80,13 @@ steps:
 |-------------------|---------------------------------------|----------|
 | `bridge_coverity_connect_url` | URL for Coverity server        | Mandatory     |
 | `bridge_coverity_connect_user_name`        | Username for Coverity        | Mandatory     |
-| `bridge_coverity_connect_user_password`        | Passphrase for Coverity       | Mandatory     |
+| `bridge_coverity_connect_user_password`        | Password for Coverity       | Mandatory     |
 | `bridge_coverity_connect_project_name`        | Project name in Coverity          | Mandatory     |
 | `bridge_coverity_connect_stream_name`        | Stream name in Coverity           | Mandatory     |
 | `bridge_coverity_install_directory`        | Directory path to install Coverity | Optional    |
-| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. If any defects are found within this view when applied to the project, the build will be failed with an exit code. Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `coverity_repository_name`        | Repository name in Coverity     | Optional    |
+| `coverity_branch_name`        | Branch name in Coverity           | Optional    |
           
 ## Synopsys Security Scan - Black Duck
 
@@ -104,7 +105,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-task@0.1.0
+- task: synopsys-task@1.0.0
   inputs:
     bridge_blackduck_url: $(BLACKDUCK_URL)
     bridge_blackduck_token: $(BLACKDUCK_TOKEN)
@@ -115,7 +116,7 @@ steps:
 |`bridge_blackduck_url`  | URL for Black Duck server  | Mandatory     |
 | `bridge_blackduck_token` | API token for Black Duck | Mandatory     |
 | `bridge_blackduck_install_directory` | Directory path to install Black Duck  | Optional     |
-| `bridge_blackduck_scan_full` | Specifies whether full scan is required or not. By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan. Supported values: true or false | Optional     |
+| `bridge_blackduck_scan_full` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false | Optional     |
 | `bridge_blackduck_scan_failure_severities`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED" | Optional |
 
 - **Note about Detect command line parameters:** Any command line parameters that you need to pass to detect can be passed through variables. This is a standard capability of Detect. For example, if you want to only report newly found policy violations on rapid scans, you would normally use the command line --detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT. You can replace this by setting the DETECT_BLACKDUCK_RAPID_COMPARE_MODE variable to BOM_COMPARE_STRICT.
@@ -124,10 +125,10 @@ steps:
 
 | Input Parameter | Description                              |  Mandatory / Optional | 
 |-----------------|------------------------------------------|-----------------------|
-|`synopsys_bridge_path`| Provide a path, where you want to configure or already configured Synopsys Bridge. [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge]. If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
-| `bridge_download_url`      | Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path. [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
-|`bridge_download_version`| Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured.              | Optional     |
-| `include_diagnostics`      | All diagnostics files will be available to download when 'true' passed. Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings. Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
+|`synopsys_bridge_path`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
+| `bridge_download_url`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
+|`bridge_download_version`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge will be downloaded and configured.              | Optional     |
+| `include_diagnostics`      | All diagnostics files will be available to download when 'true' passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
 Note - If **bridge_download_version** or **bridge_download_url** is not provided, Synopsys Security Scan will download and configure the latest version of Bridge
  
