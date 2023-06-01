@@ -15,7 +15,7 @@ import {
   validateBlackduckFailureSeverities,
 } from "./validator";
 import { parseToBoolean } from "./utility";
-import { AZURE_USER_TOKEN } from "./input";
+import { AZURE_TOKEN } from "./input";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -271,7 +271,7 @@ export class SynopsysToolsParameter {
 
   private getAzureRepoInfo(): AzureData | undefined {
     let azureOrganization = "";
-    const azureToken = AZURE_USER_TOKEN;
+    const azureToken = AZURE_TOKEN;
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
     if (collectionUri != "") {
@@ -289,7 +289,6 @@ export class SynopsysToolsParameter {
       taskLib.getVariable(
         AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
       ) || "";
-    console.log("azureRepoBranchName::", azureRepoBranchName);
 
     if (azureToken == "") {
       throw new Error(
@@ -346,9 +345,6 @@ export class SynopsysToolsParameter {
 
     if (azurePullRequestNumber != null) {
       azureData.repository.pull.number = Number(azurePullRequestNumber);
-      // Setting AZURE_BUILD_REASON as Azure' Build.Reason System variable is accessible in 'Check Pull request adapter
-      process.env.AZURE_BUILD_REASON =
-        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.BUILD_REASON) || "";
     }
     return azureData;
   }

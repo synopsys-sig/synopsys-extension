@@ -14,7 +14,7 @@ export const POLARIS_KEY = "polaris";
 export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 
-export const AZURE_USER_TOKEN_KEY = "azure_user_token";
+export const AZURE_TOKEN_KEY = "azure_token";
 
 // Polaris
 export const POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";

@@ -134,6 +134,26 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--state '.concat(coverityStateFile));
         });
 
+
+        it('should success for coverity command formation with PR comment', function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
+
+            expect(formattedCommand).contains('--stage connect');
+            expect(formattedCommand).contains('--state '.concat(coverityStateFile));
+        });
+
         it('should success for coverity command formation with invalid coverity install directory', function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
@@ -197,6 +217,23 @@ describe("Synopsys Tools Parameter test", () => {
              expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
          });
 
+         it('should success for blackduck command formation with PR COMMENT', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+             const jsonData = JSON.parse(jsonString);
+             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+             expect(jsonData.data.blackduck.token).to.be.equals('token');
+             expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
+             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+         });
+
          it('should fail for invalid bridge_blackduck_scan_failure_severities', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
@@ -250,7 +287,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 

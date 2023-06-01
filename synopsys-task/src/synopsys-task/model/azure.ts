@@ -28,11 +28,9 @@ export interface Branch {
 }
 
 export const AZURE_ENVIRONMENT_VARIABLES = {
-  AZURE_USER_TOKEN: "System.AccessToken",
   AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
   AZURE_PROJECT: "System.TeamProject",
   AZURE_REPOSITORY: "Build.Repository.Name",
   AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
   AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
-  BUILD_REASON: "Build.Reason",
 };

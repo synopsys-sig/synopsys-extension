@@ -23,12 +23,12 @@
       "helpMarkDown": "A bridge_download_url"
     },
     {
-      "name": "azure_user_token",
+      "name": "azure_token",
       "type": "string",
-      "label": "Azure user token",
+      "label": "Azure token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "azure user token"
+      "helpMarkDown": "azure token"
     },
     {
       "name": "synopsys_bridge_path",

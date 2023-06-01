@@ -1,6 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
-import { AZURE_USER_TOKEN_KEY } from "./application-constant";
 
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
@@ -13,8 +12,8 @@ export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";
 
 // Polaris related inputs
-export const AZURE_USER_TOKEN =
-  taskLib.getInput(constants.AZURE_USER_TOKEN_KEY)?.trim() || "";
+export const AZURE_TOKEN =
+  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() || "";
 
 export const POLARIS_ACCESS_TOKEN =
   taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY)?.trim() || "";
