@@ -23,6 +23,14 @@
       "helpMarkDown": "A bridge_download_url"
     },
     {
+      "name": "azure_user_token",
+      "type": "string",
+      "label": "Azure user token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "azure user token"
+    },
+    {
       "name": "synopsys_bridge_path",
       "type": "string",
       "label": "Synopsys Bridge Path",
@@ -174,6 +182,22 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Blackduck Automation Fix PR"
+    },
+    {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "string",
+      "label": "Coverity Automation PR Comment",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity Automation PR Comment"
+    },
+    {
+      "name": "bridge_blackduck_automation_prcomment",
+      "type": "string",
+      "label": "Blackduck Automation PR Comment",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Automation PR Comment"
     }
   ],
   "execution": {

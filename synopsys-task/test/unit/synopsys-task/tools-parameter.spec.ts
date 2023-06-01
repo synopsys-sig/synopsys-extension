@@ -212,10 +212,11 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
-            getStubVariable.withArgs("System.AccessToken").returns("test-token")
+
             getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
@@ -249,9 +250,10 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
-            
+            Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
+
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
-            getStubVariable.withArgs("System.AccessToken").returns("test-token")
+
             getStubVariable.withArgs("Build.SourceBranchName").returns("")
             
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();

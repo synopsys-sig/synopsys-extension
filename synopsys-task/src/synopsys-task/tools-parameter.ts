@@ -6,7 +6,7 @@ import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
 } from "./model/blackduck";
-import { FIXPR_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
+import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -15,6 +15,7 @@ import {
   validateBlackduckFailureSeverities,
 } from "./validator";
 import { parseToBoolean } from "./utility";
+import { AZURE_USER_TOKEN } from "./input";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -175,6 +176,12 @@ export class SynopsysToolsParameter {
       blackduckData.data.blackduck.automation.fixpr = false;
     }
 
+    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
+      console.info("BlackDuck Automation comment is enabled");
+      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.blackduck.automation.prcomment = true;
+    }
+
     const inputJson = JSON.stringify(blackduckData);
 
     const stateFilePath = path.join(
@@ -211,7 +218,9 @@ export class SynopsysToolsParameter {
             project: { name: inputs.COVERITY_PROJECT_NAME },
             stream: { name: inputs.COVERITY_STREAM_NAME },
           },
+          automation: {},
         },
+        project: {},
       },
     };
 
@@ -229,6 +238,12 @@ export class SynopsysToolsParameter {
       covData.data.coverity.connect.policy = {
         view: inputs.COVERITY_POLICY_VIEW,
       };
+    }
+
+    if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
+      console.info("Coverity Automation comment is enabled");
+      covData.data.azure = this.getAzureRepoInfo();
+      covData.data.coverity.automation.prcomment = true;
     }
 
     const inputJson = JSON.stringify(covData);
@@ -256,20 +271,25 @@ export class SynopsysToolsParameter {
 
   private getAzureRepoInfo(): AzureData | undefined {
     let azureOrganization = "";
-    const azureToken =
-      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_USER_TOKEN) || "";
+    const azureToken = AZURE_USER_TOKEN;
     const collectionUri =
-      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
     if (collectionUri != "") {
       azureOrganization = collectionUri.split("/")[3];
     }
     const azureProject =
-      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
     const azureRepo =
-      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
     const azureRepoBranchName =
-      taskLib.getVariable(FIXPR_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
       "";
+
+    const azurePullRequestNumber =
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+      ) || "";
+    console.log("azureRepoBranchName::", azureRepoBranchName);
 
     if (azureToken == "") {
       throw new Error(
@@ -290,7 +310,8 @@ export class SynopsysToolsParameter {
         azureOrganization,
         azureProject,
         azureRepo,
-        azureRepoBranchName
+        azureRepoBranchName,
+        azurePullRequestNumber
       );
     }
     return undefined;
@@ -301,7 +322,8 @@ export class SynopsysToolsParameter {
     azureOrganization: string,
     azureProject: string,
     azureRepo: string,
-    azureRepoBranchName: string
+    azureRepoBranchName: string,
+    azurePullRequestNumber: string
   ): AzureData {
     const azureData: AzureData = {
       user: {
@@ -318,8 +340,16 @@ export class SynopsysToolsParameter {
         branch: {
           name: azureRepoBranchName,
         },
+        pull: {},
       },
     };
+
+    if (azurePullRequestNumber != null) {
+      azureData.repository.pull.number = Number(azurePullRequestNumber);
+      // Setting AZURE_BUILD_REASON as Azure' Build.Reason System variable is accessible in 'Check Pull request adapter
+      process.env.AZURE_BUILD_REASON =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.BUILD_REASON) || "";
+    }
     return azureData;
   }
 }

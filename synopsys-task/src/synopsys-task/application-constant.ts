@@ -14,6 +14,8 @@ export const POLARIS_KEY = "polaris";
 export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 
+export const AZURE_USER_TOKEN_KEY = "azure_user_token";
+
 // Polaris
 export const POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 export const POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
@@ -31,6 +33,8 @@ export const COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 export const COVERITY_INSTALL_DIRECTORY_KEY =
   "bridge_coverity_install_directory";
 export const COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
+export const COVERITY_AUTOMATION_PRCOMMENT_KEY =
+  "bridge_coverity_automation_prcomment";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -50,6 +54,8 @@ export const BLACKDUCK_INSTALL_DIRECTORY_KEY =
 export const BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "bridge_blackduck_scan_failure_severities";
+export const BLACKDUCK_AUTOMATION_PRCOMMENT_KEY =
+  "bridge_blackduck_automation_prcomment";
 export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
   "bridge_blackduck_automation_fixpr";
 

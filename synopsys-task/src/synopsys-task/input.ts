@@ -1,5 +1,6 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
+import { AZURE_USER_TOKEN_KEY } from "./application-constant";
 
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
@@ -12,6 +13,9 @@ export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";
 
 // Polaris related inputs
+export const AZURE_USER_TOKEN =
+  taskLib.getInput(constants.AZURE_USER_TOKEN_KEY)?.trim() || "";
+
 export const POLARIS_ACCESS_TOKEN =
   taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY)?.trim() || "";
 export const POLARIS_APPLICATION_NAME =
@@ -40,6 +44,8 @@ export const COVERITY_INSTALL_DIRECTORY =
   taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)?.trim() || "";
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)?.trim() || "";
+export const COVERITY_AUTOMATION_PRCOMMENT =
+  taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 
 // Blackduck related inputs
 export const BLACKDUCK_URL =
@@ -57,6 +63,8 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
   ) || "";
 export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
   taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() || "";
+export const BLACKDUCK_AUTOMATION_PRCOMMENT =
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";

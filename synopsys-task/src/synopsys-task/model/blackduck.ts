@@ -29,4 +29,5 @@ export interface BlackduckData {
 
 export interface AutomationData {
   fixpr?: boolean;
+  prcomment?: boolean;
 }
