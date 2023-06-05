@@ -76,15 +76,17 @@ steps:
     bridge_coverity_connect_project_name: $(COVERITY_PROJECT_NAME)
     bridge_coverity_connect_stream_name: $(COVERITY_STREAM_NAME)
 ```
-| Input Parameter   | Description                           | Mandatory / Optional |
-|-------------------|---------------------------------------|----------|
-| `bridge_coverity_connect_url` | URL for Coverity server        | Mandatory     |
-| `bridge_coverity_connect_user_name`        | Username for Coverity        | Mandatory     |
-| `bridge_coverity_connect_user_password`        | Password for Coverity       | Mandatory     |
-| `bridge_coverity_connect_project_name`        | Project name in Coverity          | Mandatory     |
-| `bridge_coverity_connect_stream_name`        | Stream name in Coverity           | Mandatory     |
-| `bridge_coverity_install_directory`        | Directory path to install Coverity | Optional    |
-| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| Input Parameter                         | Description                           | Mandatory / Optional |
+|-----------------------------------------|---------------------------------------|----------|
+| `bridge_coverity_connect_url`           | URL for Coverity server        | Mandatory     |
+| `bridge_coverity_connect_user_name`     | Username for Coverity        | Mandatory     |
+| `bridge_coverity_connect_user_password` | Password for Coverity       | Mandatory     |
+| `bridge_coverity_connect_project_name`  | Project name in Coverity          | Mandatory     |
+| `bridge_coverity_connect_stream_name`   | Stream name in Coverity           | Mandatory     |
+| `bridge_coverity_install_directory`     | Directory path to install Coverity | Optional    |
+| `bridge_coverity_connect_policy_view`   | The policy view  of Coverity. <br/> ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be failed with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `bridge_coverity_automation_prcomment`  | To enable feedback from Coverity security testing as pull request comment.   <br/> Supported values: true or false        | Optional    |
+| `azure_token`                              | Generate Personal Access Token from Azure and store it as secret variable. Refer the given documentation for more information: https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows" | Mandatory when 'bridge_coverity_automation_prcomment' is set as 'true'. |
           
 ## Synopsys Security Scan - Black Duck
 
@@ -109,13 +111,16 @@ steps:
     bridge_blackduck_token: $(BLACKDUCK_TOKEN)
 ```
 
-| Input Parameter | Description |  Mandatory / Optional |
-|-----------------|-------------|---------------------|
-|`bridge_blackduck_url`  | URL for Black Duck server  | Mandatory     |
-| `bridge_blackduck_token` | API token for Black Duck | Mandatory     |
-| `bridge_blackduck_install_directory` | Directory path to install Black Duck  | Optional     |
-| `bridge_blackduck_scan_full` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false | Optional     |
-| `bridge_blackduck_scan_failure_severities`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED" | Optional |
+| Input Parameter                            | Description                                                                                                                                                                                                                                                                     | Mandatory / Optional                                                                                            |
+|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `bridge_blackduck_url`                     | URL for Black Duck server                                                                                                                                                                                                                                                       | Mandatory                                                                                                       |
+| `bridge_blackduck_token`                   | API token for Black Duck                                                                                                                                                                                                                                                        | Mandatory                                                                                                       |
+| `bridge_blackduck_install_directory`       | Directory path to install Black Duck                                                                                                                                                                                                                                            | Optional                                                                                                        |
+| `bridge_blackduck_scan_full`               | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                              | Optional                                                                                                        |
+| `bridge_blackduck_scan_failure_severities` | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                               | Optional                                                                                                        |
+| `bridge_blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result.   Supported values: true or false                                                                                                                                                                | Optional                                                                                                        |
+| `bridge_blackduck_automation_fixpr`        | By default fix pull request creation will be disabled (i.e.Create fix pull requests if vulnerabilities are reported). To enable this feature, set blackduck_automation_fixpr true   <br/> Supported values: true or false                                                       | Optional                                                                                                        |
+| `azure_token`                              | Generate Personal Access Token from Azure and store it as secret variable. Refer the given documentation for more information: https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows" | Mandatory when 'bridge_blackduck_automation_prcomment' or 'bridge_blackduck_automation_fixpr' is set as 'true'. |
 
 - **Note about Detect command line parameters:** Any command line parameters that you need to pass to detect can be passed through variables. This is a standard capability of Detect. For example, if you want to only report newly found policy violations on rapid scans, you would normally use the command line --detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT. You can replace this by setting the DETECT_BLACKDUCK_RAPID_COMPARE_MODE variable to BOM_COMPARE_STRICT.
 
