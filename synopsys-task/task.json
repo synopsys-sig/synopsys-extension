@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "93e975a2-b8c6-40b9-946a-1ca8e1303359",
-  "name": "synopsys-task",
+  "name": "synopsys-security-scan",
   "friendlyName": "Synopsys security scan",
   "description": "The Azure Dev Ops plugin for running security scans on Polaris, Black Duck and Coverity .",
   "helpMarkDown": "",
@@ -9,7 +9,7 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 1,
+    "Minor": 0,
     "Patch": 0
   },
   "instanceNameFormat": "synopsystask",
@@ -21,14 +21,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A bridge_download_url"
-    },
-    {
-      "name": "azure_token",
-      "type": "string",
-      "label": "Azure token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "azure token"
     },
     {
       "name": "synopsys_bridge_path",
@@ -174,30 +166,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Include Diagnostics"
-    },
-    {
-      "name": "blackduck_automation_fixpr",
-      "type": "string",
-      "label": "Blackduck Automation Fix PR",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Blackduck Automation Fix PR"
-    },
-    {
-      "name": "bridge_coverity_automation_prcomment",
-      "type": "string",
-      "label": "Coverity Automation PR Comment",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Coverity Automation PR Comment"
-    },
-    {
-      "name": "bridge_blackduck_automation_prcomment",
-      "type": "string",
-      "label": "Blackduck Automation PR Comment",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Blackduck Automation PR Comment"
     }
   ],
   "execution": {
