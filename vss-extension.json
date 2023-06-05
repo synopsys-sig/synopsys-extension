@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "synopsys-extension",
+  "id": "synopsys-security-scan",
   "name": "synopsys-extension",
   "version": "1.0.0",
   "publisher": "synopsys-security-scan",

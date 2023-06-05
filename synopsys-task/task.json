@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "93e975a2-b8c6-40b9-946a-1ca8e1303359",
-  "name": "synopsys-task",
+  "name": "synopsys-security-scan",
   "friendlyName": "Synopsys security scan",
   "description": "The Azure Dev Ops plugin for running security scans on Polaris, Black Duck and Coverity .",
   "helpMarkDown": "",
