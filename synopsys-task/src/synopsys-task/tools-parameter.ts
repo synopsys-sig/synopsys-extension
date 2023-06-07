@@ -23,7 +23,7 @@ export class SynopsysToolsParameter {
   private static STAGE_OPTION = "--stage";
   private static BLACKDUCK_STAGE = "blackduck";
   private static BD_STATE_FILE_NAME = "bd_input.json";
-  private static STATE_OPTION = "--state";
+  private static INPUT_OPTION = "--input";
   private static POLARIS_STAGE = "polaris";
   private static POLARIS_STATE_FILE_NAME = "polaris_input.json";
   static SPACE = " ";
@@ -84,7 +84,7 @@ export class SynopsysToolsParameter {
     )
       .concat(SynopsysToolsParameter.POLARIS_STAGE)
       .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.STATE_OPTION)
+      .concat(SynopsysToolsParameter.INPUT_OPTION)
       .concat(SynopsysToolsParameter.SPACE)
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
@@ -198,7 +198,7 @@ export class SynopsysToolsParameter {
     )
       .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
       .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.STATE_OPTION)
+      .concat(SynopsysToolsParameter.INPUT_OPTION)
       .concat(SynopsysToolsParameter.SPACE)
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
@@ -263,7 +263,7 @@ export class SynopsysToolsParameter {
     )
       .concat(SynopsysToolsParameter.COVERITY_STAGE)
       .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.STATE_OPTION)
+      .concat(SynopsysToolsParameter.INPUT_OPTION)
       .concat(SynopsysToolsParameter.SPACE)
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);

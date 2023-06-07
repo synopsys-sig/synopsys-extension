@@ -51,7 +51,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             
             expect(formattedCommand).contains('--stage polaris');
-            expect(formattedCommand).contains('--state '.concat(polarisStateFile));
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
         it('should fail for invalid assessment type', function () {
@@ -112,7 +112,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
             expect(formattedCommand).contains('--stage connect');
-            expect(formattedCommand).contains('--state '.concat(coverityStateFile));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
         it('should success for coverity command formation with mandatory parameters', function () {
@@ -131,7 +131,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
             expect(formattedCommand).contains('--stage connect');
-            expect(formattedCommand).contains('--state '.concat(coverityStateFile));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
 
@@ -151,7 +151,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
 
             expect(formattedCommand).contains('--stage connect');
-            expect(formattedCommand).contains('--state '.concat(coverityStateFile));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
         it('should success for coverity command formation with invalid coverity install directory', function () {
@@ -173,7 +173,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
             expect(formattedCommand).contains('--stage connect');
-            expect(formattedCommand).contains('--state '.concat(coverityStateFile));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
     });
 
@@ -214,7 +214,7 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');    
              expect(formattedCommand).contains('--stage blackduck');
-             expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
          it('should success for blackduck command formation with PR COMMENT', function () {
@@ -231,7 +231,7 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.token).to.be.equals('token');
              expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
              expect(formattedCommand).contains('--stage blackduck');
-             expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
          it('should fail for invalid bridge_blackduck_scan_failure_severities', function () {
@@ -265,7 +265,7 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');     
              expect(formattedCommand).contains('--stage blackduck');
-             expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
         it('should fail for invalid azure token value with fix pr true', function () {
@@ -299,7 +299,7 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');    
              expect(formattedCommand).contains('--stage blackduck');
-             expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
         it('should success for blackduck command formation with mandatory parameters', function () {
@@ -312,7 +312,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');   
             expect(formattedCommand).contains('--stage blackduck');
-            expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
         it('should success for blackduck command formation with invalid blackduck install directory', function () {
@@ -330,7 +330,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');   
             expect(formattedCommand).contains('--stage blackduck');
-            expect(formattedCommand).contains('--state '.concat(blackduckStateFile));
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
     });
 });
