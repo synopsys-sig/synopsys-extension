@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "synopsys-security-scan",
-  "name": "synopsys-extension",
+  "name": "Synopsys Security Scan",
   "version": "1.0.0",
   "publisher": "synopsys-security-scan",
   "targets": [

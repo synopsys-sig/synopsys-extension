@@ -1,7 +1,7 @@
 {
   "modules": [
     {
-      "at": "/synopsys-task",
+      "at": "./synopsys-task",
       "templates": ["dependencies"]
     }
   ]
