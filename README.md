@@ -1,6 +1,6 @@
 # Synopsys Security Scan
 
-Synopsys Security Scan allows you to configure your Azure pipeline to run Synopsys security testing and take action on the results. Synopsys Security Scan leverages Synopsys Bridge,allowing you to run tests for several Synopsys products from the command line.
+Synopsys Security Scan allows you to configure your Azure pipeline to run Synopsys security testing and take action on the results. Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
 
 # Quick Start for the Synopsys Security Scan
 
@@ -121,14 +121,14 @@ steps:
 
 ## Additional Parameters
 
-Use the following additional parameters as necessary. 
+Pass the following additional parameters as necessary. 
 
 | Input Parameter | Description                              |  Mandatory / Optional | 
 |-----------------|------------------------------------------|-----------------------|
 |`synopsys_bridge_path`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
 | `bridge_download_url`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
 |`bridge_download_version`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
-| `include_diagnostics`      | All diagnostics files are available to download when 'true' passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
+| `include_diagnostics`      | All diagnostics files are available to download when `true` passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
 Note - If `bridge_download_version` or `bridge_download_url` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
  
