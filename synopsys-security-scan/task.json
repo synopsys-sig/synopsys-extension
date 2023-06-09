@@ -3,7 +3,7 @@
   "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
   "name": "synopsys-security-scan",
   "friendlyName": "Synopsys Security Scan",
-  "description": "The Azure Dev Ops plugin for running security scans on Polaris, Black Duck and Coverity .",
+  "description": "Run security scans on Polaris, Black Duck and Coverity",
   "helpMarkDown": "",
   "category": "Utility",
   "author": "Synopsys",
@@ -12,7 +12,7 @@
     "Minor": 0,
     "Patch": 0
   },
-  "instanceNameFormat": "synopsystask",
+  "instanceNameFormat": "Synopsys Security Scan",
   "inputs": [
     {
       "name": "bridge_download_url",
