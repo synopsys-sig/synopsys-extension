@@ -1,9 +1,9 @@
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import {SinonStub} from "sinon";
-import * as diagnostics from "../../../src/synopsys-task/diagnostics";
-import * as inputs from "../../../src/synopsys-task/input";
-import * as constants from "../../../src/synopsys-task/application-constant";
+import * as diagnostics from "../../../src/synopsys-security-scan/diagnostics";
+import * as inputs from "../../../src/synopsys-security-scan/input";
+import * as constants from "../../../src/synopsys-security-scan/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
 import * as Q from "q";

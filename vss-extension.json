@@ -18,18 +18,18 @@
   },
   "files": [
     {
-      "path": "synopsys-task"
+      "path": "synopsys-security-scan"
     }
   ],
   "contributions": [
     {
-      "id": "synopsys-task",
+      "id": "synopsys-security-scan",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "synopsys-task"
+        "name": "synopsys-security-scan"
       }
     }
   ]

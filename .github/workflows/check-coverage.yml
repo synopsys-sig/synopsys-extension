@@ -25,13 +25,13 @@ jobs:
           node-version: 16.x
 
       - name: Install dependencies
-        run: cd synopsys-task && npm ci
+        run: cd synopsys-security-scan && npm ci
 
       - name: Unit Test Cases
         id: unit-test-cases
         shell: bash
         run: |
-          cd synopsys-task && npm run test
+          cd synopsys-security-scan && npm run test
           coverageFile="coverage/index.html"
           
           ### fetching line coverage from coverage/index.html file

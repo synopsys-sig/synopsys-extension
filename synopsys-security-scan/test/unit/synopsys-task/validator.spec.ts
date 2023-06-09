@@ -1,5 +1,5 @@
-import * as inputs from '../../../src/synopsys-task/input';
-import * as validator from '../../../src/synopsys-task/validator';
+import * as inputs from '../../../src/synopsys-security-scan/input';
+import * as validator from '../../../src/synopsys-security-scan/validator';
 import { expect } from 'chai';
 import * as mocha from 'mocha';
 

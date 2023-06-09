@@ -1,9 +1,9 @@
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import * as main from "../../src/main";
-import * as inputs from "../../src/synopsys-task/input";
-import { SynopsysBridge } from "../../src/synopsys-task/synopsys-bridge";
-import * as diagnostics from "../../src/synopsys-task/diagnostics";
+import * as inputs from "../../src/synopsys-security-scan/input";
+import { SynopsysBridge } from "../../src/synopsys-security-scan/synopsys-bridge";
+import * as diagnostics from "../../src/synopsys-security-scan/diagnostics";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
 import * as Q from "q";

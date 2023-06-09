@@ -20,7 +20,7 @@
       "label": "Bridge download url",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "A bridge_download_url"
+      "helpMarkDown": "Provide URL to bridge zip file. If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path"
     },
     {
       "name": "azure_token",
@@ -28,7 +28,7 @@
       "label": "Azure token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "azure token"
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment is enabled"
     },
     {
       "name": "synopsys_bridge_path",
@@ -44,7 +44,7 @@
       "label": "Synopsys Bridge version",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Bridge version to be downloaded"
+      "helpMarkDown": "Provide bridge version. If provided, the specified version of Synopsys Bridge will be downloaded and configured"
     },
     {
       "name": "bridge_polaris_accessToken",
@@ -52,7 +52,7 @@
       "label": "Polaris Access Token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Access Token"
+      "helpMarkDown": "Access token for Polaris"
     },
     {
       "name": "bridge_polaris_application_name",
@@ -60,7 +60,7 @@
       "label": "Polaris Application Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Application Name"
+      "helpMarkDown": "Application name in Polaris"
     },
     {
       "name": "bridge_polaris_project_name",
@@ -68,7 +68,7 @@
       "label": "Polaris Project Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Project Name"
+      "helpMarkDown": "Project name in Polaris"
     },
     {
       "name": "bridge_polaris_assessment_types",
@@ -81,10 +81,10 @@
     {
       "name": "bridge_polaris_serverUrl",
       "type": "string",
-      "label": "Polaris Assessment Types",
+      "label": "Polaris Server Url",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Assessment Types seperated by commas"
+      "helpMarkDown": "URL for Polaris Server"
     },
     {
       "name": "bridge_coverity_connect_url",
@@ -92,7 +92,7 @@
       "label": "Coverity Connect Url",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect Url"
+      "helpMarkDown": "URL for Coverity server"
     },
     {
       "name": "bridge_coverity_connect_user_name",
@@ -100,7 +100,7 @@
       "label": "Coverity Connect User Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect User Name"
+      "helpMarkDown": "Username for Coverity"
     },
     {
       "name": "bridge_coverity_connect_user_password",
@@ -108,7 +108,7 @@
       "label": "Coverity Connect User Password",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect User Password"
+      "helpMarkDown": "Password for Coverity"
     },
     {
       "name": "bridge_coverity_connect_project_name",
@@ -116,7 +116,7 @@
       "label": "Coverity Connect Project Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect Project Name"
+      "helpMarkDown": "Project name in Coverity. Many customers prefer to set their Coverity project and stream names to match the azure repository name"
     },
     {
       "name": "bridge_coverity_connect_stream_name",
@@ -124,7 +124,7 @@
       "label": "Coverity Connect Stream Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect Stream Name"
+      "helpMarkDown": "Stream name in Coverity"
     },
     {
       "name": "bridge_coverity_install_directory",
@@ -132,7 +132,7 @@
       "label": "Coverity Install Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Install Directory"
+      "helpMarkDown": "Directory path to install Coverity"
     },
     {
       "name": "bridge_coverity_connect_policy_view",
@@ -140,24 +140,24 @@
       "label": "Coverity Connect Policy View",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Connect Policy View"
+      "helpMarkDown": "ID number of a saved view to apply as a \"break the build\" policy. If any defects are found within this view when applied to the project, the build will be failed with an exit code."
     },
     {
       "name": "bridge_blackduck_url",
       "type": "string",
-      "label": "Blackduck URL ",
+      "label": "Blackduck URL",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck URL "
+      "helpMarkDown": "URL for Black Duck server"
     }
     ,
     {
       "name": "bridge_blackduck_token",
       "type": "string",
-      "label": "Blackduck URL API Token",
+      "label": "Blackduck API Token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck URL API Token"
+      "helpMarkDown": "API token for Black Duck"
     }
     , {
       "name": "bridge_blackduck_scan_failure_severities",
@@ -165,7 +165,7 @@
       "label": "Blackduck Scan Failure Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck Scan Failure Severities"
+      "helpMarkDown": "Scan failure severities of Black Duck."
     },
     {
       "name": "include_diagnostics",
@@ -173,7 +173,7 @@
       "label": "Include Diagnostics",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Include Diagnostics"
+      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed"
     },
     {
       "name": "blackduck_automation_fixpr",
@@ -181,7 +181,7 @@
       "label": "Blackduck Automation Fix PR",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck Automation Fix PR"
+      "helpMarkDown": "Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. By default fix pull request creation will be disabled, Supported values: true or false"
     },
     {
       "name": "bridge_coverity_automation_prcomment",
@@ -189,7 +189,7 @@
       "label": "Coverity Automation PR Comment",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity Automation PR Comment"
+      "helpMarkDown": "To enable feedback from Coverity security testing as pull request comment, Supported values: true or false"
     },
     {
       "name": "bridge_blackduck_automation_prcomment",
@@ -197,7 +197,7 @@
       "label": "Blackduck Automation PR Comment",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Blackduck Automation PR Comment"
+      "helpMarkDown": "Flag to enable automatic pull request comment based on Black Duck scan result. Supported values: true or false"
     }
   ],
   "execution": {

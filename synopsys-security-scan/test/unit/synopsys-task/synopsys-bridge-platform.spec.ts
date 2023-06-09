@@ -1,10 +1,10 @@
-import {SynopsysBridge} from "../../../src/synopsys-task/synopsys-bridge";
+import {SynopsysBridge} from "../../../src/synopsys-security-scan/synopsys-bridge";
 import {after} from "mocha";
 import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import path from "path";
-import * as constants from "../../../src/synopsys-task/application-constant";
-import {SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC} from "../../../src/synopsys-task/application-constant";
+import * as constants from "../../../src/synopsys-security-scan/application-constant";
+import {SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC} from "../../../src/synopsys-security-scan/application-constant";
 
 describe("Platform", () => {
 

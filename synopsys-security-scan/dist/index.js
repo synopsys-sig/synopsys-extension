@@ -40,16 +40,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.logBridgeExitCodes = exports.run = void 0;
-const utility_1 = __nccwpck_require__(837);
-const synopsys_bridge_1 = __nccwpck_require__(403);
+const utility_1 = __nccwpck_require__(22);
+const synopsys_bridge_1 = __nccwpck_require__(9740);
 const taskLib = __importStar(__nccwpck_require__(347));
-const constants = __importStar(__nccwpck_require__(3051));
-const inputs = __importStar(__nccwpck_require__(7533));
-const diagnostics_1 = __nccwpck_require__(2926);
-const utility_2 = __nccwpck_require__(837);
+const constants = __importStar(__nccwpck_require__(6938));
+const inputs = __importStar(__nccwpck_require__(2576));
+const diagnostics_1 = __nccwpck_require__(5801);
+const utility_2 = __nccwpck_require__(22);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Synopsys Task started...");
+        console.log("Synopsys Security Scan started...");
         const tempDir = (0, utility_1.getTempDir)();
         const workSpaceDir = (0, utility_1.getWorkSpaceDirectory)();
         try {
@@ -69,7 +69,7 @@ function run() {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
             }
         }
-        console.log("Synopsys Task workflow execution completed");
+        console.log("Synopsys Security Scan workflow execution completed");
     });
 }
 exports.run = run;
@@ -90,7 +90,7 @@ run().catch((error) => {
 
 /***/ }),
 
-/***/ 3051:
+/***/ 6938:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -148,7 +148,7 @@ exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
 
 /***/ }),
 
-/***/ 2926:
+/***/ 5801:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -179,7 +179,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadDiagnostics = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
-const constants = __importStar(__nccwpck_require__(3051));
+const constants = __importStar(__nccwpck_require__(6938));
 const path = __importStar(__nccwpck_require__(1017));
 function uploadDiagnostics(workspaceDir) {
     const uploadArtifactPath = path.join(workspaceDir, constants.BRIDGE_DIAGNOSTICS_FOLDER);
@@ -194,7 +194,7 @@ exports.uploadDiagnostics = uploadDiagnostics;
 
 /***/ }),
 
-/***/ 7533:
+/***/ 2576:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -226,7 +226,7 @@ var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
-const constants = __importStar(__nccwpck_require__(3051));
+const constants = __importStar(__nccwpck_require__(6938));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
@@ -260,7 +260,7 @@ exports.INCLUDE_DIAGNOSTICS = ((_v = taskLib.getInput(constants.INCLUDE_DIAGNOST
 
 /***/ }),
 
-/***/ 3655:
+/***/ 9797:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -278,7 +278,7 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
 
 /***/ }),
 
-/***/ 5467:
+/***/ 1481:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -301,7 +301,7 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
 
 /***/ }),
 
-/***/ 403:
+/***/ 9740:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -346,11 +346,11 @@ exports.SynopsysBridge = void 0;
 const path = __importStar(__nccwpck_require__(1017));
 const taskLib = __importStar(__nccwpck_require__(347));
 const HttpClient_1 = __nccwpck_require__(5538);
-const tools_parameter_1 = __nccwpck_require__(6233);
-const validator_1 = __nccwpck_require__(6717);
-const constants = __importStar(__nccwpck_require__(3051));
-const inputs = __importStar(__nccwpck_require__(7533));
-const utility_1 = __nccwpck_require__(837);
+const tools_parameter_1 = __nccwpck_require__(8902);
+const validator_1 = __nccwpck_require__(2325);
+const constants = __importStar(__nccwpck_require__(6938));
+const inputs = __importStar(__nccwpck_require__(2576));
+const utility_1 = __nccwpck_require__(22);
 const fs_1 = __nccwpck_require__(7147);
 const dom_parser_1 = __importDefault(__nccwpck_require__(9592));
 class SynopsysBridge {
@@ -639,7 +639,7 @@ exports.SynopsysBridge = SynopsysBridge;
 
 /***/ }),
 
-/***/ 6233:
+/***/ 8902:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -673,14 +673,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const inputs = __importStar(__nccwpck_require__(7533));
-const blackduck_1 = __nccwpck_require__(5467);
-const azure_1 = __nccwpck_require__(3655);
-const constants = __importStar(__nccwpck_require__(3051));
+const inputs = __importStar(__nccwpck_require__(2576));
+const blackduck_1 = __nccwpck_require__(1481);
+const azure_1 = __nccwpck_require__(9797);
+const constants = __importStar(__nccwpck_require__(6938));
 const taskLib = __importStar(__nccwpck_require__(347));
-const validator_1 = __nccwpck_require__(6717);
-const utility_1 = __nccwpck_require__(837);
-const input_1 = __nccwpck_require__(7533);
+const validator_1 = __nccwpck_require__(2325);
+const utility_1 = __nccwpck_require__(22);
+const input_1 = __nccwpck_require__(2576);
 const url = __importStar(__nccwpck_require__(7310));
 class SynopsysToolsParameter {
     constructor(tempDir) {
@@ -934,7 +934,7 @@ exports.SynopsysToolsParameter = SynopsysToolsParameter;
 
 /***/ }),
 
-/***/ 837:
+/***/ 22:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -977,7 +977,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const application_constant_1 = __nccwpck_require__(3051);
+const application_constant_1 = __nccwpck_require__(6938);
 const toolLib = __importStar(__nccwpck_require__(3681));
 const process = __importStar(__nccwpck_require__(7282));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -1058,7 +1058,7 @@ exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
 
 /***/ }),
 
-/***/ 6717:
+/***/ 2325:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1088,8 +1088,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateBlackDuckInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
-const constants = __importStar(__nccwpck_require__(3051));
-const inputs = __importStar(__nccwpck_require__(7533));
+const constants = __importStar(__nccwpck_require__(6938));
+const inputs = __importStar(__nccwpck_require__(2576));
 const taskLib = __importStar(__nccwpck_require__(347));
 function validateScanTypes() {
     const paramsMap = new Map();

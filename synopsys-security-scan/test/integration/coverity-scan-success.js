@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tmrm = __importStar(require("azure-pipelines-task-lib/mock-run"));
 const process = __importStar(require("process"));
 const path = __importStar(require("path"));
-const constants = __importStar(require("../../src/synopsys-task/application-constant"));
+const constants = __importStar(require("../../src/synopsys-security-scan/application-constant"));
 let taskPath = path.join(__dirname, "..", "..", "lib", "main.js");
 let tmr = new tmrm.TaskMockRunner(taskPath);
 tmr.registerMockExport("downloadTool", __dirname.concat("synopsys-bridge.zip"));

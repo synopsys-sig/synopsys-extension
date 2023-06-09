@@ -1,14 +1,14 @@
 import {expect} from "chai";
-import * as utility from "../../../src/synopsys-task/utility";
+import * as utility from "../../../src/synopsys-security-scan/utility";
 import {
     extractZipped,
     getWorkSpaceDirectory,
     parseToBoolean
-} from "../../../src/synopsys-task/utility";
+} from "../../../src/synopsys-security-scan/utility";
 import process from "process";
 import * as sinon from "sinon";
 import * as toolLib from "azure-pipelines-tool-lib";
-import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import {DownloadFileResponse} from "../../../src/synopsys-security-scan/model/download-file-response";
 
 describe("Utilities", () => {
 

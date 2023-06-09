@@ -2,7 +2,7 @@ import * as tmrm from "azure-pipelines-task-lib/mock-run";
 import * as ta from "azure-pipelines-task-lib/mock-answer";
 import * as process from 'process';
 import * as path from 'path';
-import * as constants from "../../src/synopsys-task/application-constant";
+import * as constants from "../../src/synopsys-security-scan/application-constant";
 
 let taskPath = path.join(__dirname, "..", "..", "lib", "main.js");
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);

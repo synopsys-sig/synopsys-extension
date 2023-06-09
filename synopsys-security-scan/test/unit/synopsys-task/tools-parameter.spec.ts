@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
+import { SynopsysToolsParameter } from "../../../src/synopsys-security-scan/tools-parameter";
 import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as inputs from "../../../src/synopsys-task/input";
-import { Polaris } from "../../../src/synopsys-task/model/polaris";
-import { InputData } from "../../../src/synopsys-task/model/input-data";
+import * as inputs from "../../../src/synopsys-security-scan/input";
+import { Polaris } from "../../../src/synopsys-security-scan/model/polaris";
+import { InputData } from "../../../src/synopsys-security-scan/model/input-data";
 import * as fs from 'fs';
 import * as mocha from 'mocha';
-import * as validator from "../../../src/synopsys-task/validator";
+import * as validator from "../../../src/synopsys-security-scan/validator";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
