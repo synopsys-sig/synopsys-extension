@@ -6,3 +6,6 @@
 /synopsys-task/coverity_input.json
 /synopsys-task/.nyc_output/
 /synopsys-task/coverage//
+.DS_Store
+*.synopsys-extension-*.vsix
+/synopsys-task/coverage/
