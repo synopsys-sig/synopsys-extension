@@ -134,6 +134,26 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
+
+        it('should success for coverity command formation with PR comment', function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
+
+            expect(formattedCommand).contains('--stage connect');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
         it('should success for coverity command formation with invalid coverity install directory', function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
@@ -176,12 +196,11 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: ''})
             sandbox.restore();
         });
 
-         it('should success for blackduck command formation with mandatory and optional parameters', function () {
+         it('should success for blackduck command formation with mandatory and some optional parameters', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
@@ -198,6 +217,23 @@ describe("Synopsys Tools Parameter test", () => {
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
+         it('should success for blackduck command formation with PR COMMENT', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+             const jsonData = JSON.parse(jsonString);
+             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+             expect(jsonData.data.blackduck.token).to.be.equals('token');
+             expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
+             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+         });
+
          it('should fail for invalid bridge_blackduck_scan_failure_severities', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
@@ -207,6 +243,63 @@ describe("Synopsys Tools Parameter test", () => {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for bridge_blackduck_scan_failure_severities')
             }
+        });
+
+        it('should success for blackduck command formation with fix pr true', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
+            
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
+            
+             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+             const jsonData = JSON.parse(jsonString);
+             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+             expect(jsonData.data.blackduck.token).to.be.equals('token');     
+             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+         });
+
+        it('should fail for invalid azure token value with fix pr true', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+            getStubVariable.withArgs("System.AccessToken").returns("")
+            try {
+                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            } catch (e) {
+                const errorObj = e as Error;
+                console.log("errorObj",errorObj)
+                expect(errorObj.message).equals('Missing required azure token for fix pull request/automation comment')
+            }
+        });
+
+        it('should form blackduck command but with undefined azure values', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("Build.SourceBranchName").returns("")
+            
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+             const jsonData = JSON.parse(jsonString);
+             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+             expect(jsonData.data.blackduck.token).to.be.equals('token');    
+             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
         it('should success for blackduck command formation with mandatory parameters', function () {
@@ -229,7 +322,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: 'false'})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
-
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
 

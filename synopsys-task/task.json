@@ -23,6 +23,14 @@
       "helpMarkDown": "A bridge_download_url"
     },
     {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "azure token"
+    },
+    {
       "name": "synopsys_bridge_path",
       "type": "string",
       "label": "Synopsys Bridge Path",
@@ -158,7 +166,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Blackduck Scan Failure Severities"
-    }, 
+    },
     {
       "name": "include_diagnostics",
       "type": "string",
@@ -166,6 +174,30 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Include Diagnostics"
+    },
+    {
+      "name": "blackduck_automation_fixpr",
+      "type": "string",
+      "label": "Blackduck Automation Fix PR",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Automation Fix PR"
+    },
+    {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "string",
+      "label": "Coverity Automation PR Comment",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity Automation PR Comment"
+    },
+    {
+      "name": "bridge_blackduck_automation_prcomment",
+      "type": "string",
+      "label": "Blackduck Automation PR Comment",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Automation PR Comment"
     }
   ],
   "execution": {

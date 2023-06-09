@@ -6,6 +6,7 @@ import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
 } from "./model/blackduck";
+import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -13,6 +14,9 @@ import {
   validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
 } from "./validator";
+import { parseToBoolean } from "./utility";
+import { AZURE_TOKEN } from "./input";
+import * as url from "url";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -96,6 +100,7 @@ export class SynopsysToolsParameter {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
           token: inputs.BLACKDUCK_API_TOKEN,
+          automation: {},
         },
       },
     };
@@ -162,6 +167,22 @@ export class SynopsysToolsParameter {
       }
     }
 
+    // Check and put environment variable for fix pull request
+    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
+      console.log("Blackduck Automation Fix PR is enabled");
+      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.blackduck.automation.fixpr = true;
+    } else {
+      // Disable fix pull request for adapters
+      blackduckData.data.blackduck.automation.fixpr = false;
+    }
+
+    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
+      console.info("BlackDuck Automation comment is enabled");
+      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.blackduck.automation.prcomment = true;
+    }
+
     const inputJson = JSON.stringify(blackduckData);
 
     const stateFilePath = path.join(
@@ -198,7 +219,9 @@ export class SynopsysToolsParameter {
             project: { name: inputs.COVERITY_PROJECT_NAME },
             stream: { name: inputs.COVERITY_STREAM_NAME },
           },
+          automation: {},
         },
+        project: {},
       },
     };
 
@@ -216,6 +239,12 @@ export class SynopsysToolsParameter {
       covData.data.coverity.connect.policy = {
         view: inputs.COVERITY_POLICY_VIEW,
       };
+    }
+
+    if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
+      console.info("Coverity Automation comment is enabled");
+      covData.data.azure = this.getAzureRepoInfo();
+      covData.data.coverity.automation.prcomment = true;
     }
 
     const inputJson = JSON.stringify(covData);
@@ -239,5 +268,94 @@ export class SynopsysToolsParameter {
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
     return command;
+  }
+
+  private getAzureRepoInfo(): AzureData | undefined {
+    let azureOrganization = "";
+    const azureToken = AZURE_TOKEN;
+    let azureInstanceUrl = "";
+    const collectionUri =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+    if (collectionUri != "") {
+      const parsedUrl = url.parse(collectionUri);
+      azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+    }
+    const azureProject =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+    const azureRepo =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+    const azureRepoBranchName =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+      "";
+
+    const azurePullRequestNumber =
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+      ) || "";
+
+    if (azureToken == "") {
+      throw new Error(
+        "Missing required azure token for fix pull request/automation comment"
+      );
+    }
+
+    // This condition is required as per ts-lint as these fields may have undefined as well
+    if (
+      azureInstanceUrl != "" &&
+      azureToken != "" &&
+      azureOrganization != "" &&
+      azureProject != "" &&
+      azureRepo != "" &&
+      azureRepoBranchName != ""
+    ) {
+      return this.setAzureData(
+        azureInstanceUrl,
+        azureToken,
+        azureOrganization,
+        azureProject,
+        azureRepo,
+        azureRepoBranchName,
+        azurePullRequestNumber
+      );
+    }
+    return undefined;
+  }
+
+  private setAzureData(
+    azureInstanceUrl: string,
+    azureToken: string,
+    azureOrganization: string,
+    azureProject: string,
+    azureRepo: string,
+    azureRepoBranchName: string,
+    azurePullRequestNumber: string
+  ): AzureData {
+    const azureData: AzureData = {
+      api: {
+        url: azureInstanceUrl,
+      },
+      user: {
+        token: azureToken,
+      },
+      organization: {
+        name: azureOrganization,
+      },
+      project: {
+        name: azureProject,
+      },
+      repository: {
+        name: azureRepo,
+        branch: {
+          name: azureRepoBranchName,
+        },
+        pull: {},
+      },
+    };
+
+    if (azurePullRequestNumber != null) {
+      azureData.repository.pull.number = Number(azurePullRequestNumber);
+    }
+    return azureData;
   }
 }
