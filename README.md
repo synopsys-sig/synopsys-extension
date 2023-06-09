@@ -85,6 +85,8 @@ steps:
 | `bridge_coverity_connect_stream_name`        | Stream name in Coverity           | Mandatory     |
 | `bridge_coverity_install_directory`        | Directory path to install Coverity | Optional    |
 | `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `bridge_coverity_automation_prcomment`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> | Optional     |
+| `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken)  </br> | Mandatory if  bridge_coverity_automation_prcomment is set true. |
           
 ## Synopsys Security Scan - Black Duck
 
@@ -116,6 +118,9 @@ steps:
 | `bridge_blackduck_install_directory` | Directory path to install Black Duck  | Optional     |
 | `bridge_blackduck_scan_full` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false | Optional     |
 | `bridge_blackduck_scan_failure_severities`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED" | Optional |
+| `bridge_blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br>| Optional    |
+| `bridge_blackduck_automation_fixpr`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: true or false </br>| Optional    |
+| `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken)  </br> | Mandatory if  bridge_blackduck_automation_prcomment or bridge_blackduck_automation_fixpr is set true. |
 
 - **Note about Detect command line parameters:** Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
 
