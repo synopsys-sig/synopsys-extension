@@ -46,11 +46,11 @@ steps:
 ```
 | Input Parameter            | Description                                                       | Mandatory / Optional | 
 |----------------------------|-------------------------------------------------------------------|--------------------|
-| `polaris_serverUrl`        | URL for Polaris Server                                            | Mandatory          |
-| `polaris_accessToken`      | Access token for Polaris                                          | Mandatory          |
-| `polaris_application_name` | Application name in Polaris                                       | Mandatory          |
-| `polaris_project_name`     | Project name in Polaris                                           | Mandatory          |
-| `polaris_assessment_types` | Polaris assessment types. Example: SCA,SAST                       | Mandatory          |
+| `bridge_polaris_serverUrl`        | URL for Polaris Server                                            | Mandatory          |
+| `bridge_polaris_accessToken`      | Access token for Polaris                                          | Mandatory          |
+| `bridge_polaris_application_name` | Application name in Polaris                                       | Mandatory          |
+| `bridge_polaris_project_name`     | Project name in Polaris                                           | Mandatory          |
+| `bridge_polaris_assessment_types` | Polaris assessment types. Example: SCA,SAST                       | Mandatory          |
 
 # Synopsys Security Scan - Coverity Cloud Deployment with Thin Client
 
