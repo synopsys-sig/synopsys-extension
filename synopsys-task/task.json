@@ -13,6 +13,31 @@
     "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
+  "groups": [
+    {
+      "name": "polaris",
+      "displayName": "Polaris Credentials",
+      "visibleRule": "scanType = polaris",
+      "isExpanded": true
+    },
+    {
+      "name": "blackduck",
+      "displayName": "Blackduck Credentials",
+      "visibleRule": "scanType = blackduck",
+      "isExpanded": true
+    },
+    {
+      "name": "coverity",
+      "displayName": "Coverity Credentials",
+      "visibleRule": "scanType = coverity",
+      "isExpanded": true
+    },
+    {
+      "name": "optionalSettings",
+      "displayName": "Optional Settings",
+      "isExpanded": false
+    }
+  ],
   "inputs": [
     {
       "name": "bridge_download_url",
@@ -20,15 +45,8 @@
       "label": "Bridge download url",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Synopsys Bridge will be automatically downloaded and configured"
-    },
-    {
-      "name": "azure_token",
-      "type": "string",
-      "label": "Azure token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled."
+      "helpMarkDown": "Synopsys Bridge will be automatically downloaded and configured",
+      "groupName": "optionalSettings"
     },
     {
       "name": "synopsys_bridge_path",
@@ -36,7 +54,8 @@
       "label": "Synopsys Bridge Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "A path where synopsys bridge will be configured."
+      "helpMarkDown": "A path where synopsys bridge will be configured.",
+      "groupName": "optionalSettings"
     },
     {
       "name": "bridge_download_version",
@@ -44,87 +63,120 @@
       "label": "Synopsys Bridge version",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Bridge version to be downloaded."
+      "helpMarkDown": "Bridge version to be downloaded.",
+      "groupName": "optionalSettings"
+    },
+    {
+      "name": "include_diagnostics",
+      "type": "boolean",
+      "label": "Include Diagnostics",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
+      "groupName": "optionalSettings"
+    },
+    {
+      "name": "scanType",
+      "type": "pickList",
+      "label": "Security Testing Solution: ",
+      "required": true,
+      "helpMarkDown": "Select required security testing solution",
+      "defaultValue": "polaris",
+      "options": {
+        "polaris": "Polaris",
+        "blackduck": "Blackduck",
+        "coverity": "Coverity"
+      }
     },
     {
       "name": "bridge_polaris_accessToken",
       "type": "string",
       "label": "Polaris Access Token",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Access token for Polaris."
+      "required": true,
+      "helpMarkDown": "Access token for Polaris.",
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_application_name",
       "type": "string",
       "label": "Polaris Application Name",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Application name in Polaris."
+      "required": true,
+      "helpMarkDown": "Application name in Polaris.",
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_project_name",
       "type": "string",
       "label": "Polaris Project Name",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Project name in Polaris."
+      "required": true,
+      "helpMarkDown": "Project name in Polaris.",
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_assessment_types",
       "type": "string",
       "label": "Polaris Assessment Types",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Polaris Assessment Types seperated by commas."
+      "required": true,
+      "helpMarkDown": "Polaris Assessment Types seperated by commas.",
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_serverUrl",
       "type": "string",
       "label": "Polaris Server Url",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "URL for Polaris Server."
+      "required": true,
+      "helpMarkDown": "URL for Polaris Server.",
+      "groupName": "polaris"
     },
     {
       "name": "bridge_coverity_connect_url",
       "type": "string",
       "label": "Coverity Connect Url",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "URL for Coverity server."
+      "required": true,
+      "helpMarkDown": "URL for Coverity server.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_user_name",
       "type": "string",
       "label": "Coverity Connect User Name",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Username for Coverity."
+      "required": true,
+      "helpMarkDown": "Username for Coverity.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_user_password",
       "type": "string",
       "label": "Coverity Connect User Password",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Password for Coverity."
+      "required": true,
+      "helpMarkDown": "Password for Coverity.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_project_name",
       "type": "string",
       "label": "Coverity Connect Project Name",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Project name in Coverity. Many customers prefer to set their Coverity project and stream names to match the azure repository name."
+      "required": true,
+      "helpMarkDown": "Coverity Connect Project Name",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_stream_name",
       "type": "string",
       "label": "Coverity Connect Stream Name",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Stream name in Coverity."
+      "required": true,
+      "helpMarkDown": "Stream name in Coverity.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_install_directory",
@@ -132,7 +184,8 @@
       "label": "Coverity Install Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Directory path to install Coverity."
+      "helpMarkDown": "Directory path to install Coverity.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_policy_view",
@@ -140,72 +193,89 @@
       "label": "Coverity Connect Policy View",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "ID number of a saved view to apply as a 'break the build' policy."
+      "helpMarkDown": "ID number of a saved view to apply as a 'break the build' policy.",
+      "groupName": "coverity"
+    },
+    {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Request",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "groupName": "coverity"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Blackduck URL",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "URL for Black Duck server."
-    }
-  ,
+      "required": true,
+      "helpMarkDown": "URL for Black Duck server.",
+      "groupName": "blackduck"
+    },
     {
       "name": "bridge_blackduck_token",
       "type": "string",
       "label": "Blackduck API Token",
       "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "API token for Black Duck."
-    }  ,
+      "required": true,
+      "helpMarkDown": "API token for Black Duck.",
+      "groupName": "blackduck"
+    },
     {
       "name": "bridge_blackduck_scan_full",
-      "type": "boolean",
+      "type": "string",
       "label": "Blackduck full scan",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Specifies whether full scan is required or not."
-    }
-  , {
+      "helpMarkDown": "Specifies whether full scan is required or not.",
+      "groupName": "blackduck"
+    },
+    {
       "name": "bridge_blackduck_scan_failure_severities",
       "type": "string",
       "label": "Blackduck Scan Failure Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='#'>Click Here</a> for more info."
-    },
-    {
-      "name": "include_diagnostics",
-      "type": "string",
-      "label": "Include Diagnostics",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "All diagnostics files will be available to download when 'true' passed."
+      "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='#'>Click Here</a> for more info.",
+      "groupName": "blackduck"
     },
     {
       "name": "blackduck_automation_fixpr",
-      "type": "string",
-      "label": "Blackduck Automation Fix PR",
-      "defaultValue": "",
+      "type": "boolean",
+      "label": "Create Fix Pull Requests",
+      "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to push events only, Requires Azure Token."
-    },
-    {
-      "name": "bridge_coverity_automation_prcomment",
-      "type": "string",
-      "label": "Coverity Automation PR Comment",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
+      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Blackduck Automation PR Comment",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "azure_token",
       "type": "string",
-      "label": "Blackduck Automation PR Comment",
+      "label": "Azure token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "groupName": "blackduck"
     }
   ],
   "execution": {
