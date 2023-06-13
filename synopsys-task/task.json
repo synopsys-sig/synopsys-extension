@@ -16,19 +16,19 @@
   "groups": [
     {
       "name": "polaris",
-      "displayName": "Polaris Credentials",
+      "displayName": "Polaris Parameters",
       "visibleRule": "scanType = polaris",
       "isExpanded": true
     },
     {
       "name": "blackduck",
-      "displayName": "Blackduck Credentials",
+      "displayName": "Black Duck Parameters",
       "visibleRule": "scanType = blackduck",
       "isExpanded": true
     },
     {
       "name": "coverity",
-      "displayName": "Coverity Credentials",
+      "displayName": "Coverity Parameters",
       "visibleRule": "scanType = coverity",
       "isExpanded": true
     },
@@ -45,7 +45,7 @@
       "label": "Synopsys Bridge Download URL",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Synopsys Bridge will be automatically downloaded and configured",
+      "helpMarkDown": "URL for downloading Synopsys Bridge",
       "groupName": "optionalSettings"
     },
     {
@@ -63,7 +63,7 @@
       "label": "Bridge Installation Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "A path where synopsys bridge will be configured.",
+      "helpMarkDown": "Path where synopsys bridge will be configured.",
       "groupName": "optionalSettings"
     },
     {
@@ -72,13 +72,14 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
+      "required": false,
       "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
       "groupName": "optionalSettings"
     },
     {
       "name": "scanType",
       "type": "pickList",
-      "label": "Security Testing Solution: ",
+      "label": "Security Testing Solution",
       "required": true,
       "helpMarkDown": "Select required security testing solution",
       "defaultValue": "",
@@ -131,7 +132,7 @@
       "label": "Assessment Type",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Polaris Assessment Types seperated by commas.",
+      "helpMarkDown": "Polaris Assessment Types seperated by commas. <a href='https://polaris.synopsys.com/developer/default/polaris-documentation/t_how-to-test' target='_blank'>Click Here</a> for more info.",
       "groupName": "polaris"
     },
     {
@@ -140,7 +141,7 @@
       "label": "Coverity Platform Url",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "URL for Coverity server.",
+      "helpMarkDown": "URL for Coverity platform.",
       "groupName": "coverity"
     },
     {
@@ -167,7 +168,7 @@
       "label": "Coverity Project",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Coverity Platform Project Name",
+      "helpMarkDown": "Project name in Coverity",
       "groupName": "coverity"
     },
     {
@@ -212,7 +213,7 @@
       "label": "Azure Token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and Black Duck Fix PR is enabled.",
       "groupName": "coverity"
     },
     {
