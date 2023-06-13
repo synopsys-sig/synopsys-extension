@@ -470,9 +470,18 @@ class SynopsysBridge {
                 }
                 return this.bridgeExecutablePath;
             }
-            catch (error) {
-                taskLib.debug("error:" + error);
-                return Promise.reject(new Error("Bridge could not be downloaded"));
+            catch (e) {
+                const errorObject = e.message;
+                if (errorObject.includes("404") ||
+                    errorObject.toLowerCase().includes("invalid url")) {
+                    return Promise.reject(new Error("Provided Bridge url is not valid for the configured ".concat(process.platform, " runner")));
+                }
+                else if (errorObject.toLowerCase().includes("empty")) {
+                    return Promise.reject(new Error("Provided Bridge URL cannot be empty"));
+                }
+                else {
+                    return Promise.reject(new Error(errorObject));
+                }
             }
         });
     }

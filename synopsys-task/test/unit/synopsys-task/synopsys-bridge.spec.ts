@@ -424,6 +424,27 @@ describe("Download Bridge", () => {
             assert.equal(result, bridgeDefaultPath);
         });
 
+        it("BRIDGE_DOWNLOAD_URL is defined and invalid for current os", async () => {
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
+                value: "https://artifactory.internal.synopsys.com/artifactory/clops-local/clops.sig.synopsys.com/synopsys-bridge/0.2.57/synopsys-bridge-0.2.57-win64.zip",
+            });
+            sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
+            sandbox.stub(synopsysBridge, "getBridgeUrl").returns(Promise.resolve(bridgeUrl))
+
+            const downloadFileResponse = {} as DownloadFileResponse
+            downloadFileResponse.filePath = bridgeDefaultPath
+            sandbox.stub(utility, "getRemoteFile").returns(Promise.resolve(downloadFileResponse))
+            sandbox.stub(synopsysBridge, "extractBridge").throws(new Error("invalid url"))
+
+            await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
+                expect(errorObj.message).includes("Provided Bridge url is not valid for the configured");
+            })
+
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
+                value: "",
+            });
+        });
+
         it("BRIDGE_DOWNLOAD_VERSION is not defined, valid without Bridge url", async () => {
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
@@ -440,10 +461,10 @@ describe("Download Bridge", () => {
         it("BRIDGE_DOWNLOAD_VERSION is not defined, throw exception", async () => {
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
-            sandbox.stub(synopsysBridge, "getBridgeUrl").throws(new Error());
+            sandbox.stub(synopsysBridge, "getBridgeUrl").throws(new Error("empty"));
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
-                expect(errorObj.message).includes("Bridge could not be downloaded");
+                expect(errorObj.message).includes("Provided Bridge URL cannot be empty");
             })
         });
 
