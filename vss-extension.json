@@ -9,6 +9,16 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
+  "tags": [
+    "Polaris",
+    "Synopsys",
+    "Coverity",
+    "Black Duck",
+    "Continuous Integration",
+    "Security",
+    "Open Source",
+    "Build"
+  ],
   "description": "Tools for running synopsys scans commands.",
   "categories": [
     "Azure Pipelines"
@@ -21,6 +31,11 @@
       "path": "synopsys-task"
     }
   ],
+  "content": {
+    "details": {
+      "path": "README.md"
+    }
+  },
   "contributions": [
     {
       "id": "synopsys-task",
