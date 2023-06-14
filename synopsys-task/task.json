@@ -72,7 +72,6 @@
       "label": "Include Diagnostics",
       "defaultValue": false,
       "required": false,
-      "required": false,
       "helpMarkDown": "All diagnostics files will be available to download when 'true' passed.",
       "groupName": "optionalSettings"
     },
@@ -241,7 +240,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Directory path to install Black Duck.",
-      "groupName": "coverity"
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_scan_full",
