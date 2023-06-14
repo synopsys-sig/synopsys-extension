@@ -4,12 +4,12 @@ Synopsys Security Scan allows you to configure your Azure pipeline to run Synops
 
 # Quick Start for the Synopsys Security Scan
 
-Synopsys Security Scan supports the following Synopsys security testing solutions:
-- Polaris, a SaaS-based solution offering SAST, SCA and Managed Services in a single unified platform
-- Coverity, using our thin client and cloud-based deployment model
-- Black Duck Hub, supporting either on-premises or hosted instances
+Synopsys Security Scan supports Azure integration with the following Synopsys security testing solutions:
+- **Polaris**, a SaaS-based solution offering SAST, SCA and Managed Services in a single unified platform
+- **Coverity**, using our thin client and cloud-based deployment model
+- **Black Duck Hub**, supporting either on-premises or hosted instances
 
-**Note:** Synopsys Security Scan requires appropriate licenses for all Synopsys application used.
+**Note**: Synopsys Security Scan requires appropriate licenses for all Synopsys application used.
 
 **To run Synopsys Security Scan:**
 
@@ -25,7 +25,7 @@ Before running a pipeline using the Synopsys Security Scan and Polaris, add `azu
 
 Configure sensitive data like usernames, passwords and URLs using pipeline variables.
 
-Push those changes and Agent will pick up the job and initiate the pipeline.
+Push those changes and agent will pick up the job and initiate the pipeline.
 
 ```yaml
 trigger:
@@ -54,7 +54,7 @@ steps:
 
 # Synopsys Security Scan - Coverity Cloud Deployment with Thin Client
 
-At this time, Synopsys Security Scan only supports the Coverity thin client/cloud deployment model, which removes the need for a large footprint installation in your Agent.
+At this time, Synopsys Security Scan only supports the Coverity thin client/cloud deployment model, which removes the need for a large footprint installation in your agent.
 
 Before running Coverity using the Synopsys Security Scan, ensure the appropriate `project` and `stream` are set in your Coverity Connect server environment.
 
@@ -122,7 +122,7 @@ steps:
 | `bridge_blackduck_automation_fixpr`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: true or false </br>| Optional    |
 | `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken)  </br> | Mandatory if  bridge_blackduck_automation_prcomment or bridge_blackduck_automation_fixpr is set true. |
 
-- **Note about Detect command line parameters:** Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
+- **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
 
 ## Additional Parameters
 
@@ -140,16 +140,16 @@ Note - If `bridge_download_version` or `bridge_download_url` is not provided, Sy
 # Synopsys Bridge Setup
 
 - The latest version of Synopsys Bridge is available at: [Synopsys-Bridge](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/) 
-- The most common way to set up the Synopsys Bridge is to configure the agent to download the small CLI utility that is then automatically run at the right stage of your pipeline.
+- The most common way to set up Synopsys Bridge is to configure the agent to download the small CLI utility automatically run at the right stage of your pipeline.
 - The latest version of Synopsys Bridge is downloaded by default.
 
 ## Manual Synopsys Bridge
 
-If you are unable to download the Synopsys Bridge from our internet-hosted repository, or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or pre-configure your Agent to include the Synopsys Bridge. In this latter case, you would specify the `synopsys_bridge_path` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
+If you are unable to download the Synopsys Bridge from our internet-hosted repository, or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or pre-configure your agent to include the Synopsys Bridge. In this latter case, you would specify the `synopsys_bridge_path` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
 
 # Azure Agent Setup
 
-- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. Refer the given documentation :
+- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. See this documentation for details:
 https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser
 - You can use Microsoft-hosted agents as well to scan your code using Azure Pipelines.
 
