@@ -137,7 +137,7 @@
     {
       "name": "bridge_coverity_connect_url",
       "type": "string",
-      "label": "Coverity Platform Url",
+      "label": "Coverity Platform URL",
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "URL for Coverity platform.",
