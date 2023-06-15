@@ -19,7 +19,7 @@
     "Open Source",
     "Build"
   ],
-  "description": "Tools for running synopsys scans commands.",
+  "description": "Run security scans on Polaris, Black Duck or Coverity platforms",
   "categories": [
     "Azure Pipelines"
   ],
