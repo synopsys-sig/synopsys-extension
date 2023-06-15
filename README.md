@@ -1,6 +1,7 @@
-# Synopsys Security Scan
+# Synopsys Security Scan for Azure DevOps
 
-Synopsys Security Scan allows you to configure your Azure pipeline to run Synopsys security testing and take action on the results. Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
+Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results. 
+Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
 
 # Quick Start for the Synopsys Security Scan
 
