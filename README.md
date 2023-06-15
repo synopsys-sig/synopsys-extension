@@ -84,7 +84,7 @@ steps:
 | `bridge_coverity_connect_project_name`        | Project name in Coverity          | Mandatory     |
 | `bridge_coverity_connect_stream_name`        | Stream name in Coverity           | Mandatory     |
 | `bridge_coverity_install_directory`        | Directory path to install Coverity | Optional    |
-| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
+| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001        | Optional    |
 | `bridge_coverity_automation_prcomment`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> | Optional     |
 | `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken)  </br> | Mandatory if  bridge_coverity_automation_prcomment is set true. |
           
