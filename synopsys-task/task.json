@@ -194,7 +194,7 @@
       "label": "Coverity Policy View",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "ID number of a saved view to apply as a 'break the build' policy.",
+      "helpMarkDown": "Name/ID number of a saved view to apply as a 'break the build' policy.",
       "groupName": "coverity"
     },
     {
