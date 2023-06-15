@@ -530,21 +530,18 @@ class SynopsysBridge {
             let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
             const osName = process.platform;
             let versionFilePath;
-            let versionFileExists;
             if (!synopsysBridgePath) {
                 console.info("Looking for synopsys bridge in default path");
                 synopsysBridgePath = this.getBridgeDefaultPath();
-                this.bridgeExecutablePath = synopsysBridgePath;
             }
+            this.bridgeExecutablePath = synopsysBridgePath;
             if (osName === "win32") {
                 versionFilePath = synopsysBridgePath.concat("\\versions.txt");
-                versionFileExists = taskLib.exist(versionFilePath);
             }
             else {
                 versionFilePath = synopsysBridgePath.concat("/versions.txt");
-                versionFileExists = taskLib.exist(versionFilePath);
             }
-            if (versionFileExists && this.bridgeExecutablePath) {
+            if (taskLib.exist(versionFilePath)) {
                 taskLib.debug("Bridge executable found at ".concat(synopsysBridgePath));
                 taskLib.debug("Version file found at ".concat(synopsysBridgePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
