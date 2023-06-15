@@ -270,7 +270,7 @@
       "groupName": "blackduck"
     },
     {
-      "name": "blackduck_automation_fixpr",
+      "name": "bridge_blackduck_automation_fixpr",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
