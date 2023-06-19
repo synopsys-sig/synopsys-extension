@@ -21,7 +21,6 @@ describe("Synopsys Tools Parameter test", () => {
             sandbox = sinon.createSandbox();
             const tempDir = process.cwd();
             polarisStateFile = path.join(tempDir, "polaris_input.json");
-            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
             synopsysToolsParameter = new SynopsysToolsParameter(tempDir);
         });
 
