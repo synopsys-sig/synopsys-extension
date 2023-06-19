@@ -198,24 +198,6 @@
       "groupName": "coverity"
     },
     {
-      "name": "bridge_coverity_automation_prcomment",
-      "type": "boolean",
-      "label": "Add Comments to Pull Request",
-      "defaultValue": false,
-      "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
-      "groupName": "coverity"
-    },
-    {
-      "name": "azure_token",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and Black Duck Fix PR is enabled.",
-      "groupName": "coverity"
-    },
-    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -258,33 +240,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
-      "groupName": "blackduck"
-    },
-    {
-      "name": "bridge_blackduck_automation_prcomment",
-      "type": "boolean",
-      "label": "Add Comments to Pull Requests",
-      "defaultValue": false,
-      "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
-      "groupName": "blackduck"
-    },
-    {
-      "name": "bridge_blackduck_automation_fixpr",
-      "type": "boolean",
-      "label": "Create Fix Pull Requests",
-      "defaultValue": false,
-      "required": false,
-      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
-      "groupName": "blackduck"
-    },
-    {
-      "name": "azure_token",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
       "groupName": "blackduck"
     }
   ],
