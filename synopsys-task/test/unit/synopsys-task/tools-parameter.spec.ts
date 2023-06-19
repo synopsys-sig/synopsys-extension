@@ -51,6 +51,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             
             expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
