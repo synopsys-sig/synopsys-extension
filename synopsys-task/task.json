@@ -286,6 +286,24 @@
       "required": false,
       "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
       "groupName": "blackduck"
+    },
+    {
+      "name": "network_air_gap",
+      "type": "string",
+      "label": "Network Air Gap",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "enables airgap's configuration",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "network_air_gap",
+      "type": "string",
+      "label": "Network Air Gap",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "enables airgap's configuration",
+      "groupName": "coverity"
     }
   ],
   "execution": {
