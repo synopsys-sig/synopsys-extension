@@ -114,6 +114,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
             expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
@@ -133,6 +135,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
             expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
@@ -153,6 +157,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
 
             expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
@@ -175,6 +181,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
             expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
     });
@@ -216,6 +224,8 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');    
              expect(formattedCommand).contains('--stage blackduck');
+
+             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
@@ -233,6 +243,8 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.token).to.be.equals('token');
              expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
              expect(formattedCommand).contains('--stage blackduck');
+
+             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
@@ -267,6 +279,8 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');     
              expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
@@ -301,6 +315,8 @@ describe("Synopsys Tools Parameter test", () => {
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');    
              expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
@@ -314,6 +330,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');   
             expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
@@ -332,6 +350,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');   
             expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
     });
