@@ -72,6 +72,40 @@ export class SynopsysBridge {
     }
 
     try {
+      if (inputs.ENABLE_NETWORK_AIR_GAP) {
+        if (inputs.SYNOPSYS_BRIDGE_PATH.length !== 0) {
+          executable = await this.setBridgeExecutablePath(
+            osName,
+            inputs.SYNOPSYS_BRIDGE_PATH
+          );
+          if (!taskLib.exist(executable)) {
+            throw new Error(
+              "synopsys_bridge_path ".concat(
+                inputs.SYNOPSYS_BRIDGE_PATH,
+                " does not exists"
+              )
+            );
+          }
+        } else if (
+          inputs.SYNOPSYS_BRIDGE_PATH.length === 0 &&
+          this.getBridgeDefaultPath().length !== 0
+        ) {
+          executable = await this.setBridgeExecutablePath(
+            osName,
+            this.getBridgeDefaultPath()
+          );
+          if (!taskLib.exist(executable)) {
+            throw new Error(
+              "bridge_default_Path ".concat(
+                this.getBridgeDefaultPath(),
+                " does not exists"
+              )
+            );
+          }
+        } else {
+          throw new Error("Path does not exists");
+        }
+      }
       return await taskLib.exec(executable, command, { cwd: workspace });
     } catch (errorObject) {
       taskLib.debug("errorObject:" + errorObject);
@@ -400,5 +434,19 @@ export class SynopsysBridge {
       );
     }
     return bridgeDownloadUrl;
+  }
+
+  async setBridgeExecutablePath(
+    osName: string,
+    filePath: string
+  ): Promise<string> {
+    if (osName === "win32") {
+      this.bridgeExecutablePath = filePath
+        .concat("\\synopsys-bridge")
+        .concat(".exe");
+    } else {
+      this.bridgeExecutablePath = filePath.concat("/synopsys-bridge");
+    }
+    return this.bridgeExecutablePath;
   }
 }

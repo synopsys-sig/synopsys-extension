@@ -5,6 +5,9 @@ import * as constants from "./application-constant";
 export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url")?.trim() || "";
 
+export const ENABLE_NETWORK_AIR_GAP =
+  taskLib.getBoolInput("network_air_gap") || false;
+
 export const SYNOPSYS_BRIDGE_PATH =
   taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 

@@ -102,6 +102,9 @@ export class SynopsysToolsParameter {
           token: inputs.BLACKDUCK_API_TOKEN,
           automation: {},
         },
+        network: {
+          airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+        },
       },
     };
 
@@ -220,6 +223,9 @@ export class SynopsysToolsParameter {
             stream: { name: inputs.COVERITY_STREAM_NAME },
           },
           automation: {},
+          network: {
+            airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+          },
         },
         project: {},
       },

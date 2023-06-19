@@ -12,17 +12,24 @@ export async function run() {
   const workSpaceDir = getWorkSpaceDirectory();
   try {
     const sb = new SynopsysBridge();
-
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
+    let bridgePath = "";
+    if (!inputs.ENABLE_NETWORK_AIR_GAP) {
+      bridgePath = await sb.downloadAndExtractBridge(tempDir);
+    } else {
+      taskLib.debug(
+        "Since network air gap is enabled, bypassing the download bridge."
+      );
+    }
 
     // Download synopsys bridge
-    const bridgePath = await sb.downloadAndExtractBridge(tempDir);
 
+    console.log("bridgePath:" + bridgePath);
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
-      workSpaceDir,
+      "/Users/kirann",
       command
     );
   } catch (error) {
