@@ -969,6 +969,7 @@ class SynopsysToolsParameter {
             azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
             azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
         }
+        taskLib.debug("azureInstanceUrl:" + azureInstanceUrl);
         const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
         const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
         const azureRepoBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
