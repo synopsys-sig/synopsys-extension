@@ -28,7 +28,7 @@ export async function run() {
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
-      getWorkSpaceDirectory(),
+      workSpaceDir,
       command
     );
   } catch (error) {

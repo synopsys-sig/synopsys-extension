@@ -65,7 +65,7 @@ function run() {
             }
             // Download synopsys bridge
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            const response = yield sb.executeBridgeCommand(bridgePath, workSpaceDir, command);
         }
         catch (error) {
             throw error;
