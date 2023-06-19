@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
-  "name": "SynopsysSecurityScan",
+  "name": "synopsys-security-scan",
   "friendlyName": "Synopsys Security Scan",
   "description": "Run security scans on Polaris, Black Duck or Coverity platforms",
   "helpMarkDown": "",
@@ -10,13 +10,26 @@
   "version": {
     "Major": 1,
     "Minor": 0,
-    "Patch": 1
+    "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
     {
-      "name": "scanOptions",
-      "displayName": "Scan Options",
+      "name": "polaris",
+      "displayName": "Polaris Parameters",
+      "visibleRule": "scanType = polaris",
+      "isExpanded": true
+    },
+    {
+      "name": "blackduck",
+      "displayName": "Black Duck Parameters",
+      "visibleRule": "scanType = blackduck",
+      "isExpanded": true
+    },
+    {
+      "name": "coverity",
+      "displayName": "Coverity Parameters",
+      "visibleRule": "scanType = coverity",
       "isExpanded": true
     },
     {
@@ -74,8 +87,7 @@
         "polaris": "Polaris",
         "blackduck": "Black Duck",
         "coverity": "Coverity Platform"
-      },
-      "groupName": "scanOptions"
+      }
     },
     {
       "name": "bridge_polaris_serverUrl",
@@ -84,8 +96,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "URL for Polaris Server.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_accessToken",
@@ -94,8 +105,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Access token for Polaris.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_application_name",
@@ -104,8 +114,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Application name in Polaris.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_project_name",
@@ -114,8 +123,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Project name in Polaris.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
+      "groupName": "polaris"
     },
     {
       "name": "bridge_polaris_assessment_types",
@@ -124,8 +132,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Polaris Assessment Types seperated by commas. <a href='https://polaris.synopsys.com/developer/default/polaris-documentation/t_how-to-test' target='_blank'>Click Here</a> for more info.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
+      "groupName": "polaris"
     },
     {
       "name": "bridge_coverity_connect_url",
@@ -134,8 +141,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "URL for Coverity platform.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_user_name",
@@ -144,8 +150,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Username for Coverity.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_user_password",
@@ -154,8 +159,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Password for Coverity.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_project_name",
@@ -164,8 +168,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Project name in Coverity",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_stream_name",
@@ -174,8 +177,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Stream name in Coverity.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_install_directory",
@@ -184,8 +186,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Directory path to install Coverity.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
     },
     {
       "name": "bridge_coverity_connect_policy_view",
@@ -194,8 +195,25 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Name/ID number of a saved view to apply as a 'break the build' policy.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverity"
+    },
+    {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Request",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "groupName": "coverity"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and Black Duck Fix PR is enabled.",
+      "groupName": "coverity"
     },
     {
       "name": "bridge_blackduck_url",
@@ -204,8 +222,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "URL for Black Duck server.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_token",
@@ -214,8 +231,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "API token for Black Duck.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_install_directory",
@@ -224,8 +240,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Directory path to install Black Duck.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_scan_full",
@@ -234,8 +249,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specifies whether full scan is required or not.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduck"
     },
     {
       "name": "bridge_blackduck_scan_failure_severities",
@@ -244,8 +258,52 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduck"
+    },
+    {
+      "name": "bridge_blackduck_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "bridge_blackduck_automation_fixpr",
+      "type": "boolean",
+      "label": "Create Fix Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "network_air_gap",
+      "type": "string",
+      "label": "Network Air Gap",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "enables airgap's configuration",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "network_air_gap",
+      "type": "string",
+      "label": "Network Air Gap",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "enables airgap's configuration",
+      "groupName": "coverity"
     }
   ],
   "execution": {
