@@ -64,9 +64,8 @@ function run() {
                 taskLib.debug("Since network air gap is enabled, bypassing the download bridge.");
             }
             // Download synopsys bridge
-            console.log("bridgePath:" + bridgePath);
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, "/Users/kirann", command);
+            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
             throw error;

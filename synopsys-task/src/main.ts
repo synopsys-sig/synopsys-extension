@@ -25,11 +25,10 @@ export async function run() {
 
     // Download synopsys bridge
 
-    console.log("bridgePath:" + bridgePath);
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
-      "/Users/kirann",
+      getWorkSpaceDirectory(),
       command
     );
   } catch (error) {
