@@ -287,6 +287,7 @@ export class SynopsysToolsParameter {
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
       azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
     }
+    taskLib.debug("azureInstanceUrl:" + azureInstanceUrl);
     const azureProject =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
     const azureRepo =
