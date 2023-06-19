@@ -12,15 +12,9 @@ export async function run() {
   const workSpaceDir = getWorkSpaceDirectory();
   try {
     const sb = new SynopsysBridge();
-
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
-    taskLib.debug(
-      "inputs.ENABLE_NETWORK_AIR_GAP:".concat(
-        new Boolean(inputs.ENABLE_NETWORK_AIR_GAP).toString()
-      )
-    );
     if (!inputs.ENABLE_NETWORK_AIR_GAP) {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
@@ -34,7 +28,7 @@ export async function run() {
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
-      workSpaceDir,
+      getWorkSpaceDirectory(),
       command
     );
   } catch (error) {
