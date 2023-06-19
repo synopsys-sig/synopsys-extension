@@ -12,6 +12,7 @@ export async function run() {
   const workSpaceDir = getWorkSpaceDirectory();
   try {
     const sb = new SynopsysBridge();
+
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
@@ -30,7 +31,6 @@ export async function run() {
 
     // Download synopsys bridge
 
-    console.log("bridgePath:" + bridgePath);
     // Execute prepared commands
     const response: any = await sb.executeBridgeCommand(
       bridgePath,
