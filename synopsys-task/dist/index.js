@@ -760,8 +760,10 @@ class SynopsysToolsParameter {
             },
         };
         const inputJson = JSON.stringify(polData);
-        const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
+        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
+        // Wrap the file path with double quotes, to make it work with directory path with space as well
+        stateFilePath = '"'.concat(stateFilePath).concat('"');
         taskLib.debug("Generated state json file content is - ".concat(inputJson));
         taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
@@ -846,8 +848,10 @@ class SynopsysToolsParameter {
             blackduckData.data.blackduck.automation.prcomment = true;
         }
         const inputJson = JSON.stringify(blackduckData);
-        const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
+        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
+        // Wrap the file path with double quotes, to make it work with directory path with space as well
+        stateFilePath = '"'.concat(stateFilePath).concat('"');
         taskLib.debug("Generated state json file at - ".concat(stateFilePath));
         taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
@@ -899,8 +903,10 @@ class SynopsysToolsParameter {
             covData.data.coverity.automation.prcomment = true;
         }
         const inputJson = JSON.stringify(covData);
-        const stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
+        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
+        // Wrap the file path with double quotes, to make it work with directory path with space as well
+        stateFilePath = '"'.concat(stateFilePath).concat('"');
         taskLib.debug("Generated state json file at - ".concat(stateFilePath));
         taskLib.debug("Generated state json file content is - ".concat(inputJson));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
