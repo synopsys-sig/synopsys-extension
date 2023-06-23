@@ -36,7 +36,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-security-scan@1.0.0
+- task: SynopsysSecurityScan@1.0.0
   inputs:
     bridge_polaris_serverUrl: $(POLARIS_SERVER_URL)
     bridge_polaris_accessToken: $(POLARIS_ACCESS_TOKEN)
@@ -69,7 +69,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-security-scan@1.0.0
+- task: SynopsysSecurityScan@1.0.0
   inputs:
     bridge_coverity_connect_url: $(COVERITY_URL)
     bridge_coverity_connect_user_name: $(COVERITY_USER)
@@ -106,7 +106,7 @@ pool:
   vmImage: ubuntu-latest
   
 steps:
-- task: synopsys-security-scan@1.0.0
+- task: SynopsysSecurityScan@1.0.0
   inputs:
     bridge_blackduck_url: $(BLACKDUCK_URL)
     bridge_blackduck_token: $(BLACKDUCK_TOKEN)
