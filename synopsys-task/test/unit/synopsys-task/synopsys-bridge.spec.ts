@@ -129,6 +129,52 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
 
+        // Classic editor test cases
+        it('should run successfully for polaris command preparation for classic editor', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "polaris"});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(validator, "validatePolarisInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
+
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+        });
+
+        it('should run successfully for coverity command preparation for classic editor', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "coverity"});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
+            sandbox.stub(validator, "validateCoverityInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
+
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+        });
+
+        it('should run successfully for blackduck command preparation for classic editor', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackduck"});
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => "./bridge --stage blackduck --state bd_input.json");
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
+
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+        });
+
     });
 
 });
