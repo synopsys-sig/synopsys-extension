@@ -153,6 +153,7 @@ If you are unable to download the Synopsys Bridge from our internet-hosted repos
 - Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. See this documentation for details:
 https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser
 - You can use Microsoft-hosted agents as well to scan your code using Azure Pipelines.
+- If you are passing `bridge_coverity_automation_prcomment` to pass comments, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**.
 
 
 
