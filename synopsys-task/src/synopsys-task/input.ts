@@ -15,6 +15,9 @@ export const BRIDGE_DOWNLOAD_VERSION =
 export const AZURE_TOKEN =
   taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() || "";
 
+export const SCAN_TYPE =
+  taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
+
 export const POLARIS_ACCESS_TOKEN =
   taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY)?.trim() || "";
 export const POLARIS_APPLICATION_NAME =
