@@ -99,28 +99,17 @@ export class SynopsysBridge {
         );
       }
 
+      let classicEditorErrors: string[] = [];
       let polarisErrors: string[] = [];
       let coverityErrors: string[] = [];
       let blackduckErrors: string[] = [];
 
       if (SCAN_TYPE.length > 0) {
-        if (SCAN_TYPE == "polaris") {
-          [formattedCommand, polarisErrors] = this.preparePolarisCommand(
-            formattedCommand,
-            tempDir
-          );
-        } else if (SCAN_TYPE == "blackduck") {
-          [formattedCommand, blackduckErrors] = this.prepareBlackduckCommand(
-            formattedCommand,
-            tempDir
-          );
-        } else if (SCAN_TYPE == "coverity") {
-          [formattedCommand, coverityErrors] = this.prepareCoverityCommand(
-            formattedCommand,
-            tempDir
-          );
-        }
+        // To support single scan using Classic Editor
+        [formattedCommand, classicEditorErrors] =
+          this.formatCommandForClassicEditor(formattedCommand, tempDir);
       } else {
+        // To support multi-scan using YAML
         [formattedCommand, polarisErrors] = this.preparePolarisCommand(
           formattedCommand,
           tempDir
@@ -139,7 +128,8 @@ export class SynopsysBridge {
       validationErrors = validationErrors.concat(
         polarisErrors,
         coverityErrors,
-        blackduckErrors
+        blackduckErrors,
+        classicEditorErrors
       );
 
       if (formattedCommand.length === 0) {
@@ -165,6 +155,30 @@ export class SynopsysBridge {
       );
       return Promise.reject(errorObject);
     }
+  }
+
+  private formatCommandForClassicEditor(
+    formattedCommand: string,
+    tempDir: string
+  ): [string, string[]] {
+    let errors: string[] = [];
+    if (SCAN_TYPE == "polaris") {
+      [formattedCommand, errors] = this.preparePolarisCommand(
+        formattedCommand,
+        tempDir
+      );
+    } else if (SCAN_TYPE == "blackduck") {
+      [formattedCommand, errors] = this.prepareBlackduckCommand(
+        formattedCommand,
+        tempDir
+      );
+    } else if (SCAN_TYPE == "coverity") {
+      [formattedCommand, errors] = this.prepareCoverityCommand(
+        formattedCommand,
+        tempDir
+      );
+    }
+    return [formattedCommand, errors];
   }
 
   private preparePolarisCommand(

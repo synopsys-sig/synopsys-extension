@@ -411,27 +411,23 @@ class SynopsysBridge {
                         .concat(constants.BLACKDUCK_URL_KEY)
                         .concat(")")));
                 }
+                let classicEditorErrors = [];
                 let polarisErrors = [];
                 let coverityErrors = [];
                 let blackduckErrors = [];
                 if (input_1.SCAN_TYPE.length > 0) {
-                    if (input_1.SCAN_TYPE == "polaris") {
-                        [formattedCommand, polarisErrors] = this.preparePolarisCommand(formattedCommand, tempDir);
-                    }
-                    else if (input_1.SCAN_TYPE == "blackduck") {
-                        [formattedCommand, blackduckErrors] = this.prepareBlackduckCommand(formattedCommand, tempDir);
-                    }
-                    else if (input_1.SCAN_TYPE == "coverity") {
-                        [formattedCommand, coverityErrors] = this.prepareCoverityCommand(formattedCommand, tempDir);
-                    }
+                    // To support single scan using Classic Editor
+                    [formattedCommand, classicEditorErrors] =
+                        this.formatCommandForClassicEditor(formattedCommand, tempDir);
                 }
                 else {
+                    // To support multi-scan using YAML
                     [formattedCommand, polarisErrors] = this.preparePolarisCommand(formattedCommand, tempDir);
                     [formattedCommand, coverityErrors] = this.prepareBlackduckCommand(formattedCommand, tempDir);
                     [formattedCommand, blackduckErrors] = this.prepareCoverityCommand(formattedCommand, tempDir);
                 }
                 let validationErrors = [];
-                validationErrors = validationErrors.concat(polarisErrors, coverityErrors, blackduckErrors);
+                validationErrors = validationErrors.concat(polarisErrors, coverityErrors, blackduckErrors, classicEditorErrors);
                 if (formattedCommand.length === 0) {
                     return Promise.reject(new Error(validationErrors.join(",")));
                 }
@@ -452,6 +448,19 @@ class SynopsysBridge {
                 return Promise.reject(errorObject);
             }
         });
+    }
+    formatCommandForClassicEditor(formattedCommand, tempDir) {
+        let errors = [];
+        if (input_1.SCAN_TYPE == "polaris") {
+            [formattedCommand, errors] = this.preparePolarisCommand(formattedCommand, tempDir);
+        }
+        else if (input_1.SCAN_TYPE == "blackduck") {
+            [formattedCommand, errors] = this.prepareBlackduckCommand(formattedCommand, tempDir);
+        }
+        else if (input_1.SCAN_TYPE == "coverity") {
+            [formattedCommand, errors] = this.prepareCoverityCommand(formattedCommand, tempDir);
+        }
+        return [formattedCommand, errors];
     }
     preparePolarisCommand(formattedCommand, tempDir) {
         // validating and preparing command for polaris
