@@ -18,6 +18,7 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
+import { SCAN_TYPE } from "./input";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -132,30 +133,28 @@ export class SynopsysBridge {
         );
       }
 
-      const commandFormatter = new SynopsysToolsParameter(tempDir);
+      let classicEditorErrors: string[] = [];
+      let polarisErrors: string[] = [];
+      let coverityErrors: string[] = [];
+      let blackduckErrors: string[] = [];
 
-      // validating and preparing command for polaris
-      const polarisErrors: string[] = validatePolarisInputs();
-      if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-        formattedCommand = formattedCommand.concat(
-          commandFormatter.getFormattedCommandForPolaris()
+      if (SCAN_TYPE.length > 0) {
+        // To support single scan using Classic Editor
+        [formattedCommand, classicEditorErrors] =
+          this.formatCommandForClassicEditor(formattedCommand, tempDir);
+      } else {
+        // To support multi-scan using YAML
+        [formattedCommand, polarisErrors] = this.preparePolarisCommand(
+          formattedCommand,
+          tempDir
         );
-      }
-
-      // validating and preparing command for coverity
-      const coverityErrors: string[] = validateCoverityInputs();
-      if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-        const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
-        formattedCommand = formattedCommand.concat(
-          coverityCommandFormatter.getFormattedCommandForCoverity()
+        [formattedCommand, coverityErrors] = this.prepareBlackduckCommand(
+          formattedCommand,
+          tempDir
         );
-      }
-
-      const blackduckErrors: string[] = validateBlackDuckInputs();
-      if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-        const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
-        formattedCommand = formattedCommand.concat(
-          blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+        [formattedCommand, blackduckErrors] = this.prepareCoverityCommand(
+          formattedCommand,
+          tempDir
         );
       }
 
@@ -163,7 +162,8 @@ export class SynopsysBridge {
       validationErrors = validationErrors.concat(
         polarisErrors,
         coverityErrors,
-        blackduckErrors
+        blackduckErrors,
+        classicEditorErrors
       );
 
       if (formattedCommand.length === 0) {
@@ -189,6 +189,74 @@ export class SynopsysBridge {
       );
       return Promise.reject(errorObject);
     }
+  }
+
+  private formatCommandForClassicEditor(
+    formattedCommand: string,
+    tempDir: string
+  ): [string, string[]] {
+    let errors: string[] = [];
+    if (SCAN_TYPE == "polaris") {
+      [formattedCommand, errors] = this.preparePolarisCommand(
+        formattedCommand,
+        tempDir
+      );
+    } else if (SCAN_TYPE == "blackduck") {
+      [formattedCommand, errors] = this.prepareBlackduckCommand(
+        formattedCommand,
+        tempDir
+      );
+    } else if (SCAN_TYPE == "coverity") {
+      [formattedCommand, errors] = this.prepareCoverityCommand(
+        formattedCommand,
+        tempDir
+      );
+    }
+    return [formattedCommand, errors];
+  }
+
+  private preparePolarisCommand(
+    formattedCommand: string,
+    tempDir: string
+  ): [string, string[]] {
+    // validating and preparing command for polaris
+    const polarisErrors: string[] = validatePolarisInputs();
+    const commandFormatter = new SynopsysToolsParameter(tempDir);
+    if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
+      formattedCommand = formattedCommand.concat(
+        commandFormatter.getFormattedCommandForPolaris()
+      );
+    }
+    return [formattedCommand, polarisErrors];
+  }
+
+  private prepareCoverityCommand(
+    formattedCommand: string,
+    tempDir: string
+  ): [string, string[]] {
+    // validating and preparing command for coverity
+    const coverityErrors: string[] = validateCoverityInputs();
+    if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
+      const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
+      formattedCommand = formattedCommand.concat(
+        coverityCommandFormatter.getFormattedCommandForCoverity()
+      );
+    }
+    return [formattedCommand, coverityErrors];
+  }
+
+  private prepareBlackduckCommand(
+    formattedCommand: string,
+    tempDir: string
+  ): [string, string[]] {
+    const blackduckErrors: string[] = validateBlackDuckInputs();
+    if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+      const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
+      formattedCommand = formattedCommand.concat(
+        blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+      );
+    }
+    return [formattedCommand, blackduckErrors];
   }
 
   async validateBridgeVersion(version: string): Promise<boolean> {
