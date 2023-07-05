@@ -15,7 +15,6 @@ Synopsys Security Scan supports Azure integration with the following Synopsys se
 **To run Synopsys Security Scan:**
 
 - Validate Scanning platform-related parameters like `project` and `stream`.
-- Download the Synopsys Bridge and related adapters
 - Run corresponding Synopsys security testing solutions (Polaris, Coverity, or Black Duck).
 
 Synopsys solution functionality is invoked directly by Synopsys Bridge, and indirectly by the Synopsys Security Scan, which downloads Synopsys Bridge and calls the respective adapters to run corresponding scans.
