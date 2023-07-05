@@ -1,10 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "synopsys-security-scan",
+  "id": "QAExt",
   "name": "Synopsys Security Scan",
-  "version": "1.0.0",
-  "publisher": "synopsys-security-scan",
-  "public": true,
+  "version": "1.0.26",
+  "publisher": "QAExt",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
