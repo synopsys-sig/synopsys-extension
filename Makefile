@@ -4,27 +4,14 @@ clean:
 compile:
 	echo "Provide the Compile command like mvn compile"
 
-prerequisites:
-	echo "Provide the Pre-requisite commands before performing the PoP analysis scan like installing some required tools, install/download some required things."
-	npm --version
-	npm config set '//registry.synopsys.npme.io/:_authToken' ${NPM_TOKEN}
-	npm i -g lerna
-ifdef ${POP_BLACKDUCK_INPROGRESS}
-	cd synopsys-task && npm ci --prefer-offline --no-audit && npm run build
-else
-	npm ci --prefer-offline --no-audit
-	npm run build
-endif
 
-build: prerequisites
+build:
 	echo "Provide the Build command like mvn install / go build / npm "
 
-dependencies: prerequisites
-	echo "Provide the Dependency command or env variables"
+dependencies:
+	echo "change directory to synopsys-task"
 ifdef POP_BLACKDUCK_INPROGRESS
-	cd synopsys-task && npm run package
-else
-	npm run package
+	cd synopsys-task
 endif
 
 image_scan:
