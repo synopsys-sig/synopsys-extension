@@ -9,7 +9,7 @@ prerequisites:
 	npm --version
 	npm config set '//registry.synopsys.npme.io/:_authToken' ${NPM_TOKEN}
 	npm i -g lerna
-ifdef POP_BLACKDUCK_INPROGRESS
+ifdef ${POP_BLACKDUCK_INPROGRESS}
 	cd synopsys-task && npm ci --prefer-offline --no-audit && npm run build
 else
 	npm ci --prefer-offline --no-audit
