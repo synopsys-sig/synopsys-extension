@@ -246,8 +246,6 @@
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
     },
     {
       "name": "azure_token",
