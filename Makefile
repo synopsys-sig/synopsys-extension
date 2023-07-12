@@ -21,7 +21,7 @@ build: prerequisites
 
 dependencies: prerequisites
 	echo "Provide the Dependency command or env variables"
-ifdef POP_BLACKDUCK_INPROGRESS
+ifdef ${POP_BLACKDUCK_INPROGRESS}
 	cd synopsys-task && npm run package
 else
 	npm run package
