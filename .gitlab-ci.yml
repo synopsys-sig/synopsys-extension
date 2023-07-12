@@ -40,16 +40,6 @@ code_coverage_job:
   extends:
     -  .code_coverage
 
-versioning_job:
-  extends:
-    - .version # Triggers git semver, job details will be fetched from altair build common repository
-    - .retry
-  stage: versioning
-  tags:
-    - linux64-docker
-  dependencies:
-    - build_job
-
 #check_dist_job:
 #  extends:
 #    - .check_dist
@@ -86,8 +76,6 @@ pop_blackduck:
   image: gcr.io/snps-polaris-ops-prod/altair-maven-build-jdk11:1.0.43
   variables:
     MAVEN_OPTS: -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
-  dependencies:
-    - versioning_job
   extends:
     - .new_pop_blackduck
   before_script:
@@ -95,4 +83,4 @@ pop_blackduck:
       apt -y update
       apt -y install make python3 python3-pip
       pip install blackduck requests
-      export RELEASE_VERSION=$(cat version.txt)
+      export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
