@@ -255,7 +255,7 @@ export class SynopsysBridge {
   }
 
   async validateBridgeVersion(version: string): Promise<boolean> {
-    const versions = await this.getVersionFromLatestURL();
+    const versions = await this.getAllAvailableBridgeVersions();
     return Promise.resolve(versions.indexOf(version.trim()) !== -1);
   }
 
@@ -333,6 +333,9 @@ export class SynopsysBridge {
         "Checking for latest version of Bridge to download and configure"
       );
       const latestVersion = await this.getVersionFromLatestURL();
+      if (latestVersion === "") {
+        return Promise.reject(new Error("Unable to find the latest version"));
+      }
       taskLib.debug("Found latest version:" + latestVersion);
       bridgeUrl = this.getVersionUrl(latestVersion).trim();
       version = latestVersion;
@@ -384,6 +387,35 @@ export class SynopsysBridge {
       );
     }
     return Promise.resolve(false);
+  }
+
+  async getAllAvailableBridgeVersions(): Promise<string[]> {
+    let htmlResponse = "";
+
+    const httpClient = new HttpClient("synopsys-task");
+    const httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
+      Accept: "text/html",
+    });
+    htmlResponse = await httpResponse.readBody();
+
+    const domParser = new DomParser();
+    const doms = domParser.parseFromString(htmlResponse);
+    const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+    const versionArray: string[] = [];
+
+    if (elems != null) {
+      for (const el of elems) {
+        const content = el.textContent;
+        if (content != null) {
+          const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
+
+          if (v != null && v.length === 1) {
+            versionArray.push(v[0]);
+          }
+        }
+      }
+    }
+    return versionArray;
   }
 
   async checkIfVersionExists(
