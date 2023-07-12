@@ -87,10 +87,7 @@ export class SynopsysBridge {
               )
             );
           }
-        } else if (
-          inputs.SYNOPSYS_BRIDGE_PATH.length === 0 &&
-          this.getBridgeDefaultPath().length !== 0
-        ) {
+        } else {
           executable = await this.setBridgeExecutablePath(
             osName,
             this.getBridgeDefaultPath()
@@ -103,8 +100,6 @@ export class SynopsysBridge {
               )
             );
           }
-        } else {
-          throw new Error("Path does not exists");
         }
       }
       return await taskLib.exec(executable, command, { cwd: workspace });
@@ -260,20 +255,11 @@ export class SynopsysBridge {
   }
 
   async validateBridgeVersion(version: string): Promise<boolean> {
-    const versions = await this.getAllAvailableBridgeVersions();
+    const versions = await this.getVersionFromLatestURL();
     return Promise.resolve(versions.indexOf(version.trim()) !== -1);
   }
 
   async downloadAndExtractBridge(tempDir: string): Promise<string> {
-    if (
-      inputs.BRIDGE_DOWNLOAD_VERSION &&
-      (await this.checkIfSynopsysBridgeVersionExists(
-        inputs.BRIDGE_DOWNLOAD_VERSION
-      ))
-    ) {
-      return Promise.resolve(this.bridgeExecutablePath);
-    }
-
     try {
       const bridgeUrl = await this.getBridgeUrl();
 
@@ -285,6 +271,14 @@ export class SynopsysBridge {
         console.info("Download of Synopsys Bridge completed");
         // Extracting bridge
         return await this.extractBridge(downloadBridge);
+      }
+      if (
+        inputs.BRIDGE_DOWNLOAD_VERSION &&
+        (await this.checkIfSynopsysBridgeVersionExists(
+          inputs.BRIDGE_DOWNLOAD_VERSION
+        ))
+      ) {
+        return Promise.resolve(this.bridgeExecutablePath);
       }
       return this.bridgeExecutablePath;
     } catch (e) {
@@ -335,11 +329,13 @@ export class SynopsysBridge {
         );
       }
     } else {
-      console.info(
+      taskLib.debug(
         "Checking for latest version of Bridge to download and configure"
       );
-      version = await this.getLatestVersion();
-      bridgeUrl = this.getVersionUrl(version).trim();
+      const latestVersion = await this.getVersionFromLatestURL();
+      taskLib.debug("Found latest version:" + latestVersion);
+      bridgeUrl = this.getVersionUrl(latestVersion).trim();
+      version = latestVersion;
     }
 
     if (version != "") {
@@ -390,55 +386,6 @@ export class SynopsysBridge {
     return Promise.resolve(false);
   }
 
-  async getAllAvailableBridgeVersions(): Promise<string[]> {
-    let htmlResponse = "";
-
-    const httpClient = new HttpClient("synopsys-task");
-    const httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
-      Accept: "text/html",
-    });
-    htmlResponse = await httpResponse.readBody();
-
-    const domParser = new DomParser();
-    const doms = domParser.parseFromString(htmlResponse);
-    const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
-    const versionArray: string[] = [];
-
-    if (elems != null) {
-      for (const el of elems) {
-        const content = el.textContent;
-        if (content != null) {
-          const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
-
-          if (v != null && v.length === 1) {
-            versionArray.push(v[0]);
-          }
-        }
-      }
-    }
-    return versionArray;
-  }
-
-  async getLatestVersion(): Promise<string> {
-    const versionArray: string[] = await this.getAllAvailableBridgeVersions();
-    let latestVersion = "0.0.0";
-
-    for (const version of versionArray) {
-      if (
-        version.localeCompare(latestVersion, undefined, {
-          numeric: true,
-          sensitivity: "base",
-        }) === 1
-      ) {
-        latestVersion = version;
-      }
-    }
-
-    console.info("Available latest version is - ".concat(latestVersion));
-
-    return latestVersion;
-  }
-
   async checkIfVersionExists(
     bridgeVersion: string,
     bridgeVersionFilePath: string
@@ -454,6 +401,44 @@ export class SynopsysBridge {
       );
     }
     return false;
+  }
+
+  async getSynopsysBridgePath(): Promise<string> {
+    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+
+    if (!synopsysBridgePath) {
+      synopsysBridgePath = this.getBridgeDefaultPath();
+    }
+    return synopsysBridgePath;
+  }
+
+  async getVersionFromLatestURL(): Promise<string> {
+    try {
+      const latestVersionsUrl = this.bridgeArtifactoryURL.concat(
+        "latest/versions.txt"
+      );
+      const httpClient = new HttpClient("");
+      const httpResponse = await httpClient.get(latestVersionsUrl, {
+        Accept: "text/html",
+      });
+      if (httpResponse.message.statusCode === 200) {
+        const htmlResponse = (await httpResponse.readBody()).trim();
+        const lines = htmlResponse.split("\n");
+        for (const line of lines) {
+          if (line.includes("Synopsys Bridge Package")) {
+            const newerVersion = line.split(":")[1].trim();
+            return newerVersion;
+          }
+        }
+      } else {
+        taskLib.error("Unable to locate version url");
+      }
+    } catch (e) {
+      taskLib.error(
+        "Error reading version file content: ".concat((e as Error).message)
+      );
+    }
+    return "";
   }
 
   getBridgeDefaultPath(): string {

@@ -74,6 +74,8 @@ polaris_bridge:
 
 pop_blackduck:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  variables:
+    POP_BLACKDUCK_INPROGRESS: 1
   extends:
     - .new_pop_blackduck
   before_script:

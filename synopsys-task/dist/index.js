@@ -56,10 +56,17 @@ function run() {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             // Prepare tool commands
             const command = yield sb.prepareCommand(tempDir);
+            let bridgePath = "";
+            taskLib.debug("inputs.ENABLE_NETWORK_AIR_GAP:".concat(new Boolean(inputs.ENABLE_NETWORK_AIR_GAP).toString()));
+            if (!inputs.ENABLE_NETWORK_AIR_GAP) {
+                bridgePath = yield sb.downloadAndExtractBridge(tempDir);
+            }
+            else {
+                taskLib.debug("Since network air gap is enabled, bypassing the download bridge.");
+            }
             // Download synopsys bridge
-            const bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, workSpaceDir, command);
+            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
             throw error;
@@ -225,11 +232,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
+exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || false;
 exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
 // Polaris related inputs
@@ -340,9 +348,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysBridge = void 0;
 const path = __importStar(__nccwpck_require__(1017));
@@ -354,7 +359,6 @@ const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const utility_1 = __nccwpck_require__(837);
 const fs_1 = __nccwpck_require__(7147);
-const dom_parser_1 = __importDefault(__nccwpck_require__(9592));
 const input_1 = __nccwpck_require__(7533);
 class SynopsysBridge {
     constructor() {
@@ -389,6 +393,20 @@ class SynopsysBridge {
                 executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
             }
             try {
+                if (inputs.ENABLE_NETWORK_AIR_GAP) {
+                    if (inputs.SYNOPSYS_BRIDGE_PATH.length !== 0) {
+                        executable = yield this.setBridgeExecutablePath(osName, inputs.SYNOPSYS_BRIDGE_PATH);
+                        if (!taskLib.exist(executable)) {
+                            throw new Error("synopsys_bridge_path ".concat(inputs.SYNOPSYS_BRIDGE_PATH, " does not exists"));
+                        }
+                    }
+                    else {
+                        executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
+                        if (!taskLib.exist(executable)) {
+                            throw new Error("bridge_default_Path ".concat(this.getBridgeDefaultPath(), " does not exists"));
+                        }
+                    }
+                }
                 return yield taskLib.exec(executable, command, { cwd: workspace });
             }
             catch (errorObject) {
@@ -490,16 +508,12 @@ class SynopsysBridge {
     }
     validateBridgeVersion(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const versions = yield this.getAllAvailableBridgeVersions();
+            const versions = yield this.getVersionFromLatestURL();
             return Promise.resolve(versions.indexOf(version.trim()) !== -1);
         });
     }
     downloadAndExtractBridge(tempDir) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (inputs.BRIDGE_DOWNLOAD_VERSION &&
-                (yield this.checkIfSynopsysBridgeVersionExists(inputs.BRIDGE_DOWNLOAD_VERSION))) {
-                return Promise.resolve(this.bridgeExecutablePath);
-            }
             try {
                 const bridgeUrl = yield this.getBridgeUrl();
                 if (bridgeUrl != "" && bridgeUrl != null) {
@@ -507,6 +521,10 @@ class SynopsysBridge {
                     console.info("Download of Synopsys Bridge completed");
                     // Extracting bridge
                     return yield this.extractBridge(downloadBridge);
+                }
+                if (inputs.BRIDGE_DOWNLOAD_VERSION &&
+                    (yield this.checkIfSynopsysBridgeVersionExists(inputs.BRIDGE_DOWNLOAD_VERSION))) {
+                    return Promise.resolve(this.bridgeExecutablePath);
                 }
                 return this.bridgeExecutablePath;
             }
@@ -550,9 +568,11 @@ class SynopsysBridge {
                 }
             }
             else {
-                console.info("Checking for latest version of Bridge to download and configure");
-                version = yield this.getLatestVersion();
-                bridgeUrl = this.getVersionUrl(version).trim();
+                taskLib.debug("Checking for latest version of Bridge to download and configure");
+                const latestVersion = yield this.getVersionFromLatestURL();
+                taskLib.debug("Found latest version:" + latestVersion);
+                bridgeUrl = this.getVersionUrl(latestVersion).trim();
+                version = latestVersion;
             }
             if (version != "") {
                 if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
@@ -594,48 +614,6 @@ class SynopsysBridge {
             return Promise.resolve(false);
         });
     }
-    getAllAvailableBridgeVersions() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let htmlResponse = "";
-            const httpClient = new HttpClient_1.HttpClient("synopsys-task");
-            const httpResponse = yield httpClient.get(this.bridgeArtifactoryURL, {
-                Accept: "text/html",
-            });
-            htmlResponse = yield httpResponse.readBody();
-            const domParser = new dom_parser_1.default();
-            const doms = domParser.parseFromString(htmlResponse);
-            const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
-            const versionArray = [];
-            if (elems != null) {
-                for (const el of elems) {
-                    const content = el.textContent;
-                    if (content != null) {
-                        const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
-                        if (v != null && v.length === 1) {
-                            versionArray.push(v[0]);
-                        }
-                    }
-                }
-            }
-            return versionArray;
-        });
-    }
-    getLatestVersion() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const versionArray = yield this.getAllAvailableBridgeVersions();
-            let latestVersion = "0.0.0";
-            for (const version of versionArray) {
-                if (version.localeCompare(latestVersion, undefined, {
-                    numeric: true,
-                    sensitivity: "base",
-                }) === 1) {
-                    latestVersion = version;
-                }
-            }
-            console.info("Available latest version is - ".concat(latestVersion));
-            return latestVersion;
-        });
-    }
     checkIfVersionExists(bridgeVersion, bridgeVersionFilePath) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -646,6 +624,43 @@ class SynopsysBridge {
                 console.info("Error reading version file content: ".concat(e.message));
             }
             return false;
+        });
+    }
+    getSynopsysBridgePath() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+            if (!synopsysBridgePath) {
+                synopsysBridgePath = this.getBridgeDefaultPath();
+            }
+            return synopsysBridgePath;
+        });
+    }
+    getVersionFromLatestURL() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("latest/versions.txt");
+                const httpClient = new HttpClient_1.HttpClient("");
+                const httpResponse = yield httpClient.get(latestVersionsUrl, {
+                    Accept: "text/html",
+                });
+                if (httpResponse.message.statusCode === 200) {
+                    const htmlResponse = (yield httpResponse.readBody()).trim();
+                    const lines = htmlResponse.split("\n");
+                    for (const line of lines) {
+                        if (line.includes("Synopsys Bridge Package")) {
+                            const newerVersion = line.split(":")[1].trim();
+                            return newerVersion;
+                        }
+                    }
+                }
+                else {
+                    taskLib.error("Unable to locate version url");
+                }
+            }
+            catch (e) {
+                taskLib.error("Error reading version file content: ".concat(e.message));
+            }
+            return "";
         });
     }
     getBridgeDefaultPath() {
@@ -678,6 +693,19 @@ class SynopsysBridge {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", this.WINDOWS_PLATFORM);
         }
         return bridgeDownloadUrl;
+    }
+    setBridgeExecutablePath(osName, filePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (osName === "win32") {
+                this.bridgeExecutablePath = filePath
+                    .concat("\\synopsys-bridge")
+                    .concat(".exe");
+            }
+            else {
+                this.bridgeExecutablePath = filePath.concat("/synopsys-bridge");
+            }
+            return this.bridgeExecutablePath;
+        });
     }
 }
 exports.SynopsysBridge = SynopsysBridge;
@@ -786,6 +814,9 @@ class SynopsysToolsParameter {
                     token: inputs.BLACKDUCK_API_TOKEN,
                     automation: {},
                 },
+                network: {
+                    airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+                },
             },
         };
         if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
@@ -876,6 +907,9 @@ class SynopsysToolsParameter {
                         stream: { name: inputs.COVERITY_STREAM_NAME },
                     },
                     automation: {},
+                    network: {
+                        airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+                    },
                 },
                 project: {},
             },
@@ -9452,331 +9486,6 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-
-/***/ }),
-
-/***/ 9592:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var DomParser = __nccwpck_require__(3759);
-module.exports = DomParser;
-
-
-/***/ }),
-
-/***/ 8899:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var
-  tagRegExp          = /(<\/?[a-z][a-z0-9]*(?::[a-z][a-z0-9]*)?\s*(?:\s+[a-z0-9-_]+=(?:(?:'[\s\S]*?')|(?:"[\s\S]*?")))*\s*\/?>)|([^<]|<(?![a-z\/]))*/gi,
-  attrRegExp         = /\s[a-z0-9-_]+\b(\s*=\s*('|")[\s\S]*?\2)?/gi,
-  splitAttrRegExp    = /(\s[a-z0-9-_]+\b\s*)(?:=(\s*('|")[\s\S]*?\3))?/gi,
-  startTagExp        = /^<[a-z]/,
-  selfCloseTagExp    = /\/>$/,
-  closeTagExp        = /^<\//,
-  nodeNameExp        = /<\/?([a-z][a-z0-9]*)(?::([a-z][a-z0-9]*))?/i,
-  attributeQuotesExp = /^('|")|('|")$/g,
-  noClosingTagsExp   = /^(?:area|base|br|col|command|embed|hr|img|input|link|meta|param|source)/i;
-
-var Node = __nccwpck_require__(4840);
-
-function findByRegExp(html, selector, onlyFirst) {
-
-  var
-    result        = [],
-    tagsCount     = 0,
-    tags          = html.match(tagRegExp),
-    composing     = false,
-    currentObject = null,
-    matchingSelector,
-    fullNodeName,
-    selfCloseTag,
-    attributes,
-    attrBuffer,
-    attrStr,
-    buffer,
-    tag;
-
-  for (var i = 0, l = tags.length; i < l; i++) {
-
-    tag = tags[i];
-    fullNodeName = tag.match(nodeNameExp);
-
-    matchingSelector = selector.test(tag);
-
-    if (matchingSelector && !composing){
-      composing = true;
-    }
-
-    if (composing) {
-
-      if (startTagExp.test(tag)) {
-        selfCloseTag = selfCloseTagExp.test(tag) || noClosingTagsExp.test(fullNodeName[1]);
-        attributes = [];
-        attrStr = tag.match(attrRegExp) || [];
-        for (var aI = 0, aL = attrStr.length; aI < aL; aI++) {
-          splitAttrRegExp.lastIndex = 0;
-          attrBuffer = splitAttrRegExp.exec(attrStr[aI]);
-          attributes.push({
-            name: attrBuffer[1].trim(),
-            value: (attrBuffer[2] || '').trim().replace(attributeQuotesExp, '')
-          });
-        }
-
-        ((currentObject && currentObject.childNodes) || result).push(buffer = new Node({
-          nodeType: 1, //element node
-          nodeName: fullNodeName[1],
-          namespace: fullNodeName[2],
-          attributes: attributes,
-          childNodes: [],
-          parentNode: currentObject,
-          startTag: tag,
-          selfCloseTag: selfCloseTag
-        }));
-        tagsCount++;
-
-        if (!onlyFirst && matchingSelector && currentObject){
-          result.push(buffer);
-        }
-
-        if (selfCloseTag) {
-          tagsCount--;
-        }
-        else {
-          currentObject = buffer;
-        }
-
-      }
-      else if (closeTagExp.test(tag)) {
-        if (currentObject.nodeName == fullNodeName[1]){
-          currentObject = currentObject.parentNode;
-          tagsCount--;
-        }
-      }
-      else {
-        currentObject.childNodes.push(new Node({
-          nodeType: 3,
-          text: tag,
-          parentNode: currentObject
-        }));
-      }
-
-      if (tagsCount == 0) {
-        composing = false;
-        currentObject = null;
-
-        if (onlyFirst){
-          break;
-        }
-      }
-
-    }
-
-  }
-
-  return onlyFirst ? result[0] || null : result;
-}
-
-
-function Dom(rawHTML) {
-  this.rawHTML = rawHTML;
-}
-
-Dom.prototype.getElementsByClassName = function (className) {
-  var selector = new RegExp('class=(\'|")(.*?\\s)?' + className + '(\\s.*?)?\\1');
-  return findByRegExp(this.rawHTML, selector);
-};
-
-Dom.prototype.getElementsByTagName = function (tagName) {
-  var selector = new RegExp('^<'+tagName, 'i');
-  return findByRegExp(this.rawHTML, selector);
-};
-
-Dom.prototype.getElementById = function(id){
-  var selector = new RegExp('id=(\'|")' + id + '\\1');
-  return findByRegExp(this.rawHTML, selector, true);
-};
-
-Dom.prototype.getElementsByName = function(name){
-    return this.getElementsByAttribute('name', name);
-};
-
-Dom.prototype.getElementsByAttribute = function(attr, value){
-  var selector = new RegExp('\\s' + attr + '=(\'|")' + value + '\\1');
-  return findByRegExp(this.rawHTML, selector);
-};
-
-
-module.exports = Dom;
-
-
-/***/ }),
-
-/***/ 3759:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var Dom = __nccwpck_require__(8899);
-
-function DomParser() {
-}
-
-DomParser.prototype.parseFromString = function (html) {
-  return new Dom(html);
-};
-
-module.exports = DomParser;
-
-/***/ }),
-
-/***/ 4840:
-/***/ ((module) => {
-
-//https://developer.mozilla.org/en-US/docs/Web/API/Element
-
-
-function Node(cfg) {
-
-  this.namespace     = cfg.namespace || null;
-  this.text          = cfg.text;
-  this._selfCloseTag = cfg.selfCloseTag;
-
-
-  Object.defineProperties(this, {
-    nodeType: {
-      value: cfg.nodeType
-    },
-    nodeName: {
-      value: cfg.nodeType == 1 ? cfg.nodeName : '#text'
-    },
-    childNodes: {
-      value: cfg.childNodes
-    },
-    firstChild: {
-      get: function(){
-        return this.childNodes[0] || null;
-      }
-    },
-    lastChild: {
-      get: function(){
-        return this.childNodes[this.childNodes.length-1] || null;
-      }
-    },
-    parentNode: {
-      value: cfg.parentNode || null
-    },
-    attributes: {
-      value: cfg.attributes || []
-    },
-    innerHTML: {
-      get: function(){
-        var
-          result = '',
-          cNode;
-        for (var i = 0, l = this.childNodes.length; i < l; i++) {
-          cNode = this.childNodes[i];
-          result += cNode.nodeType === 3 ? cNode.text : cNode.outerHTML;
-        }
-        return result;
-      }
-    },
-    outerHTML: {
-      get: function(){
-        if (this.nodeType != 3){
-          var
-            str,
-            attrs = (this.attributes.map(function(elem){
-              return elem.name + (elem.value ? '=' + '"'+ elem.value +'"' : '');
-            }) || []).join(' '),
-            childs = '';
-
-          str = '<' + this.nodeName + (attrs ? ' ' + attrs : '') + (this._selfCloseTag ? '/' : '') + '>';
-
-          if (!this._selfCloseTag){
-            childs = (this._selfCloseTag ? '' : this.childNodes.map(function(child){
-              return child.outerHTML;
-            }) || []).join('');
-
-            str += childs;
-            str += '</' + this.nodeName + '>';
-          }
-        }
-        else{
-          str = this.textContent;
-        }
-        return str;
-      }
-    },
-    textContent: {
-      get: function(){
-        if (this.nodeType == Node.TEXT_NODE){
-          return this.text;
-        }
-        else{
-          return this.childNodes.map(function(node){
-            return node.textContent;
-          }).join('').replace(/\x20+/g, ' ');
-        }
-      }
-    }
-  });
-}
-
-Node.prototype.getAttribute = function (attributeName) {
-  for (var i = 0, l = this.attributes.length; i < l; i++) {
-    if (this.attributes[i].name == attributeName) {
-      return this.attributes[i].value;
-    }
-  }
-  return null;
-};
-
-function searchElements(root, conditionFn, onlyFirst){
-  var result = [];
-  onlyFirst = !!onlyFirst;
-  if (root.nodeType !== 3) {
-    for (var i = 0, l = root.childNodes.length; i < l; i++) {
-      if (root.childNodes[i].nodeType !== 3 && conditionFn(root.childNodes[i])) {
-        result.push(root.childNodes[i]);
-        if (onlyFirst){
-          break;
-        }
-      }
-      result = result.concat(searchElements(root.childNodes[i], conditionFn));
-    }
-  }
-  return onlyFirst ? result[0] : result;
-}
-
-Node.prototype.getElementsByTagName = function (tagName) {
-  return searchElements(this, function(elem){
-    return elem.nodeName == tagName;
-  })
-};
-
-Node.prototype.getElementsByClassName = function (className) {
-  var expr = new RegExp('^(.*?\\s)?' + className + '(\\s.*?)?$');
-  return searchElements(this, function(elem){
-    return elem.attributes.length && expr.test(elem.getAttribute('class'));
-  })
-};
-
-Node.prototype.getElementById = function (id) {
-  return searchElements(this, function(elem){
-    return elem.attributes.length && elem.getAttribute('id') == id;
-  }, true)
-};
-
-Node.prototype.getElementsByName = function (name) {
-  return searchElements(this, function(elem){
-    return elem.attributes.length && elem.getAttribute('name') == name;
-  })
-};
-
-
-Node.ELEMENT_NODE = 1;
-Node.TEXT_NODE    = 3;
-
-module.exports = Node;
 
 /***/ }),
 
