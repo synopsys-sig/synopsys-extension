@@ -24,6 +24,7 @@ export class SynopsysBridge {
   bridgeExecutablePath: string;
   bridgeArtifactoryURL: string;
   bridgeUrlPattern: string;
+  bridgeUrlLatestPattern: string;
   WINDOWS_PLATFORM = "win64";
   LINUX_PLATFORM = "linux64";
   MAC_PLATFORM = "macosx";
@@ -35,11 +36,15 @@ export class SynopsysBridge {
     this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
       "/$version/synopsys-bridge-$version-$platform.zip"
     );
+    this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat(
+      "/latest/synopsys-bridge-$platform.zip "
+    );
   }
 
   async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
     const extractZippedFilePath: string =
-      inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
+      inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY ||
+      this.getBridgeDefaultPath();
 
     // Clear the existing bridge, if available
     if (taskLib.exist(extractZippedFilePath)) {
@@ -74,17 +79,14 @@ export class SynopsysBridge {
 
     try {
       if (inputs.ENABLE_NETWORK_AIR_GAP) {
-        if (inputs.SYNOPSYS_BRIDGE_PATH.length !== 0) {
+        if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY.length !== 0) {
           executable = await this.setBridgeExecutablePath(
             osName,
-            inputs.SYNOPSYS_BRIDGE_PATH
+            inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY
           );
           if (!taskLib.exist(executable)) {
             throw new Error(
-              "synopsys_bridge_path ".concat(
-                inputs.SYNOPSYS_BRIDGE_PATH,
-                " does not exists"
-              )
+              "Synopsys Bridge Install directory path does not exist"
             );
           }
         } else {
@@ -93,12 +95,7 @@ export class SynopsysBridge {
             this.getBridgeDefaultPath()
           );
           if (!taskLib.exist(executable)) {
-            throw new Error(
-              "bridge_default_Path ".concat(
-                this.getBridgeDefaultPath(),
-                " does not exists"
-              )
-            );
+            throw new Error("Synopsys Default Bridge path does not exist");
           }
         }
       }
@@ -334,11 +331,17 @@ export class SynopsysBridge {
       );
       const latestVersion = await this.getVersionFromLatestURL();
       if (latestVersion === "") {
-        return Promise.reject(new Error("Unable to find the latest version"));
+        bridgeUrl = this.getLatestVersionUrl();
+        taskLib.debug(
+          "Checking for latest version of Bridge to download and configure" +
+            bridgeUrl
+        );
+        version = "latest";
+      } else {
+        taskLib.debug("Found latest version:" + latestVersion);
+        bridgeUrl = this.getVersionUrl(latestVersion).trim();
+        version = latestVersion;
       }
-      taskLib.debug("Found latest version:" + latestVersion);
-      bridgeUrl = this.getVersionUrl(latestVersion).trim();
-      version = latestVersion;
     }
 
     if (version != "") {
@@ -356,7 +359,7 @@ export class SynopsysBridge {
   async checkIfSynopsysBridgeVersionExists(
     bridgeVersion: string
   ): Promise<boolean> {
-    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
     const osName = process.platform;
     let versionFilePath: string;
 
@@ -436,7 +439,7 @@ export class SynopsysBridge {
   }
 
   async getSynopsysBridgePath(): Promise<string> {
-    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
 
     if (!synopsysBridgePath) {
       synopsysBridgePath = this.getBridgeDefaultPath();
@@ -447,7 +450,7 @@ export class SynopsysBridge {
   async getVersionFromLatestURL(): Promise<string> {
     try {
       const latestVersionsUrl = this.bridgeArtifactoryURL.concat(
-        "latest/versions.txt"
+        "/latest/versions1.txt"
       );
       const httpClient = new HttpClient("");
       const httpResponse = await httpClient.get(latestVersionsUrl, {
@@ -463,7 +466,9 @@ export class SynopsysBridge {
           }
         }
       } else {
-        taskLib.error("Unable to locate version url");
+        taskLib.error(
+          "Unable to retrieve the most recent version from Artifactory URL"
+        );
       }
     } catch (e) {
       taskLib.error(
@@ -518,6 +523,29 @@ export class SynopsysBridge {
         this.WINDOWS_PLATFORM
       );
     }
+    return bridgeDownloadUrl;
+  }
+
+  getLatestVersionUrl(): string {
+    const osName = process.platform;
+    let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
+    if (osName === "darwin") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.MAC_PLATFORM
+      );
+    } else if (osName === "linux") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.LINUX_PLATFORM
+      );
+    } else if (osName === "win32") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.WINDOWS_PLATFORM
+      );
+    }
+
     return bridgeDownloadUrl;
   }
 

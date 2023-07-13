@@ -232,13 +232,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_PATH = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
 exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || false;
-exports.SYNOPSYS_BRIDGE_PATH = taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
+exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, true) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
 // Polaris related inputs
 exports.AZURE_TOKEN = ((_c = taskLib.getInput(constants.AZURE_TOKEN_KEY)) === null || _c === void 0 ? void 0 : _c.trim()) || "";
@@ -373,10 +373,12 @@ class SynopsysBridge {
         this.bridgeArtifactoryURL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
         this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/synopsys-bridge-$version-$platform.zip");
+        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/synopsys-bridge-$platform.zip ");
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const extractZippedFilePath = inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
+            const extractZippedFilePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY ||
+                this.getBridgeDefaultPath();
             // Clear the existing bridge, if available
             if (taskLib.exist(extractZippedFilePath)) {
                 yield taskLib.rmRF(extractZippedFilePath);
@@ -398,16 +400,16 @@ class SynopsysBridge {
             }
             try {
                 if (inputs.ENABLE_NETWORK_AIR_GAP) {
-                    if (inputs.SYNOPSYS_BRIDGE_PATH.length !== 0) {
-                        executable = yield this.setBridgeExecutablePath(osName, inputs.SYNOPSYS_BRIDGE_PATH);
+                    if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY.length !== 0) {
+                        executable = yield this.setBridgeExecutablePath(osName, inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY);
                         if (!taskLib.exist(executable)) {
-                            throw new Error("synopsys_bridge_path ".concat(inputs.SYNOPSYS_BRIDGE_PATH, " does not exists"));
+                            throw new Error("Synopsys Bridge Install directory path does not exist");
                         }
                     }
                     else {
                         executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
                         if (!taskLib.exist(executable)) {
-                            throw new Error("bridge_default_Path ".concat(this.getBridgeDefaultPath(), " does not exists"));
+                            throw new Error("Synopsys Default Bridge path does not exist");
                         }
                     }
                 }
@@ -575,11 +577,16 @@ class SynopsysBridge {
                 taskLib.debug("Checking for latest version of Bridge to download and configure");
                 const latestVersion = yield this.getVersionFromLatestURL();
                 if (latestVersion === "") {
-                    return Promise.reject(new Error("Unable to find the latest version"));
+                    bridgeUrl = this.getLatestVersionUrl();
+                    taskLib.debug("Checking for latest version of Bridge to download and configure" +
+                        bridgeUrl);
+                    version = "latest";
                 }
-                taskLib.debug("Found latest version:" + latestVersion);
-                bridgeUrl = this.getVersionUrl(latestVersion).trim();
-                version = latestVersion;
+                else {
+                    taskLib.debug("Found latest version:" + latestVersion);
+                    bridgeUrl = this.getVersionUrl(latestVersion).trim();
+                    version = latestVersion;
+                }
             }
             if (version != "") {
                 if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
@@ -594,7 +601,7 @@ class SynopsysBridge {
     }
     checkIfSynopsysBridgeVersionExists(bridgeVersion) {
         return __awaiter(this, void 0, void 0, function* () {
-            let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+            let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
             const osName = process.platform;
             let versionFilePath;
             if (!synopsysBridgePath) {
@@ -661,7 +668,7 @@ class SynopsysBridge {
     }
     getSynopsysBridgePath() {
         return __awaiter(this, void 0, void 0, function* () {
-            let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+            let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
             if (!synopsysBridgePath) {
                 synopsysBridgePath = this.getBridgeDefaultPath();
             }
@@ -671,7 +678,7 @@ class SynopsysBridge {
     getVersionFromLatestURL() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("latest/versions.txt");
+                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("/latest/versions1.txt");
                 const httpClient = new HttpClient_1.HttpClient("");
                 const httpResponse = yield httpClient.get(latestVersionsUrl, {
                     Accept: "text/html",
@@ -687,7 +694,7 @@ class SynopsysBridge {
                     }
                 }
                 else {
-                    taskLib.error("Unable to locate version url");
+                    taskLib.error("Unable to retrieve the most recent version from Artifactory URL");
                 }
             }
             catch (e) {
@@ -716,6 +723,20 @@ class SynopsysBridge {
         const osName = process.platform;
         let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
         bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
+        if (osName === "darwin") {
+            bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", this.MAC_PLATFORM);
+        }
+        else if (osName === "linux") {
+            bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", this.LINUX_PLATFORM);
+        }
+        else if (osName === "win32") {
+            bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", this.WINDOWS_PLATFORM);
+        }
+        return bridgeDownloadUrl;
+    }
+    getLatestVersionUrl() {
+        const osName = process.platform;
+        let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
         if (osName === "darwin") {
             bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", this.MAC_PLATFORM);
         }

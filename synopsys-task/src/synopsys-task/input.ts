@@ -8,8 +8,8 @@ export const BRIDGE_DOWNLOAD_URL =
 export const ENABLE_NETWORK_AIR_GAP =
   taskLib.getBoolInput("network_air_gap") || false;
 
-export const SYNOPSYS_BRIDGE_PATH =
-  taskLib.getPathInput("synopsys_bridge_path", false, true) || "";
+export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
+  taskLib.getPathInput("synopsys_bridge_install_directory", false, true) || "";
 
 export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";
