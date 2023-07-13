@@ -19,13 +19,23 @@ Synopsys Security Scan supports Azure integration with the following Synopsys se
 
 Synopsys solution functionality is invoked directly by Synopsys Bridge, and indirectly by the Synopsys Security Scan, which downloads Synopsys Bridge and calls the respective adapters to run corresponding scans.
 
+# Prerequisites
+
+Before configuring Synopsys Action into your azure pipeline, note the following prerequisites:
+
+- **AZURE_TOKEN** is required as input when running Black Duck Fix PR, Black Duck/Coverity PR Comment. There 2 different types of tokens that can be passed to **AZURE_TOKEN**
+  1. When using `AZURE_TOKEN: $(System.AccessToken)`, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**
+  2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
+- Sensitive data such as access tokens, user names, passwords and even URLs must be configured using variable groups **(ADO → Project → Pipelines → Library → New Variable Group)**
+- Enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
+
 ## Synopsys Security Scan - Polaris
 
-Before running a pipeline using the Synopsys Security Scan and Polaris, add `azure-pipelines.yml` to your project.
+Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into an ADO pipeline.
 
-Configure sensitive data like usernames, passwords and URLs using pipeline variables.
+Before running a pipeline using the Synopsys Security Scan and Polaris, add `azure-pipelines.yml` to your project and configure required fields. Push those changes and agent will pick up the job and initiate the pipeline.
 
-Push those changes and agent will pick up the job and initiate the pipeline.
+Here's an example piepline for Polaris scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 trigger:
@@ -33,24 +43,33 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+  - group: polaris
   
 steps:
 - task: SynopsysSecurityScan@1.0.0
+  displayName: 'Polaris Scan'
   inputs:
-    bridge_polaris_serverUrl: $(POLARIS_SERVER_URL)
-    bridge_polaris_accessToken: $(POLARIS_ACCESS_TOKEN)
-    bridge_polaris_application_name: $(POLARIS_APPLICATION_NAME)
-    bridge_polaris_project_name: $(POLARIS_PROJECT_NAME)
+    BRIDGE_POLARIS_SERVERURL: $(POLARIS_SERVER_URL)
+    BRIDGE_POLARIS_ACCESSTOKEN: $(POLARIS_ACCESS_TOKEN)
+    BRIDGE_POLARIS_APPLICATION_NAME: $(POLARIS_APPLICATION_NAME)
+    BRIDGE_POLARIS_PROJECT_NAME: $(POLARIS_PROJECT_NAME)
     ### Accepts Multiple Values
-    bridge_polaris_assessment_types: "SCA,SAST"
+    BRIDGE_POLARIS_ASSESSMENT_TYPES: "SCA,SAST"
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # INCLUDE_DIAGNOSTICS: true
 ```
+
+**Please find the following mandatory and optional paramters for Polaris below:**
+
 | Input Parameter            | Description                                                       | Mandatory / Optional | 
 |----------------------------|-------------------------------------------------------------------|--------------------|
-| `bridge_polaris_serverUrl`        | URL for Polaris Server                                            | Mandatory          |
-| `bridge_polaris_accessToken`      | Access token for Polaris                                          | Mandatory          |
-| `bridge_polaris_application_name` | Application name in Polaris                                       | Mandatory          |
-| `bridge_polaris_project_name`     | Project name in Polaris                                           | Mandatory          |
-| `bridge_polaris_assessment_types` | Polaris assessment types. Example: SCA,SAST                       | Mandatory          |
+| `BRIDGE_POLARIS_SERVERURL`        | URL for Polaris Server                                            | Mandatory          |
+| `BRIDGE_POLARIS_ACCESSTOKEN`      | Access token for Polaris                                          | Mandatory          |
+| `BRIDGE_POLARIS_APPLICATION_NAME` | Application name in Polaris                                       | Mandatory          |
+| `BRIDGE_POLARIS_PROJECT_NAME`     | Project name in Polaris                                           | Mandatory          |
+| `BRIDGE_POLARIS_ASSESSMENT_TYPES` | Polaris assessment types. Example: SCA,SAST                       | Mandatory          |
 
 # Synopsys Security Scan - Coverity Cloud Deployment with Thin Client
 
@@ -66,33 +85,55 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+  - group: coverity
   
 steps:
 - task: SynopsysSecurityScan@1.0.0
+  displayName: 'Coverity Full Scan'
+  condition: not(eq(variables['Build.Reason'], 'PullRequest'))
   inputs:
-    bridge_coverity_connect_url: $(COVERITY_URL)
-    bridge_coverity_connect_user_name: $(COVERITY_USER)
-    bridge_coverity_connect_user_password: $(COVERITY_PASSPHRASE)
-    bridge_coverity_connect_project_name: $(COVERITY_PROJECT_NAME)
-    bridge_coverity_connect_stream_name: $(COVERITY_STREAM_NAME)
+    BRIDGE_COVERITY_CONNECT_URL: $(COVERITY_URL)
+    BRIDGE_COVERITY_CONNECT_USER_NAME: $(COVERITY_USER)
+    BRIDGE_COVERITY_CONNECT_USER_PASSWORD: $(COVERITY_PASSPHRASE)
+    BRIDGE_COVERITY_CONNECT_PROJECT_NAME: '$(Build.Repository.Name)'
+    BRIDGE_COVERITY_CONNECT_STREAM_NAME: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # include_diagnostics: true
+
+- task: SynopsysSecurityScan@1.0.0
+  displayName: 'Coverity PR Scan'
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+  inputs:
+    BRIDGE_COVERITY_CONNECT_URL: $(COVERITY_URL)
+    BRIDGE_COVERITY_CONNECT_USER_NAME: $(COVERITY_USER)
+    BRIDGE_COVERITY_CONNECT_USER_PASSWORD: $(COVERITY_PASSPHRASE)
+    BRIDGE_COVERITY_CONNECT_PROJECT_NAME: '$(Build.Repository.Name)'
+    BRIDGE_COVERITY_CONNECT_STREAM_NAME: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
+    ### Below configuration is used to enable feedback from Coverity security testing as pull request comment
+    coverity_automation_prcomment: true
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # include_diagnostics: true
 ```
+
+**Please find the following mandatory and optional paramters for Coverity below:**
+
 | Input Parameter   | Description                                                                                                                                                                                                                                                                                   | Mandatory / Optional |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `bridge_coverity_connect_url` | URL for Coverity server                                                                                                                                                                                                                                                                       | Mandatory     |
-| `bridge_coverity_connect_user_name`        | Username for Coverity                                                                                                                                                                                                                                                                         | Mandatory     |
-| `bridge_coverity_connect_user_password`        | Password for Coverity                                                                                                                                                                                                                                                                         | Mandatory     |
-| `bridge_coverity_connect_project_name`        | Project name in Coverity                                                                                                                                                                                                                                                                      | Mandatory     |
-| `bridge_coverity_connect_stream_name`        | Stream name in Coverity                                                                                                                                                                                                                                                                       | Mandatory     |
-| `bridge_coverity_install_directory`        | Directory path to install Coverity                                                                                                                                                                                                                                                            | Optional    |
-| `bridge_coverity_connect_policy_view`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001 | Optional    |
-| `bridge_coverity_automation_prcomment`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
-| `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken) or azure_token: PAT_TOKEN </br>                                                                                                                                                 | Mandatory if  bridge_coverity_automation_prcomment is set true. |
+| `BRIDGE_COVERITY_CONNECT_URL` | URL for Coverity server                                                                                                                                                                                                                                                                       | Mandatory     |
+| `BRIDGE_COVERITY_CONNECT_USER_NAME`        | Username for Coverity                                                                                                                                                                                                                                                                         | Mandatory     |
+| `BRIDGE_COVERITY_CONNECT_USER_PASSWORD`        | Password for Coverity                                                                                                                                                                                                                                                                         | Mandatory     |
+| `BRIDGE_COVERITY_CONNECT_PROJECT_NAME`        | Project name in Coverity                                                                                                                                                                                                                                                                      | Mandatory     |
+| `BRIDGE_COVERITY_CONNECT_STREAM_NAME`        | Stream name in Coverity                                                                                                                                                                                                                                                                       | Mandatory     |
+| `BRIDGE_COVERITY_INSTALL_DIRECTORY`        | Directory path to install Coverity                                                                                                                                                                                                                                                            | Optional    |
+| `BRIDGE_COVERITY_CONNECT_POLICY_VIEW`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001 | Optional    |
+| `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
+| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                                                                 | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
 
 **Note on coverity PR comments:**
 - **Build Validation Policy** - Enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Reference - https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation.  
-- **Note on azure_token** - There 2 different types tokens can be passed to `azure_token`
-  1. When `azure_token: $(System.AccessToken)`, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**
-  2. When `azure_token: PAT_TOKEN`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Reference - https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows.
 
 ## Synopsys Security Scan - Black Duck
 
@@ -100,7 +141,7 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Configure sensitive data like usernames, passwords and URLs using pipeline variables.
+ Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example workflow for Black Duck scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 
@@ -109,29 +150,70 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-  
-steps:
-- task: SynopsysSecurityScan@1.0.0
-  inputs:
-    bridge_blackduck_url: $(BLACKDUCK_URL)
-    bridge_blackduck_token: $(BLACKDUCK_TOKEN)
-```
 
+variables:
+  - group: blackduck
+    
+steps:
+- task: JavaToolInstaller@0
+  displayName: 'Use Java 17'
+  inputs:
+    versionSpec: 17
+    jdkArchitectureOption: x64
+    jdkSourceOption: PreInstalled
+
+- task: SynopsysSecurityScan@1.0.0
+  displayName: 'Black Duck Full Scan'
+  condition: not(eq(variables['Build.Reason'], 'PullRequest'))
+  env:
+    DETECT_PROJECT_NAME: $(Build.Repository.Name)
+    DETECT_PROJECT_VERSION_NAME: $(Build.SourceBranchName)
+    DETECT_CODE_LOCATION_NAME: $(Build.Repository.Name)-$(Build.SourceBranchName)
+  inputs:
+    BRIDGE_BLACKDUCK_URL: $(BLACKDUCK_URL)
+    BRIDGE_BLACKDUCK_TOKEN: $(BLACKDUCK_TOKEN)
+    BRIDGE_BLACKDUCK_SCAN_FULL: true
+    ### Accepts Multiple Values
+    BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES: 'BLOCKER,CRITICAL'
+    ### Uncomment below configuration to enable autoamtic fix pull request creation if vulnerabilities are reported
+    # blackduck_automation_fixpr: true 
+    # AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # INCLUDE_DIAGNOSTICS: true      
+
+- task: SynopsysSecurityScan@1
+  displayName: 'Black Duck PR Scan'
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+  env:
+    DETECT_PROJECT_NAME: $(Build.Repository.Name)
+    DETECT_PROJECT_VERSION_NAME: $(System.PullRequest.targetBranchName)
+    DETECT_CODE_LOCATION_NAME: $(Build.Repository.Name)-$(System.PullRequest.targetBranchName)
+  inputs:
+    BRIDGE_BLACKDUCK_URL: '$(BLACKDUCK_URL)'
+    BRIDGE_BLACKDUCK_TOKEN: '$(BLACKDUCK_API_TOKEN)'
+    BRIDGE_BLACKDUCK_SCAN_FULL: false
+    ### Accepts Multiple Values
+    BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES: 'BLOCKER,CRITICAL'
+    ### Below configuration is used to enable automatic pull request comment based on Black Duck scan result
+    BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT: true
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
+    # INCLUDE_DIAGNOSTICS: true    
+```
+**Please find the following mandatory and optional paramters for Black Duck below:**
 | Input Parameter | Description                                                                                                                                                                                                                                                           |  Mandatory / Optional |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-|`bridge_blackduck_url`  | URL for Black Duck server                                                                                                                                                                                                                                             | Mandatory     |
-| `bridge_blackduck_token` | API token for Black Duck                                                                                                                                                                                                                                              | Mandatory     |
-| `bridge_blackduck_install_directory` | Directory path to install Black Duck                                                                                                                                                                                                                                  | Optional     |
-| `bridge_blackduck_scan_full` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                    | Optional     |
-| `bridge_blackduck_scan_failure_severities`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
-| `bridge_blackduck_automation_prcomment`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
-| `bridge_blackduck_automation_fixpr`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> By default fix pull request creation will be disabled <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
-| `azure_token` | It is mandatory to pass azure_token parameter with required permissions. <br> Example:  azure_token: $(System.AccessToken) or azure_token: PAT_TOKEN </br>                                                                                                            | Mandatory if  bridge_blackduck_automation_prcomment or bridge_blackduck_automation_fixpr is set true. |
+|`BRIDGE_BLACKDUCK_URL`  | URL for Black Duck server                                                                                                                                                                                                                                             | Mandatory     |
+| `BRIDGE_BLACKDUCK_TOKEN` | API token for Black Duck                                                                                                                                                                                                                                              | Mandatory     |
+| `BRIDGE_BLACKDUCK_INSTALL_DIRECTORY` | Directory path to install Black Duck                                                                                                                                                                                                                                  | Optional     |
+| `BRIDGE_BLACKDUCK_SCAN_FULL` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                    | Optional     |
+| `BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
+| `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
+| `BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled. <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
+| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                            | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
 
 - **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
-- **Note on azure_token** - There 2 different types tokens can be passed to `azure_token`
-    1. When `azure_token: $(System.AccessToken)`, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**
-    2. When `azure_token: PAT_TOKEN`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Reference - https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows.
+
 -  **Note on blackduck PR comments:** Enable **Build Validation Policy** to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Reference - https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation.
 
 
@@ -142,7 +224,7 @@ Pass the following additional parameters as necessary.
 |`synopsys_bridge_path`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
 | `bridge_download_url`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
 |`bridge_download_version`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
-| `include_diagnostics`      | All diagnostics files are available to download when `true` passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
+| `INCLUDE_DIAGNOSTICS`      | All diagnostics files are available to download when `true` passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
 Note - If `bridge_download_version` or `bridge_download_url` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
  
@@ -158,6 +240,5 @@ If you are unable to download the Synopsys Bridge from our internet-hosted repos
 
 # Azure Agent Setup
 
-- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. See this documentation for details:
-https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser
+- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. Refer [Azure Pipelines agents](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser) for more details.
 - You can use Microsoft-hosted agents as well to scan your code using Azure Pipelines.
