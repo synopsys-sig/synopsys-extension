@@ -27,7 +27,7 @@ Before configuring Synopsys Action into your azure pipeline, note the following 
   1. When using `AZURE_TOKEN: $(System.AccessToken)`, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**
   2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
 - Sensitive data such as access tokens, user names, passwords and even URLs must be configured using variable groups **(ADO → Project → Pipelines → Library → New Variable Group)**
-- Enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
+- For Black Duck and Coverity PR comments enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
 
 ## Synopsys Security Scan - Polaris
 
@@ -113,7 +113,7 @@ steps:
     BRIDGE_COVERITY_CONNECT_STREAM_NAME: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
     ### Below configuration is used to enable feedback from Coverity security testing as pull request comment
     coverity_automation_prcomment: true
-    AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set to 'true'
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # include_diagnostics: true
 ```
@@ -132,16 +132,13 @@ steps:
 | `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
 | `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                                                                 | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
 
-**Note on coverity PR comments:**
-- **Build Validation Policy** - Enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Reference - https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation.  
-
 ## Synopsys Security Scan - Black Duck
 
 Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hosted Black Duck Hub instances.
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
- Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example workflow for Black Duck scan using the Synopsys Synopsys Security Scan:
+Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example workflow for Black Duck scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 
@@ -176,8 +173,8 @@ steps:
     ### Accepts Multiple Values
     BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES: 'BLOCKER,CRITICAL'
     ### Uncomment below configuration to enable autoamtic fix pull request creation if vulnerabilities are reported
-    # blackduck_automation_fixpr: true 
-    # AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    # BRIDGE_BLACKDUCK_AUTOMATION_FIXPR: true 
+    # AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set to 'true'
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # INCLUDE_DIAGNOSTICS: true      
 
@@ -196,7 +193,7 @@ steps:
     BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES: 'BLOCKER,CRITICAL'
     ### Below configuration is used to enable automatic pull request comment based on Black Duck scan result
     BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT: true
-    AZURE_TOKEN: $(System.AccessToken) # Mandatory when blackduck_automation_fixpr is set to 'true'
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT is set to 'true'
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # INCLUDE_DIAGNOSTICS: true    
 ```
@@ -209,13 +206,10 @@ steps:
 | `BRIDGE_BLACKDUCK_SCAN_FULL` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                    | Optional     |
 | `BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
 | `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
-| `BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled. <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
-| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                            | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
+| `BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled. <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
+| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                            | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
 
 - **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
-
--  **Note on blackduck PR comments:** Enable **Build Validation Policy** to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Reference - https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation.
-
 
 Pass the following additional parameters as necessary. 
 
