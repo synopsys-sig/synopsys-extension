@@ -77,7 +77,7 @@ At this time, Synopsys Security Scan only supports the Coverity thin client/clou
 
 Before running Coverity using the Synopsys Security Scan, ensure the appropriate `project` and `stream` are set in your Coverity Connect server environment.
 
-Configure sensitive data like usernames, passwords and URLs using pipeline variables.
+Here's an example piepline for Coverity scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 trigger:
@@ -130,7 +130,7 @@ steps:
 | `BRIDGE_COVERITY_INSTALL_DIRECTORY`        | Directory path to install Coverity                                                                                                                                                                                                                                                            | Optional    |
 | `BRIDGE_COVERITY_CONNECT_POLICY_VIEW`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001 | Optional    |
 | `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
-| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                                                                 | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
+| `AZURE_TOKEN` | Azure Access Token <br> Example: `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
 
 ## Synopsys Security Scan - Black Duck
 
@@ -138,7 +138,7 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example workflow for Black Duck scan using the Synopsys Synopsys Security Scan:
+Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 
@@ -150,14 +150,6 @@ pool:
 
 variables:
   - group: blackduck
-    
-steps:
-- task: JavaToolInstaller@0
-  displayName: 'Use Java 17'
-  inputs:
-    versionSpec: 17
-    jdkArchitectureOption: x64
-    jdkSourceOption: PreInstalled
 
 - task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck Full Scan'
@@ -178,7 +170,7 @@ steps:
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # INCLUDE_DIAGNOSTICS: true      
 
-- task: SynopsysSecurityScan@1
+- task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck PR Scan'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   env:
@@ -207,7 +199,7 @@ steps:
 | `BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
 | `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
 | `BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled. <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
-| `AZURE_TOKEN` | It is mandatory to pass AZURE_TOKEN parameter with required permissions. <br> Example:  AZURE_TOKEN: $(System.AccessToken) or AZURE_TOKEN: $(PAT_TOKEN) </br>                                                                                                            | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
+| `AZURE_TOKEN` | Azure Access Token <br> Example:  `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
 
 - **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
 
@@ -215,12 +207,12 @@ Pass the following additional parameters as necessary.
 
 | Input Parameter | Description                              |  Mandatory / Optional | 
 |-----------------|------------------------------------------|-----------------------|
-|`synopsys_bridge_path`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
-| `bridge_download_url`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
-|`bridge_download_version`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
+|`SYNOPSYS_BRIDGE_PATH`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
+| `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
+|`BRIDGE_DOWNLOAD_VERSION`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
 | `INCLUDE_DIAGNOSTICS`      | All diagnostics files are available to download when `true` passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
-Note - If `bridge_download_version` or `bridge_download_url` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
+Note - If `BRIDGE_DOWNLOAD_VERSION` or `BRIDGE_DOWNLOAD_URL` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
  
 # Synopsys Bridge Setup
 
@@ -230,7 +222,7 @@ Note - If `bridge_download_version` or `bridge_download_url` is not provided, Sy
 
 ## Manual Synopsys Bridge
 
-If you are unable to download the Synopsys Bridge from our internet-hosted repository, or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or pre-configure your agent to include the Synopsys Bridge. In this latter case, you would specify the `synopsys_bridge_path` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
+If you are unable to download the Synopsys Bridge from our internet-hosted repository, or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or pre-configure your agent to include the Synopsys Bridge. In this latter case, you would specify the `SYNOPSYS_BRIDGE_PATH` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
 
 # Azure Agent Setup
 
