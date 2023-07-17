@@ -37,7 +37,7 @@ export class SynopsysBridge {
       "/$version/synopsys-bridge-$version-$platform.zip"
     );
     this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat(
-      "/latest/synopsys-bridge-$platform.zip "
+      "/latest/synopsys-bridge-$platform.zip"
     );
   }
 
@@ -335,6 +335,10 @@ export class SynopsysBridge {
         );
         if (!bridgeUrl.includes("latest")) {
           throw new Error("Invalid artifactory latest url");
+        } else {
+          if (!validateBridgeUrl(bridgeUrl)) {
+            throw new Error("Invalid artifactory latest url");
+          }
         }
         version = "latest";
       } else {

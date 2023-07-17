@@ -375,7 +375,7 @@ class SynopsysBridge {
         this.bridgeArtifactoryURL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";
         this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat("/$version/synopsys-bridge-$version-$platform.zip");
-        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/synopsys-bridge-$platform.zip ");
+        this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat("/latest/synopsys-bridge-$platform.zip");
     }
     extractBridge(fileInfo) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -585,6 +585,11 @@ class SynopsysBridge {
                         bridgeUrl);
                     if (!bridgeUrl.includes("latest")) {
                         throw new Error("Invalid artifactory latest url");
+                    }
+                    else {
+                        if (!(0, validator_1.validateBridgeUrl)(bridgeUrl)) {
+                            throw new Error("Invalid artifactory latest url");
+                        }
                     }
                     version = "latest";
                 }
