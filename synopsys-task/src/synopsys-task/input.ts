@@ -49,6 +49,8 @@ export const COVERITY_INSTALL_DIRECTORY =
   taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)?.trim() || "";
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)?.trim() || "";
+export const COVERITY_LOCAL =
+  taskLib.getInput(constants.COVERITY_LOCAL_KEY)?.trim() === "true" || false;
 export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 

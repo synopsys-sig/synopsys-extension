@@ -20,6 +20,8 @@ export interface CoverityConnect {
   install?: { directory: string };
   automation: AutomationData;
   network: NetworkAirGap;
+  local?: boolean;
+
 }
 
 export interface CoverityData {

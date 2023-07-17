@@ -15,7 +15,7 @@ import {
   validateBlackduckFailureSeverities,
 } from "./validator";
 import { parseToBoolean } from "./utility";
-import { AZURE_TOKEN } from "./input";
+import { AZURE_TOKEN, COVERITY_LOCAL } from "./input";
 import * as url from "url";
 
 export class SynopsysToolsParameter {
@@ -237,6 +237,10 @@ export class SynopsysToolsParameter {
         project: {},
       },
     };
+
+    if (inputs.COVERITY_LOCAL) {
+      covData.data.coverity.local = true;
+    }
 
     if (inputs.COVERITY_INSTALL_DIRECTORY) {
       if (
