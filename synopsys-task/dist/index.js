@@ -756,7 +756,7 @@ class SynopsysBridge {
             if (osName === "win32") {
                 this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
             }
-            else {
+            else if (osName === "darwin" || osName === "linux") {
                 this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
             }
             return this.bridgeExecutablePath;
