@@ -583,6 +583,9 @@ class SynopsysBridge {
                     bridgeUrl = this.getLatestVersionUrl();
                     taskLib.debug("Checking for latest version of Bridge to download and configure" +
                         bridgeUrl);
+                    if (!bridgeUrl.includes("latest")) {
+                        throw new Error("Invalid artifactory latest url");
+                    }
                     version = "latest";
                 }
                 else {
