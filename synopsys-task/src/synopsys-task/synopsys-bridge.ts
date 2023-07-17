@@ -37,7 +37,7 @@ export class SynopsysBridge {
       "/$version/synopsys-bridge-$version-$platform.zip"
     );
     this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat(
-      "/latest/synopsys-bridge-$platform.zip "
+      "/latest/synopsys-bridge-$platform.zip"
     );
   }
 
