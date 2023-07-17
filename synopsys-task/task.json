@@ -198,6 +198,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_coverity_local",
+      "type": "boolean",
+      "label": "Local Scan",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
