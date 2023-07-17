@@ -447,7 +447,7 @@ export class SynopsysBridge {
   async getVersionFromLatestURL(): Promise<string> {
     try {
       const latestVersionsUrl = this.bridgeArtifactoryURL.concat(
-        "/latest/versions1.txt"
+        "/latest/versions.txt"
       );
       const httpClient = new HttpClient("");
       const httpResponse = await httpClient.get(latestVersionsUrl, {

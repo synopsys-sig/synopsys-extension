@@ -679,7 +679,7 @@ class SynopsysBridge {
     getVersionFromLatestURL() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("/latest/versions1.txt");
+                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("/latest/versions.txt");
                 const httpClient = new HttpClient_1.HttpClient("");
                 const httpResponse = yield httpClient.get(latestVersionsUrl, {
                     Accept: "text/html",
