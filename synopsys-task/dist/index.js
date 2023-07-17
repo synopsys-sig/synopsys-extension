@@ -392,24 +392,25 @@ class SynopsysBridge {
             const osName = process.platform;
             let executable = "";
             taskLib.debug("extractedPath: ".concat(executablePath));
-            if (osName === "darwin" || osName === "linux") {
-                executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
-            }
-            else if (osName === "win32") {
-                executable = path.join(executablePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
-            }
+            executable = yield this.setBridgeExecutablePath(osName, executablePath);
             try {
                 if (inputs.ENABLE_NETWORK_AIR_GAP) {
-                    if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY.length !== 0) {
+                    if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
+                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+                            throw new Error("Synopsys Bridge Install Directory does not exist");
+                        }
                         executable = yield this.setBridgeExecutablePath(osName, inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY);
                         if (!taskLib.exist(executable)) {
-                            throw new Error("Synopsys Bridge Install directory path does not exist");
+                            throw new Error("Bridge executable file could not be found at".concat(executable));
                         }
                     }
                     else {
+                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+                            throw new Error("Synopsys Default Bridge path does not exist");
+                        }
                         executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
                         if (!taskLib.exist(executable)) {
-                            throw new Error("Synopsys Default Bridge path does not exist");
+                            throw new Error("Bridge executable file could not be found at".concat(executable));
                         }
                     }
                 }
@@ -574,7 +575,7 @@ class SynopsysBridge {
                 }
             }
             else {
-                taskLib.debug("Checking for latest version of Bridge to download and configure");
+                console.info("Checking for latest version of Bridge to download and configure");
                 const latestVersion = yield this.getVersionFromLatestURL();
                 if (latestVersion === "") {
                     bridgeUrl = this.getLatestVersionUrl();
@@ -751,12 +752,10 @@ class SynopsysBridge {
     setBridgeExecutablePath(osName, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
             if (osName === "win32") {
-                this.bridgeExecutablePath = filePath
-                    .concat("\\synopsys-bridge")
-                    .concat(".exe");
+                this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
             }
             else {
-                this.bridgeExecutablePath = filePath.concat("/synopsys-bridge");
+                this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
             }
             return this.bridgeExecutablePath;
         });

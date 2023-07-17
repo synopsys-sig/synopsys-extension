@@ -65,37 +65,34 @@ export class SynopsysBridge {
     let executable = "";
     taskLib.debug("extractedPath: ".concat(executablePath));
 
-    if (osName === "darwin" || osName === "linux") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX
-      );
-    } else if (osName === "win32") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS
-      );
-    }
-
+    executable = await this.setBridgeExecutablePath(osName, executablePath);
     try {
       if (inputs.ENABLE_NETWORK_AIR_GAP) {
-        if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY.length !== 0) {
+        if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
+          if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+            throw new Error("Synopsys Bridge Install Directory does not exist");
+          }
           executable = await this.setBridgeExecutablePath(
             osName,
             inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY
           );
           if (!taskLib.exist(executable)) {
             throw new Error(
-              "Synopsys Bridge Install directory path does not exist"
+              "Bridge executable file could not be found at".concat(executable)
             );
           }
         } else {
+          if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+            throw new Error("Synopsys Default Bridge path does not exist");
+          }
           executable = await this.setBridgeExecutablePath(
             osName,
             this.getBridgeDefaultPath()
           );
           if (!taskLib.exist(executable)) {
-            throw new Error("Synopsys Default Bridge path does not exist");
+            throw new Error(
+              "Bridge executable file could not be found at".concat(executable)
+            );
           }
         }
       }
@@ -326,7 +323,7 @@ export class SynopsysBridge {
         );
       }
     } else {
-      taskLib.debug(
+      console.info(
         "Checking for latest version of Bridge to download and configure"
       );
       const latestVersion = await this.getVersionFromLatestURL();
@@ -554,11 +551,15 @@ export class SynopsysBridge {
     filePath: string
   ): Promise<string> {
     if (osName === "win32") {
-      this.bridgeExecutablePath = filePath
-        .concat("\\synopsys-bridge")
-        .concat(".exe");
+      this.bridgeExecutablePath = path.join(
+        filePath,
+        constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS
+      );
     } else {
-      this.bridgeExecutablePath = filePath.concat("/synopsys-bridge");
+      this.bridgeExecutablePath = path.join(
+        filePath,
+        constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX
+      );
     }
     return this.bridgeExecutablePath;
   }

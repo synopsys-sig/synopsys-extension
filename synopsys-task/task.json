@@ -260,19 +260,9 @@
       "name": "network_air_gap",
       "type": "string",
       "label": "Network Air Gap",
-      "defaultValue": "",
+      "defaultValue": false,
       "required": false,
-      "helpMarkDown": "enables airgap's configuration",
-      "groupName": "blackduck"
-    },
-    {
-      "name": "network_air_gap",
-      "type": "string",
-      "label": "Network Air Gap",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "enables airgap's configuration",
-      "groupName": "coverity"
+      "helpMarkDown": "enables airgap's configuration"
     }
   ],
   "execution": {
