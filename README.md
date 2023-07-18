@@ -44,7 +44,7 @@ Before configuring Synopsys Security Scan into your azure pipeline, note the fol
 
 ## Synopsys Security Scan - Polaris
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into azure pipeline.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into Azure pipeline.
 
 Here's an example piepline for Polaris scan using the Synopsys Synopsys Security Scan:
 
@@ -88,7 +88,7 @@ At this time, Synopsys Security Scan only supports the Coverity thin client/clou
 
 Before running Coverity using the Synopsys Security Scan, ensure the appropriate `project` and `stream` are set in your Coverity Connect server environment.
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into azure pipeline.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into Azure pipeline.
 
 Here's an example piepline for Coverity scan using the Synopsys Synopsys Security Scan:
 
@@ -142,7 +142,7 @@ steps:
 | `BRIDGE_COVERITY_CONNECT_STREAM_NAME`        | Stream name in Coverity                                                                                                                                                                                                                                                                       | Mandatory     |
 | `BRIDGE_COVERITY_INSTALL_DIRECTORY`        | Directory path to install Coverity                                                                                                                                                                                                                                                            | Optional    |
 | `BRIDGE_COVERITY_CONNECT_POLICY_VIEW`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001 | Optional    |
-| `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
+| `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. Merge Request must be created first from feature branch to main branch to run Coverity PR Comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
 | `AZURE_TOKEN` | Azure Access Token <br> Example: `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
 
 ## Synopsys Security Scan - Black Duck
@@ -151,7 +151,7 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into azure pipeline. 
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into Azure pipeline. 
 
 Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
 
@@ -212,7 +212,7 @@ variables:
 | `BRIDGE_BLACKDUCK_INSTALL_DIRECTORY` | Directory path to install Black Duck                                                                                                                                                                                                                                  | Optional     |
 | `BRIDGE_BLACKDUCK_SCAN_FULL` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                    | Optional     |
 | `BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
-| `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
+| `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. Merge Request must be created first from feature branch to main branch to run Black Duck PR Comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
 | `BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled. <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
 | `AZURE_TOKEN` | Azure Access Token <br> Example:  `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
 
@@ -223,7 +223,7 @@ Pass the following additional parameters as necessary.
 | Input Parameter | Description                              |  Mandatory / Optional | 
 |-----------------|------------------------------------------|-----------------------|
 |`SYNOPSYS_BRIDGE_PATH`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
-| `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
+| `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.               | Optional     |
 |`BRIDGE_DOWNLOAD_VERSION`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
 | `INCLUDE_DIAGNOSTICS`      | Synopsys Bridge diagnostics files will be available to download when it is set to `true`.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
