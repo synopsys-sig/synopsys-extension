@@ -21,19 +21,30 @@ Synopsys solution functionality is invoked directly by Synopsys Bridge, and indi
 
 # Prerequisites
 
-Before configuring Synopsys Action into your azure pipeline, note the following prerequisites:
+Before configuring Synopsys Security Scan into your azure pipeline, note the following prerequisites:
 
-- **AZURE_TOKEN** is required as input when running Black Duck Fix PR, Black Duck/Coverity PR Comment. There 2 different types of tokens that can be passed to **AZURE_TOKEN**
-  1. When using `AZURE_TOKEN: $(System.AccessToken)`, you must enable this in the Azure interface. Go to **Project --> Project Settings --> Repository –-> Security –-> Build Service** and set **Contribute to pull requests** to **Allow**
+**Azure Agent Setup:**
+
+- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. Refer [Azure Pipelines agents](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser) for more details.
+- You can use Microsoft-hosted agents as well to scan your code using Azure Pipelines.
+
+**Configure Variables**
+
+- Sensitive data such as access tokens, user names, passwords and even URLs must be configured using variable groups (Project → Pipelines → Library → New Variable Group)
+
+- `AZURE_TOKEN` is required as input when running Black Duck Fix PR, Black Duck/Coverity PR Comment. There are 2 different types of tokens that can be passed to `AZURE_TOKEN`
+  1. When using `AZURE_TOKEN: $(System.AccessToken)`, you must enable this in the Azure interface. Go to Project → Project Settings → Repository → Security → Build Service and set `Contribute to pull requests` to `Allow`. <br> Confirm `System.AccessToken` has Contribute to PR permissions (Project → Project Settings → Repositories → Security → Build Service User)
   2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
-- Sensitive data such as access tokens, user names, passwords and even URLs must be configured using variable groups **(ADO → Project → Pipelines → Library → New Variable Group)**
-- For Black Duck and Coverity PR comments enable Build validation policy to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
+- For Black Duck and Coverity PR comments enable Build validation policy (Project → Project Settings → Repositories → Branch Policy → Add branch protection) to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). <br> Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
+
+**Configure Azure Pipeline:**
+
+- Create a new pipeline or use existing pipeline (Project → Pipelines → New Pipeline) and configure required fields.
+- Push those changes and agent will pick up the job and initiate the pipeline.
 
 ## Synopsys Security Scan - Polaris
 
-Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into an ADO pipeline.
-
-Before running a pipeline using the Synopsys Security Scan and Polaris, add `azure-pipelines.yml` to your project and configure required fields. Push those changes and agent will pick up the job and initiate the pipeline.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into azure pipeline.
 
 Here's an example piepline for Polaris scan using the Synopsys Synopsys Security Scan:
 
@@ -53,8 +64,8 @@ steps:
   inputs:
     BRIDGE_POLARIS_SERVERURL: $(POLARIS_SERVER_URL)
     BRIDGE_POLARIS_ACCESSTOKEN: $(POLARIS_ACCESS_TOKEN)
-    BRIDGE_POLARIS_APPLICATION_NAME: $(POLARIS_APPLICATION_NAME)
-    BRIDGE_POLARIS_PROJECT_NAME: $(POLARIS_PROJECT_NAME)
+    BRIDGE_POLARIS_APPLICATION_NAME: $(Build.Repository.Name)
+    BRIDGE_POLARIS_PROJECT_NAME: $(Build.Repository.Name)
     ### Accepts Multiple Values
     BRIDGE_POLARIS_ASSESSMENT_TYPES: "SCA,SAST"
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
@@ -76,6 +87,8 @@ steps:
 At this time, Synopsys Security Scan only supports the Coverity thin client/cloud deployment model, which removes the need for a large footprint installation in your agent.
 
 Before running Coverity using the Synopsys Security Scan, ensure the appropriate `project` and `stream` are set in your Coverity Connect server environment.
+
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into azure pipeline.
 
 Here's an example piepline for Coverity scan using the Synopsys Synopsys Security Scan:
 
@@ -138,7 +151,9 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Synopsys Security Scan Extension found in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into an ADO pipeline. Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into azure pipeline. 
+
+Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 
@@ -210,21 +225,9 @@ Pass the following additional parameters as necessary.
 |`SYNOPSYS_BRIDGE_PATH`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
 | `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured in the provided bridge- or default- path.<br/> [Note - As per current behavior, when this value is provided, the bridge_path or default path will be cleaned first then download and configured all the time]               | Optional     |
 |`BRIDGE_DOWNLOAD_VERSION`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge is downloaded and configured.              | Optional     |
-| `INCLUDE_DIAGNOSTICS`      | All diagnostics files are available to download when `true` passed.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
+| `INCLUDE_DIAGNOSTICS`      | Synopsys Bridge diagnostics files will be available to download when it is set to `true`.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
-Note - If `BRIDGE_DOWNLOAD_VERSION` or `BRIDGE_DOWNLOAD_URL` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
- 
-# Synopsys Bridge Setup
-
-- The latest version of Synopsys Bridge is available at: [Synopsys-Bridge](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/) 
-- The most common way to set up Synopsys Bridge is to configure the agent to download the small CLI utility automatically run at the right stage of your pipeline.
-- The latest version of Synopsys Bridge is downloaded by default.
-
-## Manual Synopsys Bridge
-
-If you are unable to download the Synopsys Bridge from our internet-hosted repository, or have been directed by support or services to use a custom version of the Synopsys Bridge, you can either specify a custom URL or pre-configure your agent to include the Synopsys Bridge. In this latter case, you would specify the `SYNOPSYS_BRIDGE_PATH` parameter to specify the location of the directory in which the Synopsys Bridge is pre-installed.
-
-# Azure Agent Setup
-
-- Agents can be installed and used on GNU/Linux, macOS, Windows and Docker. Refer [Azure Pipelines agents](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=browser) for more details.
-- You can use Microsoft-hosted agents as well to scan your code using Azure Pipelines.
+**Notes:**
+- Synopsys Bridge can be downloaded from [here](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/).
+- By default, Synopsys Bridge will be downloaded in $HOME/synopsys-bridge directory.
+- If `BRIDGE_DOWNLOAD_VERSION` or `BRIDGE_DOWNLOAD_URL` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
