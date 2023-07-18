@@ -62,7 +62,7 @@ function run() {
                 bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             }
             else {
-                taskLib.debug("Since network air gap is enabled, bypassing the download bridge.");
+                taskLib.debug("Network air gap is enabled, skipping synopsys-bridge download.");
             }
             // Download synopsys bridge
             // Execute prepared commands

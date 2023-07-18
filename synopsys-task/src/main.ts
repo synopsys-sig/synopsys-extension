@@ -25,7 +25,7 @@ export async function run() {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
       taskLib.debug(
-        "Since network air gap is enabled, bypassing the download bridge."
+        "Network air gap is enabled, skipping synopsys-bridge download."
       );
     }
 
