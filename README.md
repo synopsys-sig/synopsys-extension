@@ -166,6 +166,7 @@ pool:
 variables:
   - group: blackduck
 
+steps:
 - task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck Full Scan'
   condition: not(eq(variables['Build.Reason'], 'PullRequest'))
