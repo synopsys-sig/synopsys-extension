@@ -23,6 +23,7 @@ describe("Main function test cases", () => {
         synopsysBridge = new SynopsysBridge();
     });
     afterEach(() => {
+        Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
         sandbox.restore();
     });
 
@@ -76,11 +77,10 @@ describe("Main function test cases", () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
             Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: '/tmp'});
             sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
-            sandbox.stub(SynopsysBridge.prototype, 'getExecutablePathForAirGap').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'getSynopsysBridgePath').resolves("test command")
             sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
             sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
             main.run()
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
             Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: ''});
         });
 
@@ -93,8 +93,6 @@ describe("Main function test cases", () => {
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Synopsys Default Bridge path does not exist");
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
-
         });
     });
 });
