@@ -14,7 +14,7 @@ import {Socket} from "net";
 import * as mocha from "mocha";
 
 describe("Main function test cases", () => {
-    
+
     let sandbox: sinon.SinonSandbox;
     let synopsysBridge: SynopsysBridge;
 
@@ -35,7 +35,7 @@ describe("Main function test cases", () => {
             sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadDiagnostics').returns(undefined)
             main.run()
-            assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);  
+            assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);
         });
 
 
@@ -46,7 +46,7 @@ describe("Main function test cases", () => {
             sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadDiagnostics').returns(undefined)
             main.run()
-            assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);  
+            assert.strictEqual(diagnostics.uploadDiagnostics("test"), undefined);
         });
 
 
@@ -58,7 +58,7 @@ describe("Main function test cases", () => {
             sandbox.stub(diagnostics,'uploadDiagnostics').throws(new Error("Error uploading artifacts"))
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Error uploading artifacts");
-            })   
+            })
         });
 
     });
@@ -67,7 +67,34 @@ describe("Main function test cases", () => {
         it('main failure', async () => {
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Requires at least one scan type");
-            }) 
+            })
+        });
+    });
+
+    context('air gap function', () => {
+        it('air gap enabled: success', async () => {
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: '/tmp'});
+            sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'getExecutablePathForAirGap').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
+            sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
+            main.run()
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: ''});
+        });
+
+        it('air gap enabled: failure', async () => {
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: '/tmp'});
+            sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
+            sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
+            main.run().catch(errorObj => {
+                expect(errorObj.message).includes("Synopsys Default Bridge path does not exist");
+            })
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+
         });
     });
 });
