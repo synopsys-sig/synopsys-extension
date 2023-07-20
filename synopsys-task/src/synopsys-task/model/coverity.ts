@@ -19,6 +19,7 @@ export interface CoverityConnect {
   connect: CoverityData;
   install?: { directory: string };
   automation: AutomationData;
+  network: NetworkAirGap;
   local?: boolean;
 }
 
@@ -28,4 +29,8 @@ export interface CoverityData {
   project: { name: string };
   stream: { name: string };
   policy?: { view: string };
+}
+
+export interface NetworkAirGap {
+  airGap: boolean;
 }
