@@ -62,7 +62,7 @@ function run() {
                 bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             }
             else {
-                taskLib.debug("Network air gap is enabled, skipping synopsys-bridge download.");
+                taskLib.debug("Since network air gap is enabled, bypassing the download bridge.");
             }
             // Download synopsys bridge
             // Execute prepared commands
@@ -394,6 +394,7 @@ class SynopsysBridge {
             const osName = process.platform;
             let executable = "";
             taskLib.debug("extractedPath: ".concat(executablePath));
+            executable = yield this.setBridgeExecutablePath(osName, executablePath);
             try {
                 if (inputs.ENABLE_NETWORK_AIR_GAP) {
                     if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
@@ -406,7 +407,7 @@ class SynopsysBridge {
                         }
                     }
                     else {
-                        if (!taskLib.exist(this.getBridgeDefaultPath())) {
+                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
                             throw new Error("Synopsys Default Bridge path does not exist");
                         }
                         executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
@@ -414,9 +415,6 @@ class SynopsysBridge {
                             throw new Error("Bridge executable file could not be found at".concat(executable));
                         }
                     }
-                }
-                else {
-                    executable = yield this.setBridgeExecutablePath(osName, executablePath);
                 }
                 return yield taskLib.exec(executable, command, { cwd: workspace });
             }

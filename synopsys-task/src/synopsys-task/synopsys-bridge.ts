@@ -65,6 +65,7 @@ export class SynopsysBridge {
     let executable = "";
     taskLib.debug("extractedPath: ".concat(executablePath));
 
+    executable = await this.setBridgeExecutablePath(osName, executablePath);
     try {
       if (inputs.ENABLE_NETWORK_AIR_GAP) {
         if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
@@ -81,7 +82,7 @@ export class SynopsysBridge {
             );
           }
         } else {
-          if (!taskLib.exist(this.getBridgeDefaultPath())) {
+          if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
             throw new Error("Synopsys Default Bridge path does not exist");
           }
           executable = await this.setBridgeExecutablePath(
@@ -94,8 +95,6 @@ export class SynopsysBridge {
             );
           }
         }
-      } else {
-        executable = await this.setBridgeExecutablePath(osName, executablePath);
       }
       return await taskLib.exec(executable, command, { cwd: workspace });
     } catch (errorObject) {
