@@ -394,7 +394,6 @@ class SynopsysBridge {
             const osName = process.platform;
             let executable = "";
             taskLib.debug("extractedPath: ".concat(executablePath));
-            executable = yield this.setBridgeExecutablePath(osName, executablePath);
             try {
                 if (inputs.ENABLE_NETWORK_AIR_GAP) {
                     if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
@@ -407,7 +406,7 @@ class SynopsysBridge {
                         }
                     }
                     else {
-                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+                        if (!taskLib.exist(this.getBridgeDefaultPath())) {
                             throw new Error("Synopsys Default Bridge path does not exist");
                         }
                         executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
@@ -415,6 +414,9 @@ class SynopsysBridge {
                             throw new Error("Bridge executable file could not be found at".concat(executable));
                         }
                     }
+                }
+                else {
+                    executable = yield this.setBridgeExecutablePath(osName, executablePath);
                 }
                 return yield taskLib.exec(executable, command, { cwd: workspace });
             }
