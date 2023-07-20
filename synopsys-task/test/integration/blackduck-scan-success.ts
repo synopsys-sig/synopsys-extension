@@ -43,7 +43,6 @@ tmr.setInput('bridge_blackduck_token', 'accessTokenTest')
 tmr.setInput('bridge_blackduck_install_directory', 'test')
 tmr.setInput('bridge_blackduck_scan_full', "false")
 tmr.setInput('bridge_blackduck_scan_failure_severities', 'ALL')
-tmr.setInput('bridge_blackduck_automation_fixpr', "true")
 
 const osName = process.platform;
 if (osName === "darwin") {
