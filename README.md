@@ -125,8 +125,8 @@ steps:
     BRIDGE_COVERITY_CONNECT_PROJECT_NAME: '$(Build.Repository.Name)'
     BRIDGE_COVERITY_CONNECT_STREAM_NAME: '$(Build.Repository.Name)-$(Build.SourceBranchName)'
     ### Below configuration is used to enable feedback from Coverity security testing as pull request comment
-    coverity_automation_prcomment: true
-    AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set to 'true'
+    BRIDGE_COVERITY_AUTOMATION_PRCOMMENT: true
+    AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set to 'true'
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # include_diagnostics: true
 ```
