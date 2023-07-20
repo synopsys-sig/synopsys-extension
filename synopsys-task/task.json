@@ -256,6 +256,23 @@
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "groupName": "blackduck"
+    },
+    {
+      "name": "network_air_gap",
+      "type": "string",
+      "label": "Network Air Gap",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "If provided, Synopsys Action will be using local network to download and execute bridge."
     }
   ],
   "execution": {

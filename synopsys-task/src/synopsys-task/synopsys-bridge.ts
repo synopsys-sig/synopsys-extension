@@ -24,6 +24,7 @@ export class SynopsysBridge {
   bridgeExecutablePath: string;
   bridgeArtifactoryURL: string;
   bridgeUrlPattern: string;
+  bridgeUrlLatestPattern: string;
   WINDOWS_PLATFORM = "win64";
   LINUX_PLATFORM = "linux64";
   MAC_PLATFORM = "macosx";
@@ -35,11 +36,15 @@ export class SynopsysBridge {
     this.bridgeUrlPattern = this.bridgeArtifactoryURL.concat(
       "/$version/synopsys-bridge-$version-$platform.zip"
     );
+    this.bridgeUrlLatestPattern = this.bridgeArtifactoryURL.concat(
+      "/latest/synopsys-bridge-$platform.zip"
+    );
   }
 
   async extractBridge(fileInfo: DownloadFileResponse): Promise<string> {
     const extractZippedFilePath: string =
-      inputs.SYNOPSYS_BRIDGE_PATH || this.getBridgeDefaultPath();
+      inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY ||
+      this.getBridgeDefaultPath();
 
     // Clear the existing bridge, if available
     if (taskLib.exist(extractZippedFilePath)) {
@@ -60,19 +65,37 @@ export class SynopsysBridge {
     let executable = "";
     taskLib.debug("extractedPath: ".concat(executablePath));
 
-    if (osName === "darwin" || osName === "linux") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX
-      );
-    } else if (osName === "win32") {
-      executable = path.join(
-        executablePath,
-        constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS
-      );
-    }
-
+    executable = await this.setBridgeExecutablePath(osName, executablePath);
     try {
+      if (inputs.ENABLE_NETWORK_AIR_GAP) {
+        if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
+          if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+            throw new Error("Synopsys Bridge Install Directory does not exist");
+          }
+          executable = await this.setBridgeExecutablePath(
+            osName,
+            inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY
+          );
+          if (!taskLib.exist(executable)) {
+            throw new Error(
+              "Bridge executable file could not be found at".concat(executable)
+            );
+          }
+        } else {
+          if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
+            throw new Error("Synopsys Default Bridge path does not exist");
+          }
+          executable = await this.setBridgeExecutablePath(
+            osName,
+            this.getBridgeDefaultPath()
+          );
+          if (!taskLib.exist(executable)) {
+            throw new Error(
+              "Bridge executable file could not be found at".concat(executable)
+            );
+          }
+        }
+      }
       return await taskLib.exec(executable, command, { cwd: workspace });
     } catch (errorObject) {
       taskLib.debug("errorObject:" + errorObject);
@@ -231,15 +254,6 @@ export class SynopsysBridge {
   }
 
   async downloadAndExtractBridge(tempDir: string): Promise<string> {
-    if (
-      inputs.BRIDGE_DOWNLOAD_VERSION &&
-      (await this.checkIfSynopsysBridgeVersionExists(
-        inputs.BRIDGE_DOWNLOAD_VERSION
-      ))
-    ) {
-      return Promise.resolve(this.bridgeExecutablePath);
-    }
-
     try {
       const bridgeUrl = await this.getBridgeUrl();
 
@@ -251,6 +265,14 @@ export class SynopsysBridge {
         console.info("Download of Synopsys Bridge completed");
         // Extracting bridge
         return await this.extractBridge(downloadBridge);
+      }
+      if (
+        inputs.BRIDGE_DOWNLOAD_VERSION &&
+        (await this.checkIfSynopsysBridgeVersionExists(
+          inputs.BRIDGE_DOWNLOAD_VERSION
+        ))
+      ) {
+        return Promise.resolve(this.bridgeExecutablePath);
       }
       return this.bridgeExecutablePath;
     } catch (e) {
@@ -304,8 +326,26 @@ export class SynopsysBridge {
       console.info(
         "Checking for latest version of Bridge to download and configure"
       );
-      version = await this.getLatestVersion();
-      bridgeUrl = this.getVersionUrl(version).trim();
+      const latestVersion = await this.getVersionFromLatestURL();
+      if (latestVersion === "") {
+        bridgeUrl = this.getLatestVersionUrl();
+        taskLib.debug(
+          "Checking for latest version of Bridge to download and configure" +
+            bridgeUrl
+        );
+        if (!bridgeUrl.includes("latest")) {
+          throw new Error("Invalid artifactory latest url");
+        } else {
+          if (!validateBridgeUrl(bridgeUrl)) {
+            throw new Error("Invalid artifactory latest url");
+          }
+        }
+        version = "latest";
+      } else {
+        taskLib.debug("Found latest version:" + latestVersion);
+        bridgeUrl = this.getVersionUrl(latestVersion).trim();
+        version = latestVersion;
+      }
     }
 
     if (version != "") {
@@ -323,7 +363,7 @@ export class SynopsysBridge {
   async checkIfSynopsysBridgeVersionExists(
     bridgeVersion: string
   ): Promise<boolean> {
-    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_PATH;
+    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
     const osName = process.platform;
     let versionFilePath: string;
 
@@ -385,26 +425,6 @@ export class SynopsysBridge {
     return versionArray;
   }
 
-  async getLatestVersion(): Promise<string> {
-    const versionArray: string[] = await this.getAllAvailableBridgeVersions();
-    let latestVersion = "0.0.0";
-
-    for (const version of versionArray) {
-      if (
-        version.localeCompare(latestVersion, undefined, {
-          numeric: true,
-          sensitivity: "base",
-        }) === 1
-      ) {
-        latestVersion = version;
-      }
-    }
-
-    console.info("Available latest version is - ".concat(latestVersion));
-
-    return latestVersion;
-  }
-
   async checkIfVersionExists(
     bridgeVersion: string,
     bridgeVersionFilePath: string
@@ -420,6 +440,46 @@ export class SynopsysBridge {
       );
     }
     return false;
+  }
+
+  async getSynopsysBridgePath(): Promise<string> {
+    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+
+    if (!synopsysBridgePath) {
+      synopsysBridgePath = this.getBridgeDefaultPath();
+    }
+    return synopsysBridgePath;
+  }
+
+  async getVersionFromLatestURL(): Promise<string> {
+    try {
+      const latestVersionsUrl = this.bridgeArtifactoryURL.concat(
+        "/latest/versions.txt"
+      );
+      const httpClient = new HttpClient("");
+      const httpResponse = await httpClient.get(latestVersionsUrl, {
+        Accept: "text/html",
+      });
+      if (httpResponse.message.statusCode === 200) {
+        const htmlResponse = (await httpResponse.readBody()).trim();
+        const lines = htmlResponse.split("\n");
+        for (const line of lines) {
+          if (line.includes("Synopsys Bridge Package")) {
+            const newerVersion = line.split(":")[1].trim();
+            return newerVersion;
+          }
+        }
+      } else {
+        taskLib.error(
+          "Unable to retrieve the most recent version from Artifactory URL"
+        );
+      }
+    } catch (e) {
+      taskLib.error(
+        "Error reading version file content: ".concat((e as Error).message)
+      );
+    }
+    return "";
   }
 
   getBridgeDefaultPath(): string {
@@ -468,5 +528,46 @@ export class SynopsysBridge {
       );
     }
     return bridgeDownloadUrl;
+  }
+
+  getLatestVersionUrl(): string {
+    const osName = process.platform;
+    let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
+    if (osName === "darwin") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.MAC_PLATFORM
+      );
+    } else if (osName === "linux") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.LINUX_PLATFORM
+      );
+    } else if (osName === "win32") {
+      bridgeDownloadUrl = bridgeDownloadUrl.replace(
+        "$platform",
+        this.WINDOWS_PLATFORM
+      );
+    }
+
+    return bridgeDownloadUrl;
+  }
+
+  async setBridgeExecutablePath(
+    osName: string,
+    filePath: string
+  ): Promise<string> {
+    if (osName === "win32") {
+      this.bridgeExecutablePath = path.join(
+        filePath,
+        constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS
+      );
+    } else if (osName === "darwin" || osName === "linux") {
+      this.bridgeExecutablePath = path.join(
+        filePath,
+        constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX
+      );
+    }
+    return this.bridgeExecutablePath;
   }
 }

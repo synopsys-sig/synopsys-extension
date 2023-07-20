@@ -14,6 +14,7 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
 export interface Blackduck {
   blackduck: BlackduckData;
   azure?: AzureData;
+  network: NetworkAirGap;
 }
 
 export interface BlackduckData {
@@ -30,4 +31,8 @@ export interface BlackduckData {
 export interface AutomationData {
   fixpr?: boolean;
   prcomment?: boolean;
+}
+
+export interface NetworkAirGap {
+  airGap: boolean;
 }
