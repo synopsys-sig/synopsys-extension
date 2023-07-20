@@ -25,7 +25,7 @@ export async function run() {
       taskLib.debug(
         "Network air gap is enabled, skipping synopsys-bridge download."
       );
-      bridgePath = await sb.getSynopsysBridgePath();
+      bridgePath = await sb.getExecutablePathForAirGap();
     }
 
     // Execute prepared commands
