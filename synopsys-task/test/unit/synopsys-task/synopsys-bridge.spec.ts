@@ -179,6 +179,63 @@ describe("Synopsys Bridge test", () => {
 
 });
 
+describe("Air mode", () => {
+    let sandbox: sinon.SinonSandbox;
+    let bridgeDefaultPath = "";
+    context("air mode is enabled, executeBridgeCommand", () => {
+        let synopsysBridge: SynopsysBridge;
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            synopsysBridge = new SynopsysBridge();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+        it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY empty", async () => {
+            sandbox.stub(taskLib, "exec").resolves(0)
+            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
+            sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
+
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
+            synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
+                expect(errorObj.message).includes("does not exist")
+            })
+        });
+
+        it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
+            sandbox.stub(taskLib, "exec").resolves(0)
+            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp/synopsys-bridge')
+
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/synopsys-bridge'});
+            synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
+                expect(errorObj.message).includes("does not exist")
+            })
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+
+        });
+    })
+})
+
+
+describe("Latest version", () => {
+    let sandbox: sinon.SinonSandbox;
+    let bridgeDefaultPath = "";
+    context("get the Latest version from the url", () => {
+        let synopsysBridge: SynopsysBridge;
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            synopsysBridge = new SynopsysBridge();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+       
+    })
+})
 
 describe("Download Bridge", () => {
     let sandbox: sinon.SinonSandbox;
@@ -216,44 +273,8 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
-                expect(errorObj.message).includes("Bridge executable file could not be found at")
+                expect(errorObj.message).includes("does not exist")
             })
-        });
-
-        it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY empty: failure", async () => {
-            sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(taskLib, "exist").returns(false)
-            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
-            const res = synopsysBridge.getExecutablePathForAirGap().catch(errorObj => {
-                console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Default Bridge path does not exist")
-            })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
-        });
-
-        it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
-            sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(taskLib, "exist").returns(false)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
-            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            const res = synopsysBridge.getExecutablePathForAirGap().catch(errorObj => {
-                console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Bridge Install Directory does not exist")
-            })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
-        });
-
-        it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: success", async () => {
-            sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(taskLib, "exist").returns(true)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
-            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            const res = synopsysBridge.getExecutablePathForAirGap();
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
@@ -265,18 +286,6 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
-            })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
-
-        });
-
-        it("Execute Bridge Command - exception", async () => {
-            sandbox.stub(taskLib, "exec").rejects()
-            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
-            sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('/tmp')
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
-            synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
-                expect(errorObj.message).includes("Error")
             })
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
 
@@ -325,7 +334,6 @@ describe("Download Bridge", () => {
         });
         it("Execute Bridge Command - linux/mac success", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(taskLib, "exist").returns(true);
             const res = await synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
             assert.equal(res, 0)
         });
@@ -335,10 +343,11 @@ describe("Download Bridge", () => {
             await synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath)
                 .catch(errorObj => {
                     console.log(errorObj.message)
-                    expect(errorObj.message).includes("Bridge executable file could not be found at")
+                    expect(errorObj.message).includes("failed with exit code 9")
                 })
         });
     })
+
     context("getBridgeUrl", () => {
         let synopsysBridge: SynopsysBridge;
         beforeEach(() => {
@@ -508,25 +517,6 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
             expect(result).equals(bridgeUrl);
-        });
-
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty", async () => {
-
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
-            sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge-macosx.zip");
-            //sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
-            const result = await synopsysBridge.getBridgeUrl();
-            expect(result).contains("synopsys-bridge/latest/synopsys-bridge-macosx.zip");
-        });
-
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty: failure", async () => {
-            sandbox.stub(synopsysBridge, "getLatestVersionUrl").returns("");
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
-            sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/0.0.0/synopsys-bridge-maco1sx.zip");
-            sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
-            const result = await synopsysBridge.getBridgeUrl().catch(errorObj => {
-                expect(errorObj.message).contains("Invalid artifactory latest url");
-            })
         });
     });
 
@@ -700,23 +690,6 @@ describe("Download Bridge", () => {
             synopsysBridge.bridgeExecutablePath = "";
         });
 
-        it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid: windows", async () => {
-            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
-            Object.defineProperty(process, 'platform', {value: 'win32'});
-
-            synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
-            sandbox.stub(taskLib, "exist").returns(true);
-
-            const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
-            assert.equal(result, true);
-
-            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {
-                value: "",
-            });
-            synopsysBridge.bridgeExecutablePath = "";
-        });
-
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid and version does not exists", async () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: "/path/path"});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
@@ -737,6 +710,27 @@ describe("Download Bridge", () => {
             assert.equal(result, true);
         });
     })
+
+    context("getVersionFromLatestURL", () => {
+        let synopsysBridge: SynopsysBridge;
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            synopsysBridge = new SynopsysBridge();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("Get Latest Version - success", async () => {
+
+            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
+
+            const result = await synopsysBridge.getVersionFromLatestURL();
+            assert.equal(result, '0.2.1');
+        });
+    })
+
     context("checkIfVersionExists", () => {
         let synopsysBridge: SynopsysBridge;
         beforeEach(() => {
@@ -777,26 +771,12 @@ describe("Download Bridge", () => {
         let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
         let synopsysBridge: SynopsysBridge;
         beforeEach(() => {
-            sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
             httpClientStub = sinon.stub()
         });
 
         afterEach(() => {
             sinon.restore();
-        });
-
-        it("Get Latest Version - success", async () => {
-
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
-
-            const result = await synopsysBridge.getVersionFromLatestURL();
-            assert.equal(result, '0.2.1');
-        });
-
-        it("Synospys latest version test: windows", async () => {
-            const result = await synopsysBridge.getLatestVersionUrl();
-            expect(result).contains('/latest/synopsys-bridge');
         });
 
         it('Test getVersionFromLatestURL -status 200', async () => {

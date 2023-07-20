@@ -1,13 +1,10 @@
-import {
-  getWorkSpaceDirectory,
-  getTempDir,
-  parseToBoolean,
-} from "./synopsys-task/utility";
+import { getWorkSpaceDirectory, getTempDir } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 import * as inputs from "./synopsys-task/input";
 import { uploadDiagnostics } from "./synopsys-task/diagnostics";
+import { parseToBoolean } from "./synopsys-task/utility";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -19,17 +16,27 @@ export async function run() {
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
+    taskLib.debug(
+      "inputs.ENABLE_NETWORK_AIR_GAP:".concat(
+        new Boolean(inputs.ENABLE_NETWORK_AIR_GAP).toString()
+      )
+    );
     if (!inputs.ENABLE_NETWORK_AIR_GAP) {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
       taskLib.debug(
-        "Network air gap is enabled, skipping synopsys-bridge download."
+        "Since network air gap is enabled, bypassing the download bridge."
       );
-      bridgePath = await sb.getExecutablePathForAirGap();
     }
 
+    // Download synopsys bridge
+
     // Execute prepared commands
-    await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
+    const response: any = await sb.executeBridgeCommand(
+      bridgePath,
+      getWorkSpaceDirectory(),
+      command
+    );
   } catch (error) {
     throw error;
   } finally {
