@@ -4,7 +4,6 @@ import * as main from "../../src/main";
 import * as inputs from "../../src/synopsys-task/input";
 import { SynopsysBridge } from "../../src/synopsys-task/synopsys-bridge";
 import * as diagnostics from "../../src/synopsys-task/diagnostics";
-import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
 import * as Q from "q";
 import * as httpc from "typed-rest-client/HttpClient";
@@ -68,6 +67,33 @@ describe("Main function test cases", () => {
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Requires at least one scan type");
             }) 
+        });
+    });
+
+    context('air gap function', () => {
+        it('air gap enabled: success', async () => {
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: '/tmp'});
+            sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'getExecutablePathForAirGap').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
+            sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
+            main.run()
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: ''});
+        });
+
+        it('air gap enabled: failure', async () => {
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(process.env, 'BUILD_REPOSITORY_LOCALPATH', {value: '/tmp'});
+            sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
+            sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
+            sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
+            main.run().catch(errorObj => {
+                expect(errorObj.message).includes("Synopsys Default Bridge path does not exist");
+            })
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+
         });
     });
 });
