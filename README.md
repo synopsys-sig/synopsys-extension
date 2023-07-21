@@ -44,7 +44,7 @@ Before configuring Synopsys Security Scan into your azure pipeline, note the fol
 
 ## Synopsys Security Scan - Polaris
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into Azure pipeline. The extension will download the Bridge, Coverity and Detect CLIs and break-the-build based on policies defined in the Polaris UI.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into Azure pipeline. The extension will download the Synopsys Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates.
 
 Here's an example piepline for Polaris scan using the Synopsys Synopsys Security Scan:
 
@@ -88,7 +88,7 @@ At this time, Synopsys Security Scan only supports the Coverity thin client/clou
 
 Before running Coverity using the Synopsys Security Scan, ensure the appropriate `project` and `stream` are set in your Coverity Connect server environment.
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into Azure pipeline. The extension will download the Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates and PR comments.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into Azure pipeline. The extension will download the Synopsys Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates and PR comments.
 
 Here's an example piepline for Coverity scan using the Synopsys Synopsys Security Scan:
 
@@ -152,7 +152,7 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into Azure pipeline. The extension will download the Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates, Fix PR and PR comments.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into Azure pipeline. The extension will download the Synopsys Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates, Fix PR and PR comments.
 
 Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
 
