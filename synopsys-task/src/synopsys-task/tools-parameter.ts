@@ -15,7 +15,7 @@ import {
   validateBlackduckFailureSeverities,
 } from "./validator";
 import { parseToBoolean } from "./utility";
-import { AZURE_TOKEN, COVERITY_LOCAL } from "./input";
+import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 
 export class SynopsysToolsParameter {
