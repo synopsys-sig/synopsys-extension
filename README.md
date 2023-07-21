@@ -1,6 +1,6 @@
 # Synopsys Security Scan for Azure DevOps
 
-Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results.
+Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results. 
 Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
 
 # Quick Start for the Synopsys Security Scan
@@ -34,7 +34,7 @@ Before configuring Synopsys Security Scan into your azure pipeline, note the fol
 
 - `AZURE_TOKEN` is required as input when running Black Duck Fix PR, Black Duck/Coverity PR Comment. There are 2 different types of tokens that can be passed to `AZURE_TOKEN`
   1. When using `AZURE_TOKEN: $(System.AccessToken)`, you must enable this in the Azure interface. Go to Project → Project Settings → Repository → Security → Build Service and set `Contribute to pull requests` to `Allow`. <br> Confirm `System.AccessToken` has Contribute to PR permissions (Project → Project Settings → Repositories → Security → Build Service User)
-  2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.
+  2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
 - For Black Duck and Coverity PR comments enable Build validation policy (Project → Project Settings → Repositories → Branch Policy → Add branch protection) to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). <br> Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
 
 **Configure Azure Pipeline:**
@@ -151,7 +151,7 @@ Synopsys Security Scan supports both self-hosted (e.g. on-prem) and Synopsys-hos
 
 In the default Black Duck Hub permission model, projects and project versions are created on the fly as needed.
 
-Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into Azure pipeline.
+Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Black Duck into Azure pipeline. 
 
 Here's an example pipeline for Black Duck scan using the Synopsys Synopsys Security Scan:
 
@@ -166,6 +166,7 @@ pool:
 variables:
   - group: blackduck
 
+steps:
 - task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck Full Scan'
   condition: not(eq(variables['Build.Reason'], 'PullRequest'))
@@ -218,14 +219,14 @@ variables:
 
 - **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
 
-Pass the following additional parameters as necessary.
+Pass the following additional parameters as necessary. 
 
-| Input Parameter                     | Description                              |  Mandatory / Optional | 
-|-------------------------------------|------------------------------------------|-----------------------|
-| `SYNOPSYS_BRIDGE_INSTALL_DIRECTORY` | Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
-| `BRIDGE_DOWNLOAD_URL`               | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured.               | Optional     |
-| `BRIDGE_DOWNLOAD_VERSION`           | Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge will be automatically downloaded and configured.              | Optional     |
-| `INCLUDE_DIAGNOSTICS`               | Synopsys Bridge diagnostics files will be available to download when it is set to `true`.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
+| Input Parameter | Description                              |  Mandatory / Optional | 
+|-----------------|------------------------------------------|-----------------------|
+|`SYNOPSYS_BRIDGE_INSTALL_DIRECTORY`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
+| `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured.               | Optional     |
+|`BRIDGE_DOWNLOAD_VERSION`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge will be automatically downloaded and configured.              | Optional     |
+| `INCLUDE_DIAGNOSTICS`      | Synopsys Bridge diagnostics files will be available to download when it is set to `true`.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
 
 **Notes:**
 - Synopsys Bridge can be downloaded from [here](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/).
