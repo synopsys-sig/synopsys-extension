@@ -192,16 +192,17 @@ describe("Air mode", () => {
         afterEach(() => {
             sandbox.restore();
         });
-        it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY empty", async () => {
-            sandbox.stub(taskLib, "exec").resolves(0)
-            sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
-
+        it("Execute Bridge Command - linux/mac failure SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY empty", async () => {
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Uses/test'});
+            sandbox.stub(taskLib, "exist").resolves(false)
+            
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
-                expect(errorObj.message).includes("does not exist")
+                expect(errorObj.message).includes("Unable to locate executable file")
             })
+
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
         });
 
         it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
@@ -269,6 +270,7 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
+            sandbox.stub(taskLib, "exist").resolves(false)
 
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
