@@ -46,7 +46,6 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const diagnostics_1 = __nccwpck_require__(2926);
-const utility_2 = __nccwpck_require__(837);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
@@ -57,22 +56,21 @@ function run() {
             // Prepare tool commands
             const command = yield sb.prepareCommand(tempDir);
             let bridgePath = "";
-            taskLib.debug("inputs.ENABLE_NETWORK_AIR_GAP:".concat(new Boolean(inputs.ENABLE_NETWORK_AIR_GAP).toString()));
             if (!inputs.ENABLE_NETWORK_AIR_GAP) {
                 bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             }
             else {
-                taskLib.debug("Since network air gap is enabled, bypassing the download bridge.");
+                taskLib.debug("Network air gap is enabled, skipping synopsys-bridge download.");
+                bridgePath = yield sb.getExecutablePathForAirGap();
             }
-            // Download synopsys bridge
             // Execute prepared commands
-            const response = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
             throw error;
         }
         finally {
-            if ((0, utility_2.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
+            if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
             }
         }
@@ -391,32 +389,15 @@ class SynopsysBridge {
     }
     executeBridgeCommand(executablePath, workspace, command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const osName = process.platform;
-            let executable = "";
             taskLib.debug("extractedPath: ".concat(executablePath));
-            executable = yield this.setBridgeExecutablePath(osName, executablePath);
+            const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
+            if (!taskLib.exist(executableBridgePath)) {
+                throw new Error("Bridge executable file could not be found at ".concat(executableBridgePath));
+            }
             try {
-                if (inputs.ENABLE_NETWORK_AIR_GAP) {
-                    if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
-                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
-                            throw new Error("Synopsys Bridge Install Directory does not exist");
-                        }
-                        executable = yield this.setBridgeExecutablePath(osName, inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY);
-                        if (!taskLib.exist(executable)) {
-                            throw new Error("Bridge executable file could not be found at".concat(executable));
-                        }
-                    }
-                    else {
-                        if (!taskLib.exist(inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY)) {
-                            throw new Error("Synopsys Default Bridge path does not exist");
-                        }
-                        executable = yield this.setBridgeExecutablePath(osName, this.getBridgeDefaultPath());
-                        if (!taskLib.exist(executable)) {
-                            throw new Error("Bridge executable file could not be found at".concat(executable));
-                        }
-                    }
-                }
-                return yield taskLib.exec(executable, command, { cwd: workspace });
+                return yield taskLib.exec(executableBridgePath, command, {
+                    cwd: workspace,
+                });
             }
             catch (errorObject) {
                 taskLib.debug("errorObject:" + errorObject);
@@ -583,15 +564,6 @@ class SynopsysBridge {
                     bridgeUrl = this.getLatestVersionUrl();
                     taskLib.debug("Checking for latest version of Bridge to download and configure" +
                         bridgeUrl);
-                    if (!bridgeUrl.includes("latest")) {
-                        throw new Error("Invalid artifactory latest url");
-                    }
-                    else {
-                        if (!(0, validator_1.validateBridgeUrl)(bridgeUrl)) {
-                            throw new Error("Invalid artifactory latest url");
-                        }
-                    }
-                    version = "latest";
                 }
                 else {
                     taskLib.debug("Found latest version:" + latestVersion);
@@ -759,15 +731,33 @@ class SynopsysBridge {
         }
         return bridgeDownloadUrl;
     }
-    setBridgeExecutablePath(osName, filePath) {
+    setBridgeExecutablePath(filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (osName === "win32") {
+            if (process.platform === "win32") {
                 this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS);
             }
-            else if (osName === "darwin" || osName === "linux") {
+            else if (process.platform === "darwin" || process.platform === "linux") {
                 this.bridgeExecutablePath = path.join(filePath, constants.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX);
             }
             return this.bridgeExecutablePath;
+        });
+    }
+    getExecutablePathForAirGap() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let executablePath = "";
+            let pathErrorMessage;
+            if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
+                executablePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+                pathErrorMessage = "Synopsys Bridge Install Directory does not exist";
+            }
+            else {
+                executablePath = this.getBridgeDefaultPath();
+                pathErrorMessage = "Synopsys Default Bridge path does not exist";
+            }
+            if (!taskLib.exist(executablePath)) {
+                throw new Error(pathErrorMessage);
+            }
+            return executablePath;
         });
     }
 }
