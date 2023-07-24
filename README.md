@@ -72,7 +72,7 @@ steps:
     # INCLUDE_DIAGNOSTICS: 'true'
 ```
 
-**Please find the following mandatory and optional paramters for Polaris below:**
+**Please find the following mandatory and optional parameters for Polaris below:**
 
 | Input Parameter            | Description                                                       | Mandatory / Optional | 
 |----------------------------|-------------------------------------------------------------------|--------------------|
@@ -132,7 +132,7 @@ steps:
     # include_diagnostics: true
 ```
 
-**Please find the following mandatory and optional paramters for Coverity below:**
+**Please find the following mandatory and optional parameters for Coverity below:**
 
 | Input Parameter   | Description                                                                                                                                                                                                                                                                                   | Mandatory / Optional |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
@@ -202,7 +202,7 @@ steps:
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # INCLUDE_DIAGNOSTICS: true    
 ```
-**Please find the following mandatory and optional paramters for Black Duck below:**
+**Please find the following mandatory and optional parameters for Black Duck below:**
 | Input Parameter | Description                                                                                                                                                                                                                                                           |  Mandatory / Optional |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
 |`BRIDGE_BLACKDUCK_URL`  | URL for Black Duck server                                                                                                                                                                                                                                             | Mandatory     |
@@ -211,7 +211,7 @@ steps:
 | `BRIDGE_BLACKDUCK_SCAN_FULL` | Specifies whether full scan is required or not.<br/> By default, pushes will initiate a full "intelligent" scan and pull requests will initiate a rapid scan.<br/> Supported values: true or false                                                                    | Optional     |
 | `BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES`      | The scan failure severities of Black Duck <br /> Example: <br />blackduck_scan_failure_severities: "ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,OK,TRIVIAL,UNSPECIFIED"                                                                                                     | Optional |
 | `BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT`    | Flag to enable automatic pull request comment based on Black Duck scan result. Merge Request must be created first from feature branch to main branch to run Black Duck PR Comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                             | Optional    |
-| `BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vunerabilities reported. <br> **Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled.** <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
+| `BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR`      | Flag to enable automatic creation for fix pull request when Black Duck vulnerabilities reported. <br> **Black Duck automation fix pull request is currently supported for npm projects only and by default it will be disabled.** <br>Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration | Optional    |
 | `AZURE_TOKEN` | Azure Access Token <br> Example:  `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT or BRIDGE_BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set true. |
 
 - **Note about Detect command line parameters**: Any command line parameters needed to pass to Detect can be passed through variables. For example, to only report newly found policy violations on rapid scans, you would normally use the command `--detect.blackduck.rapid.compare.mode=BOM_COMPARE_STRICT`. You can replace this by setting the `DETECT_BLACKDUCK_RAPID_COMPARE_MODE` variable to `BOM_COMPARE_STRICT`.
