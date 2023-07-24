@@ -46,7 +46,7 @@ Before configuring Synopsys Security Scan into your azure pipeline, note the fol
 
 Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Polaris into Azure pipeline. The extension will download the Synopsys Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates.
 
-Here's an example piepline for Polaris scan using the Synopsys Synopsys Security Scan:
+Here's an example pipeline for Polaris scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 trigger:
@@ -90,7 +90,7 @@ Before running Coverity using the Synopsys Security Scan, ensure the appropriate
 
 Synopsys Security Scan Extension available in the Azure DevOps Marketplace is the recommended solution for integrating Coverity into Azure pipeline. The extension will download the Synopsys Bridge CLI, execute a scan, and offers post-scan features such as break-the-build quality gates and PR comments.
 
-Here's an example piepline for Coverity scan using the Synopsys Synopsys Security Scan:
+Here's an example pipeline for Coverity scan using the Synopsys Synopsys Security Scan:
 
 ```yaml
 trigger:
@@ -170,6 +170,7 @@ variables:
 - task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck Full Scan'
   condition: not(eq(variables['Build.Reason'], 'PullRequest'))
+  ### Use below configurations to set specific detect environment variables
   env:
     DETECT_PROJECT_NAME: $(Build.Repository.Name)
     DETECT_PROJECT_VERSION_NAME: $(Build.SourceBranchName)
@@ -180,7 +181,7 @@ variables:
     BRIDGE_BLACKDUCK_SCAN_FULL: true
     ### Accepts Multiple Values
     BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES: 'BLOCKER,CRITICAL'
-    ### Uncomment below configuration to enable autoamtic fix pull request creation if vulnerabilities are reported
+    ### Uncomment below configuration to enable automatic fix pull request creation if vulnerabilities are reported
     # BRIDGE_BLACKDUCK_AUTOMATION_FIXPR: true 
     # AZURE_TOKEN: $(System.AccessToken) # Mandatory when BRIDGE_BLACKDUCK_AUTOMATION_FIXPR is set to 'true'
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
@@ -189,6 +190,7 @@ variables:
 - task: SynopsysSecurityScan@1.0.0
   displayName: 'Black Duck PR Scan'
   condition: eq(variables['Build.Reason'], 'PullRequest')
+  ### Use below configurations to set specific detect environment variables
   env:
     DETECT_PROJECT_NAME: $(Build.Repository.Name)
     DETECT_PROJECT_VERSION_NAME: $(System.PullRequest.targetBranchName)
