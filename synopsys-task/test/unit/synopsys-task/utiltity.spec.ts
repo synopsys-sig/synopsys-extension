@@ -102,8 +102,8 @@ describe("Utilities", () => {
 
         it('getRemoteFile - failure', async function () {
             sandbox.stub(toolLib, "downloadTool").throws(new Error("404"))
-            const result = await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
-                expect(error.message).includes("404")
+            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
+                expect(error).equals("Synopsys bridge download has been failed")
             });
 
         });

@@ -231,7 +231,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.RETRY_COUNT = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
@@ -239,6 +239,7 @@ exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) ==
 exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || false;
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, true) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
+exports.RETRY_COUNT = taskLib.getPathInput("retry_count") || 3;
 // Polaris related inputs
 exports.AZURE_TOKEN = ((_c = taskLib.getInput(constants.AZURE_TOKEN_KEY)) === null || _c === void 0 ? void 0 : _c.trim()) || "";
 exports.SCAN_TYPE = ((_d = taskLib.getInput(constants.SCAN_TYPE_KEY)) === null || _d === void 0 ? void 0 : _d.trim()) || "";
@@ -1123,6 +1124,8 @@ const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
 const process = __importStar(__nccwpck_require__(7282));
 const taskLib = __importStar(__nccwpck_require__(347));
+const promises_1 = __nccwpck_require__(8670);
+const input_1 = __nccwpck_require__(7533);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -1158,22 +1161,30 @@ function getRemoteFile(destFilePath, url) {
         if (url == null || url.length === 0) {
             return Promise.reject(new Error("URL cannot be empty"));
         }
-        try {
-            let fileNameFromUrl = "";
-            if (taskLib.stats(destFilePath).isDirectory()) {
-                fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
-                destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
+        let fileNameFromUrl = "";
+        if (taskLib.stats(destFilePath).isDirectory()) {
+            fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
+            destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
+        }
+        let retryCount = Number(input_1.RETRY_COUNT);
+        let downloadStatus = false;
+        while (retryCount > 0 && !downloadStatus) {
+            try {
+                const toolPath = yield toolLib.downloadTool(url, destFilePath);
+                const downloadFileResp = {
+                    filePath: toolPath,
+                    fileName: fileNameFromUrl,
+                };
+                downloadStatus = true;
+                return Promise.resolve(downloadFileResp);
             }
-            const toolPath = yield toolLib.downloadTool(url, destFilePath);
-            const downloadFileResp = {
-                filePath: toolPath,
-                fileName: fileNameFromUrl,
-            };
-            return Promise.resolve(downloadFileResp);
+            catch (error) {
+                yield (0, promises_1.setTimeout)(2500);
+                retryCount--;
+                console.warn("Synopsys bridge download has been failed, retries left: " + retryCount);
+            }
         }
-        catch (error) {
-            return Promise.reject(error);
-        }
+        return Promise.reject("Synopsys bridge download has been failed");
     });
 }
 exports.getRemoteFile = getRemoteFile;
@@ -22991,6 +23002,14 @@ module.exports = require("path");
 
 "use strict";
 module.exports = require("process");
+
+/***/ }),
+
+/***/ 8670:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("timers/promises");
 
 /***/ }),
 
