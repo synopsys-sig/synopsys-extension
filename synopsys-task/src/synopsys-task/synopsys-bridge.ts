@@ -18,7 +18,7 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
-import { SCAN_TYPE } from "./input";
+import { SCAN_TYPE, SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY } from "./input";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -335,33 +335,24 @@ export class SynopsysBridge {
   async checkIfSynopsysBridgeVersionExists(
     bridgeVersion: string
   ): Promise<boolean> {
-    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+    this.bridgeExecutablePath = await this.getSynopsysBridgePath();
     const osName = process.platform;
     let versionFilePath: string;
 
-    if (!synopsysBridgePath) {
-      console.info("Looking for synopsys bridge in default path");
-      synopsysBridgePath = this.getBridgeDefaultPath();
-    }
-
-    this.bridgeExecutablePath = synopsysBridgePath;
-
     if (osName === "win32") {
-      versionFilePath = synopsysBridgePath.concat("\\versions.txt");
+      versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
     } else {
-      versionFilePath = synopsysBridgePath.concat("/versions.txt");
+      versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
     }
-
     if (taskLib.exist(versionFilePath)) {
-      taskLib.debug("Bridge executable found at ".concat(synopsysBridgePath));
-      taskLib.debug("Version file found at ".concat(synopsysBridgePath));
+      taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
       }
     } else {
       console.info(
-        "Bridge executable and version file could not be found at ".concat(
-          synopsysBridgePath
+        "Synopsys Bridge version file could not be found at ".concat(
+          this.bridgeExecutablePath
         )
       );
     }
@@ -412,15 +403,6 @@ export class SynopsysBridge {
       );
     }
     return false;
-  }
-
-  async getSynopsysBridgePath(): Promise<string> {
-    let synopsysBridgePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-
-    if (!synopsysBridgePath) {
-      synopsysBridgePath = this.getBridgeDefaultPath();
-    }
-    return synopsysBridgePath;
   }
 
   async getVersionFromLatestURL(): Promise<string> {
@@ -540,19 +522,19 @@ export class SynopsysBridge {
     return this.bridgeExecutablePath;
   }
 
-  async getExecutablePathForAirGap(): Promise<string> {
-    let executablePath = "";
-    let pathErrorMessage;
-    if (inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
-      executablePath = inputs.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-      pathErrorMessage = "Synopsys Bridge Install Directory does not exist";
-    } else {
-      executablePath = this.getBridgeDefaultPath();
-      pathErrorMessage = "Synopsys Default Bridge path does not exist";
+  //returns only synopsys bridge directory path
+  async getSynopsysBridgePath(): Promise<string> {
+    let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
+    if (SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
+      console.info(
+        "Looking for synopsys bridge in %s",
+        synopsysBridgeDirectoryPath
+      );
+      synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+      if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
+        throw new Error("Synopsys Bridge Install Directory does not exist");
+      }
     }
-    if (!taskLib.exist(executablePath)) {
-      throw new Error(pathErrorMessage);
-    }
-    return executablePath;
+    return synopsysBridgeDirectoryPath;
   }
 }
