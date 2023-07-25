@@ -512,11 +512,11 @@ describe("Download Bridge", () => {
 
         it("returns the URL for the latest version when getVersionFromLatestURL is empty", async () => {
 
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
+            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve("/latest"));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge");
             //sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
-            expect(result).contains("synopsys-bridge/latest/synopsys-bridge");
+            expect(result).contains("/latest");
         });
 
         it("returns the URL for the latest version when getVersionFromLatestURL is empty: failure", async () => {

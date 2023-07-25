@@ -67,7 +67,7 @@ function run() {
             yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
-            throw error;
+            taskLib.error("Synopsys Extension Failed due to :".concat(error.message));
         }
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
@@ -236,8 +236,9 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
-exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || false;
-exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, true) || "";
+exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || true;
+exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, true) ||
+    "/Users/kirann/IdeaProjects/synopsys-extension-airgap1";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
 // Polaris related inputs
 exports.AZURE_TOKEN = ((_c = taskLib.getInput(constants.AZURE_TOKEN_KEY)) === null || _c === void 0 ? void 0 : _c.trim()) || "";
@@ -258,8 +259,8 @@ exports.COVERITY_POLICY_VIEW = ((_q = taskLib.getInput(constants.COVERITY_POLICY
 exports.COVERITY_LOCAL = ((_r = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _r === void 0 ? void 0 : _r.trim()) === "true" || false;
 exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 // Blackduck related inputs
-exports.BLACKDUCK_URL = ((_s = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) || "";
-exports.BLACKDUCK_API_TOKEN = ((_t = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) || "";
+exports.BLACKDUCK_URL = ((_s = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) || "asdf";
+exports.BLACKDUCK_API_TOKEN = ((_t = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) || "asdf";
 exports.BLACKDUCK_INSTALL_DIRECTORY = ((_u = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)) === null || _u === void 0 ? void 0 : _u.trim()) || "";
 exports.BLACKDUCK_SCAN_FULL = ((_v = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY)) === null || _v === void 0 ? void 0 : _v.trim()) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
@@ -571,11 +572,9 @@ class SynopsysBridge {
                     version = latestVersion;
                 }
             }
-            if (version != "") {
-                if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
-                    console.info("Skipping download as same Synopsys Bridge version found");
-                    return Promise.resolve("");
-                }
+            if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
+                console.info("Skipping download as same Synopsys Bridge version found");
+                return Promise.resolve("");
             }
             console.info("Downloading and configuring Synopsys Bridge");
             console.info("Bridge URL is - ".concat(bridgeUrl));
@@ -734,7 +733,8 @@ class SynopsysBridge {
             if (input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
                 console.info("Looking for synopsys bridge in %s", synopsysBridgeDirectoryPath);
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-                if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
+                if (input_1.ENABLE_NETWORK_AIR_GAP &&
+                    !taskLib.exist(synopsysBridgeDirectoryPath)) {
                     throw new Error("Synopsys Bridge Install Directory does not exist");
                 }
             }

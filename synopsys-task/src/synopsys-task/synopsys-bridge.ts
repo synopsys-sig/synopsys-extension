@@ -18,7 +18,11 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
-import { SCAN_TYPE, SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY } from "./input";
+import {
+  ENABLE_NETWORK_AIR_GAP,
+  SCAN_TYPE,
+  SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
+} from "./input";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -320,11 +324,9 @@ export class SynopsysBridge {
       }
     }
 
-    if (version != "") {
-      if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-        console.info("Skipping download as same Synopsys Bridge version found");
-        return Promise.resolve("");
-      }
+    if (await this.checkIfSynopsysBridgeVersionExists(version)) {
+      console.info("Skipping download as same Synopsys Bridge version found");
+      return Promise.resolve("");
     }
 
     console.info("Downloading and configuring Synopsys Bridge");
@@ -531,7 +533,10 @@ export class SynopsysBridge {
         synopsysBridgeDirectoryPath
       );
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-      if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
+      if (
+        ENABLE_NETWORK_AIR_GAP &&
+        !taskLib.exist(synopsysBridgeDirectoryPath)
+      ) {
         throw new Error("Synopsys Bridge Install Directory does not exist");
       }
     }
