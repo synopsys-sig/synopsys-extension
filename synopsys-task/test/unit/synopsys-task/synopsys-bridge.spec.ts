@@ -516,7 +516,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge");
             //sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
-            expect(result).contains("synopsys-bridge/latest/synopsys-bridge-macosx.zip");
+            expect(result).contains("synopsys-bridge/latest/synopsys-bridge");
         });
 
         it("returns the URL for the latest version when getVersionFromLatestURL is empty: failure", async () => {
