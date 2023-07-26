@@ -58,7 +58,7 @@ export const COVERITY_AUTOMATION_PRCOMMENT =
 export const BLACKDUCK_URL =
   taskLib.getInput(constants.BLACKDUCK_URL_KEY)?.trim() || "";
 export const BLACKDUCK_API_TOKEN =
-  taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)?.trim() || "asdf";
+  taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)?.trim() || "";
 export const BLACKDUCK_INSTALL_DIRECTORY =
   taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)?.trim() || "";
 export const BLACKDUCK_SCAN_FULL =
