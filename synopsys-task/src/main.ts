@@ -32,6 +32,7 @@ export async function run() {
     await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
   } catch (error: any) {
     taskLib.error("Synopsys Extension Failed due to ".concat(error.message));
+    throw error;
   } finally {
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);

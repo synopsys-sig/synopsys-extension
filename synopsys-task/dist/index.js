@@ -68,6 +68,7 @@ function run() {
         }
         catch (error) {
             taskLib.error("Synopsys Extension Failed due to ".concat(error.message));
+            throw error;
         }
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
