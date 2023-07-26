@@ -494,7 +494,7 @@ describe("Download Bridge", () => {
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(false));
             synopsysBridge.getBridgeUrl().catch(errorObj => {
-                expect(errorObj.message).includes("Provided bridge version not found in artifactory")
+                expect(errorObj.message).includes("Provided Synopsys bridge version not found in artifactory")
             })
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
                 value: "",
@@ -611,7 +611,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "extractBridge").throws(new Error("invalid url"))
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
-                expect(errorObj.message).includes("Provided Bridge url is not valid for the configured");
+                expect(errorObj.message).includes("Provided Synopsys Bridge url is not valid for the configured");
             })
 
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
@@ -638,7 +638,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeUrl").throws(new Error("empty"));
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
-                expect(errorObj.message).includes("Provided Bridge URL cannot be empty");
+                expect(errorObj.message).includes("Provided Synopsys Bridge URL cannot be empty");
             })
         });
 

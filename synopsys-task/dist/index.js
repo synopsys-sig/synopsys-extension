@@ -392,7 +392,7 @@ class SynopsysBridge {
             taskLib.debug("extractedPath: ".concat(executablePath));
             const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
             if (!taskLib.exist(executableBridgePath)) {
-                throw new Error("Bridge executable file could not be found at ".concat(executableBridgePath));
+                throw new Error("Synopsys Bridge executable file could not be found at ".concat(executableBridgePath));
             }
             try {
                 return yield taskLib.exec(executableBridgePath, command, {
@@ -522,10 +522,10 @@ class SynopsysBridge {
                 const errorObject = e.message;
                 if (errorObject.includes("404") ||
                     errorObject.toLowerCase().includes("invalid url")) {
-                    return Promise.reject(new Error("Provided Bridge url is not valid for the configured ".concat(process.platform, " runner")));
+                    return Promise.reject(new Error("Provided Synopsys Bridge url is not valid for the configured ".concat(process.platform, " runner")));
                 }
                 else if (errorObject.toLowerCase().includes("empty")) {
-                    return Promise.reject(new Error("Provided Bridge URL cannot be empty"));
+                    return Promise.reject(new Error("Provided Synopsys Bridge URL cannot be empty"));
                 }
                 else {
                     return Promise.reject(new Error(errorObject));
@@ -557,15 +557,15 @@ class SynopsysBridge {
                     version = inputs.BRIDGE_DOWNLOAD_VERSION;
                 }
                 else {
-                    return Promise.reject(new Error("Provided bridge version not found in artifactory"));
+                    return Promise.reject(new Error("Provided Synopsys bridge version not found in artifactory"));
                 }
             }
             else {
-                console.info("Checking for latest version of Bridge to download and configure");
+                console.info("Checking for latest version of Synopsys Bridge to download and configure");
                 const latestVersion = yield this.getVersionFromLatestURL();
                 if (latestVersion === "") {
                     bridgeUrl = this.getLatestVersionUrl();
-                    taskLib.debug("Checking for latest version of Bridge to download and configure" +
+                    taskLib.debug("Checking for latest version of Synopsys Bridge to download and configure" +
                         bridgeUrl);
                 }
                 else {
@@ -581,7 +581,7 @@ class SynopsysBridge {
                 }
             }
             console.info("Downloading and configuring Synopsys Bridge");
-            console.info("Bridge URL is - ".concat(bridgeUrl));
+            console.info("Synopsys Bridge URL is - ".concat(bridgeUrl));
             return bridgeUrl;
         });
     }
@@ -597,7 +597,7 @@ class SynopsysBridge {
                 versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
             }
             if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
-                taskLib.debug("Bridge executable found at ".concat(this.bridgeExecutablePath));
+                taskLib.debug("Synopsys Bridge executable found at ".concat(this.bridgeExecutablePath));
                 taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
                     return Promise.resolve(true);
@@ -736,7 +736,7 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
             if (input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
-                console.info("Looking for synopsys bridge in %s", synopsysBridgeDirectoryPath);
+                console.info("Looking for Synopsys bridge in %s", synopsysBridgeDirectoryPath);
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
                 if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
                     throw new Error("Synopsys Bridge Install Directory does not exist");
