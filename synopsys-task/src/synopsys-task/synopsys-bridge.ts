@@ -533,10 +533,7 @@ export class SynopsysBridge {
         synopsysBridgeDirectoryPath
       );
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-      if (
-        ENABLE_NETWORK_AIR_GAP &&
-        !taskLib.exist(synopsysBridgeDirectoryPath)
-      ) {
+      if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
         throw new Error("Synopsys Bridge Install Directory does not exist");
       }
     }

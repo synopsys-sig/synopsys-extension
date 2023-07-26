@@ -732,8 +732,7 @@ class SynopsysBridge {
             if (input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
                 console.info("Looking for synopsys bridge in %s", synopsysBridgeDirectoryPath);
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
-                if (input_1.ENABLE_NETWORK_AIR_GAP &&
-                    !taskLib.exist(synopsysBridgeDirectoryPath)) {
+                if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
                     throw new Error("Synopsys Bridge Install Directory does not exist");
                 }
             }
