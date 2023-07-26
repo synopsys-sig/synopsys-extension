@@ -67,7 +67,7 @@ function run() {
             yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
-            taskLib.error("Synopsys Extension Failed due to :".concat(error.message));
+            taskLib.error("Synopsys Extension Failed due to ".concat(error.message));
         }
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
@@ -571,9 +571,11 @@ class SynopsysBridge {
                     version = latestVersion;
                 }
             }
-            if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
-                console.info("Skipping download as same Synopsys Bridge version found");
-                return Promise.resolve("");
+            if (version != "") {
+                if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
+                    console.info("Skipping download as same Synopsys Bridge version found");
+                    return Promise.resolve("");
+                }
             }
             console.info("Downloading and configuring Synopsys Bridge");
             console.info("Bridge URL is - ".concat(bridgeUrl));
@@ -591,7 +593,8 @@ class SynopsysBridge {
             else {
                 versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
             }
-            if (taskLib.exist(versionFilePath)) {
+            if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
+                taskLib.debug("Bridge executable found at ".concat(this.bridgeExecutablePath));
                 taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
                     return Promise.resolve(true);

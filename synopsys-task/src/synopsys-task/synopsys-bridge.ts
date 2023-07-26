@@ -324,9 +324,11 @@ export class SynopsysBridge {
       }
     }
 
-    if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-      console.info("Skipping download as same Synopsys Bridge version found");
-      return Promise.resolve("");
+    if (version != "") {
+      if (await this.checkIfSynopsysBridgeVersionExists(version)) {
+        console.info("Skipping download as same Synopsys Bridge version found");
+        return Promise.resolve("");
+      }
     }
 
     console.info("Downloading and configuring Synopsys Bridge");
@@ -346,7 +348,10 @@ export class SynopsysBridge {
     } else {
       versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
     }
-    if (taskLib.exist(versionFilePath)) {
+    if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
+      taskLib.debug(
+        "Bridge executable found at ".concat(this.bridgeExecutablePath)
+      );
       taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
