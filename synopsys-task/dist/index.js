@@ -547,6 +547,9 @@ class SynopsysBridge {
                 if (versionsArray) {
                     version = versionsArray[1];
                 }
+                if (inputs.BRIDGE_DOWNLOAD_URL.includes("latest")) {
+                    version = yield this.getVersionFromLatestURL();
+                }
             }
             else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
                 if (yield this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {

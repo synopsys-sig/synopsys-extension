@@ -18,11 +18,7 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
-import {
-  ENABLE_NETWORK_AIR_GAP,
-  SCAN_TYPE,
-  SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
-} from "./input";
+import { SCAN_TYPE, SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY } from "./input";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -294,6 +290,9 @@ export class SynopsysBridge {
       const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
       if (versionsArray) {
         version = versionsArray[1];
+      }
+      if (inputs.BRIDGE_DOWNLOAD_URL.includes("latest")) {
+        version = await this.getVersionFromLatestURL();
       }
     } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
       if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
