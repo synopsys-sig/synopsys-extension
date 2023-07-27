@@ -213,7 +213,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Bridge executable file could not be found at")
@@ -224,13 +224,13 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Default Bridge path does not exist")
+                expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
@@ -238,12 +238,12 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exist").returns(false)
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Bridge Install Directory does not exist")
+                expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: success", async () => {
@@ -251,9 +251,9 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exist").returns(true)
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             const res = synopsysBridge.getSynopsysBridgePath();
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
@@ -261,12 +261,12 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('/tmp')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
         });
 
@@ -278,7 +278,7 @@ describe("Download Bridge", () => {
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Error")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
         });
     })
@@ -297,7 +297,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {
                 value: bridgeDefaultPath,
             });
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
             sandbox.stub(fs, "existsSync").returns(true);
             sandbox.stub(taskLib, "rmRF");
             sandbox.stub(utility, "extractZipped").returns(Promise.resolve(true));
@@ -494,7 +494,7 @@ describe("Download Bridge", () => {
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(false));
             synopsysBridge.getBridgeUrl().catch(errorObj => {
-                expect(errorObj.message).includes("Provided Synopsys bridge version not found in artifactory")
+                expect(errorObj.message).includes("Provided Synopsys Bridge version not found in artifactory")
             })
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
                 value: "",

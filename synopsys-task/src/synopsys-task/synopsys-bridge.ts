@@ -18,7 +18,11 @@ import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
-import { SCAN_TYPE, SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY } from "./input";
+import {
+  ENABLE_NETWORK_AIRGAP,
+  SCAN_TYPE,
+  SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
+} from "./input";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -304,7 +308,7 @@ export class SynopsysBridge {
         version = inputs.BRIDGE_DOWNLOAD_VERSION;
       } else {
         return Promise.reject(
-          new Error("Provided Synopsys bridge version not found in artifactory")
+          new Error("Provided Synopsys Bridge version not found in artifactory")
         );
       }
     } else {
@@ -327,7 +331,9 @@ export class SynopsysBridge {
 
     if (version != "") {
       if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-        console.info("Skipping download as same Synopsys Bridge version found");
+        console.debug(
+          "Skipping download as same Synopsys Bridge version found"
+        );
         return Promise.resolve("");
       }
     }
@@ -358,7 +364,7 @@ export class SynopsysBridge {
         return Promise.resolve(true);
       }
     } else {
-      console.info(
+      console.debug(
         "Synopsys Bridge version file could not be found at ".concat(
           this.bridgeExecutablePath
         )
@@ -533,6 +539,13 @@ export class SynopsysBridge {
   //contains executable path with extension file
   async getSynopsysBridgePath(): Promise<string> {
     let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
+
+    if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
+      if (!taskLib.exist(this.getBridgeDefaultPath())) {
+        throw new Error("Synopsys Bridge default directory does not exist");
+      }
+    }
+
     if (SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {

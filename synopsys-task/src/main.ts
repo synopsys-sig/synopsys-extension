@@ -19,7 +19,7 @@ export async function run() {
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
-    if (!inputs.ENABLE_NETWORK_AIR_GAP) {
+    if (!inputs.ENABLE_NETWORK_AIRGAP) {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
       taskLib.debug(
@@ -31,7 +31,6 @@ export async function run() {
     // Execute prepared commands
     await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
   } catch (error: any) {
-    taskLib.error("Synopsys Extension Failed due to ".concat(error.message));
     throw error;
   } finally {
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {

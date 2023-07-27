@@ -56,7 +56,7 @@ function run() {
             // Prepare tool commands
             const command = yield sb.prepareCommand(tempDir);
             let bridgePath = "";
-            if (!inputs.ENABLE_NETWORK_AIR_GAP) {
+            if (!inputs.ENABLE_NETWORK_AIRGAP) {
                 bridgePath = yield sb.downloadAndExtractBridge(tempDir);
             }
             else {
@@ -67,7 +67,6 @@ function run() {
             yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
         }
         catch (error) {
-            taskLib.error("Synopsys Extension Failed due to ".concat(error.message));
             throw error;
         }
         finally {
@@ -232,12 +231,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIR_GAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
-exports.ENABLE_NETWORK_AIR_GAP = taskLib.getBoolInput("network_air_gap") || false;
+exports.ENABLE_NETWORK_AIRGAP = taskLib.getBoolInput("bridge_network_airgap") || false;
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, false) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
 // Polaris related inputs
@@ -558,7 +557,7 @@ class SynopsysBridge {
                     version = inputs.BRIDGE_DOWNLOAD_VERSION;
                 }
                 else {
-                    return Promise.reject(new Error("Provided Synopsys bridge version not found in artifactory"));
+                    return Promise.reject(new Error("Provided Synopsys Bridge version not found in artifactory"));
                 }
             }
             else {
@@ -577,7 +576,7 @@ class SynopsysBridge {
             }
             if (version != "") {
                 if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
-                    console.info("Skipping download as same Synopsys Bridge version found");
+                    console.debug("Skipping download as same Synopsys Bridge version found");
                     return Promise.resolve("");
                 }
             }
@@ -605,7 +604,7 @@ class SynopsysBridge {
                 }
             }
             else {
-                console.info("Synopsys Bridge version file could not be found at ".concat(this.bridgeExecutablePath));
+                console.debug("Synopsys Bridge version file could not be found at ".concat(this.bridgeExecutablePath));
             }
             return Promise.resolve(false);
         });
@@ -736,6 +735,11 @@ class SynopsysBridge {
     getSynopsysBridgePath() {
         return __awaiter(this, void 0, void 0, function* () {
             let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
+            if (input_1.ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
+                if (!taskLib.exist(this.getBridgeDefaultPath())) {
+                    throw new Error("Synopsys Bridge default directory does not exist");
+                }
+            }
             if (input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
                 if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
@@ -853,7 +857,7 @@ class SynopsysToolsParameter {
                     automation: {},
                 },
                 network: {
-                    airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+                    airGap: inputs.ENABLE_NETWORK_AIRGAP,
                 },
             },
         };
@@ -946,7 +950,7 @@ class SynopsysToolsParameter {
                     },
                     automation: {},
                     network: {
-                        airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+                        airGap: inputs.ENABLE_NETWORK_AIRGAP,
                     },
                 },
                 project: {},
