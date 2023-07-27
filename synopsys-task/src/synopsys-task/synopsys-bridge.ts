@@ -534,10 +534,6 @@ export class SynopsysBridge {
   async getSynopsysBridgePath(): Promise<string> {
     let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
     if (SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
-      console.info(
-        "Looking for Synopsys bridge in %s",
-        synopsysBridgeDirectoryPath
-      );
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
         throw new Error("Synopsys Bridge Install Directory does not exist");
