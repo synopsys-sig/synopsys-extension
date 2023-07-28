@@ -312,7 +312,7 @@ export class SynopsysBridge {
         );
       }
     } else {
-      console.debug(
+      taskLib.debug(
         "Checking for latest version of Synopsys Bridge to download and configure"
       );
       const latestVersion = await this.getVersionFromLatestURL();
@@ -331,7 +331,7 @@ export class SynopsysBridge {
 
     if (version != "") {
       if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-        console.debug(
+        taskLib.debug(
           "Skipping download as same Synopsys Bridge version found"
         );
         return Promise.resolve("");
@@ -364,7 +364,7 @@ export class SynopsysBridge {
         return Promise.resolve(true);
       }
     } else {
-      console.debug(
+      taskLib.debug(
         "Synopsys Bridge version file could not be found at ".concat(
           this.bridgeExecutablePath
         )
@@ -539,17 +539,16 @@ export class SynopsysBridge {
   //contains executable path with extension file
   async getSynopsysBridgePath(): Promise<string> {
     let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
-
-    if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
-      if (!taskLib.exist(this.getBridgeDefaultPath())) {
-        throw new Error("Synopsys Bridge default directory does not exist");
-      }
-    }
-
     if (SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
         throw new Error("Synopsys Bridge Install Directory does not exist");
+      }
+    } else {
+      if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
+        if (!taskLib.exist(this.getBridgeDefaultPath())) {
+          throw new Error("Synopsys Bridge default directory does not exist");
+        }
       }
     }
     return synopsysBridgeDirectoryPath;

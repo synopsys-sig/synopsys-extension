@@ -236,7 +236,7 @@ describe("Download Bridge", () => {
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
