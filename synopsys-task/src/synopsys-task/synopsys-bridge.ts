@@ -312,7 +312,7 @@ export class SynopsysBridge {
         );
       }
     } else {
-      console.info(
+      console.debug(
         "Checking for latest version of Synopsys Bridge to download and configure"
       );
       const latestVersion = await this.getVersionFromLatestURL();

@@ -561,7 +561,7 @@ class SynopsysBridge {
                 }
             }
             else {
-                console.info("Checking for latest version of Synopsys Bridge to download and configure");
+                console.debug("Checking for latest version of Synopsys Bridge to download and configure");
                 const latestVersion = yield this.getVersionFromLatestURL();
                 if (latestVersion === "") {
                     bridgeUrl = this.getLatestVersionUrl();
