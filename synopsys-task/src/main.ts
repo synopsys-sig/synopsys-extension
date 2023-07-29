@@ -22,7 +22,7 @@ export async function run() {
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
-      taskLib.debug(
+      console.log(
         "Network air gap is enabled, skipping synopsys-bridge download."
       );
       bridgePath = await sb.getSynopsysBridgePath();
