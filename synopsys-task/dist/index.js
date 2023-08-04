@@ -545,12 +545,17 @@ class SynopsysBridge {
                     return Promise.reject(new Error("Invalid URL"));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
-                const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
-                if (versionsArray) {
-                    version = versionsArray[1];
+                const LATEST = "latest";
+                if (inputs.BRIDGE_DOWNLOAD_URL.includes(LATEST)) {
+                    version = yield this.getSynopsysBridgeVersionFromLatestURL(bridgeUrl
+                        .substring(0, bridgeUrl.lastIndexOf(LATEST) + LATEST.length)
+                        .concat("/versions.txt"));
                 }
-                if (inputs.BRIDGE_DOWNLOAD_URL.includes("latest")) {
-                    version = yield this.getVersionFromLatestURL();
+                else {
+                    const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
+                    if (versionsArray) {
+                        version = versionsArray[1];
+                    }
                 }
             }
             else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
@@ -564,17 +569,8 @@ class SynopsysBridge {
             }
             else {
                 taskLib.debug("Checking for latest version of Synopsys Bridge to download and configure");
-                const latestVersion = yield this.getVersionFromLatestURL();
-                if (latestVersion === "") {
-                    bridgeUrl = this.getLatestVersionUrl();
-                    taskLib.debug("Checking for latest version of Synopsys Bridge to download and configure" +
-                        bridgeUrl);
-                }
-                else {
-                    taskLib.debug("Found latest version:" + latestVersion);
-                    bridgeUrl = this.getVersionUrl(latestVersion).trim();
-                    version = latestVersion;
-                }
+                version = yield this.getSynopsysBridgeVersionFromLatestURL(this.bridgeArtifactoryURL.concat("/latest/versions.txt"));
+                bridgeUrl = this.getLatestVersionUrl();
             }
             if (version != "") {
                 if (yield this.checkIfSynopsysBridgeVersionExists(version)) {
@@ -649,10 +645,9 @@ class SynopsysBridge {
             return false;
         });
     }
-    getVersionFromLatestURL() {
+    getSynopsysBridgeVersionFromLatestURL(latestVersionsUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const latestVersionsUrl = this.bridgeArtifactoryURL.concat("/latest/versions.txt");
                 const httpClient = new HttpClient_1.HttpClient("");
                 const httpResponse = yield httpClient.get(latestVersionsUrl, {
                     Accept: "text/html",
