@@ -293,6 +293,10 @@ export class SynopsysBridge {
         return Promise.reject(new Error("Invalid URL"));
       }
       // To check whether bridge already exists with same version mentioned in bridge url
+      const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
+      if (versionsArray) {
+        version = versionsArray[1];
+      }
       const LATEST = "latest";
       if (inputs.BRIDGE_DOWNLOAD_URL.includes(LATEST)) {
         version = await this.getSynopsysBridgeVersionFromLatestURL(
@@ -300,11 +304,6 @@ export class SynopsysBridge {
             .substring(0, bridgeUrl.lastIndexOf(LATEST) + LATEST.length)
             .concat("/versions.txt")
         );
-      } else {
-        const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
-        if (versionsArray) {
-          version = versionsArray[1];
-        }
       }
     } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
       if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
