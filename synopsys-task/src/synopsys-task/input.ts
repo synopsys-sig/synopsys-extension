@@ -5,11 +5,11 @@ import * as constants from "./application-constant";
 export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url")?.trim() || "";
 
-export const ENABLE_NETWORK_AIR_GAP =
-  taskLib.getBoolInput("network_air_gap") || false;
+export const ENABLE_NETWORK_AIRGAP =
+  taskLib.getBoolInput("bridge_network_airgap") || false;
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
-  taskLib.getPathInput("synopsys_bridge_install_directory", false, true) || "";
+  taskLib.getPathInput("synopsys_bridge_install_directory", false, false) || "";
 
 export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";

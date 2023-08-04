@@ -267,12 +267,12 @@
       "groupName": "blackduck"
     },
     {
-      "name": "network_air_gap",
+      "name": "bridge_network_airgap",
       "type": "string",
-      "label": "Network Air Gap",
+      "label": "Network Airgap",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "If provided, Synopsys Action will be using local network to download and execute bridge."
+      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge."
     }
   ],
   "execution": {
