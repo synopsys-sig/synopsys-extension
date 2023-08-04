@@ -19,18 +19,18 @@ export async function run() {
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
-    if (!inputs.ENABLE_NETWORK_AIR_GAP) {
+    if (!inputs.ENABLE_NETWORK_AIRGAP) {
       bridgePath = await sb.downloadAndExtractBridge(tempDir);
     } else {
-      taskLib.debug(
+      console.log(
         "Network air gap is enabled, skipping synopsys-bridge download."
       );
-      bridgePath = await sb.getExecutablePathForAirGap();
+      bridgePath = await sb.getSynopsysBridgePath();
     }
 
     // Execute prepared commands
     await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   } finally {
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
