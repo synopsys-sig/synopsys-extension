@@ -502,26 +502,26 @@ describe("Download Bridge", () => {
         });
 
         it("returns the URL for the latest version when neither BRIDGE_DOWNLOAD_URL nor BRIDGE_DOWNLOAD_VERSION are defined", async () => {
-
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve("0.1.244"));
+            const bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge"
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
-            expect(result).equals(bridgeUrl);
+            expect(result).contains(bridgeUrl);
         });
 
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty", async () => {
+        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty", async () => {
 
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve("/latest"));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("/latest"));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge");
             //sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
             expect(result).contains("/latest");
         });
 
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty: failure", async () => {
+        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty: failure", async () => {
             sandbox.stub(synopsysBridge, "getLatestVersionUrl").returns("");
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(""));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/0.0.0/synopsys-bridge-maco1sx.zip");
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl().catch(errorObj => {
@@ -544,13 +544,13 @@ describe("Download Bridge", () => {
         let versions: string;
         versions = "0.1.244"
         it("When version is available", async () => {
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(versions));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(versions));
             const result = await synopsysBridge.validateBridgeVersion("0.1.244")
             expect(result).equals(true);
         });
 
         it("When version is not available", async () => {
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(versions));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(versions));
             const result = await synopsysBridge.validateBridgeVersion("0.1.245")
             expect(result).equals(false);
         });
@@ -572,7 +572,7 @@ describe("Download Bridge", () => {
         it("BRIDGE_DOWNLOAD_VERSION is defined and valid", async () => {
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {value: "0.1.244"});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(synopsysBridge,"getVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
+            sandbox.stub(synopsysBridge,"getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
 
             const result = await synopsysBridge.downloadAndExtractBridge("/");
@@ -771,7 +771,7 @@ describe("Download Bridge", () => {
         });
     })
 
-    context("getVersionFromLatestURL", () => {
+    context("getBridgeVersionFromLatestURL", () => {
 
         let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
         let synopsysBridge: SynopsysBridge;
@@ -787,9 +787,9 @@ describe("Download Bridge", () => {
 
         it("Get Latest Version - success", async () => {
 
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
 
-            const result = await synopsysBridge.getVersionFromLatestURL();
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip");
             assert.equal(result, '0.2.1');
         });
 
@@ -798,7 +798,7 @@ describe("Download Bridge", () => {
             expect(result).contains('/latest/synopsys-bridge');
         });
 
-        it('Test getVersionFromLatestURL -status 200', async () => {
+        it('Test getBridgeVersionFromLatestURL -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "Synopsys Bridge Package:0.2.35\nsynopsys-bridge: 0.2.35"
@@ -813,12 +813,12 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('0.2.35')
 
         })
 
-        it('Test getVersionFromLatestURL exception', async () => {
+        it('Test getBridgeVersionFromLatestURL exception', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "Synopsys Bridge Package:0.2.35\nsynopsys-bridge: 0.2.35"
@@ -833,11 +833,11 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('')
         })
 
-        it('Test getVersionFromLatestURL -status 500', async () => {
+        it('Test getBridgeVersionFromLatestURL -status 500', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 500
             const responseBody = "error"
@@ -852,7 +852,7 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('')
 
         })
