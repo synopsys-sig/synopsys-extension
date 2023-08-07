@@ -118,6 +118,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
             expect(jsonData.data.coverity.local).to.be.equals(true);
+            expect(jsonData.data.coverity.version).to.be.equals('2022.12.0');
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
