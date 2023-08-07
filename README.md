@@ -143,6 +143,7 @@ steps:
 | `BRIDGE_COVERITY_INSTALL_DIRECTORY`        | Directory path to install Coverity                                                                                                                                                                                                                                                            | Optional    |
 | `BRIDGE_COVERITY_CONNECT_POLICY_VIEW`        | The policy view  of Coverity. <br/> Name/ID number of a saved view to apply as a “break the build” policy. <br/> If any defects are found within this view when applied to the project, the build will be broken with an exit code. <br/> Example: bridge_coverity_connect_policy_view: 100001 | Optional    |
 | `BRIDGE_COVERITY_AUTOMATION_PRCOMMENT`        | To enable feedback from Coverity security testing as pull request comment. Merge Request must be created first from feature branch to main branch to run Coverity PR Comment. <br> Supported values: true or false </br> **Note** - Feature is supported only through yaml configuration                                                                                                         | Optional     |
+| `BRIDGE_COVERITY_VERSION`        | The version of Coverity Thin Client to use <br> Example: `BRIDGE_COVERITY_VERSION: '2023.6.0'`  | Optional     |
 | `AZURE_TOKEN` | Azure Access Token <br> Example: `AZURE_TOKEN: $(System.AccessToken)` or `AZURE_TOKEN: $(PAT_TOKEN)` | Mandatory if  BRIDGE_COVERITY_AUTOMATION_PRCOMMENT is set true. |
 
 ## Synopsys Security Scan - Black Duck
