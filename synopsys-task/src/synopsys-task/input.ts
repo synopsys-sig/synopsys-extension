@@ -53,6 +53,8 @@ export const COVERITY_LOCAL =
   taskLib.getInput(constants.COVERITY_LOCAL_KEY)?.trim() === "true" || false;
 export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
+export const COVERITY_VERSION =
+  taskLib.getInput(constants.COVERITY_VERSION_KEY)?.trim() || "";
 
 // Blackduck related inputs
 export const BLACKDUCK_URL =
