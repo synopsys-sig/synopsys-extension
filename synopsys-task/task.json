@@ -208,6 +208,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_coverity_version",
+      "type": "string",
+      "label": "Coverity Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Version of Coverity Thin Client to use.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",

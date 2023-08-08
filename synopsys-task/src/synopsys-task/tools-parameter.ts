@@ -264,6 +264,10 @@ export class SynopsysToolsParameter {
       covData.data.coverity.automation.prcomment = true;
     }
 
+    if (inputs.COVERITY_VERSION) {
+      covData.data.coverity.version = inputs.COVERITY_VERSION;
+    }
+
     const inputJson = JSON.stringify(covData);
 
     let stateFilePath = path.join(

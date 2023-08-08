@@ -21,6 +21,7 @@ export interface CoverityConnect {
   automation: AutomationData;
   network: NetworkAirGap;
   local?: boolean;
+  version?: string;
 }
 
 export interface CoverityData {
