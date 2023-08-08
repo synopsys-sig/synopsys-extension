@@ -37,6 +37,7 @@ export const COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
 export const COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
 export const COVERITY_LOCAL_KEY = "bridge_coverity_local";
+export const COVERITY_VERSION_KEY = "bridge_coverity_version";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
