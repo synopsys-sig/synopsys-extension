@@ -296,14 +296,12 @@ export class SynopsysBridge {
       const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
       if (versionsArray) {
         version = versionsArray[1];
-      }
-      const LATEST = "latest";
-      if (inputs.BRIDGE_DOWNLOAD_URL.includes(LATEST)) {
-        version = await this.getSynopsysBridgeVersionFromLatestURL(
-          bridgeUrl
-            .substring(0, bridgeUrl.lastIndexOf(LATEST) + LATEST.length)
-            .concat("/versions.txt")
-        );
+        if (version) {
+          const regex = /\w*(synopsys-bridge-(win64|linux64|macosx).zip)/;
+          version = await this.getSynopsysBridgeVersionFromLatestURL(
+            bridgeUrl.replace(regex, "versions.txt")
+          );
+        }
       }
     } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
       if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
