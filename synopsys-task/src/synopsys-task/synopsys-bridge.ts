@@ -296,9 +296,12 @@ export class SynopsysBridge {
       const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
       if (versionsArray) {
         version = versionsArray[1];
-      }
-      if (inputs.BRIDGE_DOWNLOAD_URL.includes("latest")) {
-        version = await this.getVersionFromLatestURL();
+        if (!version) {
+          const regex = /\w*(synopsys-bridge-(win64|linux64|macosx).zip)/;
+          version = await this.getSynopsysBridgeVersionFromLatestURL(
+            bridgeUrl.replace(regex, "versions.txt")
+          );
+        }
       }
     } else if (inputs.BRIDGE_DOWNLOAD_VERSION) {
       if (await this.validateBridgeVersion(inputs.BRIDGE_DOWNLOAD_VERSION)) {
@@ -315,18 +318,10 @@ export class SynopsysBridge {
       taskLib.debug(
         "Checking for latest version of Synopsys Bridge to download and configure"
       );
-      const latestVersion = await this.getVersionFromLatestURL();
-      if (latestVersion === "") {
-        bridgeUrl = this.getLatestVersionUrl();
-        taskLib.debug(
-          "Checking for latest version of Synopsys Bridge to download and configure" +
-            bridgeUrl
-        );
-      } else {
-        taskLib.debug("Found latest version:" + latestVersion);
-        bridgeUrl = this.getVersionUrl(latestVersion).trim();
-        version = latestVersion;
-      }
+      version = await this.getSynopsysBridgeVersionFromLatestURL(
+        this.bridgeArtifactoryURL.concat("/latest/versions.txt")
+      );
+      bridgeUrl = this.getLatestVersionUrl();
     }
 
     if (version != "") {
@@ -419,11 +414,10 @@ export class SynopsysBridge {
     return false;
   }
 
-  async getVersionFromLatestURL(): Promise<string> {
+  async getSynopsysBridgeVersionFromLatestURL(
+    latestVersionsUrl: string
+  ): Promise<string> {
     try {
-      const latestVersionsUrl = this.bridgeArtifactoryURL.concat(
-        "/latest/versions.txt"
-      );
       const httpClient = new HttpClient("");
       const httpResponse = await httpClient.get(latestVersionsUrl, {
         Accept: "text/html",
