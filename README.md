@@ -1,6 +1,6 @@
 # Synopsys Security Scan for Azure DevOps
 
-Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results. 
+Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results.
 Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
 
 # Quick Start for the Synopsys Security Scan
@@ -221,13 +221,14 @@ Pass the following additional parameters as necessary.
 
 | Input Parameter | Description                              |  Mandatory / Optional | 
 |-----------------|------------------------------------------|-----------------------|
-|`SYNOPSYS_BRIDGE_INSTALL_DIRECTORY`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/> If the configured Synopsys Bridge is not the latest one, latest Synopsys Bridge version will be downloaded          | Optional     |
+|`SYNOPSYS_BRIDGE_INSTALL_DIRECTORY`| Provide a path, where you want to configure or already configured Synopsys Bridge.<br/> [Note - If you don't provide any path, then by default configuration path will be considered as - $HOME/synopsys-bridge].<br/>          | Optional     |
 | `BRIDGE_DOWNLOAD_URL`      | Provide URL to bridge zip file.<br/> If provided, Synopsys Bridge will be automatically downloaded and configured.               | Optional     |
 |`BRIDGE_DOWNLOAD_VERSION`| Provide bridge version.<br/> If provided, the specified version of Synopsys Bridge will be automatically downloaded and configured.              | Optional     |
 | `INCLUDE_DIAGNOSTICS`      | Synopsys Bridge diagnostics files will be available to download when it is set to `true`.<br/> Azure DevOps no longer supports per-pipeline retention rules. The only way to configure retention policies for YAML and classic pipelines is through the project settings.<br/> Refer the given documentation for more details: <br/> https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml#set-run-retention-policies               | Optional     |
-| `NETWORK_AIR_GAP` | If the `NETWORK_AIR_GAP` is set to true, Synopsys Security Scan Extension for Azure DevOps will not download the Synopsys Bridge but instead uses the pre-configured Synopsys Bridge. If the Synopsys Bridge is configured at a specific location, provide the path through `SYNOPSYS_BRIDGE_INSTALL_DIRECTORY`, <br/><br/>The Synopsys Security Scan Extension will look for the Synopsys Bridge from `SYNOPSYS_BRIDGE_INSTALL_DIRECTORY` path otherwise it will look for the Synopsys Bridge in the default path. | Optional     |
+| `BRIDGE_NETWORK_AIRGAP` | If the `BRIDGE_NETWORK_AIRGAP` is set to true, Synopsys Security Scan Extension for Azure DevOps will not download the Synopsys Bridge but instead uses the pre-configured Synopsys Bridge. If the Synopsys Bridge is configured at a specific location, provide the path through `SYNOPSYS_BRIDGE_INSTALL_DIRECTORY`, <br/><br/>The Synopsys Security Scan Extension will look for the Synopsys Bridge from `SYNOPSYS_BRIDGE_INSTALL_DIRECTORY` path otherwise it will look for the Synopsys Bridge in the default path ($HOME/synopsys-bridge). | Optional     |
 
 **Notes:**
 - Synopsys Bridge can be downloaded from [here](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/).
 - By default, Synopsys Bridge will be downloaded in `$HOME/synopsys-bridge` directory.
 - If `BRIDGE_DOWNLOAD_VERSION` or `BRIDGE_DOWNLOAD_URL` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
+- If `bridge_network_airgap` is enabled, `bridge_download_version` or `bridge_download_url` will be ignored.
