@@ -288,7 +288,7 @@
       "name": "bridge_polaris_triage",
       "type": "string",
       "label": "Polaris Triage",
-      "defaultValue": false,
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Polaris Triage"
     }
