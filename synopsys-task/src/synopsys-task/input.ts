@@ -33,7 +33,8 @@ export const POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(
 );
 export const POLARIS_SERVER_URL =
   taskLib.getInput(constants.POLARIS_SERVER_URL_KEY)?.trim() || "";
-
+export const POLARIS_TRIAGE =
+  taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() || "";
 // Coverity related inputs
 export const COVERITY_URL =
   taskLib.getInput(constants.COVERITY_URL_KEY)?.trim() || "";
