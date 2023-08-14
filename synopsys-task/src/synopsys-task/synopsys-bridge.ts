@@ -432,12 +432,12 @@ export class SynopsysBridge {
           }
         }
       } else {
-        taskLib.error(
+        taskLib.debug(
           "Unable to retrieve the most recent version from Artifactory URL"
         );
       }
     } catch (e) {
-      taskLib.error(
+      taskLib.debug(
         "Error reading version file content: ".concat((e as Error).message)
       );
     }
