@@ -1505,8 +1505,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -3802,7 +3802,7 @@ module.exports = v4;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolFeatureFlag = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
+exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
 var shell = __nccwpck_require__(3516);
 var childProcess = __nccwpck_require__(2081);
 var fs = __nccwpck_require__(7147);
@@ -4055,24 +4055,6 @@ function getBoolInput(name, required) {
     return (getInput(name, required) || '').toUpperCase() == "TRUE";
 }
 exports.getBoolInput = getBoolInput;
-/**
- * Gets the value of an feature flag and converts to a bool.
- *
- * @param     name     name of the feature flag to get.
- * @param     defaultValue default value of the feature flag in case it's not found in env. (optional. Default value = false)
- * @returns   boolean
- */
-function getBoolFeatureFlag(ffName, defaultValue) {
-    if (defaultValue === void 0) { defaultValue = false; }
-    var ffValue = process.env[ffName];
-    if (!ffValue) {
-        exports.debug("Feature flag " + ffName + " not found. Returning " + defaultValue + " as default.");
-        return defaultValue;
-    }
-    exports.debug("Feature flag " + ffName + " = " + ffValue);
-    return ffValue.toLowerCase() === "true";
-}
-exports.getBoolFeatureFlag = getBoolFeatureFlag;
 /**
  * Gets the value of an input and splits the value using a delimiter (space, comma, etc).
  * Empty values are removed.  This function is useful for splitting an input containing a simple
@@ -8634,7 +8616,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
 function debug(message) {
     tl.debug(message);
 }
