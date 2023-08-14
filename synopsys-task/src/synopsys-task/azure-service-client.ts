@@ -3,20 +3,20 @@ import { AzureData } from "./model/azure";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
+  apiVersion: string;
 
   constructor() {
     this.azureGetMergeRequestsAPI =
-      "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?api-version=7.0&searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}";
+      "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
+    this.apiVersion = "7.0";
   }
 
   async getPullRequestIdForClassicEditorFlow(
     azureData: AzureData
   ): Promise<number> {
-    const buildReason = process.env["BUILD_REASON"];
     if (
-      buildReason !== undefined &&
-      buildReason.length > 0 &&
-      buildReason !== "PullRequest"
+      process.env["BUILD_REASON"] &&
+      process.env["BUILD_REASON"] !== "PullRequest"
     ) {
       const StringFormat = (url: string, ...args: string[]) =>
         url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
@@ -26,7 +26,8 @@ export class SynopsysAzureService {
         azureData.organization.name,
         azureData.project.name,
         azureData.repository.name,
-        "refs/heads/".concat(azureData.repository.branch.name)
+        "refs/heads/".concat(azureData.repository.branch.name),
+        this.apiVersion
       );
       const token: string = ":".concat(azureData.user.token);
       const encodedToken: string = Buffer.from(token, "utf8").toString(
@@ -44,7 +45,7 @@ export class SynopsysAzureService {
           return azurePrResponse.value[0].pullRequestId;
         } else {
           throw new Error(
-            "Unable to find an Pull request Id for current from source build with branch: ".concat(
+            "Unable to find an Pull request Id from current source build with branch: ".concat(
               azureData.repository.branch.name
             )
           );

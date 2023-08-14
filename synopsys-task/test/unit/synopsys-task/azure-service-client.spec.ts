@@ -91,7 +91,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Unable to find an Pull request Id for current from source build with branch: test1')
+                expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: test1')
             })
 
         })
