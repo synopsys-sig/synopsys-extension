@@ -81,6 +81,7 @@ steps:
 | `BRIDGE_POLARIS_APPLICATION_NAME` | Application name in Polaris                                       | Mandatory          |
 | `BRIDGE_POLARIS_PROJECT_NAME`     | Project name in Polaris                                           | Mandatory          |
 | `BRIDGE_POLARIS_ASSESSMENT_TYPES` | Polaris assessment types. Example: SCA,SAST                       | Mandatory          |
+| `BRIDGE_POLARIS_TRIAGE` | Polaris triage value. <br> Example: REQUIRED, NOT_REQUIRED , NOT_ENTITLED accepts only one value. | Optional |
 
 # Synopsys Security Scan - Coverity Cloud Deployment with Thin Client
 
