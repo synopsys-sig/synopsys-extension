@@ -106,7 +106,7 @@ export class SynopsysToolsParameter {
           automation: {},
         },
         network: {
-          airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+          airGap: inputs.ENABLE_NETWORK_AIRGAP,
         },
       },
     };
@@ -231,7 +231,7 @@ export class SynopsysToolsParameter {
           },
           automation: {},
           network: {
-            airGap: inputs.ENABLE_NETWORK_AIR_GAP,
+            airGap: inputs.ENABLE_NETWORK_AIRGAP,
           },
         },
         project: {},
@@ -262,6 +262,10 @@ export class SynopsysToolsParameter {
       console.info("Coverity Automation comment is enabled");
       covData.data.azure = this.getAzureRepoInfo();
       covData.data.coverity.automation.prcomment = true;
+    }
+
+    if (inputs.COVERITY_VERSION) {
+      covData.data.coverity.version = inputs.COVERITY_VERSION;
     }
 
     const inputJson = JSON.stringify(covData);

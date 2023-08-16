@@ -90,6 +90,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: ''})
             Object.defineProperty(inputs, 'COVERITY_LOCAL', {value: false})
+            Object.defineProperty(inputs, 'COVERITY_VERSION', {value: ''})
             sandbox.restore();
         });
 
@@ -102,6 +103,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: process.cwd()})
             Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_LOCAL', {value: true})
+            Object.defineProperty(inputs, 'COVERITY_VERSION', {value: '2022.12.0'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
@@ -116,6 +118,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
             expect(jsonData.data.coverity.local).to.be.equals(true);
+            expect(jsonData.data.coverity.version).to.be.equals('2022.12.0');
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');

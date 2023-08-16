@@ -46,6 +46,7 @@ tmr.setInput('bridge_coverity_connect_project_name', 'accessTokenTest')
 tmr.setInput('bridge_coverity_connect_stream_name', 'http://testurl.com')
 tmr.setInput('bridge_coverity_install_directory', 'accessTokenTest')
 tmr.setInput('bridge_coverity_connect_policy_view', 'accessTokenTest')
+tmr.setInput('bridge_coverity_version', '2022.12.0')
 
 const osName = process.platform;
 if (osName === "darwin") {
