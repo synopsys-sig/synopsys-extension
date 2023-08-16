@@ -213,7 +213,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Bridge executable file could not be found at")
@@ -224,26 +224,26 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
-            const res = synopsysBridge.getExecutablePathForAirGap().catch(errorObj => {
+            const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Default Bridge path does not exist")
+                expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            const res = synopsysBridge.getExecutablePathForAirGap().catch(errorObj => {
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+            const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
-                expect(errorObj.message).includes("Synopsys Bridge Install Directory does not exist")
+                expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: success", async () => {
@@ -251,9 +251,9 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exist").returns(true)
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
-            const res = synopsysBridge.getExecutablePathForAirGap();
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+            const res = synopsysBridge.getSynopsysBridgePath();
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
 
         it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
@@ -261,12 +261,12 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('/tmp')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
         });
 
@@ -278,7 +278,7 @@ describe("Download Bridge", () => {
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Error")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
         });
     })
@@ -297,7 +297,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {
                 value: bridgeDefaultPath,
             });
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIR_GAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
             sandbox.stub(fs, "existsSync").returns(true);
             sandbox.stub(taskLib, "rmRF");
             sandbox.stub(utility, "extractZipped").returns(Promise.resolve(true));
@@ -369,7 +369,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {
                 value: '/Users/test/bridgePath',
             });
-
+            sandbox.stub(taskLib, "exist").returns(true)
             const result = await synopsysBridge.getSynopsysBridgePath();
             assert.equal(result, "/Users/test/bridgePath");
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
@@ -494,7 +494,7 @@ describe("Download Bridge", () => {
             });
             sandbox.stub(synopsysBridge, "validateBridgeVersion").returns(Promise.resolve(false));
             synopsysBridge.getBridgeUrl().catch(errorObj => {
-                expect(errorObj.message).includes("Provided bridge version not found in artifactory")
+                expect(errorObj.message).includes("Provided Synopsys Bridge version not found in artifactory")
             })
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {
                 value: "",
@@ -502,26 +502,26 @@ describe("Download Bridge", () => {
         });
 
         it("returns the URL for the latest version when neither BRIDGE_DOWNLOAD_URL nor BRIDGE_DOWNLOAD_VERSION are defined", async () => {
-
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve("0.1.244"));
+            const bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge"
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns(bridgeUrl);
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
-            expect(result).equals(bridgeUrl);
+            expect(result).contains(bridgeUrl);
         });
 
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty", async () => {
+        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty", async () => {
 
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
-            sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge-macosx.zip");
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("/latest"));
+            sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/latest/synopsys-bridge");
             //sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl();
-            expect(result).contains("synopsys-bridge/latest/synopsys-bridge-macosx.zip");
+            expect(result).contains("/latest");
         });
 
-        it("returns the URL for the latest version when getVersionFromLatestURL is empty: failure", async () => {
+        it("returns the URL for the latest version when getBridgeVersionFromLatestURL is empty: failure", async () => {
             sandbox.stub(synopsysBridge, "getLatestVersionUrl").returns("");
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(""));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(""));
             sandbox.stub(synopsysBridge, "getVersionUrl").returns("synopsys-bridge/0.0.0/synopsys-bridge-maco1sx.zip");
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.getBridgeUrl().catch(errorObj => {
@@ -544,13 +544,13 @@ describe("Download Bridge", () => {
         let versions: string;
         versions = "0.1.244"
         it("When version is available", async () => {
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(versions));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(versions));
             const result = await synopsysBridge.validateBridgeVersion("0.1.244")
             expect(result).equals(true);
         });
 
         it("When version is not available", async () => {
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve(versions));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve(versions));
             const result = await synopsysBridge.validateBridgeVersion("0.1.245")
             expect(result).equals(false);
         });
@@ -572,7 +572,7 @@ describe("Download Bridge", () => {
         it("BRIDGE_DOWNLOAD_VERSION is defined and valid", async () => {
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {value: "0.1.244"});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(synopsysBridge,"getVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
+            sandbox.stub(synopsysBridge,"getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
 
             const result = await synopsysBridge.downloadAndExtractBridge("/");
@@ -611,7 +611,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "extractBridge").throws(new Error("invalid url"))
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
-                expect(errorObj.message).includes("Provided Bridge url is not valid for the configured");
+                expect(errorObj.message).includes("Provided Synopsys Bridge url is not valid for the configured");
             })
 
             Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_URL", {
@@ -638,7 +638,7 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeUrl").throws(new Error("empty"));
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
-                expect(errorObj.message).includes("Provided Bridge URL cannot be empty");
+                expect(errorObj.message).includes("Provided Synopsys Bridge URL cannot be empty");
             })
         });
 
@@ -703,10 +703,8 @@ describe("Download Bridge", () => {
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid: windows", async () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
             Object.defineProperty(process, 'platform', {value: 'win32'});
-
-            synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
+            sandbox.stub(taskLib, "exist").returns(true)
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
-            sandbox.stub(taskLib, "exist").returns(true);
 
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, true);
@@ -720,6 +718,7 @@ describe("Download Bridge", () => {
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid and version does not exists", async () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: "/path/path"});
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
+            sandbox.stub(taskLib, "exist").returns(true)
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(false));
             const result = await synopsysBridge.checkIfSynopsysBridgeVersionExists("0.1.244");
             assert.equal(result, false);
@@ -772,7 +771,7 @@ describe("Download Bridge", () => {
         });
     })
 
-    context("getVersionFromLatestURL", () => {
+    context("getBridgeVersionFromLatestURL", () => {
 
         let httpClientStub: SinonStub<any[], Promise<httpc.HttpClientResponse>>;
         let synopsysBridge: SynopsysBridge;
@@ -788,9 +787,9 @@ describe("Download Bridge", () => {
 
         it("Get Latest Version - success", async () => {
 
-            sandbox.stub(synopsysBridge, "getVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve('0.2.1'));
 
-            const result = await synopsysBridge.getVersionFromLatestURL();
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip");
             assert.equal(result, '0.2.1');
         });
 
@@ -799,7 +798,7 @@ describe("Download Bridge", () => {
             expect(result).contains('/latest/synopsys-bridge');
         });
 
-        it('Test getVersionFromLatestURL -status 200', async () => {
+        it('Test getBridgeVersionFromLatestURL -status 200', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "Synopsys Bridge Package:0.2.35\nsynopsys-bridge: 0.2.35"
@@ -814,12 +813,12 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('0.2.35')
 
         })
 
-        it('Test getVersionFromLatestURL exception', async () => {
+        it('Test getBridgeVersionFromLatestURL exception', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 200
             const responseBody = "Synopsys Bridge Package:0.2.35\nsynopsys-bridge: 0.2.35"
@@ -834,11 +833,11 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('')
         })
 
-        it('Test getVersionFromLatestURL -status 500', async () => {
+        it('Test getBridgeVersionFromLatestURL -status 500', async () => {
             const incomingMessage: IncomingMessage = new IncomingMessage(new Socket())
             incomingMessage.statusCode = 500
             const responseBody = "error"
@@ -853,7 +852,7 @@ describe("Download Bridge", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysBridge.getVersionFromLatestURL()
+            const result = await synopsysBridge.getSynopsysBridgeVersionFromLatestURL("https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-macosx.zip")
             expect(result).contains('')
 
         })
