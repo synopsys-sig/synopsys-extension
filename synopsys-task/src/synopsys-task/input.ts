@@ -14,8 +14,6 @@ export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
 export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";
 
-export const RETRY_COUNT = taskLib.getPathInput("retry_count") || 3;
-
 // Polaris related inputs
 export const AZURE_TOKEN =
   taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() || "";

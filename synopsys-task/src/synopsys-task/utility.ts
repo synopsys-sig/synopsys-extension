@@ -1,11 +1,14 @@
 import path from "path";
-import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constant";
+import {
+  NON_RETRY_HTTP_CODES,
+  RETRY_COUNT,
+  RETRY_DELAY,
+  SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
+} from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import { setTimeout } from "timers/promises";
-import { RETRY_COUNT } from "./input";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -26,7 +29,7 @@ export async function extractZipped(
     return Promise.reject(new Error("File does not exist"));
   }
 
-  //Extract file name from file with full path
+  // Extract file name from file with full path
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(new Error("No destination directory found"));
   }
@@ -56,26 +59,45 @@ export async function getRemoteFile(
     );
   }
 
-  let retryCount = Number(RETRY_COUNT);
-  let downloadStatus = false;
-  while (retryCount > 0 && !downloadStatus) {
+  let retryCount = RETRY_COUNT;
+  do {
     try {
       const toolPath = await toolLib.downloadTool(url, destFilePath);
-      const downloadFileResp: DownloadFileResponse = {
+      return {
         filePath: toolPath,
         fileName: fileNameFromUrl,
       };
-      downloadStatus = true;
-      return Promise.resolve(downloadFileResp);
-    } catch (error) {
-      await setTimeout(2500);
-      retryCount--;
-      console.warn(
-        "Synopsys bridge download has been failed, retries left: " + retryCount
-      );
+    } catch (error: any) {
+      if (retryCount == 0) {
+        throw error;
+      }
+      const retry: boolean = await checkRetry(error["httpStatusCode"]);
+      if (retry) {
+        await sleep(RETRY_DELAY);
+        retryCount--;
+        console.info(
+          "Synopsys bridge download has been failed, retries left: " +
+            retryCount
+        );
+      } else {
+        retryCount = 0;
+      }
     }
-  }
+  } while (retryCount >= 0);
   return Promise.reject("Synopsys bridge download has been failed");
+}
+
+export async function checkRetry(
+  httpStatusCode: number | undefined
+): Promise<boolean> {
+  const retryHttpCodes: string[] = NON_RETRY_HTTP_CODES.split(",");
+  if (
+    httpStatusCode != undefined &&
+    retryHttpCodes.find((e) => e === String(httpStatusCode)) == undefined
+  ) {
+    return true;
+  }
+  return false;
 }
 
 export function parseToBoolean(value: string | boolean): boolean {
@@ -98,4 +120,10 @@ export function getWorkSpaceDirectory(): string {
   } else {
     throw new Error("Workspace directory could not be located");
   }
+}
+
+export function sleep(duration: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
 }

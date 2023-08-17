@@ -9,8 +9,13 @@ import process from "process";
 import * as sinon from "sinon";
 import * as toolLib from "azure-pipelines-tool-lib";
 import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import * as constants from "../../../src/synopsys-task/application-constant";
 
 describe("Utilities", () => {
+
+    Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
+    Object.defineProperty(constants, "RETRY_TIMEOUT", {value: 100});
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: "200,201,216,401,403,416"});
 
     let sandbox: sinon.SinonSandbox;
 
@@ -100,13 +105,27 @@ describe("Utilities", () => {
 
         });
 
-        it('getRemoteFile - failure', async function () {
-            sandbox.stub(toolLib, "downloadTool").throws(new Error("404"))
-            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
-                expect(error).equals("Synopsys bridge download has been failed")
-            });
 
+        it('getRemoteFile - failure 401', async function () {
+            const httpError: {[key: string]: any} = {}
+            const prop = 'httpStatusCode'
+            httpError[prop] = "401"
+            sandbox.stub(toolLib, "downloadTool").throws(httpError)
+            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
+                expect(error['httpStatusCode']).contains("401")
+            });
         });
+
+        it('getRemoteFile - retry with 500', async function () {
+            const httpError: {[key: string]: any} = {}
+            const prop = 'httpStatusCode'
+            httpError[prop] = "500"
+            sandbox.stub(toolLib, "downloadTool").throws(httpError)
+            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
+                expect(error['httpStatusCode']).contains("500")
+            });
+        });
+
     });
 
     context('parseToBoolean', () => {

@@ -1,20 +1,25 @@
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { HttpClient } from "typed-rest-client/HttpClient";
-
 import { SynopsysToolsParameter } from "./tools-parameter";
+import { sleep } from "./utility";
 import {
-  validatePolarisInputs,
-  validateScanTypes,
+  validateBlackDuckInputs,
   validateBridgeUrl,
   validateCoverityInputs,
-  validateBlackDuckInputs,
+  validatePolarisInputs,
+  validateScanTypes,
 } from "./validator";
 
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
+import {
+  checkRetry,
+  extractZipped,
+  getRemoteFile,
+  parseToBoolean,
+} from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
@@ -23,6 +28,7 @@ import {
   SCAN_TYPE,
   SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
 } from "./input";
+import { RETRY_COUNT, RETRY_DELAY } from "./application-constant";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -370,30 +376,52 @@ export class SynopsysBridge {
 
   async getAllAvailableBridgeVersions(): Promise<string[]> {
     let htmlResponse = "";
-
     const httpClient = new HttpClient("synopsys-task");
-    const httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
-      Accept: "text/html",
-    });
-    htmlResponse = await httpResponse.readBody();
 
-    const domParser = new DomParser();
-    const doms = domParser.parseFromString(htmlResponse);
-    const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+    let retryCount = RETRY_COUNT;
+    let httpResponse;
     const versionArray: string[] = [];
+    do {
+      httpResponse = await httpClient.get(this.bridgeArtifactoryURL, {
+        Accept: "text/html",
+      });
 
-    if (elems != null) {
-      for (const el of elems) {
-        const content = el.textContent;
-        if (content != null) {
-          const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
+      const retry: boolean = await checkRetry(httpResponse.message.statusCode);
+      if (retry) {
+        await sleep(RETRY_DELAY);
+        retryCount--;
+        console.info(
+          "Getting all available bridge versions has been failed, retries left: " +
+            retryCount
+        );
+      } else {
+        retryCount = 0;
+        htmlResponse = await httpResponse.readBody();
 
-          if (v != null && v.length === 1) {
-            versionArray.push(v[0]);
+        const domParser = new DomParser();
+        const doms = domParser.parseFromString(htmlResponse);
+        const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+
+        if (elems != null) {
+          for (const el of elems) {
+            const content = el.textContent;
+            if (content != null) {
+              const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
+
+              if (v != null && v.length === 1) {
+                versionArray.push(v[0]);
+              }
+            }
           }
         }
       }
-    }
+
+      if (retryCount == 0) {
+        taskLib.warning(
+          "Unable to retrieve the Synopsys Bridge Versions from Artifactory"
+        );
+      }
+    } while (retryCount > 0);
     return versionArray;
   }
 
@@ -419,23 +447,41 @@ export class SynopsysBridge {
   ): Promise<string> {
     try {
       const httpClient = new HttpClient("");
-      const httpResponse = await httpClient.get(latestVersionsUrl, {
-        Accept: "text/html",
-      });
-      if (httpResponse.message.statusCode === 200) {
-        const htmlResponse = (await httpResponse.readBody()).trim();
-        const lines = htmlResponse.split("\n");
-        for (const line of lines) {
-          if (line.includes("Synopsys Bridge Package")) {
-            const newerVersion = line.split(":")[1].trim();
-            return newerVersion;
+
+      let retryCount = RETRY_COUNT;
+      let httpResponse;
+      do {
+        httpResponse = await httpClient.get(latestVersionsUrl, {
+          Accept: "text/html",
+        });
+
+        const retry: boolean = await checkRetry(
+          httpResponse.message.statusCode
+        );
+        if (retry) {
+          await sleep(RETRY_DELAY);
+          retryCount--;
+          console.info(
+            "Getting latest Synopsys Bridge versions has been failed, retries left: " +
+              retryCount
+          );
+        } else if (httpResponse.message.statusCode === 200) {
+          retryCount = 0;
+          const htmlResponse = (await httpResponse.readBody()).trim();
+          const lines = htmlResponse.split("\n");
+          for (const line of lines) {
+            if (line.includes("Synopsys Bridge Package")) {
+              return line.split(":")[1].trim();
+            }
           }
         }
-      } else {
-        taskLib.debug(
-          "Unable to retrieve the most recent version from Artifactory URL"
-        );
-      }
+
+        if (retryCount == 0) {
+          taskLib.warning(
+            "Unable to retrieve the most recent version from Artifactory URL"
+          );
+        }
+      } while (retryCount > 0);
     } catch (e) {
       taskLib.debug(
         "Error reading version file content: ".concat((e as Error).message)
