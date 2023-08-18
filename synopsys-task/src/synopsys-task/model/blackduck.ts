@@ -26,6 +26,7 @@ export interface BlackduckData {
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
   };
   automation: AutomationData;
+  fixpr?: BlackDuckFixPrData;
 }
 
 export interface AutomationData {
@@ -35,4 +36,17 @@ export interface AutomationData {
 
 export interface NetworkAirGap {
   airGap: boolean;
+}
+
+export interface BlackDuckFixPrData {
+  enabled?: boolean;
+  maxCount?: number;
+  createSinglePR?: boolean;
+  useLongTermUpgradeGuidance?: boolean;
+  filter?: BlackDuckFixPrFilerData;
+}
+
+export interface BlackDuckFixPrFilerData {
+  by?: string;
+  severities?: string[];
 }
