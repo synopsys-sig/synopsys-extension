@@ -231,4 +231,4 @@ Pass the following additional parameters as necessary.
 - Synopsys Bridge can be downloaded from [here](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/).
 - By default, Synopsys Bridge will be downloaded in `$HOME/synopsys-bridge` directory.
 - If `BRIDGE_DOWNLOAD_VERSION` or `BRIDGE_DOWNLOAD_URL` is not provided, Synopsys Security Scan downloads and configure the latest version of Bridge.
-- If `bridge_network_airgap` is enabled, `bridge_download_version` or `bridge_download_url` will be ignored.
+- If `bridge_network_airgap` is enabled, `bridge_download_version` and `bridge_download_url` will be ignored.
