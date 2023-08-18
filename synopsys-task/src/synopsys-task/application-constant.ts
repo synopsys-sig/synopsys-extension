@@ -61,6 +61,15 @@ export const BLACKDUCK_AUTOMATION_PRCOMMENT_KEY =
   "bridge_blackduck_automation_prcomment";
 export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
   "bridge_blackduck_automation_fixpr";
+export const BLACKDUCK_FIXPR_ENABLED_KEY = "bridge_blackduck_fixpr_enabled";
+export const BLACKDUCK_FIXPR_MAXCOUNT_KEY = "bridge_blackduck_fixpr_maxCount";
+export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY =
+  "bridge_blackduck_fixpr_createSinglePR";
+export const BLACKDUCK_FIXPR_FILTER_BY_KEY = "bridge_blackduck_fixpr_filter_by";
+export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
+  "bridge_blackduck_fixpr_filter_severities";
+export const BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE_KEY =
+  "bridge_blackduck_fixpr_useLongTermUpgradeGuidance";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";

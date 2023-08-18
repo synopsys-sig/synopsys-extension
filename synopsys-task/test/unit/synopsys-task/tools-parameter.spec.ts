@@ -10,6 +10,7 @@ import { InputData } from "../../../src/synopsys-task/model/input-data";
 import * as fs from 'fs';
 import * as mocha from 'mocha';
 import * as validator from "../../../src/synopsys-task/validator";
+import {BLACKDUCK_FIXPR_FILTER_BY, BLACKDUCK_FIXPR_MAXCOUNT} from "../../../src/synopsys-task/input";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -193,7 +194,7 @@ describe("Synopsys Tools Parameter test", () => {
         });
     });
 
-    context('Blackduck command preparation', () => {
+    context('Black Duck command preparation', () => {
         let sandbox: sinon.SinonSandbox;
         let synopsysToolsParameter: SynopsysToolsParameter;
         let blackduckStateFile: string;
@@ -212,7 +213,12 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_BY', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE', {value: ''})
             sandbox.restore();
         });
 
@@ -268,7 +274,7 @@ describe("Synopsys Tools Parameter test", () => {
         it('should success for blackduck command formation with fix pr true', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
@@ -290,10 +296,89 @@ describe("Synopsys Tools Parameter test", () => {
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
          });
 
+        it('should success for blackduck command formation with fix pr true and fix pr optional params', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: '1'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_BY', {value: 'SEVERITIES'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_USER_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.fixpr.enabled).to.be.equals(true);
+            expect(jsonData.data.blackduck.fixpr.maxCount).to.be.equals(1);
+            expect(jsonData.data.blackduck.fixpr.createSinglePR).to.be.equals(false);
+            expect(jsonData.data.blackduck.fixpr.useLongTermUpgradeGuidance).to.be.equals(true);
+            expect(jsonData.data.blackduck.fixpr.filter.by).to.be.equals('SEVERITIES');
+            expect(jsonData.data.blackduck.fixpr.filter.severities).to.be.an("array");
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should fail for black duck fix pr true,max count and create single pr true', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: '1'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'true'})
+
+            try {
+                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains('bridge_blackduck_fixpr_maxCount is not applicable with bridge_blackduck_fixpr_createSinglePR')
+            }
+        });
+
+        it('should fail for invalid value of blackduck fix pr max count', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 'invalid-value'})
+
+            try {
+                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains('Invalid value for bridge_blackduck_fixpr_maxCount')
+            }
+        });
+
+        it('should fail for invalid value of blackduck filter severities', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL','23']})
+
+            try {
+                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains('Invalid value for bridge_blackduck_fixpr_filter_severities')
+            }
+        });
+
         it('should fail for invalid azure token value with fix pr true', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
             getStubVariable.withArgs("System.AccessToken").returns("")
             try {
@@ -308,7 +393,7 @@ describe("Synopsys Tools Parameter test", () => {
         it('should form blackduck command but with undefined azure values', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")

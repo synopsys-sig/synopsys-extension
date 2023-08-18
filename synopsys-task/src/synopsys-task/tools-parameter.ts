@@ -5,6 +5,7 @@ import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  BlackDuckFixPrData,
 } from "./model/blackduck";
 import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
@@ -174,13 +175,13 @@ export class SynopsysToolsParameter {
     }
 
     // Check and put environment variable for fix pull request
-    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-      console.log("Blackduck Automation Fix PR is enabled");
-      blackduckData.data.azure = this.getAzureRepoInfo();
-      blackduckData.data.blackduck.automation.fixpr = true;
+    if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
+      console.log("Black Duck Fix PR is enabled");
+      blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
+      //blackduckData.data.azure = this.getAzureRepoInfo();
     } else {
       // Disable fix pull request for adapters
-      blackduckData.data.blackduck.automation.fixpr = false;
+      blackduckData.data.blackduck.fixpr = { enabled: false };
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
@@ -292,6 +293,75 @@ export class SynopsysToolsParameter {
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
     return command;
+  }
+
+  private setBlackDuckFixPrInputs(): BlackDuckFixPrData | undefined {
+    if (
+      inputs.BLACKDUCK_FIXPR_MAXCOUNT &&
+      isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
+    ) {
+      throw new Error(
+        "Invalid value for ".concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+      );
+    }
+    const createSinglePr = parseToBoolean(
+      inputs.BLACKDUCK_FIXPR_CREATE_SINGLE_PR
+    );
+    if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
+      throw new Error(
+        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+          " is not applicable with "
+        ).concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+      );
+    }
+    const blackDuckFixPrData: BlackDuckFixPrData = {};
+    blackDuckFixPrData.enabled = true;
+    blackDuckFixPrData.createSinglePR = createSinglePr === true;
+    if (inputs.BLACKDUCK_FIXPR_MAXCOUNT && !createSinglePr) {
+      blackDuckFixPrData.maxCount = Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT);
+    }
+    if (inputs.BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE) {
+      blackDuckFixPrData.useLongTermUpgradeGuidance = parseToBoolean(
+        inputs.BLACKDUCK_FIXPR_ENABLED
+      );
+    }
+    blackDuckFixPrData.filter = {};
+    if (inputs.BLACKDUCK_FIXPR_FILTER_BY) {
+      blackDuckFixPrData.filter = {
+        by: inputs.BLACKDUCK_FIXPR_FILTER_BY,
+      };
+    }
+    if (inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
+      const fixPRFilterSeverities: string[] = [];
+      const fixPRFilterSeveritiesInput =
+        inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES;
+      if (
+        fixPRFilterSeveritiesInput != null &&
+        fixPRFilterSeveritiesInput.length > 0
+      ) {
+        for (const fixPrSeverity of fixPRFilterSeveritiesInput) {
+          const regEx = new RegExp("^[a-zA-Z]+$");
+          if (
+            fixPrSeverity.trim().length > 0 &&
+            regEx.test(fixPrSeverity.trim())
+          ) {
+            fixPRFilterSeverities.push(fixPrSeverity.trim());
+          } else {
+            throw new Error(
+              "Invalid value for ".concat(
+                constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY
+              )
+            );
+          }
+        }
+      }
+
+      blackDuckFixPrData.filter = {
+        by: inputs.BLACKDUCK_FIXPR_FILTER_BY,
+        severities: fixPRFilterSeverities,
+      };
+    }
+    return blackDuckFixPrData;
   }
 
   private getAzureRepoInfo(): AzureData | undefined {
