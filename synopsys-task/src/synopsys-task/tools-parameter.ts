@@ -325,42 +325,27 @@ export class SynopsysToolsParameter {
         inputs.BLACKDUCK_FIXPR_ENABLED
       );
     }
-    blackDuckFixPrData.filter = {};
-    if (inputs.BLACKDUCK_FIXPR_FILTER_BY) {
-      blackDuckFixPrData.filter = {
-        by: inputs.BLACKDUCK_FIXPR_FILTER_BY,
-      };
-    }
-    if (inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
-      const fixPRFilterSeverities: string[] = [];
-      const fixPRFilterSeveritiesInput =
-        inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES;
-      if (
-        fixPRFilterSeveritiesInput != null &&
-        fixPRFilterSeveritiesInput.length > 0
-      ) {
-        for (const fixPrSeverity of fixPRFilterSeveritiesInput) {
-          const regEx = new RegExp("^[a-zA-Z]+$");
-          if (
-            fixPrSeverity.trim().length > 0 &&
-            regEx.test(fixPrSeverity.trim())
-          ) {
-            fixPRFilterSeverities.push(fixPrSeverity.trim());
-          } else {
-            throw new Error(
-              "Invalid value for ".concat(
-                constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY
-              )
-            );
-          }
+
+    const fixPRFilterSeverities: string[] = [];
+    if (
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES &&
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES != null &&
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0
+    ) {
+      for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
+        if (fixPrSeverity != null && fixPrSeverity != "") {
+          fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
       }
-
-      blackDuckFixPrData.filter = {
-        by: inputs.BLACKDUCK_FIXPR_FILTER_BY,
-        severities: fixPRFilterSeverities,
-      };
     }
+    blackDuckFixPrData.filter = {
+      ...(inputs.BLACKDUCK_FIXPR_FILTER_BY
+        ? { by: inputs.BLACKDUCK_FIXPR_FILTER_BY }
+        : {}),
+      ...(fixPRFilterSeverities.length > 0
+        ? { severities: fixPRFilterSeverities }
+        : {}),
+    };
     return blackDuckFixPrData;
   }
 
