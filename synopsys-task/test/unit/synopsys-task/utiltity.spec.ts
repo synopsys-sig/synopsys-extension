@@ -14,7 +14,7 @@ import * as constants from "../../../src/synopsys-task/application-constant";
 describe("Utilities", () => {
 
     Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
-    Object.defineProperty(constants, "RETRY_TIMEOUT", {value: 100});
+    Object.defineProperty(constants, "RETRY_DELAY", {value: 100});
     Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: "200,201,216,401,403,416"});
 
     let sandbox: sinon.SinonSandbox;
