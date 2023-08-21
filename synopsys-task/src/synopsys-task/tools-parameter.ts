@@ -17,6 +17,7 @@ import {
 import { parseToBoolean } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
+import { SynopsysAzureService } from "./azure-service-client";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -94,7 +95,7 @@ export class SynopsysToolsParameter {
     return command;
   }
 
-  getFormattedCommandForBlackduck(): string {
+  async getFormattedCommandForBlackduck(): Promise<string> {
     const failureSeverities: string[] =
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
@@ -176,7 +177,7 @@ export class SynopsysToolsParameter {
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
       console.log("Blackduck Automation Fix PR is enabled");
-      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.azure = await this.getAzureRepoInfo();
       blackduckData.data.blackduck.automation.fixpr = true;
     } else {
       // Disable fix pull request for adapters
@@ -185,7 +186,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
-      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.azure = await this.getAzureRepoInfo();
       blackduckData.data.blackduck.automation.prcomment = true;
     }
 
@@ -215,7 +216,7 @@ export class SynopsysToolsParameter {
     return command;
   }
 
-  getFormattedCommandForCoverity(): string {
+  async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
     const covData: InputData<Coverity> = {
       data: {
@@ -260,7 +261,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       console.info("Coverity Automation comment is enabled");
-      covData.data.azure = this.getAzureRepoInfo();
+      covData.data.azure = await this.getAzureRepoInfo();
       covData.data.coverity.automation.prcomment = true;
     }
 
@@ -294,7 +295,7 @@ export class SynopsysToolsParameter {
     return command;
   }
 
-  private getAzureRepoInfo(): AzureData | undefined {
+  private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
     const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
@@ -333,7 +334,7 @@ export class SynopsysToolsParameter {
       azureRepo != "" &&
       azureRepoBranchName != ""
     ) {
-      return this.setAzureData(
+      const azureData = this.setAzureData(
         azureInstanceUrl,
         azureToken,
         azureOrganization,
@@ -342,7 +343,18 @@ export class SynopsysToolsParameter {
         azureRepoBranchName,
         azurePullRequestNumber
       );
+
+      if (azurePullRequestNumber == "") {
+        const synopsysAzureService = new SynopsysAzureService();
+        azureData.repository.pull.number =
+          await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
+            azureData
+          );
+        return azureData;
+      }
+      return azureData;
     }
+
     return undefined;
   }
 
