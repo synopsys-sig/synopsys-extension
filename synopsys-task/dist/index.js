@@ -917,7 +917,7 @@ class SynopsysToolsParameter {
         if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED)) {
             console.log("Black Duck Fix PR is enabled");
             blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
-            //blackduckData.data.azure = this.getAzureRepoInfo();
+            blackduckData.data.azure = this.getAzureRepoInfo();
         }
         else {
             // Disable fix pull request for adapters
@@ -1028,7 +1028,7 @@ class SynopsysToolsParameter {
             inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES != null &&
             inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0) {
             for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
-                if (fixPrSeverity != null && fixPrSeverity != "") {
+                if (fixPrSeverity != null && fixPrSeverity !== "") {
                     fixPRFilterSeverities.push(fixPrSeverity.trim());
                 }
             }
