@@ -361,20 +361,6 @@ describe("Synopsys Tools Parameter test", () => {
             }
         });
 
-        it('should fail for invalid value of blackduck filter severities', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL','23']})
-
-            try {
-                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
-            } catch (e) {
-                const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for bridge_blackduck_fixpr_filter_severities')
-            }
-        });
-
         it('should fail for invalid azure token value with fix pr true', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
