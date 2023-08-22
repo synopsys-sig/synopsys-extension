@@ -114,18 +114,18 @@ export class SynopsysBridge {
       if (SCAN_TYPE.length > 0) {
         // To support single scan using Classic Editor
         [formattedCommand, classicEditorErrors] =
-          await this.formatCommandForClassicEditor(formattedCommand, tempDir);
+          this.formatCommandForClassicEditor(formattedCommand, tempDir);
       } else {
         // To support multi-scan using YAML
         [formattedCommand, polarisErrors] = this.preparePolarisCommand(
           formattedCommand,
           tempDir
         );
-        [formattedCommand, coverityErrors] = await this.prepareBlackduckCommand(
+        [formattedCommand, coverityErrors] = this.prepareBlackduckCommand(
           formattedCommand,
           tempDir
         );
-        [formattedCommand, blackduckErrors] = await this.prepareCoverityCommand(
+        [formattedCommand, blackduckErrors] = this.prepareCoverityCommand(
           formattedCommand,
           tempDir
         );
@@ -164,10 +164,10 @@ export class SynopsysBridge {
     }
   }
 
-  private async formatCommandForClassicEditor(
+  private formatCommandForClassicEditor(
     formattedCommand: string,
     tempDir: string
-  ): Promise<[string, string[]]> {
+  ): [string, string[]] {
     let errors: string[] = [];
     if (SCAN_TYPE == "polaris") {
       [formattedCommand, errors] = this.preparePolarisCommand(
@@ -175,12 +175,12 @@ export class SynopsysBridge {
         tempDir
       );
     } else if (SCAN_TYPE == "blackduck") {
-      [formattedCommand, errors] = await this.prepareBlackduckCommand(
+      [formattedCommand, errors] = this.prepareBlackduckCommand(
         formattedCommand,
         tempDir
       );
     } else if (SCAN_TYPE == "coverity") {
-      [formattedCommand, errors] = await this.prepareCoverityCommand(
+      [formattedCommand, errors] = this.prepareCoverityCommand(
         formattedCommand,
         tempDir
       );
@@ -203,30 +203,30 @@ export class SynopsysBridge {
     return [formattedCommand, polarisErrors];
   }
 
-  private async prepareCoverityCommand(
+  private prepareCoverityCommand(
     formattedCommand: string,
     tempDir: string
-  ): Promise<[string, string[]]> {
+  ): [string, string[]] {
     // validating and preparing command for coverity
     const coverityErrors: string[] = validateCoverityInputs();
     if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
       const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
-        await coverityCommandFormatter.getFormattedCommandForCoverity()
+        coverityCommandFormatter.getFormattedCommandForCoverity()
       );
     }
     return [formattedCommand, coverityErrors];
   }
 
-  private async prepareBlackduckCommand(
+  private prepareBlackduckCommand(
     formattedCommand: string,
     tempDir: string
-  ): Promise<[string, string[]]> {
+  ): [string, string[]] {
     const blackduckErrors: string[] = validateBlackDuckInputs();
     if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
       const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
-        await blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+        blackDuckCommandFormatter.getFormattedCommandForBlackduck()
       );
     }
     return [formattedCommand, blackduckErrors];
