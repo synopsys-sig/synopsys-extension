@@ -113,7 +113,7 @@ exports.APPLICATION_NAME = "synopsys-extension";
 exports.POLARIS_KEY = "polaris";
 exports.COVERITY_KEY = "coverity";
 exports.BLACKDUCK_KEY = "blackduck";
-exports.AZURE_TOKEN_KEY = "bridge_azure_token";
+exports.AZURE_TOKEN_KEY = "azure_token";
 exports.SCAN_TYPE_KEY = "scanType";
 // Polaris
 exports.POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
