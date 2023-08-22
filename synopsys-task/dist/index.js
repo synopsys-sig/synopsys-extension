@@ -156,67 +156,6 @@ exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
 
 /***/ }),
 
-/***/ 5601:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SynopsysAzureService = void 0;
-const HttpClient_1 = __nccwpck_require__(5538);
-class SynopsysAzureService {
-    constructor() {
-        this.azureGetMergeRequestsAPI =
-            "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
-        this.apiVersion = "7.0";
-    }
-    getPullRequestIdForClassicEditorFlow(azureData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (process.env["BUILD_REASON"] &&
-                process.env["BUILD_REASON"] !== "PullRequest") {
-                const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
-                const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, "refs/heads/".concat(azureData.repository.branch.name), this.apiVersion);
-                const token = ":".concat(azureData.user.token);
-                const encodedToken = Buffer.from(token, "utf8").toString("base64");
-                const httpClient = new HttpClient_1.HttpClient("synopsys-azure-service");
-                const httpResponse = yield httpClient.get(endpoint, {
-                    Authorization: "Basic ".concat(encodedToken),
-                    Accept: "application/json",
-                });
-                if (httpResponse.message.statusCode === 200) {
-                    const azurePrResponse = JSON.parse(yield httpResponse.readBody());
-                    if (azurePrResponse.count === 1) {
-                        return azurePrResponse.value[0].pullRequestId;
-                    }
-                    else {
-                        throw new Error("Unable to find an Pull request Id from current source build with branch: ".concat(azureData.repository.branch.name));
-                    }
-                }
-                else {
-                    throw new Error("Failed to get pull request Id for current build from source branch: "
-                        .concat(azureData.repository.branch.name)
-                        .concat(" With error: ")
-                        .concat(yield httpResponse.readBody()));
-                }
-            }
-            return 0;
-        });
-    }
-}
-exports.SynopsysAzureService = SynopsysAzureService;
-
-
-/***/ }),
-
 /***/ 2926:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -489,13 +428,13 @@ class SynopsysBridge {
                 if (input_1.SCAN_TYPE.length > 0) {
                     // To support single scan using Classic Editor
                     [formattedCommand, classicEditorErrors] =
-                        yield this.formatCommandForClassicEditor(formattedCommand, tempDir);
+                        this.formatCommandForClassicEditor(formattedCommand, tempDir);
                 }
                 else {
                     // To support multi-scan using YAML
                     [formattedCommand, polarisErrors] = this.preparePolarisCommand(formattedCommand, tempDir);
-                    [formattedCommand, coverityErrors] = yield this.prepareBlackduckCommand(formattedCommand, tempDir);
-                    [formattedCommand, blackduckErrors] = yield this.prepareCoverityCommand(formattedCommand, tempDir);
+                    [formattedCommand, coverityErrors] = this.prepareBlackduckCommand(formattedCommand, tempDir);
+                    [formattedCommand, blackduckErrors] = this.prepareCoverityCommand(formattedCommand, tempDir);
                 }
                 let validationErrors = [];
                 validationErrors = validationErrors.concat(polarisErrors, coverityErrors, blackduckErrors, classicEditorErrors);
@@ -521,19 +460,17 @@ class SynopsysBridge {
         });
     }
     formatCommandForClassicEditor(formattedCommand, tempDir) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let errors = [];
-            if (input_1.SCAN_TYPE == "polaris") {
-                [formattedCommand, errors] = this.preparePolarisCommand(formattedCommand, tempDir);
-            }
-            else if (input_1.SCAN_TYPE == "blackduck") {
-                [formattedCommand, errors] = yield this.prepareBlackduckCommand(formattedCommand, tempDir);
-            }
-            else if (input_1.SCAN_TYPE == "coverity") {
-                [formattedCommand, errors] = yield this.prepareCoverityCommand(formattedCommand, tempDir);
-            }
-            return [formattedCommand, errors];
-        });
+        let errors = [];
+        if (input_1.SCAN_TYPE == "polaris") {
+            [formattedCommand, errors] = this.preparePolarisCommand(formattedCommand, tempDir);
+        }
+        else if (input_1.SCAN_TYPE == "blackduck") {
+            [formattedCommand, errors] = this.prepareBlackduckCommand(formattedCommand, tempDir);
+        }
+        else if (input_1.SCAN_TYPE == "coverity") {
+            [formattedCommand, errors] = this.prepareCoverityCommand(formattedCommand, tempDir);
+        }
+        return [formattedCommand, errors];
     }
     preparePolarisCommand(formattedCommand, tempDir) {
         // validating and preparing command for polaris
@@ -545,25 +482,21 @@ class SynopsysBridge {
         return [formattedCommand, polarisErrors];
     }
     prepareCoverityCommand(formattedCommand, tempDir) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // validating and preparing command for coverity
-            const coverityErrors = (0, validator_1.validateCoverityInputs)();
-            if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
-                const coverityCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-                formattedCommand = formattedCommand.concat(yield coverityCommandFormatter.getFormattedCommandForCoverity());
-            }
-            return [formattedCommand, coverityErrors];
-        });
+        // validating and preparing command for coverity
+        const coverityErrors = (0, validator_1.validateCoverityInputs)();
+        if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
+            const coverityCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
+            formattedCommand = formattedCommand.concat(coverityCommandFormatter.getFormattedCommandForCoverity());
+        }
+        return [formattedCommand, coverityErrors];
     }
     prepareBlackduckCommand(formattedCommand, tempDir) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const blackduckErrors = (0, validator_1.validateBlackDuckInputs)();
-            if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
-                const blackDuckCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-                formattedCommand = formattedCommand.concat(yield blackDuckCommandFormatter.getFormattedCommandForBlackduck());
-            }
-            return [formattedCommand, blackduckErrors];
-        });
+        const blackduckErrors = (0, validator_1.validateBlackDuckInputs)();
+        if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
+            const blackDuckCommandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
+            formattedCommand = formattedCommand.concat(blackDuckCommandFormatter.getFormattedCommandForBlackduck());
+        }
+        return [formattedCommand, blackduckErrors];
     }
     validateBridgeVersion(version) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -845,15 +778,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -869,7 +793,6 @@ const validator_1 = __nccwpck_require__(6717);
 const utility_1 = __nccwpck_require__(837);
 const input_1 = __nccwpck_require__(7533);
 const url = __importStar(__nccwpck_require__(7310));
-const azure_service_client_1 = __nccwpck_require__(5601);
 class SynopsysToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
@@ -919,196 +842,183 @@ class SynopsysToolsParameter {
         return command;
     }
     getFormattedCommandForBlackduck() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const failureSeverities = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
-            let command = "";
-            const blackduckData = {
-                data: {
-                    blackduck: {
-                        url: inputs.BLACKDUCK_URL,
-                        token: inputs.BLACKDUCK_API_TOKEN,
-                        automation: {},
+        const failureSeverities = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
+        let command = "";
+        const blackduckData = {
+            data: {
+                blackduck: {
+                    url: inputs.BLACKDUCK_URL,
+                    token: inputs.BLACKDUCK_API_TOKEN,
+                    automation: {},
+                },
+                network: {
+                    airGap: inputs.ENABLE_NETWORK_AIRGAP,
+                },
+            },
+        };
+        if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
+            blackduckData.data.blackduck.install = {
+                directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
+            };
+        }
+        if (inputs.BLACKDUCK_SCAN_FULL) {
+            let scanFullValue = false;
+            if (inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
+                inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false") {
+                scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+            }
+            else {
+                throw new Error("Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY));
+            }
+            blackduckData.data.blackduck.scan = { full: scanFullValue };
+        }
+        if (failureSeverities && failureSeverities.length > 0) {
+            (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
+            const failureSeverityEnums = [];
+            const values = [];
+            Object.keys(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES).map(function (key) {
+                values.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
+            });
+            for (const failureSeverity of failureSeverities) {
+                if (values.indexOf(failureSeverity) == -1) {
+                    throw new Error("Invalid value for ".concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
+                }
+                else {
+                    failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
+                }
+            }
+            if (blackduckData.data.blackduck.scan) {
+                blackduckData.data.blackduck.scan.failure = {
+                    severities: failureSeverityEnums,
+                };
+            }
+            else {
+                blackduckData.data.blackduck.scan = {
+                    failure: { severities: failureSeverityEnums },
+                };
+            }
+        }
+        // Check and put environment variable for fix pull request
+        if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
+            console.log("Blackduck Automation Fix PR is enabled");
+            blackduckData.data.azure = this.getAzureRepoInfo();
+            blackduckData.data.blackduck.automation.fixpr = true;
+        }
+        else {
+            // Disable fix pull request for adapters
+            blackduckData.data.blackduck.automation.fixpr = false;
+        }
+        if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
+            console.info("BlackDuck Automation comment is enabled");
+            blackduckData.data.azure = this.getAzureRepoInfo();
+            blackduckData.data.blackduck.automation.prcomment = true;
+        }
+        const inputJson = JSON.stringify(blackduckData);
+        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
+        taskLib.writeFile(stateFilePath, inputJson);
+        // Wrap the file path with double quotes, to make it work with directory path with space as well
+        stateFilePath = '"'.concat(stateFilePath).concat('"');
+        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.INPUT_OPTION)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(stateFilePath)
+            .concat(SynopsysToolsParameter.SPACE);
+        return command;
+    }
+    getFormattedCommandForCoverity() {
+        let command = "";
+        const covData = {
+            data: {
+                coverity: {
+                    connect: {
+                        user: {
+                            name: inputs.COVERITY_USER,
+                            password: inputs.COVERITY_USER_PASSWORD,
+                        },
+                        url: inputs.COVERITY_URL,
+                        project: { name: inputs.COVERITY_PROJECT_NAME },
+                        stream: { name: inputs.COVERITY_STREAM_NAME },
                     },
+                    automation: {},
                     network: {
                         airGap: inputs.ENABLE_NETWORK_AIRGAP,
                     },
                 },
-            };
-            if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
-                blackduckData.data.blackduck.install = {
-                    directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
+                project: {},
+            },
+        };
+        if (inputs.COVERITY_LOCAL) {
+            covData.data.coverity.local = true;
+        }
+        if (inputs.COVERITY_INSTALL_DIRECTORY) {
+            if ((0, validator_1.validateCoverityInstallDirectoryParam)(inputs.COVERITY_INSTALL_DIRECTORY)) {
+                covData.data.coverity.install = {
+                    directory: inputs.COVERITY_INSTALL_DIRECTORY,
                 };
             }
-            if (inputs.BLACKDUCK_SCAN_FULL) {
-                let scanFullValue = false;
-                if (inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
-                    inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false") {
-                    scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
-                }
-                else {
-                    throw new Error("Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY));
-                }
-                blackduckData.data.blackduck.scan = { full: scanFullValue };
-            }
-            if (failureSeverities && failureSeverities.length > 0) {
-                (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
-                const failureSeverityEnums = [];
-                const values = [];
-                Object.keys(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES).map(function (key) {
-                    values.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[key]);
-                });
-                for (const failureSeverity of failureSeverities) {
-                    if (values.indexOf(failureSeverity) == -1) {
-                        throw new Error("Invalid value for ".concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
-                    }
-                    else {
-                        failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
-                    }
-                }
-                if (blackduckData.data.blackduck.scan) {
-                    blackduckData.data.blackduck.scan.failure = {
-                        severities: failureSeverityEnums,
-                    };
-                }
-                else {
-                    blackduckData.data.blackduck.scan = {
-                        failure: { severities: failureSeverityEnums },
-                    };
-                }
-            }
-            // Check and put environment variable for fix pull request
-            if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-                console.log("Blackduck Automation Fix PR is enabled");
-                blackduckData.data.azure = yield this.getAzureRepoInfo();
-                blackduckData.data.blackduck.automation.fixpr = true;
-            }
-            else {
-                // Disable fix pull request for adapters
-                blackduckData.data.blackduck.automation.fixpr = false;
-            }
-            if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-                console.info("BlackDuck Automation comment is enabled");
-                blackduckData.data.azure = yield this.getAzureRepoInfo();
-                blackduckData.data.blackduck.automation.prcomment = true;
-            }
-            const inputJson = JSON.stringify(blackduckData);
-            let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
-            taskLib.writeFile(stateFilePath, inputJson);
-            // Wrap the file path with double quotes, to make it work with directory path with space as well
-            stateFilePath = '"'.concat(stateFilePath).concat('"');
-            taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            taskLib.debug("Generated state json file content is - ".concat(inputJson));
-            command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
-                .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
-                .concat(SynopsysToolsParameter.SPACE)
-                .concat(SynopsysToolsParameter.INPUT_OPTION)
-                .concat(SynopsysToolsParameter.SPACE)
-                .concat(stateFilePath)
-                .concat(SynopsysToolsParameter.SPACE);
-            return command;
-        });
-    }
-    getFormattedCommandForCoverity() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let command = "";
-            const covData = {
-                data: {
-                    coverity: {
-                        connect: {
-                            user: {
-                                name: inputs.COVERITY_USER,
-                                password: inputs.COVERITY_USER_PASSWORD,
-                            },
-                            url: inputs.COVERITY_URL,
-                            project: { name: inputs.COVERITY_PROJECT_NAME },
-                            stream: { name: inputs.COVERITY_STREAM_NAME },
-                        },
-                        automation: {},
-                        network: {
-                            airGap: inputs.ENABLE_NETWORK_AIRGAP,
-                        },
-                    },
-                    project: {},
-                },
+        }
+        if (inputs.COVERITY_POLICY_VIEW) {
+            covData.data.coverity.connect.policy = {
+                view: inputs.COVERITY_POLICY_VIEW,
             };
-            if (inputs.COVERITY_LOCAL) {
-                covData.data.coverity.local = true;
-            }
-            if (inputs.COVERITY_INSTALL_DIRECTORY) {
-                if ((0, validator_1.validateCoverityInstallDirectoryParam)(inputs.COVERITY_INSTALL_DIRECTORY)) {
-                    covData.data.coverity.install = {
-                        directory: inputs.COVERITY_INSTALL_DIRECTORY,
-                    };
-                }
-            }
-            if (inputs.COVERITY_POLICY_VIEW) {
-                covData.data.coverity.connect.policy = {
-                    view: inputs.COVERITY_POLICY_VIEW,
-                };
-            }
-            if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
-                console.info("Coverity Automation comment is enabled");
-                covData.data.azure = yield this.getAzureRepoInfo();
-                covData.data.coverity.automation.prcomment = true;
-            }
-            if (inputs.COVERITY_VERSION) {
-                covData.data.coverity.version = inputs.COVERITY_VERSION;
-            }
-            const inputJson = JSON.stringify(covData);
-            let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
-            taskLib.writeFile(stateFilePath, inputJson);
-            // Wrap the file path with double quotes, to make it work with directory path with space as well
-            stateFilePath = '"'.concat(stateFilePath).concat('"');
-            taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            taskLib.debug("Generated state json file content is - ".concat(inputJson));
-            command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
-                .concat(SynopsysToolsParameter.COVERITY_STAGE)
-                .concat(SynopsysToolsParameter.SPACE)
-                .concat(SynopsysToolsParameter.INPUT_OPTION)
-                .concat(SynopsysToolsParameter.SPACE)
-                .concat(stateFilePath)
-                .concat(SynopsysToolsParameter.SPACE);
-            return command;
-        });
+        }
+        if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
+            console.info("Coverity Automation comment is enabled");
+            covData.data.azure = this.getAzureRepoInfo();
+            covData.data.coverity.automation.prcomment = true;
+        }
+        if (inputs.COVERITY_VERSION) {
+            covData.data.coverity.version = inputs.COVERITY_VERSION;
+        }
+        const inputJson = JSON.stringify(covData);
+        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
+        taskLib.writeFile(stateFilePath, inputJson);
+        // Wrap the file path with double quotes, to make it work with directory path with space as well
+        stateFilePath = '"'.concat(stateFilePath).concat('"');
+        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.COVERITY_STAGE)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(SynopsysToolsParameter.INPUT_OPTION)
+            .concat(SynopsysToolsParameter.SPACE)
+            .concat(stateFilePath)
+            .concat(SynopsysToolsParameter.SPACE);
+        return command;
     }
     getAzureRepoInfo() {
         var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            let azureOrganization = "";
-            const azureToken = input_1.AZURE_TOKEN;
-            let azureInstanceUrl = "";
-            const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
-            if (collectionUri != "") {
-                const parsedUrl = url.parse(collectionUri);
-                azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-                azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
-            }
-            const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
-            const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-            const azureRepoBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
-                "";
-            const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
-            if (azureToken == "") {
-                throw new Error("Missing required azure token for fix pull request/automation comment");
-            }
-            // This condition is required as per ts-lint as these fields may have undefined as well
-            if (azureInstanceUrl != "" &&
-                azureToken != "" &&
-                azureOrganization != "" &&
-                azureProject != "" &&
-                azureRepo != "" &&
-                azureRepoBranchName != "") {
-                const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
-                if (azurePullRequestNumber == "") {
-                    const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
-                    azureData.repository.pull.number =
-                        yield synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData);
-                    return azureData;
-                }
-                return azureData;
-            }
-            return undefined;
-        });
+        let azureOrganization = "";
+        const azureToken = input_1.AZURE_TOKEN;
+        let azureInstanceUrl = "";
+        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        if (collectionUri != "") {
+            const parsedUrl = url.parse(collectionUri);
+            azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+            azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+        }
+        const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+        const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+        const azureRepoBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
+            "";
+        const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+        if (azureToken == "") {
+            throw new Error("Missing required azure token for fix pull request/automation comment");
+        }
+        // This condition is required as per ts-lint as these fields may have undefined as well
+        if (azureInstanceUrl != "" &&
+            azureToken != "" &&
+            azureOrganization != "" &&
+            azureProject != "" &&
+            azureRepo != "" &&
+            azureRepoBranchName != "") {
+            return this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
+        }
+        return undefined;
     }
     setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber) {
         const azureData = {
