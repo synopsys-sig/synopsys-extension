@@ -36,7 +36,7 @@ describe("Sample task tests", function () {
         tr.run();
         assert.equal(tr.succeeded, true, "should have succeeded");
         assert.equal(tr.warningIssues.length, 0, "should have no warnings");
-        assert.equal(tr.errorIssues.length, 1, "should have 0 error issue");
+        assert.equal(tr.errorIssues.length, 0, "should have 0 error issue");
         assert.notEqual(tr.stdout.indexOf("Synopsys Task workflow execution completed"), -1, "should have the specified log");
         done();
     });
