@@ -326,9 +326,7 @@ export class SynopsysBridge {
 
     if (version != "") {
       if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-        taskLib.debug(
-          "Skipping download as same Synopsys Bridge version found"
-        );
+        console.log("Skipping download as same Synopsys Bridge version found");
         return Promise.resolve("");
       }
     }
@@ -344,7 +342,13 @@ export class SynopsysBridge {
     this.bridgeExecutablePath = await this.getSynopsysBridgePath();
     const osName = process.platform;
     let versionFilePath: string;
-
+    if (this.getBridgeDefaultPath()) {
+      console.info("Looking for synopsys bridge in default path");
+    } else {
+      console.info(
+        "Looking for synopsys bridge in Synopsys Bridge Install Directory"
+      );
+    }
     if (osName === "win32") {
       versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
     } else {
