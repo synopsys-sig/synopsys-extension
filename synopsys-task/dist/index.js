@@ -154,7 +154,7 @@ exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
 exports.RETRY_DELAY = 10000;
 exports.RETRY_COUNT = 3;
-exports.NON_RETRY_HTTP_CODES = "200,201,216,401,403,416";
+exports.NON_RETRY_HTTP_CODES = "200,201,401,403,416";
 
 
 /***/ }),
@@ -624,7 +624,7 @@ class SynopsysBridge {
                     yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY);
                     retryCount--;
                     console.info("Getting all available bridge versions has been failed, retries left: " +
-                        retryCount);
+                        (retryCount + 1));
                 }
                 else {
                     retryCount = 0;
@@ -678,7 +678,7 @@ class SynopsysBridge {
                         yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY);
                         retryCount--;
                         console.info("Getting latest Synopsys Bridge versions has been failed, retries left: " +
-                            retryCount);
+                            (retryCount + 1));
                     }
                     else if (httpResponse.message.statusCode === 200) {
                         retryCount = 0;
@@ -1201,7 +1201,7 @@ function getRemoteFile(destFilePath, url) {
                     yield sleep(application_constant_1.RETRY_DELAY);
                     retryCount--;
                     console.info("Synopsys bridge download has been failed, retries left: " +
-                        retryCount);
+                        (retryCount + 1));
                 }
                 else {
                     retryCount = 0;
@@ -1570,8 +1570,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -8783,7 +8783,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
 function debug(message) {
     tl.debug(message);
 }
