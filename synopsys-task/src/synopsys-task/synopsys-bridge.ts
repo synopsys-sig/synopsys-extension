@@ -392,7 +392,7 @@ export class SynopsysBridge {
         retryCount--;
         console.info(
           "Getting all available bridge versions has been failed, retries left: " +
-            retryCount
+            (retryCount + 1)
         );
       } else {
         retryCount = 0;
@@ -463,7 +463,7 @@ export class SynopsysBridge {
           retryCount--;
           console.info(
             "Getting latest Synopsys Bridge versions has been failed, retries left: " +
-              retryCount
+              (retryCount + 1)
           );
         } else if (httpResponse.message.statusCode === 200) {
           retryCount = 0;

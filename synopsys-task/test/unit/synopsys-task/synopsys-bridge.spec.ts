@@ -17,7 +17,6 @@ import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
 import {Socket} from "net";
-import {error} from "azure-pipelines-task-lib";
 
 describe("Synopsys Bridge test", () => {
     Object.defineProperty(constants, "RETRY_COUNT", {value: 3});

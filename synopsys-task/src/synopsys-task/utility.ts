@@ -77,7 +77,7 @@ export async function getRemoteFile(
         retryCount--;
         console.info(
           "Synopsys bridge download has been failed, retries left: " +
-            retryCount
+            (retryCount + 1)
         );
       } else {
         retryCount = 0;
