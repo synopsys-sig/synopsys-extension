@@ -584,12 +584,6 @@ class SynopsysBridge {
             this.bridgeExecutablePath = yield this.getSynopsysBridgePath();
             const osName = process.platform;
             let versionFilePath;
-            if (this.getBridgeDefaultPath()) {
-                console.info("Looking for synopsys bridge in default path");
-            }
-            else {
-                console.info("Looking for synopsys bridge in Synopsys Bridge Install Directory");
-            }
             if (osName === "win32") {
                 versionFilePath = this.bridgeExecutablePath.concat("\\versions.txt");
             }
@@ -736,11 +730,13 @@ class SynopsysBridge {
             let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
             if (input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+                console.info("Looking for synopsys bridge in Synopsys Bridge Install Directory");
                 if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
                     throw new Error("Synopsys Bridge Install Directory does not exist");
                 }
             }
             else {
+                console.info("Looking for synopsys bridge in default path");
                 if (input_1.ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
                     if (!taskLib.exist(this.getBridgeDefaultPath())) {
                         throw new Error("Synopsys Bridge default directory does not exist");
