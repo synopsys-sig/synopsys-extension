@@ -60,7 +60,7 @@ variables:
   - group: polaris
   
 steps:
-- task: SynopsysSecurityScan@1.1.0
+- task: SynopsysSecurityScan@1.1.1
   displayName: 'Polaris Scan'
   inputs:
     BRIDGE_POLARIS_SERVERURL: $(POLARIS_SERVER_URL)
@@ -104,7 +104,7 @@ variables:
   - group: coverity
   
 steps:
-- task: SynopsysSecurityScan@1.1.0
+- task: SynopsysSecurityScan@1.1.1
   displayName: 'Coverity Full Scan'
   condition: not(eq(variables['Build.Reason'], 'PullRequest'))
   inputs:
@@ -117,7 +117,7 @@ steps:
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # include_diagnostics: true
 
-- task: SynopsysSecurityScan@1.1.0
+- task: SynopsysSecurityScan@1.1.1
   displayName: 'Coverity PR Scan'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   inputs:
@@ -170,7 +170,7 @@ variables:
   - group: blackduck
 
 steps:
-- task: SynopsysSecurityScan@1.1.0
+- task: SynopsysSecurityScan@1.1.1
   displayName: 'Black Duck Full Scan'
   condition: not(eq(variables['Build.Reason'], 'PullRequest'))
   ### Use below configuration to set specific detect environment variables
@@ -188,7 +188,7 @@ steps:
     ### Uncomment below configuration if Synopsys Bridge diagnostic files needs to be uploaded
     # INCLUDE_DIAGNOSTICS: true      
 
-- task: SynopsysSecurityScan@1.1.0
+- task: SynopsysSecurityScan@1.1.1
   displayName: 'Black Duck PR Scan'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   ### Use below configuration to set specific detect environment variables
