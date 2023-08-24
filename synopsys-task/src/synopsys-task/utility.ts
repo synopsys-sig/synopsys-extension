@@ -2,7 +2,7 @@ import path from "path";
 import {
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
-  RETRY_DELAY,
+  RETRY_DELAY_IN_MILLISECONDS,
   SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
 } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
@@ -71,9 +71,9 @@ export async function getRemoteFile(
       if (retryCount == 0) {
         throw error;
       }
-      const retry: boolean = await checkRetry(error["httpStatusCode"]);
-      if (retry) {
-        await sleep(RETRY_DELAY);
+
+      if (!NON_RETRY_HTTP_CODES.has(error["httpStatusCode"])) {
+        await sleep(RETRY_DELAY_IN_MILLISECONDS);
         retryCount--;
         console.info(
           "Synopsys bridge download has been failed, retries left: " +
@@ -85,19 +85,6 @@ export async function getRemoteFile(
     }
   } while (retryCount >= 0);
   return Promise.reject("Synopsys bridge download has been failed");
-}
-
-export async function checkRetry(
-  httpStatusCode: number | undefined
-): Promise<boolean> {
-  const retryHttpCodes: string[] = NON_RETRY_HTTP_CODES.split(",");
-  if (
-    httpStatusCode != undefined &&
-    retryHttpCodes.find((e) => e === String(httpStatusCode)) == undefined
-  ) {
-    return true;
-  }
-  return false;
 }
 
 export function parseToBoolean(value: string | boolean): boolean {

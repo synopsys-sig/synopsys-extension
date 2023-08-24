@@ -14,12 +14,7 @@ import {
 import * as constants from "./application-constant";
 
 import * as inputs from "./input";
-import {
-  checkRetry,
-  extractZipped,
-  getRemoteFile,
-  parseToBoolean,
-} from "./utility";
+import { extractZipped, getRemoteFile, parseToBoolean } from "./utility";
 import { readFileSync } from "fs";
 import { DownloadFileResponse } from "./model/download-file-response";
 import DomParser from "dom-parser";
@@ -28,7 +23,11 @@ import {
   SCAN_TYPE,
   SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
 } from "./input";
-import { RETRY_COUNT, RETRY_DELAY } from "./application-constant";
+import {
+  NON_RETRY_HTTP_CODES,
+  RETRY_COUNT,
+  RETRY_DELAY_IN_MILLISECONDS,
+} from "./application-constant";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -386,9 +385,8 @@ export class SynopsysBridge {
         Accept: "text/html",
       });
 
-      const retry: boolean = await checkRetry(httpResponse.message.statusCode);
-      if (retry) {
-        await sleep(RETRY_DELAY);
+      if (!NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
+        await sleep(RETRY_DELAY_IN_MILLISECONDS);
         retryCount--;
         console.info(
           "Getting all available bridge versions has been failed, retries left: " +
@@ -455,11 +453,10 @@ export class SynopsysBridge {
           Accept: "text/html",
         });
 
-        const retry: boolean = await checkRetry(
-          httpResponse.message.statusCode
-        );
-        if (retry) {
-          await sleep(RETRY_DELAY);
+        if (
+          !NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))
+        ) {
+          await sleep(RETRY_DELAY_IN_MILLISECONDS);
           retryCount--;
           console.info(
             "Getting latest Synopsys Bridge versions has been failed, retries left: " +

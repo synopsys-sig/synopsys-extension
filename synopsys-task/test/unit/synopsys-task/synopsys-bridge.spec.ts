@@ -12,7 +12,7 @@ import * as validator from "../../../src/synopsys-task/validator";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
-import * as Q from "q";
+
 import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
@@ -20,8 +20,8 @@ import {Socket} from "net";
 
 describe("Synopsys Bridge test", () => {
     Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
-    Object.defineProperty(constants, "RETRY_DELAY", {value: 100});
-    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: "200,201,216,401,403,416"});
+    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", {value: 100});
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
     context('Bridge command preparation', () => {
         let sandbox: sinon.SinonSandbox;
         let synopsysBridge: SynopsysBridge;
