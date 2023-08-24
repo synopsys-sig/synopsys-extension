@@ -344,7 +344,11 @@ export class SynopsysToolsParameter {
         azurePullRequestNumber
       );
 
-      if (azurePullRequestNumber == "") {
+      if (
+        azurePullRequestNumber == "" &&
+        (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
+          parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
+      ) {
         const synopsysAzureService = new SynopsysAzureService();
         azureData.repository.pull.number =
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(

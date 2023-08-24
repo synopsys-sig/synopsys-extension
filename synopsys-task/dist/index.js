@@ -113,7 +113,7 @@ exports.APPLICATION_NAME = "synopsys-extension";
 exports.POLARIS_KEY = "polaris";
 exports.COVERITY_KEY = "coverity";
 exports.BLACKDUCK_KEY = "blackduck";
-exports.AZURE_TOKEN_KEY = "bridge_azure_token";
+exports.AZURE_TOKEN_KEY = "azure_token";
 exports.SCAN_TYPE_KEY = "scanType";
 // Polaris
 exports.POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
@@ -1101,7 +1101,9 @@ class SynopsysToolsParameter {
                 azureRepo != "" &&
                 azureRepoBranchName != "") {
                 const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
-                if (azurePullRequestNumber == "") {
+                if (azurePullRequestNumber == "" &&
+                    ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
+                        (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))) {
                     const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
                     azureData.repository.pull.number =
                         yield synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData);
