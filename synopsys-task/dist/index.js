@@ -101,7 +101,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY = exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -152,9 +152,9 @@ exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
-exports.RETRY_DELAY = 10000;
+exports.RETRY_DELAY_IN_MILLISECONDS = 10000;
 exports.RETRY_COUNT = 3;
-exports.NON_RETRY_HTTP_CODES = "200,201,401,403,416";
+exports.NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);
 
 
 /***/ }),
@@ -619,9 +619,8 @@ class SynopsysBridge {
                 httpResponse = yield httpClient.get(this.bridgeArtifactoryURL, {
                     Accept: "text/html",
                 });
-                const retry = yield (0, utility_2.checkRetry)(httpResponse.message.statusCode);
-                if (retry) {
-                    yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY);
+                if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
+                    yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY_IN_MILLISECONDS);
                     retryCount--;
                     console.info("Getting all available bridge versions has been failed, retries left: " +
                         (retryCount + 1));
@@ -673,9 +672,8 @@ class SynopsysBridge {
                     httpResponse = yield httpClient.get(latestVersionsUrl, {
                         Accept: "text/html",
                     });
-                    const retry = yield (0, utility_2.checkRetry)(httpResponse.message.statusCode);
-                    if (retry) {
-                        yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY);
+                    if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
+                        yield (0, utility_1.sleep)(application_constant_1.RETRY_DELAY_IN_MILLISECONDS);
                         retryCount--;
                         console.info("Getting latest Synopsys Bridge versions has been failed, retries left: " +
                             (retryCount + 1));
@@ -1137,7 +1135,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sleep = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.checkRetry = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.sleep = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -1196,9 +1194,8 @@ function getRemoteFile(destFilePath, url) {
                 if (retryCount == 0) {
                     throw error;
                 }
-                const retry = yield checkRetry(error["httpStatusCode"]);
-                if (retry) {
-                    yield sleep(application_constant_1.RETRY_DELAY);
+                if (!application_constant_1.NON_RETRY_HTTP_CODES.has(error["httpStatusCode"])) {
+                    yield sleep(application_constant_1.RETRY_DELAY_IN_MILLISECONDS);
                     retryCount--;
                     console.info("Synopsys bridge download has been failed, retries left: " +
                         (retryCount + 1));
@@ -1212,17 +1209,6 @@ function getRemoteFile(destFilePath, url) {
     });
 }
 exports.getRemoteFile = getRemoteFile;
-function checkRetry(httpStatusCode) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const retryHttpCodes = application_constant_1.NON_RETRY_HTTP_CODES.split(",");
-        if (httpStatusCode != undefined &&
-            retryHttpCodes.find((e) => e === String(httpStatusCode)) == undefined) {
-            return true;
-        }
-        return false;
-    });
-}
-exports.checkRetry = checkRetry;
 function parseToBoolean(value) {
     if (value !== null &&
         value !== "" &&
@@ -1570,8 +1556,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -8783,7 +8769,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
 function debug(message) {
     tl.debug(message);
 }
