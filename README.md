@@ -33,9 +33,9 @@ Before configuring Synopsys Security Scan into your azure pipeline, note the fol
 - Sensitive data such as access tokens, user names, passwords and even URLs must be configured using variable groups (Project → Pipelines → Library → New Variable Group)
 
 - `AZURE_TOKEN` is required as input when running Black Duck Fix PR, Black Duck/Coverity PR Comment. There are 2 different types of tokens that can be passed to `AZURE_TOKEN`
-  1. When using AZURE_TOKEN: $(System.AccessToken), you must enable this in the Azure interface. Go to Project → Project Settings → Repository → Security → Build Service and set Contribute to pull requests to Allow.
-Confirm System.AccessToken has Contribute to PR permissions (Project → Project Settings → Repositories → Security → Build Service User)
-  2. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token (User settings → Personal access tokens → New Token) should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
+  1. When using AZURE_TOKEN: $(System.AccessToken), you must enable this in the Azure interface. Go to Project → Project Settings → Repository → Security → Build Service and set Contribute to pull requests to Allow.<br/>
+     Confirm System.AccessToken has Contribute to PR permissions (Project → Project Settings → Repositories → Security → Build Service User)
+  3. When using `AZURE_TOKEN: $(PAT_TOKEN)`, PAT token (User settings → Personal access tokens → New Token) should have minimum permissions `Code - Full` and `Pull Request Threads - Read & write`. Refer [Use personal access tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows) for more details.  
 - For Black Duck and Coverity PR comments enable Build validation policy (Project → Project Settings → Repositories → Branch Policy → Add branch protection) to trigger the pipeline on raising PR or any push event to existing branch (usually it will be done on main or master branch). <br> Refer [Build Validation](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for more details.
 
 **Configure Azure Pipeline:**
