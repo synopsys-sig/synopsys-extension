@@ -44,7 +44,7 @@ tmr.setInput('bridge_coverity_connect_user_password', 'http://testurl.com')
 tmr.setInput('bridge_coverity_connect_project_name', 'accessTokenTest')
 tmr.setInput('bridge_coverity_connect_stream_name', 'http://testurl.com')
 tmr.setInput('bridge_coverity_automation_prcomment', String(true))
-tmr.setInput('bridge_azure_token', "token")
+tmr.setInput('azure_token', "token")
 
 const osName = process.platform;
 if (osName === "darwin") {
