@@ -12,4 +12,5 @@ Synopsys Security Scan supports Azure integration with the following Synopsys se
 
 Synopsys solution functionality is invoked directly by Synopsys Bridge, and indirectly by the Synopsys Security Scan, which downloads Synopsys Bridge and calls the respective adapters to run corresponding scans.
 
-Documentation - https://github.com/synopsys-sig/synopsys-extension/blob/1.0.0/README.md
+
+Documentation - https://github.com/synopsys-sig/synopsys-extension/blob/main/README.md
