@@ -6,6 +6,7 @@ import {
   SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
 } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
+import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -59,31 +60,41 @@ export async function getRemoteFile(
     );
   }
 
-  let retryCount = RETRY_COUNT;
+  let retryCountLocal = RETRY_COUNT;
+  let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
   do {
     try {
-      const toolPath = await toolLib.downloadTool(url, destFilePath);
+      const toolPath = await toolLibLocal.downloadTool(url, destFilePath);
       return {
         filePath: toolPath,
         fileName: fileNameFromUrl,
       };
-    } catch (error: any) {
-      if (retryCount == 0) {
+    } catch (err) {
+      console.info(err);
+      const error = err as Error;
+      if (retryCountLocal == 0) {
         throw error;
       }
 
-      if (!NON_RETRY_HTTP_CODES.has(error["httpStatusCode"])) {
-        await sleep(RETRY_DELAY_IN_MILLISECONDS);
-        retryCount--;
+      if (
+        !NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
+        error.message.includes("did not match downloaded file size")
+      ) {
         console.info(
-          "Synopsys bridge download has been failed, retries left: " +
-            (retryCount + 1)
+          "Synopsys bridge download has been failed, retries left: "
+            .concat(String(retryCountLocal))
+            .concat(", Waiting: ")
+            .concat(String(retryDelay / 1000))
+            .concat(" Seconds")
         );
+        await sleep(retryDelay);
+        retryDelay = retryDelay * 2;
+        retryCountLocal--;
       } else {
-        retryCount = 0;
+        retryCountLocal = 0;
       }
     }
-  } while (retryCount >= 0);
+  } while (retryCountLocal >= 0);
   return Promise.reject("Synopsys bridge download has been failed");
 }
 
