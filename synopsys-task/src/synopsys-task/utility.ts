@@ -70,7 +70,6 @@ export async function getRemoteFile(
         fileName: fileNameFromUrl,
       };
     } catch (err) {
-      console.info(err);
       const error = err as Error;
       if (retryCountLocal == 0) {
         throw error;

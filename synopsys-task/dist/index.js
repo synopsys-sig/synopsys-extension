@@ -352,7 +352,6 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                     tl.debug("Destination file path already exists");
                     _deleteFile(destPath);
                 }
-                tl.debug("downloading");
                 const response = yield http.get(url, additionalHeaders);
                 if (response.message.statusCode != 200) {
                     tl.debug(`Failed to download "${fileName}" from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
@@ -889,13 +888,7 @@ class SynopsysBridge {
                     Accept: "text/html",
                 });
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                    console.info("Getting all available bridge versions has been failed, retries left: "
-                        .concat(String(retryCountLocal))
-                        .concat(", Waiting: ")
-                        .concat(String(retryDelay / 1000))
-                        .concat(" Seconds"));
-                    yield (0, utility_1.sleep)(retryDelay);
-                    retryDelay = retryDelay * 2;
+                    retryDelay = yield this.retrySleepHelper("Getting all available bridge versions has been failed, retries left: ", retryCountLocal, retryDelay);
                     retryCountLocal--;
                 }
                 else {
@@ -947,13 +940,7 @@ class SynopsysBridge {
                         Accept: "text/html",
                     });
                     if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                        console.info("Getting latest Synopsys Bridge versions has been failed, retries left: "
-                            .concat(String(retryCountLocal))
-                            .concat(", Waiting: ")
-                            .concat(String(retryDelay / 1000))
-                            .concat(" Seconds"));
-                        yield (0, utility_1.sleep)(retryDelay);
-                        retryDelay = retryDelay * 2;
+                        retryDelay = yield this.retrySleepHelper("Getting latest Synopsys Bridge versions has been failed, retries left: ", retryCountLocal, retryDelay);
                         retryCountLocal--;
                     }
                     else if (httpResponse.message.statusCode === 200) {
@@ -1053,6 +1040,19 @@ class SynopsysBridge {
                 }
             }
             return synopsysBridgeDirectoryPath;
+        });
+    }
+    retrySleepHelper(message, retryCountLocal, retryDelay) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.info(message
+                .concat(String(retryCountLocal))
+                .concat(", Waiting: ")
+                .concat(String(retryDelay / 1000))
+                .concat(" Seconds"));
+            yield (0, utility_1.sleep)(retryDelay);
+            // Delayed exponentially starting from 15 seconds
+            retryDelay = retryDelay * 2;
+            return retryDelay;
         });
     }
 }
@@ -1498,7 +1498,6 @@ function getRemoteFile(destFilePath, url) {
                 };
             }
             catch (err) {
-                console.info(err);
                 const error = err;
                 if (retryCountLocal == 0) {
                     throw error;
@@ -1870,8 +1869,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -9065,7 +9064,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
 function debug(message) {
     tl.debug(message);
 }
