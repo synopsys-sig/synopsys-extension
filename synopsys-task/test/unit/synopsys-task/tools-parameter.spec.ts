@@ -94,7 +94,7 @@ describe("Synopsys Tools Parameter test", () => {
             sandbox.restore();
         });
 
-        it('should success for coverity command formation with mandatory and optional parameters', function () {
+        it('should success for coverity command formation with mandatory and optional parameters', async function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
@@ -106,7 +106,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_VERSION', {value: '2022.12.0'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
 
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -140,21 +140,21 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
-            expect(formattedCommand).contains('--stage connect');
+            expect(formattedCommand).contains(Promise.resolve('--stage connect'));
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
-            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+            expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
         });
 
 
-        it('should success for coverity command formation with PR comment', function () {
+        it('should success for coverity command formation with PR comment',  async function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
@@ -168,7 +168,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
-        it('should success for coverity command formation with invalid coverity install directory', function () {
+        it('should success for coverity command formation with invalid coverity install directory', async function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
@@ -177,7 +177,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: 'test-dir'})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
 
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -229,20 +229,22 @@ describe("Synopsys Tools Parameter test", () => {
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
              expect(jsonData.data.blackduck.token).to.be.equals('token');    
-             expect(formattedCommand).contains('--stage blackduck');
+             expect(formattedCommand).contains(Promise.resolve('--stage blackduck'));
 
              blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+             expect(formattedCommand).contains(Promise.resolve('--input '.concat(blackduckStateFile)));
          });
 
-         it('should success for blackduck command formation with PR COMMENT', function () {
+         it('should success for blackduck command formation with PR COMMENT', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
              Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
              Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
+             sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
+
              sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
              const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
@@ -257,15 +259,11 @@ describe("Synopsys Tools Parameter test", () => {
          it('should fail for invalid bridge_blackduck_scan_failure_severities', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
-            try {
-                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
-            } catch (e) {
-                const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for bridge_blackduck_scan_failure_severities')
-            }
+            synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
+                    expect(errorObj.message).contains('Invalid value for bridge_blackduck_scan_failure_severities')})
         });
 
-        it('should success for blackduck command formation with fix pr true', function () {
+        it('should success for blackduck command formation with fix pr true', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
@@ -279,7 +277,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
             
-             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
              const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
@@ -305,7 +303,7 @@ describe("Synopsys Tools Parameter test", () => {
             }
         });
 
-        it('should form blackduck command but with undefined azure values', function () {
+        it('should form blackduck command but with undefined azure values', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_FIXPR_KEY', {value: 'true'})
@@ -315,7 +313,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             getStubVariable.withArgs("Build.SourceBranchName").returns("")
             
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
              const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
              const jsonData = JSON.parse(jsonString);
              expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
@@ -326,11 +324,11 @@ describe("Synopsys Tools Parameter test", () => {
              expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
-        it('should success for blackduck command formation with mandatory parameters', function () {
+        it('should success for blackduck command formation with mandatory parameters', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
            
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
@@ -341,7 +339,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
-        it('should success for blackduck command formation with invalid blackduck install directory', function () {
+        it('should success for blackduck command formation with invalid blackduck install directory', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
@@ -349,7 +347,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
 
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);

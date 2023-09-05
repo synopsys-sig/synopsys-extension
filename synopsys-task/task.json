@@ -208,6 +208,26 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_coverity_local",
+      "type": "boolean",
+      "label": "Local Scan",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -255,6 +275,36 @@
       "required": false,
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
       "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_automation_fixpr",
+      "type": "boolean",
+      "label": "Create Fix Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "visibleRule": "scanType = coverity || scanType = blackduck",
       "groupName": "scanOptions"
     },
     {
