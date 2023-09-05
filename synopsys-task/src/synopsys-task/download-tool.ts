@@ -58,7 +58,6 @@ export async function downloadTool(
         _deleteFile(destPath);
       }
 
-      tl.debug("downloading");
       const response: httpm.HttpClientResponse = await http.get(
         url,
         additionalHeaders
