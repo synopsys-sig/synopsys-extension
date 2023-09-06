@@ -80,7 +80,7 @@ export async function getRemoteFile(
         error.message.includes("did not match downloaded file size")
       ) {
         console.info(
-          "Synopsys bridge download has been failed, retries left: "
+          "Synopsys Bridge download has been failed, Retries left: "
             .concat(String(retryCountLocal))
             .concat(", Waiting: ")
             .concat(String(retryDelay / 1000))

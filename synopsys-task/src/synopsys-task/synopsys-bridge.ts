@@ -386,7 +386,7 @@ export class SynopsysBridge {
 
       if (!NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
         retryDelay = await this.retrySleepHelper(
-          "Getting all available bridge versions has been failed, retries left: ",
+          "Getting all available bridge versions has been failed, Retries left: ",
           retryCountLocal,
           retryDelay
         );
@@ -457,7 +457,7 @@ export class SynopsysBridge {
           !NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))
         ) {
           retryDelay = await this.retrySleepHelper(
-            "Getting latest Synopsys Bridge versions has been failed, retries left: ",
+            "Getting latest Synopsys Bridge versions has been failed, Retries left: ",
             retryCountLocal,
             retryDelay
           );
