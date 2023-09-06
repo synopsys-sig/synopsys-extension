@@ -888,7 +888,7 @@ class SynopsysBridge {
                     Accept: "text/html",
                 });
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                    retryDelay = yield this.retrySleepHelper("Getting all available bridge versions has been failed, retries left: ", retryCountLocal, retryDelay);
+                    retryDelay = yield this.retrySleepHelper("Getting all available bridge versions has been failed, Retries left: ", retryCountLocal, retryDelay);
                     retryCountLocal--;
                 }
                 else {
@@ -940,7 +940,7 @@ class SynopsysBridge {
                         Accept: "text/html",
                     });
                     if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                        retryDelay = yield this.retrySleepHelper("Getting latest Synopsys Bridge versions has been failed, retries left: ", retryCountLocal, retryDelay);
+                        retryDelay = yield this.retrySleepHelper("Getting latest Synopsys Bridge versions has been failed, Retries left: ", retryCountLocal, retryDelay);
                         retryCountLocal--;
                     }
                     else if (httpResponse.message.statusCode === 200) {
@@ -1504,7 +1504,7 @@ function getRemoteFile(destFilePath, url) {
                 }
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
                     error.message.includes("did not match downloaded file size")) {
-                    console.info("Synopsys bridge download has been failed, retries left: "
+                    console.info("Synopsys Bridge download has been failed, Retries left: "
                         .concat(String(retryCountLocal))
                         .concat(", Waiting: ")
                         .concat(String(retryDelay / 1000))
