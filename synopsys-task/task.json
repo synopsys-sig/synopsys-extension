@@ -128,6 +128,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_polaris_branch_name",
+      "type": "string",
+      "label": "Polaris Branch Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Branch name in Polaris.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_coverity_connect_url",
       "type": "string",
       "label": "Coverity Platform URL",
