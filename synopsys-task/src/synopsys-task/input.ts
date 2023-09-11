@@ -33,6 +33,8 @@ export const POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(
 );
 export const POLARIS_SERVER_URL =
   taskLib.getInput(constants.POLARIS_SERVER_URL_KEY)?.trim() || "";
+export const POLARIS_TRIAGE =
+  taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() || "";
 export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)?.trim() || "";
 
