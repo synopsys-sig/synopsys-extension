@@ -1,14 +1,11 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import * as sinon from "sinon";
-import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
+import {SynopsysToolsParameter} from "../../../src/synopsys-task/tools-parameter";
 import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "../../../src/synopsys-task/input";
-import { Polaris } from "../../../src/synopsys-task/model/polaris";
-import { InputData } from "../../../src/synopsys-task/model/input-data";
 import * as fs from 'fs';
-import * as mocha from 'mocha';
 import * as validator from "../../../src/synopsys-task/validator";
 
 describe("Synopsys Tools Parameter test", () => {
@@ -41,6 +38,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -49,7 +47,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
-            
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+
             expect(formattedCommand).contains('--stage polaris');
 
             polarisStateFile = '"'.concat(polarisStateFile).concat('"');

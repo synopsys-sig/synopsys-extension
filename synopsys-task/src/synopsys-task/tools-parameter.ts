@@ -65,12 +65,15 @@ export class SynopsysToolsParameter {
           application: { name: inputs.POLARIS_APPLICATION_NAME },
           project: { name: inputs.POLARIS_PROJECT_NAME },
           assessment: { types: assessmentTypeArray },
+          branch: {},
         },
       },
     };
+    if (inputs.POLARIS_BRANCH_NAME) {
+      polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
+    }
 
     const inputJson = JSON.stringify(polData);
-
     let stateFilePath = path.join(
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
