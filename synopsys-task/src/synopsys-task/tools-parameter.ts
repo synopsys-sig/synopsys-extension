@@ -69,6 +69,9 @@ export class SynopsysToolsParameter {
       },
     };
 
+    if (inputs.POLARIS_TRIAGE) {
+      polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
     const inputJson = JSON.stringify(polData);
 
     let stateFilePath = path.join(

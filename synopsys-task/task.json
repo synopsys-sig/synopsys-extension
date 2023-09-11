@@ -314,6 +314,14 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge."
+    },
+    {
+      "name": "bridge_polaris_triage",
+      "type": "string",
+      "label": "Polaris Triage",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris Triage"
     }
   ],
   "execution": {
