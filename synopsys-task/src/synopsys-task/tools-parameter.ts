@@ -73,6 +73,9 @@ export class SynopsysToolsParameter {
       polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
     }
 
+    if (inputs.POLARIS_TRIAGE) {
+      polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
     const inputJson = JSON.stringify(polData);
     let stateFilePath = path.join(
       this.tempDir,

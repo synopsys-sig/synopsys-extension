@@ -40,6 +40,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
 
+
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');

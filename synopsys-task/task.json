@@ -128,6 +128,14 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_polaris_triage",
+      "type": "string",
+      "label": "Polaris Triage",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris Triage"
+    },
+    {
       "name": "bridge_polaris_branch_name",
       "type": "string",
       "label": "Polaris Branch Name",
