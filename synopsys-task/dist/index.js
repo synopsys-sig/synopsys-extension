@@ -101,7 +101,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -121,6 +121,7 @@ exports.POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 exports.POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 exports.POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
+exports.POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 // Coverity
 exports.COVERITY_URL_KEY = "bridge_coverity_connect_url";
 exports.COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
@@ -291,9 +292,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_TRIAGE = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
@@ -309,26 +310,27 @@ exports.POLARIS_APPLICATION_NAME = ((_f = taskLib.getInput(constants.POLARIS_APP
 exports.POLARIS_PROJECT_NAME = ((_g = taskLib.getInput(constants.POLARIS_PROJECT_NAME_KEY)) === null || _g === void 0 ? void 0 : _g.trim()) || "";
 exports.POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ",");
 exports.POLARIS_SERVER_URL = ((_h = taskLib.getInput(constants.POLARIS_SERVER_URL_KEY)) === null || _h === void 0 ? void 0 : _h.trim()) || "";
+exports.POLARIS_TRIAGE = ((_j = taskLib.getInput(constants.POLARIS_TRIAGE_KEY)) === null || _j === void 0 ? void 0 : _j.trim()) || "";
 // Coverity related inputs
-exports.COVERITY_URL = ((_j = taskLib.getInput(constants.COVERITY_URL_KEY)) === null || _j === void 0 ? void 0 : _j.trim()) || "";
-exports.COVERITY_USER = ((_k = taskLib.getInput(constants.COVERITY_USER_NAME_KEY)) === null || _k === void 0 ? void 0 : _k.trim()) || "";
-exports.COVERITY_USER_PASSWORD = ((_l = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY)) === null || _l === void 0 ? void 0 : _l.trim()) || "";
-exports.COVERITY_PROJECT_NAME = ((_m = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY)) === null || _m === void 0 ? void 0 : _m.trim()) || "";
-exports.COVERITY_STREAM_NAME = ((_o = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY)) === null || _o === void 0 ? void 0 : _o.trim()) || "";
-exports.COVERITY_INSTALL_DIRECTORY = ((_p = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)) === null || _p === void 0 ? void 0 : _p.trim()) || "";
-exports.COVERITY_POLICY_VIEW = ((_q = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)) === null || _q === void 0 ? void 0 : _q.trim()) || "";
-exports.COVERITY_LOCAL = ((_r = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _r === void 0 ? void 0 : _r.trim()) === "true" || false;
+exports.COVERITY_URL = ((_k = taskLib.getInput(constants.COVERITY_URL_KEY)) === null || _k === void 0 ? void 0 : _k.trim()) || "";
+exports.COVERITY_USER = ((_l = taskLib.getInput(constants.COVERITY_USER_NAME_KEY)) === null || _l === void 0 ? void 0 : _l.trim()) || "";
+exports.COVERITY_USER_PASSWORD = ((_m = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY)) === null || _m === void 0 ? void 0 : _m.trim()) || "";
+exports.COVERITY_PROJECT_NAME = ((_o = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY)) === null || _o === void 0 ? void 0 : _o.trim()) || "";
+exports.COVERITY_STREAM_NAME = ((_p = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY)) === null || _p === void 0 ? void 0 : _p.trim()) || "";
+exports.COVERITY_INSTALL_DIRECTORY = ((_q = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)) === null || _q === void 0 ? void 0 : _q.trim()) || "";
+exports.COVERITY_POLICY_VIEW = ((_r = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)) === null || _r === void 0 ? void 0 : _r.trim()) || "";
+exports.COVERITY_LOCAL = ((_s = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) === "true" || false;
 exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.COVERITY_VERSION = ((_s = taskLib.getInput(constants.COVERITY_VERSION_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) || "";
+exports.COVERITY_VERSION = ((_t = taskLib.getInput(constants.COVERITY_VERSION_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) || "";
 // Blackduck related inputs
-exports.BLACKDUCK_URL = ((_t = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) || "";
-exports.BLACKDUCK_API_TOKEN = ((_u = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _u === void 0 ? void 0 : _u.trim()) || "";
-exports.BLACKDUCK_INSTALL_DIRECTORY = ((_v = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)) === null || _v === void 0 ? void 0 : _v.trim()) || "";
-exports.BLACKDUCK_SCAN_FULL = ((_w = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY)) === null || _w === void 0 ? void 0 : _w.trim()) || "";
+exports.BLACKDUCK_URL = ((_u = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _u === void 0 ? void 0 : _u.trim()) || "";
+exports.BLACKDUCK_API_TOKEN = ((_v = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _v === void 0 ? void 0 : _v.trim()) || "";
+exports.BLACKDUCK_INSTALL_DIRECTORY = ((_w = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)) === null || _w === void 0 ? void 0 : _w.trim()) || "";
+exports.BLACKDUCK_SCAN_FULL = ((_x = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY)) === null || _x === void 0 ? void 0 : _x.trim()) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
-exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = ((_x = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)) === null || _x === void 0 ? void 0 : _x.trim()) || "";
+exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = ((_y = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) || "";
 exports.BLACKDUCK_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.INCLUDE_DIAGNOSTICS = ((_y = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) || "";
+exports.INCLUDE_DIAGNOSTICS = ((_z = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)) === null || _z === void 0 ? void 0 : _z.trim()) || "";
 
 
 /***/ }),
@@ -904,6 +906,9 @@ class SynopsysToolsParameter {
                 },
             },
         };
+        if (inputs.POLARIS_TRIAGE) {
+            polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+        }
         const inputJson = JSON.stringify(polData);
         let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
