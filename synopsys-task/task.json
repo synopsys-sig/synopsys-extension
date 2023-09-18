@@ -309,11 +309,12 @@
     },
     {
       "name": "bridge_network_airgap",
-      "type": "string",
+      "type": "boolean",
       "label": "Network Airgap",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge."
+      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge.",
+      "groupName": "optionalSettings"
     },
     {
       "name": "bridge_polaris_triage",
@@ -321,7 +322,9 @@
       "label": "Polaris Triage",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Triage"
+      "helpMarkDown": "Polaris Triage",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
     }
   ],
   "execution": {
