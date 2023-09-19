@@ -9,8 +9,8 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 0,
-    "Patch": 1
+    "Minor": 2,
+    "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -198,22 +198,32 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_local",
-      "type": "boolean",
-      "label": "Local Scan",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "bridge_coverity_version",
       "type": "string",
       "label": "Coverity Version",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Version of Coverity Thin Client to use.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_coverity_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_coverity_local",
+      "type": "boolean",
+      "label": "Local Scan",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -268,21 +278,53 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "bridge_blackduck_automation_prcomment",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_automation_fixpr",
+      "type": "boolean",
+      "label": "Create Fix Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "azure_token",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "groupName": "blackduck"
+      "visibleRule": "scanType = coverity || scanType = blackduck",
+      "groupName": "scanOptions"
     },
     {
       "name": "bridge_network_airgap",
-      "type": "string",
+      "type": "boolean",
       "label": "Network Airgap",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge."
+      "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge.",
+      "groupName": "optionalSettings"
+    },
+    {
+      "name": "bridge_polaris_triage",
+      "type": "string",
+      "label": "Polaris Triage",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris Triage",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
     }
   ],
   "execution": {

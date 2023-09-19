@@ -23,6 +23,7 @@ export const POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 export const POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 export const POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
+export const POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 
 // Coverity
 export const COVERITY_URL_KEY = "bridge_coverity_connect_url";

@@ -63,6 +63,8 @@ tmr.setInput('bridge_blackduck_token', 'accessTokenTest');
 tmr.setInput('bridge_blackduck_install_directory', 'test');
 tmr.setInput('bridge_blackduck_scan_full', "false");
 tmr.setInput('bridge_blackduck_scan_failure_severities', 'ALL');
+tmr.setInput('bridge_blackduck_automation_prcomment', String(true));
+tmr.setInput('azure_token', "token");
 const osName = process.platform;
 if (osName === "darwin") {
     tmr.setInput('bridge_download_url', 'https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.272/synopsys-bridge-macosx.zip');

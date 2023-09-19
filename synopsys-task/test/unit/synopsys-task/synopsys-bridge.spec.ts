@@ -12,7 +12,6 @@ import * as validator from "../../../src/synopsys-task/validator";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
-import * as Q from "q";
 import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
@@ -110,7 +109,7 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
             sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -150,7 +149,7 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "coverity"});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => "./bridge --stage connect --state coverity_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
             sandbox.stub(validator, "validateCoverityInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -165,7 +164,7 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackduck"});
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => "./bridge --stage blackduck --state bd_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -177,8 +176,8 @@ describe("Synopsys Bridge test", () => {
 
     });
 
-});
 
+});
 
 describe("Download Bridge", () => {
     let sandbox: sinon.SinonSandbox;
@@ -458,7 +457,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => "./bridge --stage blackduck --state bd_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -478,7 +477,7 @@ describe("Download Bridge", () => {
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => " --stage blackduck --state bd_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve(" --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");

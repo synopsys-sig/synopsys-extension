@@ -11,6 +11,8 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
   UNSPECIFIED = "UNSPECIFIED",
 }
 
+
+
 export interface Blackduck {
   blackduck: BlackduckData;
   azure?: AzureData;

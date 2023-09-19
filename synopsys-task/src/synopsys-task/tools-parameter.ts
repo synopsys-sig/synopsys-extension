@@ -18,6 +18,7 @@ import {
 import { parseToBoolean } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
+import { SynopsysAzureService } from "./azure-service-client";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -69,6 +70,9 @@ export class SynopsysToolsParameter {
       },
     };
 
+    if (inputs.POLARIS_TRIAGE) {
+      polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
     const inputJson = JSON.stringify(polData);
 
     let stateFilePath = path.join(
@@ -95,7 +99,7 @@ export class SynopsysToolsParameter {
     return command;
   }
 
-  getFormattedCommandForBlackduck(): string {
+  async getFormattedCommandForBlackduck(): Promise<string> {
     const failureSeverities: string[] =
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
@@ -178,7 +182,7 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
       console.log("Black Duck Fix PR is enabled");
       blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
-      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.azure = await this.getAzureRepoInfo();
     } else {
       // Disable fix pull request for adapters
       blackduckData.data.blackduck.fixpr = { enabled: false };
@@ -186,7 +190,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
-      blackduckData.data.azure = this.getAzureRepoInfo();
+      blackduckData.data.azure = await this.getAzureRepoInfo();
       blackduckData.data.blackduck.automation.prcomment = true;
     }
 
@@ -216,7 +220,7 @@ export class SynopsysToolsParameter {
     return command;
   }
 
-  getFormattedCommandForCoverity(): string {
+  async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
     const covData: InputData<Coverity> = {
       data: {
@@ -261,7 +265,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       console.info("Coverity Automation comment is enabled");
-      covData.data.azure = this.getAzureRepoInfo();
+      covData.data.azure = await this.getAzureRepoInfo();
       covData.data.coverity.automation.prcomment = true;
     }
 
@@ -349,7 +353,7 @@ export class SynopsysToolsParameter {
     return blackDuckFixPrData;
   }
 
-  private getAzureRepoInfo(): AzureData | undefined {
+  private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
     const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
@@ -388,7 +392,7 @@ export class SynopsysToolsParameter {
       azureRepo != "" &&
       azureRepoBranchName != ""
     ) {
-      return this.setAzureData(
+      const azureData = this.setAzureData(
         azureInstanceUrl,
         azureToken,
         azureOrganization,
@@ -397,7 +401,22 @@ export class SynopsysToolsParameter {
         azureRepoBranchName,
         azurePullRequestNumber
       );
+
+      if (
+        azurePullRequestNumber == "" &&
+        (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
+          parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
+      ) {
+        const synopsysAzureService = new SynopsysAzureService();
+        azureData.repository.pull.number =
+          await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
+            azureData
+          );
+        return azureData;
+      }
+      return azureData;
     }
+
     return undefined;
   }
 
