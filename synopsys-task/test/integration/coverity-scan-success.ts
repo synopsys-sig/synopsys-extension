@@ -43,6 +43,8 @@ tmr.setInput('bridge_coverity_connect_user_name', 'accessTokenTest')
 tmr.setInput('bridge_coverity_connect_user_password', 'http://testurl.com')
 tmr.setInput('bridge_coverity_connect_project_name', 'accessTokenTest')
 tmr.setInput('bridge_coverity_connect_stream_name', 'http://testurl.com')
+tmr.setInput('bridge_coverity_automation_prcomment', String(true))
+tmr.setInput('azure_token', "token")
 
 const osName = process.platform;
 if (osName === "darwin") {
@@ -55,6 +57,7 @@ if (osName === "darwin") {
 
 process.env['AGENT_TEMPDIRECTORY'] = __dirname;
 process.env['BUILD_REPOSITORY_LOCALPATH'] = __dirname;
+process.env["BUILD_REASON"] = "Manual"
 
 tmr.run();
 

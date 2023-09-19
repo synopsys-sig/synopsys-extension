@@ -114,18 +114,18 @@ export class SynopsysBridge {
       if (SCAN_TYPE.length > 0) {
         // To support single scan using Classic Editor
         [formattedCommand, classicEditorErrors] =
-          this.formatCommandForClassicEditor(formattedCommand, tempDir);
+          await this.formatCommandForClassicEditor(formattedCommand, tempDir);
       } else {
         // To support multi-scan using YAML
         [formattedCommand, polarisErrors] = this.preparePolarisCommand(
           formattedCommand,
           tempDir
         );
-        [formattedCommand, coverityErrors] = this.prepareBlackduckCommand(
+        [formattedCommand, coverityErrors] = await this.prepareBlackduckCommand(
           formattedCommand,
           tempDir
         );
-        [formattedCommand, blackduckErrors] = this.prepareCoverityCommand(
+        [formattedCommand, blackduckErrors] = await this.prepareCoverityCommand(
           formattedCommand,
           tempDir
         );
@@ -164,10 +164,10 @@ export class SynopsysBridge {
     }
   }
 
-  private formatCommandForClassicEditor(
+  private async formatCommandForClassicEditor(
     formattedCommand: string,
     tempDir: string
-  ): [string, string[]] {
+  ): Promise<[string, string[]]> {
     let errors: string[] = [];
     if (SCAN_TYPE == "polaris") {
       [formattedCommand, errors] = this.preparePolarisCommand(
@@ -175,12 +175,12 @@ export class SynopsysBridge {
         tempDir
       );
     } else if (SCAN_TYPE == "blackduck") {
-      [formattedCommand, errors] = this.prepareBlackduckCommand(
+      [formattedCommand, errors] = await this.prepareBlackduckCommand(
         formattedCommand,
         tempDir
       );
     } else if (SCAN_TYPE == "coverity") {
-      [formattedCommand, errors] = this.prepareCoverityCommand(
+      [formattedCommand, errors] = await this.prepareCoverityCommand(
         formattedCommand,
         tempDir
       );
@@ -203,30 +203,30 @@ export class SynopsysBridge {
     return [formattedCommand, polarisErrors];
   }
 
-  private prepareCoverityCommand(
+  private async prepareCoverityCommand(
     formattedCommand: string,
     tempDir: string
-  ): [string, string[]] {
+  ): Promise<[string, string[]]> {
     // validating and preparing command for coverity
     const coverityErrors: string[] = validateCoverityInputs();
     if (coverityErrors.length === 0 && inputs.COVERITY_URL) {
       const coverityCommandFormatter = new SynopsysToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
-        coverityCommandFormatter.getFormattedCommandForCoverity()
+        await coverityCommandFormatter.getFormattedCommandForCoverity()
       );
     }
     return [formattedCommand, coverityErrors];
   }
 
-  private prepareBlackduckCommand(
+  private async prepareBlackduckCommand(
     formattedCommand: string,
     tempDir: string
-  ): [string, string[]] {
+  ): Promise<[string, string[]]> {
     const blackduckErrors: string[] = validateBlackDuckInputs();
     if (blackduckErrors.length === 0 && inputs.BLACKDUCK_URL) {
       const blackDuckCommandFormatter = new SynopsysToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
-        blackDuckCommandFormatter.getFormattedCommandForBlackduck()
+        await blackDuckCommandFormatter.getFormattedCommandForBlackduck()
       );
     }
     return [formattedCommand, blackduckErrors];
@@ -326,9 +326,7 @@ export class SynopsysBridge {
 
     if (version != "") {
       if (await this.checkIfSynopsysBridgeVersionExists(version)) {
-        taskLib.debug(
-          "Skipping download as same Synopsys Bridge version found"
-        );
+        console.log("Skipping download as same Synopsys Bridge version found");
         return Promise.resolve("");
       }
     }
@@ -535,10 +533,14 @@ export class SynopsysBridge {
     let synopsysBridgeDirectoryPath = this.getBridgeDefaultPath();
     if (SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY) {
       synopsysBridgeDirectoryPath = SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
+      console.info(
+        "Looking for synopsys bridge in Synopsys Bridge Install Directory"
+      );
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
         throw new Error("Synopsys Bridge Install Directory does not exist");
       }
     } else {
+      console.info("Looking for synopsys bridge in default path");
       if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
         if (!taskLib.exist(this.getBridgeDefaultPath())) {
           throw new Error("Synopsys Bridge default directory does not exist");

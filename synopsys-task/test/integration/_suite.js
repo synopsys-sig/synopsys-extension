@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(require("path"));
 const assert = __importStar(require("assert"));
 const ttm = __importStar(require("azure-pipelines-task-lib/mock-test"));
-describe("Sample task tests", function () {
+describe("Synopsys task tests", function () {
     before(function () { });
     after(() => { });
     it("should succeed with polaris input", function (done) {
