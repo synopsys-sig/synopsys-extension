@@ -10,6 +10,8 @@ import { InputData } from "../../../src/synopsys-task/model/input-data";
 import * as fs from 'fs';
 import * as mocha from 'mocha';
 import * as validator from "../../../src/synopsys-task/validator";
+import {SynopsysAzureService} from "../../../src/synopsys-task/azure-service-client";
+import {AzureData} from "../../../src/synopsys-task/model/azure";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -154,6 +156,58 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true)
+
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('should success for coverity command formation with PR comment classic editor',  async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const azureData: AzureData = {
+                api: {
+                    url: "https://dev.azure.com/",
+                },
+                user: {
+                    token: "token",
+                },
+                organization: {
+                    name: "org",
+                },
+                project: {
+                    name: "test1",
+                },
+                repository: {
+                    name: "repo3",
+                    branch: {
+                        name: "test1",
+                    },
+                    pull: {},
+                },
+            };
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
+            const synopsysAzureService = new SynopsysAzureService()
+
+           const stubMethod = sandbox.stub(synopsysAzureService, 'getPullRequestIdForClassicEditorFlow');
+            stubMethod.withArgs(azureData).resolves(2);
+            //getStubMethod.withArgs(azureData).resolves(2);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);

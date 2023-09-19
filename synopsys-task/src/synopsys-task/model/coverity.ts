@@ -1,9 +1,11 @@
 import { AzureData } from "./azure";
+import { Environment } from "./blackduck";
 
 export interface Coverity {
   coverity: CoverityConnect;
   project: ProjectData;
   azure?: AzureData;
+  environment: Environment;
 }
 
 export interface ProjectData {

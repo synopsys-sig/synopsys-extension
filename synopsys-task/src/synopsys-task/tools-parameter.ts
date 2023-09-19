@@ -31,9 +31,11 @@ export class SynopsysToolsParameter {
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
   static DIAGNOSTICS_OPTION = "--diagnostics";
+  environmentScanPull: boolean;
 
   constructor(tempDir: string) {
     this.tempDir = tempDir;
+    this.environmentScanPull = false;
   }
 
   getFormattedCommandForPolaris(): string {
@@ -111,6 +113,11 @@ export class SynopsysToolsParameter {
         },
         network: {
           airGap: inputs.ENABLE_NETWORK_AIRGAP,
+        },
+        environment: {
+          scan: {
+            pull: this.environmentScanPull,
+          },
         },
       },
     };
@@ -190,7 +197,9 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
       blackduckData.data.azure = await this.getAzureRepoInfo();
+      blackduckData.data.environment.scan.pull = this.environmentScanPull;
       blackduckData.data.blackduck.automation.prcomment = true;
+      blackduckData.data;
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -238,6 +247,11 @@ export class SynopsysToolsParameter {
             airGap: inputs.ENABLE_NETWORK_AIRGAP,
           },
         },
+        environment: {
+          scan: {
+            pull: this.environmentScanPull,
+          },
+        },
         project: {},
       },
     };
@@ -265,6 +279,7 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       console.info("Coverity Automation comment is enabled");
       covData.data.azure = await this.getAzureRepoInfo();
+      covData.data.environment.scan.pull = this.environmentScanPull;
       covData.data.coverity.automation.prcomment = true;
     }
 
@@ -357,6 +372,8 @@ export class SynopsysToolsParameter {
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
             azureData
           );
+        this.environmentScanPull =
+          azureData.repository.pull.number > 0 ? true : false;
         return azureData;
       }
       return azureData;
