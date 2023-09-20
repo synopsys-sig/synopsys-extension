@@ -5,10 +5,7 @@ import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "../../../src/synopsys-task/input";
-import { Polaris } from "../../../src/synopsys-task/model/polaris";
-import { InputData } from "../../../src/synopsys-task/model/input-data";
 import * as fs from 'fs';
-import * as mocha from 'mocha';
 import * as validator from "../../../src/synopsys-task/validator";
 
 describe("Synopsys Tools Parameter test", () => {
