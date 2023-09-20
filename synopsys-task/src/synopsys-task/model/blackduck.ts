@@ -38,8 +38,8 @@ export interface NetworkAirGap {
   airGap: boolean;
 }
 export interface Environment {
-  scan: Scan;
+  scan?: Scan;
 }
 export interface Scan {
-  pull: boolean;
+  pull?: boolean;
 }

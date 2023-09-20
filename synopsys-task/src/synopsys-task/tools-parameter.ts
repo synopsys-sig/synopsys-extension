@@ -32,11 +32,9 @@ export class SynopsysToolsParameter {
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
   static DIAGNOSTICS_OPTION = "--diagnostics";
-  environmentScanPull: boolean;
 
   constructor(tempDir: string) {
     this.tempDir = tempDir;
-    this.environmentScanPull = false;
   }
 
   getFormattedCommandForPolaris(): string {
@@ -193,18 +191,7 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
       blackduckData.data.azure = await this.getAzureRepoInfo();
-      const azurePullRequestNumber =
-        taskLib.getVariable(
-          AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
-        ) || "";
-      if (azurePullRequestNumber == "") {
-        const environment: Environment = {
-          scan: {
-            pull: this.environmentScanPull,
-          },
-        };
-        blackduckData.data.environment = environment;
-      }
+      blackduckData.data.environment = this.setEnvironmentScanPullData();
       blackduckData.data.blackduck.automation.prcomment = true;
       blackduckData.data;
     }
@@ -281,18 +268,7 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       console.info("Coverity Automation comment is enabled");
       covData.data.azure = await this.getAzureRepoInfo();
-      const azurePullRequestNumber =
-        taskLib.getVariable(
-          AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
-        ) || "";
-      if (azurePullRequestNumber == "") {
-        const environment: Environment = {
-          scan: {
-            pull: this.environmentScanPull,
-          },
-        };
-        covData.data.environment = environment;
-      }
+      covData.data.environment = this.setEnvironmentScanPullData();
       covData.data.coverity.automation.prcomment = true;
     }
 
@@ -385,8 +361,6 @@ export class SynopsysToolsParameter {
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
             azureData
           );
-        this.environmentScanPull =
-          azureData.repository.pull.number > 0 ? true : false;
         return azureData;
       }
       return azureData;
@@ -430,5 +404,21 @@ export class SynopsysToolsParameter {
       azureData.repository.pull.number = Number(azurePullRequestNumber);
     }
     return azureData;
+  }
+
+  private setEnvironmentScanPullData(): Environment {
+    const azurePullRequestNumber =
+      taskLib.getVariable(
+        AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+      ) || "";
+    if (azurePullRequestNumber == "") {
+      const environment: Environment = {
+        scan: {
+          pull: true,
+        },
+      };
+      return environment;
+    }
+    return {};
   }
 }
