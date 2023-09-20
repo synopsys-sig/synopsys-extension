@@ -15,7 +15,7 @@ export interface Blackduck {
   blackduck: BlackduckData;
   azure?: AzureData;
   network: NetworkAirGap;
-  environment: Environment;
+  environment?: Environment;
 }
 
 export interface BlackduckData {

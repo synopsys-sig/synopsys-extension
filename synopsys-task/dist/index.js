@@ -940,11 +940,6 @@ class SynopsysToolsParameter {
                     network: {
                         airGap: inputs.ENABLE_NETWORK_AIRGAP,
                     },
-                    environment: {
-                        scan: {
-                            pull: this.environmentScanPull,
-                        },
-                    },
                 },
             };
             if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
@@ -1002,7 +997,15 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
                 console.info("BlackDuck Automation comment is enabled");
                 blackduckData.data.azure = yield this.getAzureRepoInfo();
-                blackduckData.data.environment.scan.pull = this.environmentScanPull;
+                const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+                if (azurePullRequestNumber == "") {
+                    const environment = {
+                        scan: {
+                            pull: this.environmentScanPull,
+                        },
+                    };
+                    blackduckData.data.environment = environment;
+                }
                 blackduckData.data.blackduck.automation.prcomment = true;
                 blackduckData.data;
             }
@@ -1043,11 +1046,6 @@ class SynopsysToolsParameter {
                             airGap: inputs.ENABLE_NETWORK_AIRGAP,
                         },
                     },
-                    environment: {
-                        scan: {
-                            pull: this.environmentScanPull,
-                        },
-                    },
                     project: {},
                 },
             };
@@ -1069,7 +1067,15 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
                 console.info("Coverity Automation comment is enabled");
                 covData.data.azure = yield this.getAzureRepoInfo();
-                covData.data.environment.scan.pull = this.environmentScanPull;
+                const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+                if (azurePullRequestNumber == "") {
+                    const environment = {
+                        scan: {
+                            pull: this.environmentScanPull,
+                        },
+                    };
+                    covData.data.environment = environment;
+                }
                 covData.data.coverity.automation.prcomment = true;
             }
             if (inputs.COVERITY_VERSION) {

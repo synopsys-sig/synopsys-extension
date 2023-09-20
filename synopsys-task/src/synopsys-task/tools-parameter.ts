@@ -5,6 +5,7 @@ import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  Environment,
 } from "./model/blackduck";
 import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
@@ -114,11 +115,6 @@ export class SynopsysToolsParameter {
         network: {
           airGap: inputs.ENABLE_NETWORK_AIRGAP,
         },
-        environment: {
-          scan: {
-            pull: this.environmentScanPull,
-          },
-        },
       },
     };
 
@@ -197,7 +193,18 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
       blackduckData.data.azure = await this.getAzureRepoInfo();
-      blackduckData.data.environment.scan.pull = this.environmentScanPull;
+      const azurePullRequestNumber =
+        taskLib.getVariable(
+          AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+        ) || "";
+      if (azurePullRequestNumber == "") {
+        const environment: Environment = {
+          scan: {
+            pull: this.environmentScanPull,
+          },
+        };
+        blackduckData.data.environment = environment;
+      }
       blackduckData.data.blackduck.automation.prcomment = true;
       blackduckData.data;
     }
@@ -247,11 +254,6 @@ export class SynopsysToolsParameter {
             airGap: inputs.ENABLE_NETWORK_AIRGAP,
           },
         },
-        environment: {
-          scan: {
-            pull: this.environmentScanPull,
-          },
-        },
         project: {},
       },
     };
@@ -279,7 +281,18 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       console.info("Coverity Automation comment is enabled");
       covData.data.azure = await this.getAzureRepoInfo();
-      covData.data.environment.scan.pull = this.environmentScanPull;
+      const azurePullRequestNumber =
+        taskLib.getVariable(
+          AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
+        ) || "";
+      if (azurePullRequestNumber == "") {
+        const environment: Environment = {
+          scan: {
+            pull: this.environmentScanPull,
+          },
+        };
+        covData.data.environment = environment;
+      }
       covData.data.coverity.automation.prcomment = true;
     }
 
