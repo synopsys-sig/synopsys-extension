@@ -1106,7 +1106,7 @@ class SynopsysToolsParameter {
         }
         const blackDuckFixPrData = {};
         blackDuckFixPrData.enabled = true;
-        blackDuckFixPrData.createSinglePR = createSinglePr === true;
+        blackDuckFixPrData.createSinglePR = createSinglePr;
         if (inputs.BLACKDUCK_FIXPR_MAXCOUNT && !createSinglePr) {
             blackDuckFixPrData.maxCount = Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT);
         }
