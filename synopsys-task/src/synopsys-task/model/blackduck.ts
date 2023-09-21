@@ -15,6 +15,7 @@ export interface Blackduck {
   blackduck: BlackduckData;
   azure?: AzureData;
   network: NetworkAirGap;
+  environment?: Environment;
 }
 
 export interface BlackduckData {
@@ -36,6 +37,12 @@ export interface AutomationData {
 
 export interface NetworkAirGap {
   airGap: boolean;
+}
+export interface Environment {
+  scan?: Scan;
+}
+export interface Scan {
+  pull?: boolean;
 }
 
 export interface BlackDuckFixPrData {
