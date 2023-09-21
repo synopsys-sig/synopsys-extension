@@ -324,10 +324,12 @@ export class SynopsysToolsParameter {
     if (inputs.BLACKDUCK_FIXPR_MAXCOUNT && !createSinglePr) {
       blackDuckFixPrData.maxCount = Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT);
     }
-    if (inputs.BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE) {
-      blackDuckFixPrData.useLongTermUpgradeGuidance = parseToBoolean(
-        inputs.BLACKDUCK_FIXPR_ENABLED
-      );
+    if (
+      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE &&
+      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE.length > 0
+    ) {
+      blackDuckFixPrData.useUpgradeGuidance =
+        inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE;
     }
 
     const fixPRFilterSeverities: string[] = [];
@@ -341,15 +343,15 @@ export class SynopsysToolsParameter {
           fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
       }
+      blackDuckFixPrData.filter = {
+        ...(inputs.BLACKDUCK_FIXPR_FILTER_BY
+          ? { by: inputs.BLACKDUCK_FIXPR_FILTER_BY }
+          : {}),
+        ...(fixPRFilterSeverities.length > 0
+          ? { severities: fixPRFilterSeverities }
+          : {}),
+      };
     }
-    blackDuckFixPrData.filter = {
-      ...(inputs.BLACKDUCK_FIXPR_FILTER_BY
-        ? { by: inputs.BLACKDUCK_FIXPR_FILTER_BY }
-        : {}),
-      ...(fixPRFilterSeverities.length > 0
-        ? { severities: fixPRFilterSeverities }
-        : {}),
-    };
     return blackDuckFixPrData;
   }
 

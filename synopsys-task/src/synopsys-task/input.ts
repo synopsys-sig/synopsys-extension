@@ -89,9 +89,11 @@ export const BLACKDUCK_FIXPR_FILTER_SEVERITIES =
     constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
     ","
   ) || "";
-export const BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE =
-  taskLib.getInput(constants.BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE_KEY)?.trim() ||
-  "";
+export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE =
+  taskLib.getDelimitedInput(
+    constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
+    ","
+  ) || "";
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";
