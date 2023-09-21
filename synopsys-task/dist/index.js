@@ -1010,7 +1010,9 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
                 console.info("BlackDuck Automation comment is enabled");
                 blackduckData.data.azure = yield this.getAzureRepoInfo();
+                blackduckData.data.environment = this.setEnvironmentScanPullData();
                 blackduckData.data.blackduck.automation.prcomment = true;
+                blackduckData.data;
             }
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
@@ -1070,6 +1072,7 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
                 console.info("Coverity Automation comment is enabled");
                 covData.data.azure = yield this.getAzureRepoInfo();
+                covData.data.environment = this.setEnvironmentScanPullData();
                 covData.data.coverity.automation.prcomment = true;
             }
             if (inputs.COVERITY_VERSION) {
@@ -1196,6 +1199,18 @@ class SynopsysToolsParameter {
             azureData.repository.pull.number = Number(azurePullRequestNumber);
         }
         return azureData;
+    }
+    setEnvironmentScanPullData() {
+        const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+        if (azurePullRequestNumber == "") {
+            const environment = {
+                scan: {
+                    pull: true,
+                },
+            };
+            return environment;
+        }
+        return {};
     }
 }
 SynopsysToolsParameter.STAGE_OPTION = "--stage";
