@@ -11,8 +11,6 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
   UNSPECIFIED = "UNSPECIFIED",
 }
 
-
-
 export interface Blackduck {
   blackduck: BlackduckData;
   azure?: AzureData;
@@ -44,11 +42,10 @@ export interface BlackDuckFixPrData {
   enabled?: boolean;
   maxCount?: number;
   createSinglePR?: boolean;
-  useLongTermUpgradeGuidance?: boolean;
+  useUpgradeGuidance?: string[];
   filter?: BlackDuckFixPrFilerData;
 }
 
 export interface BlackDuckFixPrFilerData {
-  by?: string;
   severities?: string[];
 }

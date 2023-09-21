@@ -69,8 +69,8 @@ export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY =
 export const BLACKDUCK_FIXPR_FILTER_BY_KEY = "bridge_blackduck_fixpr_filter_by";
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
   "bridge_blackduck_fixpr_filter_severities";
-export const BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE_KEY =
-  "bridge_blackduck_fixpr_useLongTermUpgradeGuidance";
+export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
+  "bridge_blackduck_fixpr_useUpgradeGuidance";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";

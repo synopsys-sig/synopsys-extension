@@ -288,12 +288,42 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_automation_fixpr",
+      "name": "bridge_blackduck_fixpr_enabled",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_useUpgradeGuidance",
+      "type": "string",
+      "label": "Configure Short Term or Long Term Guidance",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Configure whether short term or long term guidance is used, Valid Values: SHORT_TERM,LONG_TERM",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_filter_severities",
+      "type": "string",
+      "label": "List of SEVERITIES to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option. Valid Values: CRITICAL, HIGH, MEDIUM, LOW and Default: CRITICAL,HIGH",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_maxCount",
+      "type": "string",
+      "label": "Maximum number of Pull Requests to be created",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Applicable when Create Fix Pull Requests is enabled and Create Single PR is set to false",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
