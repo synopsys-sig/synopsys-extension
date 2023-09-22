@@ -347,14 +347,6 @@ export class SynopsysToolsParameter {
           fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
       }
-      blackDuckFixPrData.filter = {
-        ...(inputs.BLACKDUCK_FIXPR_FILTER_BY
-          ? { by: inputs.BLACKDUCK_FIXPR_FILTER_BY }
-          : {}),
-        ...(fixPRFilterSeverities.length > 0
-          ? { severities: fixPRFilterSeverities }
-          : {}),
-      };
     }
     return blackDuckFixPrData;
   }

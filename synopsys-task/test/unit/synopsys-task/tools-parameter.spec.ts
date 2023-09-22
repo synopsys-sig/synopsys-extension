@@ -7,7 +7,6 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "../../../src/synopsys-task/input";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
-import {BLACKDUCK_FIXPR_FILTER_BY, BLACKDUCK_FIXPR_MAXCOUNT} from "../../../src/synopsys-task/input";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -214,7 +213,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_BY', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE', {value: ''})
             sandbox.restore();
@@ -298,7 +296,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: true})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 1})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_BY', {value: 'SEVERITIES'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_UPGRADE_GUIDANCE', {value: ['LONG_TERM']})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
@@ -320,8 +317,6 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.fixpr.maxCount).to.be.equals(1);
             expect(jsonData.data.blackduck.fixpr.createSinglePR).to.be.equals(false);
             expect(jsonData.data.blackduck.fixpr.useUpgradeGuidance).to.be.contains('LONG_TERM');
-            expect(jsonData.data.blackduck.fixpr.filter.by).to.be.equals('SEVERITIES');
-            expect(jsonData.data.blackduck.fixpr.filter.severities).to.be.an("array");
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');

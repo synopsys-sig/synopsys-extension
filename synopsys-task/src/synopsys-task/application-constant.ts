@@ -66,7 +66,6 @@ export const BLACKDUCK_FIXPR_ENABLED_KEY = "bridge_blackduck_fixpr_enabled";
 export const BLACKDUCK_FIXPR_MAXCOUNT_KEY = "bridge_blackduck_fixpr_maxCount";
 export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY =
   "bridge_blackduck_fixpr_createSinglePR";
-export const BLACKDUCK_FIXPR_FILTER_BY_KEY = "bridge_blackduck_fixpr_filter_by";
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
   "bridge_blackduck_fixpr_filter_severities";
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
