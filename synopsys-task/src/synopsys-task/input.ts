@@ -82,8 +82,6 @@ export const BLACKDUCK_FIXPR_MAXCOUNT =
 export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR =
   taskLib.getInput(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)?.trim() ||
   "";
-export const BLACKDUCK_FIXPR_FILTER_BY =
-  taskLib.getInput(constants.BLACKDUCK_FIXPR_FILTER_BY_KEY)?.trim() || "";
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES =
   taskLib.getDelimitedInput(
     constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
