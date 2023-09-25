@@ -293,7 +293,7 @@
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "helpMarkDown": "Flag to enable/disable the automatic fix pull request creations for Black Duck.\nDefault value is false",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -303,7 +303,7 @@
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Configure whether short term or long term guidance is used, Valid Values: SHORT_TERM,LONG_TERM",
+      "helpMarkDown": "Blackduck Hub upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -313,7 +313,7 @@
       "label": "List of SEVERITIES to be filtered",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option. Valid Values: CRITICAL, HIGH, MEDIUM, LOW and Default: CRITICAL,HIGH",
+      "helpMarkDown": "Filter the vulnerabilities by given severities, Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option Values. Default is \"CRITICAL,  HIGH\".",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -323,7 +323,7 @@
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Applicable when Create Fix Pull Requests is enabled and Create Single PR is set to false",
+      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
