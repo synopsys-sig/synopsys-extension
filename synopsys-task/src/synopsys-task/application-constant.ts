@@ -66,3 +66,7 @@ export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
+
+export const RETRY_DELAY_IN_MILLISECONDS = 15000;
+export const RETRY_COUNT = 3;
+export const NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);
