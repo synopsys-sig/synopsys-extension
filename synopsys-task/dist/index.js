@@ -101,7 +101,7 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.BRIDGE_DIAGNOSTICS_FOLDER = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -159,6 +159,9 @@ exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = "bridge_blackduck_fixpr_useUpgrad
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
+exports.RETRY_DELAY_IN_MILLISECONDS = 15000;
+exports.RETRY_COUNT = 3;
+exports.NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);
 
 
 /***/ }),
@@ -266,6 +269,201 @@ function uploadDiagnostics(workspaceDir) {
     }
 }
 exports.uploadDiagnostics = uploadDiagnostics;
+
+
+/***/ }),
+
+/***/ 9510:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports._getFileSizeOnDisk = exports.downloadTool = exports.debug = void 0;
+const httpm = __importStar(__nccwpck_require__(5538));
+const path = __importStar(__nccwpck_require__(1017));
+const fs = __importStar(__nccwpck_require__(7147));
+const tl = __importStar(__nccwpck_require__(347));
+const userAgent = "SynopsysSecurityScan";
+const requestOptions = {
+    // ignoreSslError: true,
+    proxy: tl.getHttpProxyConfiguration(),
+    cert: tl.getHttpCertConfiguration(),
+    allowRedirects: true,
+    allowRetries: true,
+};
+function debug(message) {
+    tl.debug(message);
+}
+exports.debug = debug;
+/**
+ * Download a tool from an url and stream it into a file
+ *
+ * @param url                url of tool to download
+ * @param fileName           optional fileName.  Should typically not use (will be a guid for reliability). Can pass fileName with an absolute path.
+ * @param handlers           optional handlers array.  Auth handlers to pass to the HttpClient for the tool download.
+ * @param additionalHeaders  optional custom HTTP headers.  This is passed to the REST client that downloads the tool.
+ */
+function downloadTool(url, fileName, handlers, additionalHeaders) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            // check if it's an absolute path already
+            let destPath;
+            if (path.isAbsolute(fileName)) {
+                destPath = fileName;
+            }
+            else {
+                destPath = path.join(_getAgentTemp(), fileName);
+            }
+            try {
+                const http = new httpm.HttpClient(userAgent, handlers, requestOptions);
+                tl.debug(fileName);
+                // make sure that the folder exists
+                tl.mkdirP(path.dirname(destPath));
+                tl.debug(tl.loc("TOOL_LIB_Downloading", url));
+                tl.debug("destination " + destPath);
+                if (fs.existsSync(destPath)) {
+                    tl.debug("Destination file path already exists");
+                    _deleteFile(destPath);
+                }
+                const response = yield http.get(url, additionalHeaders);
+                if (response.message.statusCode != 200) {
+                    tl.debug(`Failed to download "${fileName}" from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
+                    reject(new Error((_a = response.message.statusCode) === null || _a === void 0 ? void 0 : _a.toString()));
+                }
+                const downloadedContentLength = _getContentLengthOfDownloadedFile(response);
+                if (!isNaN(downloadedContentLength)) {
+                    tl.debug(`Content-Length of downloaded file: ${downloadedContentLength}`);
+                }
+                else {
+                    tl.debug(`Content-Length header missing`);
+                }
+                tl.debug("creating stream");
+                const file = fs.createWriteStream(destPath);
+                file
+                    .on("open", () => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        response.message
+                            .on("error", (err) => {
+                            file.end();
+                            reject(err);
+                        })
+                            .pipe(file);
+                    }
+                    catch (err) {
+                        reject(err);
+                    }
+                }))
+                    .on("error", (err) => {
+                    file.end();
+                    reject(err);
+                })
+                    .on("close", () => {
+                    let fileSizeInBytes;
+                    try {
+                        fileSizeInBytes = _getFileSizeOnDisk(destPath);
+                    }
+                    catch (err) {
+                        const error = err;
+                        fileSizeInBytes = NaN;
+                        tl.warning(`Unable to check file size of ${destPath} due to error: ${error.message}`);
+                    }
+                    if (!isNaN(fileSizeInBytes)) {
+                        tl.debug(`Downloaded file size: ${fileSizeInBytes} bytes`);
+                    }
+                    else {
+                        tl.debug(`File size on disk was not found`);
+                    }
+                    if (!isNaN(downloadedContentLength) &&
+                        !isNaN(fileSizeInBytes) &&
+                        fileSizeInBytes !== downloadedContentLength) {
+                        const errMsg = `Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
+                        tl.warning(errMsg);
+                        reject(errMsg);
+                    }
+                    resolve(destPath);
+                });
+            }
+            catch (error) {
+                _deleteFile(destPath);
+                throw error;
+            }
+        }));
+    });
+}
+exports.downloadTool = downloadTool;
+/**
+ * Gets size of downloaded file from "Content-Length" header
+ *
+ * @param response    response for request to get the file
+ * @returns number if the 'content-length' is not empty, otherwise NaN
+ */
+function _getContentLengthOfDownloadedFile(response) {
+    const contentLengthHeader = response.message.headers["content-length"];
+    return parseInt(contentLengthHeader);
+}
+/**
+ * Gets size of file saved to disk
+ *
+ * @param filePath    the path to the file, saved to the disk
+ * @returns size of file saved to disk
+ */
+function _getFileSizeOnDisk(filePath) {
+    return fs.statSync(filePath).size;
+}
+exports._getFileSizeOnDisk = _getFileSizeOnDisk;
+function _getAgentTemp() {
+    tl.assertAgent("2.115.0");
+    const tempDirectory = tl.getVariable("Agent.TempDirectory");
+    if (!tempDirectory) {
+        throw new Error("Agent.TempDirectory is not set");
+    }
+    return tempDirectory;
+}
+function _deleteFile(filePath) {
+    try {
+        if (fs.existsSync(filePath)) {
+            fs.rmSync(filePath);
+            tl.debug(`Removed unfinished downloaded file`);
+        }
+    }
+    catch (err) {
+        tl.debug(`Failed to delete '${filePath}'. ${err}`);
+    }
+}
 
 
 /***/ }),
@@ -436,13 +634,15 @@ const path = __importStar(__nccwpck_require__(1017));
 const taskLib = __importStar(__nccwpck_require__(347));
 const HttpClient_1 = __nccwpck_require__(5538);
 const tools_parameter_1 = __nccwpck_require__(6233);
+const utility_1 = __nccwpck_require__(837);
 const validator_1 = __nccwpck_require__(6717);
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
-const utility_1 = __nccwpck_require__(837);
+const utility_2 = __nccwpck_require__(837);
 const fs_1 = __nccwpck_require__(7147);
 const dom_parser_1 = __importDefault(__nccwpck_require__(9592));
 const input_1 = __nccwpck_require__(7533);
+const application_constant_1 = __nccwpck_require__(3051);
 class SynopsysBridge {
     constructor() {
         this.WINDOWS_PLATFORM = "win64";
@@ -462,7 +662,7 @@ class SynopsysBridge {
             if (taskLib.exist(extractZippedFilePath)) {
                 yield taskLib.rmRF(extractZippedFilePath);
             }
-            yield (0, utility_1.extractZipped)(fileInfo.filePath, extractZippedFilePath);
+            yield (0, utility_2.extractZipped)(fileInfo.filePath, extractZippedFilePath);
             return Promise.resolve(extractZippedFilePath);
         });
     }
@@ -521,7 +721,7 @@ class SynopsysBridge {
                 if (validationErrors.length > 0) {
                     console.log(new Error(validationErrors.join(",")));
                 }
-                if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
+                if ((0, utility_2.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                     formattedCommand = formattedCommand
                         .concat(tools_parameter_1.SynopsysToolsParameter.SPACE)
                         .concat(tools_parameter_1.SynopsysToolsParameter.DIAGNOSTICS_OPTION);
@@ -592,7 +792,7 @@ class SynopsysBridge {
             try {
                 const bridgeUrl = yield this.getBridgeUrl();
                 if (bridgeUrl != "" && bridgeUrl != null) {
-                    const downloadBridge = yield (0, utility_1.getRemoteFile)(tempDir, bridgeUrl);
+                    const downloadBridge = yield (0, utility_2.getRemoteFile)(tempDir, bridgeUrl);
                     console.info("Download of Synopsys Bridge completed");
                     // Extracting bridge
                     return yield this.extractBridge(downloadBridge);
@@ -690,25 +890,40 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             let htmlResponse = "";
             const httpClient = new HttpClient_1.HttpClient("synopsys-task");
-            const httpResponse = yield httpClient.get(this.bridgeArtifactoryURL, {
-                Accept: "text/html",
-            });
-            htmlResponse = yield httpResponse.readBody();
-            const domParser = new dom_parser_1.default();
-            const doms = domParser.parseFromString(htmlResponse);
-            const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+            let retryCountLocal = application_constant_1.RETRY_COUNT;
+            let httpResponse;
+            let retryDelay = application_constant_1.RETRY_DELAY_IN_MILLISECONDS;
             const versionArray = [];
-            if (elems != null) {
-                for (const el of elems) {
-                    const content = el.textContent;
-                    if (content != null) {
-                        const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
-                        if (v != null && v.length === 1) {
-                            versionArray.push(v[0]);
+            do {
+                httpResponse = yield httpClient.get(this.bridgeArtifactoryURL, {
+                    Accept: "text/html",
+                });
+                if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
+                    retryDelay = yield this.retrySleepHelper("Getting all available bridge versions has been failed, Retries left: ", retryCountLocal, retryDelay);
+                    retryCountLocal--;
+                }
+                else {
+                    retryCountLocal = 0;
+                    htmlResponse = yield httpResponse.readBody();
+                    const domParser = new dom_parser_1.default();
+                    const doms = domParser.parseFromString(htmlResponse);
+                    const elems = doms.getElementsByTagName("a"); //querySelectorAll('a')
+                    if (elems != null) {
+                        for (const el of elems) {
+                            const content = el.textContent;
+                            if (content != null) {
+                                const v = content.match("^[0-9]+.[0-9]+.[0-9]+");
+                                if (v != null && v.length === 1) {
+                                    versionArray.push(v[0]);
+                                }
+                            }
                         }
                     }
                 }
-            }
+                if (retryCountLocal == 0) {
+                    taskLib.warning("Unable to retrieve the Synopsys Bridge Versions from Artifactory");
+                }
+            } while (retryCountLocal > 0);
             return versionArray;
         });
     }
@@ -728,22 +943,31 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const httpClient = new HttpClient_1.HttpClient("");
-                const httpResponse = yield httpClient.get(latestVersionsUrl, {
-                    Accept: "text/html",
-                });
-                if (httpResponse.message.statusCode === 200) {
-                    const htmlResponse = (yield httpResponse.readBody()).trim();
-                    const lines = htmlResponse.split("\n");
-                    for (const line of lines) {
-                        if (line.includes("Synopsys Bridge Package")) {
-                            const newerVersion = line.split(":")[1].trim();
-                            return newerVersion;
+                let retryCountLocal = application_constant_1.RETRY_COUNT;
+                let retryDelay = application_constant_1.RETRY_DELAY_IN_MILLISECONDS;
+                let httpResponse;
+                do {
+                    httpResponse = yield httpClient.get(latestVersionsUrl, {
+                        Accept: "text/html",
+                    });
+                    if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
+                        retryDelay = yield this.retrySleepHelper("Getting latest Synopsys Bridge versions has been failed, Retries left: ", retryCountLocal, retryDelay);
+                        retryCountLocal--;
+                    }
+                    else if (httpResponse.message.statusCode === 200) {
+                        retryCountLocal = 0;
+                        const htmlResponse = (yield httpResponse.readBody()).trim();
+                        const lines = htmlResponse.split("\n");
+                        for (const line of lines) {
+                            if (line.includes("Synopsys Bridge Package")) {
+                                return line.split(":")[1].trim();
+                            }
                         }
                     }
-                }
-                else {
-                    taskLib.debug("Unable to retrieve the most recent version from Artifactory URL");
-                }
+                    if (retryCountLocal == 0) {
+                        taskLib.warning("Unable to retrieve the most recent version from Artifactory URL");
+                    }
+                } while (retryCountLocal > 0);
             }
             catch (e) {
                 taskLib.debug("Error reading version file content: ".concat(e.message));
@@ -827,6 +1051,19 @@ class SynopsysBridge {
                 }
             }
             return synopsysBridgeDirectoryPath;
+        });
+    }
+    retrySleepHelper(message, retryCountLocal, retryDelay) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.info(message
+                .concat(String(retryCountLocal))
+                .concat(", Waiting: ")
+                .concat(String(retryDelay / 1000))
+                .concat(" Seconds"));
+            yield (0, utility_1.sleep)(retryDelay);
+            // Delayed exponentially starting from 15 seconds
+            retryDelay = retryDelay * 2;
+            return retryDelay;
         });
     }
 }
@@ -1271,10 +1508,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.sleep = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
+const toolLibLocal = __importStar(__nccwpck_require__(9510));
 const process = __importStar(__nccwpck_require__(7282));
 const taskLib = __importStar(__nccwpck_require__(347));
 function cleanUrl(url) {
@@ -1293,7 +1531,7 @@ function extractZipped(file, destinationPath) {
         if (file == null || file.length === 0) {
             return Promise.reject(new Error("File does not exist"));
         }
-        //Extract file name from file with full path
+        // Extract file name from file with full path
         if (destinationPath == null || destinationPath.length === 0) {
             return Promise.reject(new Error("No destination directory found"));
         }
@@ -1312,22 +1550,43 @@ function getRemoteFile(destFilePath, url) {
         if (url == null || url.length === 0) {
             return Promise.reject(new Error("URL cannot be empty"));
         }
-        try {
-            let fileNameFromUrl = "";
-            if (taskLib.stats(destFilePath).isDirectory()) {
-                fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
-                destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
+        let fileNameFromUrl = "";
+        if (taskLib.stats(destFilePath).isDirectory()) {
+            fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
+            destFilePath = path_1.default.join(destFilePath, fileNameFromUrl || application_constant_1.SYNOPSYS_BRIDGE_ZIP_FILE_NAME);
+        }
+        let retryCountLocal = application_constant_1.RETRY_COUNT;
+        let retryDelay = application_constant_1.RETRY_DELAY_IN_MILLISECONDS;
+        do {
+            try {
+                const toolPath = yield toolLibLocal.downloadTool(url, destFilePath);
+                return {
+                    filePath: toolPath,
+                    fileName: fileNameFromUrl,
+                };
             }
-            const toolPath = yield toolLib.downloadTool(url, destFilePath);
-            const downloadFileResp = {
-                filePath: toolPath,
-                fileName: fileNameFromUrl,
-            };
-            return Promise.resolve(downloadFileResp);
-        }
-        catch (error) {
-            return Promise.reject(error);
-        }
+            catch (err) {
+                const error = err;
+                if (retryCountLocal == 0) {
+                    throw error;
+                }
+                if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
+                    error.message.includes("did not match downloaded file size")) {
+                    console.info("Synopsys Bridge download has been failed, Retries left: "
+                        .concat(String(retryCountLocal))
+                        .concat(", Waiting: ")
+                        .concat(String(retryDelay / 1000))
+                        .concat(" Seconds"));
+                    yield sleep(retryDelay);
+                    retryDelay = retryDelay * 2;
+                    retryCountLocal--;
+                }
+                else {
+                    retryCountLocal = 0;
+                }
+            }
+        } while (retryCountLocal >= 0);
+        return Promise.reject("Synopsys bridge download has been failed");
     });
 }
 exports.getRemoteFile = getRemoteFile;
@@ -1350,6 +1609,12 @@ function getWorkSpaceDirectory() {
     }
 }
 exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
+function sleep(duration) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, duration);
+    });
+}
+exports.sleep = sleep;
 
 
 /***/ }),
