@@ -351,6 +351,11 @@ export class SynopsysToolsParameter {
         }
       }
     }
+    blackDuckFixPrData.filter = {
+      ...(fixPRFilterSeverities.length > 0
+        ? { severities: fixPRFilterSeverities }
+        : {}),
+    };
     return blackDuckFixPrData;
   }
 
