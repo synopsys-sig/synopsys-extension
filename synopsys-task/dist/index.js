@@ -1123,6 +1123,9 @@ class SynopsysToolsParameter {
                 }
             }
         }
+        blackDuckFixPrData.filter = Object.assign({}, (fixPRFilterSeverities.length > 0
+            ? { severities: fixPRFilterSeverities }
+            : {}));
         return blackDuckFixPrData;
     }
     getAzureRepoInfo() {
