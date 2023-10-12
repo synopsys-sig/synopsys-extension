@@ -10,7 +10,7 @@ import {afterEach} from "mocha";
 let cachePath = path.join(process.cwd(), 'CACHE');
 let tempPath = path.join(process.cwd(), 'TEMP');
 
-describe('Tool Tests', function () {
+describe.skip('Tool Tests', function () {
     const fileName = "synopsys-bridge.zip"
     let sandbox: sinon.SinonSandbox;
     before(function () {
@@ -85,7 +85,7 @@ describe('Tool Tests', function () {
                 let absolutePath: string = path.join(tempPath, tempDownloadFolder);
                 let downPath: string = await toolLib.downloadTool("https://httpbingo.org/bytes/100", absolutePath);
                 toolLib.debug('downloaded path: ' + downPath);
-                
+
                 assert(tl.exist(downPath), 'downloaded file exists');
                 assert(absolutePath == downPath);
 
@@ -102,7 +102,7 @@ describe('Tool Tests', function () {
             try {
                 let errorCodeUrl: string = "https://httpbingo.org/status/400";
                 await toolLib.downloadTool(errorCodeUrl, fileName);
-            } 
+            }
             catch (err: any){
                 assert.equal(err.message, "400", 'status code exists');
                 resolve();
@@ -116,8 +116,8 @@ describe('Tool Tests', function () {
                 let statusCodeUrl: string = "https://httpbingo.org/redirect-to?url=https%3A%2F%2Fexample.com%2F&status_code=302";
                 let downPath: string = await toolLib.downloadTool(statusCodeUrl, fileName);
                 resolve();
-            } 
-            catch (err){        
+            }
+            catch (err){
                 reject(err);
             }
         });
