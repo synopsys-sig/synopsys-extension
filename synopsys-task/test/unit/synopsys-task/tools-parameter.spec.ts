@@ -7,6 +7,7 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "../../../src/synopsys-task/input";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
+import {REPORTS_SARIF_CREATE, REPORTS_SARIF_SEVERITIES} from "../../../src/synopsys-task/input";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -51,6 +52,65 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
 
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris command formation with sarif report create', function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: true})
+
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
+            expect(jsonData.data.polaris.assessment.types).to.be.contains('SCA');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.issue.types).to.be.length(0)
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris command formation with sarif report parameters', function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_ISSUE_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_GROUP_SCA_ISSUES', {value: true})
+
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
+            expect(jsonData.data.polaris.assessment.types).to.be.contains('SCA');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.groupSCAIssues).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.reports.sarif.severities).to.be.contains('HIGH');
+            expect(jsonData.data.reports.sarif.issue.types).to.be.contains('SAST');
             expect(formattedCommand).contains('--stage polaris');
 
             polarisStateFile = '"'.concat(polarisStateFile).concat('"');
@@ -421,6 +481,51 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');   
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should success for blackduck command formation with sarif report create', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: true})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should success for blackduck command formation with sarif report parameters', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
+            Object.defineProperty(inputs, 'REPORTS_SARIF_GROUP_SCA_ISSUES', {value: false})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            console.log(formattedCommand)
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.reports.sarif.groupSCAIssues).to.be.equals(false);
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');

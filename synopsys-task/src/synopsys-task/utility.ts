@@ -108,6 +108,20 @@ export function parseToBoolean(value: string | boolean): boolean {
   return false;
 }
 
+export function isBoolean(value: string | boolean): boolean {
+  if (
+    value !== null &&
+    value !== "" &&
+    (value.toString().toLowerCase() === "true" ||
+      value === true ||
+      value.toString().toLowerCase() === "false" ||
+      value === false)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function getWorkSpaceDirectory(): string {
   const repoLocalPath: string | undefined =
     process.env["BUILD_REPOSITORY_LOCALPATH"];

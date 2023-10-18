@@ -1,4 +1,5 @@
 import { AzureData } from "./azure";
+import { Reports } from "./reports";
 export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
   ALL = "ALL",
   NONE = "NONE",
@@ -16,6 +17,7 @@ export interface Blackduck {
   azure?: AzureData;
   network: NetworkAirGap;
   environment?: Environment;
+  reports?: Reports;
 }
 
 export interface BlackduckData {

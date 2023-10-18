@@ -7,7 +7,10 @@ import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 import * as inputs from "./synopsys-task/input";
-import { uploadDiagnostics } from "./synopsys-task/diagnostics";
+import {
+  uploadDiagnostics,
+  uploadSarifResultAsArtifact,
+} from "./synopsys-task/diagnostics";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -33,6 +36,14 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
+    if (
+      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      console.log("REPORTS_SARIF_CREATE enabled");
+      uploadSarifResultAsArtifact(workSpaceDir);
+    }
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);
     }
@@ -42,7 +53,7 @@ export async function run() {
 }
 
 export function logBridgeExitCodes(message: string): string {
-  var exitCode = message.trim().slice(-1);
+  const exitCode = message.trim().slice(-1);
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
     : message;

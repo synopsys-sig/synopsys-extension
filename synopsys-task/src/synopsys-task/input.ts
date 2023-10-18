@@ -98,3 +98,55 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE =
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";
+export const REPORTS_SARIF_CREATE =
+  taskLib.getInput(constants.REPORTS_SARIF_CREATE_KEY)?.trim() || "";
+
+export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ?.trim() || "";
+
+export const BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ?.trim() || "";
+export const REPORTS_SARIF_FILE_PATH =
+  taskLib.getInput(constants.REPORTS_SARIF_FILE_PATH_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR)
+    ?.trim() ||
+  taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+export const REPORTS_SARIF_ISSUE_TYPES =
+  taskLib.getDelimitedInput(constants.REPORTS_SARIF_ISSUE_TYPES_KEY, ",") || "";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES =
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_CLASSIC_EDITOR,
+    ","
+  ) || "";
+export const REPORTS_SARIF_SEVERITIES =
+  taskLib.getDelimitedInput(constants.REPORTS_SARIF_SEVERITIES_KEY, ",") || "";
+export const POLARIS_REPORTS_SARIF_SEVERITIES =
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR,
+    ","
+  ) || "";
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES =
+  taskLib.getDelimitedInput(
+    constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR,
+    ","
+  ) || "";
+export const REPORTS_SARIF_GROUP_SCA_ISSUES =
+  taskLib.getInput(constants.REPORTS_SARIF_GROUP_SCA_ISSUES)?.trim() || "";
+
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR)
+    ?.trim() || "";
+
+export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
+  taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR)
+    ?.trim() || "";
