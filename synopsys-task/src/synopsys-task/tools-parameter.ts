@@ -16,10 +16,11 @@ import {
   validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
 } from "./validator";
-import { parseToBoolean } from "./utility";
+import { parseToBoolean, isBoolean } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
+import { Reports } from "./model/reports";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -77,6 +78,13 @@ export class SynopsysToolsParameter {
 
     if (inputs.POLARIS_TRIAGE) {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
+
+    if (
+      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      polData.data.reports = this.setSarifReportsInputs();
     }
     const inputJson = JSON.stringify(polData);
     let stateFilePath = path.join(
@@ -198,6 +206,13 @@ export class SynopsysToolsParameter {
       blackduckData.data.environment = this.setEnvironmentScanPullData();
       blackduckData.data.blackduck.automation.prcomment = true;
       blackduckData.data;
+    }
+
+    if (
+      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      blackduckData.data.reports = this.setSarifReportsInputs();
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -346,7 +361,7 @@ export class SynopsysToolsParameter {
       inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0
     ) {
       for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
-        if (fixPrSeverity != null && fixPrSeverity !== "") {
+        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
           fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
       }
@@ -477,5 +492,77 @@ export class SynopsysToolsParameter {
       return environment;
     }
     return {};
+  }
+  private setSarifReportsInputs(): Reports {
+    const sarifReportIssueTypes: string[] = [];
+    const polarisIssueTypes = inputs.REPORTS_SARIF_ISSUE_TYPES
+      ? inputs.REPORTS_SARIF_ISSUE_TYPES
+      : inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES;
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      polarisIssueTypes &&
+      polarisIssueTypes.length > 0
+    ) {
+      const polarisIssueTypes =
+        inputs.REPORTS_SARIF_ISSUE_TYPES ||
+        inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES;
+      for (const issueType of polarisIssueTypes) {
+        if (issueType != null && issueType.trim() !== "") {
+          sarifReportIssueTypes.push(issueType.trim());
+        }
+      }
+    }
+    const sarifReportFilterSeverities: string[] = [];
+    let sarifSeverities = inputs.REPORTS_SARIF_SEVERITIES;
+    if (
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
+    ) {
+      sarifSeverities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES;
+    } else if (
+      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
+      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.length > 0
+    ) {
+      sarifSeverities = inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES;
+    }
+    if (sarifSeverities != null && sarifSeverities.length > 0) {
+      for (const fixPrSeverity of sarifSeverities) {
+        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
+          sarifReportFilterSeverities.push(fixPrSeverity.trim());
+        }
+      }
+    }
+    let groupSCAIssues = true;
+    if (isBoolean(inputs.REPORTS_SARIF_GROUP_SCA_ISSUES)) {
+      groupSCAIssues = JSON.parse(inputs.REPORTS_SARIF_GROUP_SCA_ISSUES);
+    } else if (
+      inputs.POLARIS_SERVER_URL &&
+      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
+    ) {
+      groupSCAIssues = JSON.parse(
+        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
+      );
+    } else if (
+      inputs.BLACKDUCK_URL &&
+      isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
+    ) {
+      groupSCAIssues = JSON.parse(
+        inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
+      );
+    }
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+        severities: sarifReportFilterSeverities,
+        file: {
+          path: inputs.REPORTS_SARIF_FILE_PATH.trim(),
+        },
+        issue: {
+          types: sarifReportIssueTypes,
+        },
+        groupSCAIssues: groupSCAIssues,
+      },
+    };
+    return reportData;
   }
 }

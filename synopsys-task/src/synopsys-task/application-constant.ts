@@ -73,9 +73,34 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+export const REPORTS_SARIF_CREATE_KEY = "bridge_reports_sarif_create";
+export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  "polarisReportsSarifCreate";
+export const BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  "blackduckReportsSarifCreate";
+export const REPORTS_SARIF_FILE_PATH_KEY = "bridge_reports_sarif_file_path";
+export const POLARIS_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR =
+  "polarisReportsSarifFilePath";
+export const BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR =
+  "blackduckReportsSarifFilePath";
+export const REPORTS_SARIF_ISSUE_TYPES_KEY = "bridge_reports_sarif_issue_types";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_CLASSIC_EDITOR =
+  "polarisReportsSarifIssueTypes";
+export const REPORTS_SARIF_SEVERITIES_KEY = "bridge_reports_sarif_severities";
+export const POLARIS_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR =
+  "polarisReportsSarifSeverities";
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR =
+  "blackduckReportsSarifSeverities";
+export const REPORTS_SARIF_GROUP_SCA_ISSUES =
+  "bridge_reports_sarif_groupSCAIssues";
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR =
+  "polarisReportsSarifGroupSCAIssues";
+export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR =
+  "blackduckReportsSarifGroupSCAIssues";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
-
+export const BRIDGE_SARIF_GENERATOR_FOLDER = "SARIF Report Generator";
+export const SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = "sarif_report";
 export const RETRY_DELAY_IN_MILLISECONDS = 15000;
 export const RETRY_COUNT = 3;
 export const NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);

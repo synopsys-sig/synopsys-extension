@@ -154,4 +154,32 @@ describe("Utilities", () => {
             expect(result).equals(false)
         });
     });
+
+    context('isBoolean', () => {
+
+        it('should return true with string value as true', function () {
+            const result = utility.isBoolean("true");
+            expect(result).equals(true)
+        });
+
+        it('should return true with boolean input as true', function () {
+            const result = utility.isBoolean(true);
+            expect(result).equals(true)
+        });
+
+        it('should return true with string value as FALSE', function () {
+            const result = utility.isBoolean("FALSE");
+            expect(result).equals(true)
+        });
+
+        it('should return true with boolean input as false', function () {
+            const result = utility.isBoolean(false);
+            expect(result).equals(true)
+        });
+
+        it('should return false with any random string value', function () {
+            const result = utility.isBoolean("test");
+            expect(result).equals(false)
+        });
+    });
 });
