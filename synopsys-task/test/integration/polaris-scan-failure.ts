@@ -44,6 +44,7 @@ tmr.setInput('bridge_polaris_accessToken', 'accessTokenTest')
 tmr.setInput('bridge_polaris_application_name', 'testapplicaiton')
 tmr.setInput('bridge_polaris_project_name','testprojectname')
 tmr.setInput('bridge_polaris_assessment_types', 'SCA,SAST')
+tmr.setInput('bridge_polaris_triage', 'true')
 
 const osName = process.platform;
 if (osName === "darwin") {
