@@ -35,9 +35,6 @@ export const POLARIS_SERVER_URL =
   taskLib.getInput(constants.POLARIS_SERVER_URL_KEY)?.trim() || "";
 export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() || "";
-export const POLARIS_BRANCH_NAME =
-  taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)?.trim() || "";
-
 // Coverity related inputs
 export const COVERITY_URL =
   taskLib.getInput(constants.COVERITY_URL_KEY)?.trim() || "";
@@ -74,27 +71,10 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
     constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
     ","
   ) || "";
-export const BLACKDUCK_FIXPR_ENABLED =
-  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() ||
-  taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)?.trim() ||
-  "";
+export const BLACKDUCK_AUTOMATION_FIXPR_KEY =
+  taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() || "";
 export const BLACKDUCK_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
-export const BLACKDUCK_FIXPR_MAXCOUNT =
-  taskLib.getInput(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)?.trim() || "";
-export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR =
-  taskLib.getInput(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)?.trim() ||
-  "";
-export const BLACKDUCK_FIXPR_FILTER_SEVERITIES =
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
-    ","
-  ) || "";
-export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE =
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
-    ","
-  ) || "";
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";
