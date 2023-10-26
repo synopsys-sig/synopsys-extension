@@ -44,7 +44,6 @@ tmr.setInput('bridge_polaris_project_name','testprojectname')
 tmr.setInput('bridge_polaris_assessment_types', 'SCA,SAST')
 tmr.setInput('bridge_polaris_triage', 'REQUIRED')
 
-tmr.setInput('bridge_polaris_branch_name', 'feature1')
 
 const osName = process.platform;
 if (osName === "darwin") {
