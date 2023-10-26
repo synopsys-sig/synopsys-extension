@@ -27,7 +27,6 @@ export interface BlackduckData {
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
   };
   automation: AutomationData;
-  fixpr?: BlackDuckFixPrData;
 }
 
 export interface AutomationData {
@@ -43,16 +42,4 @@ export interface Environment {
 }
 export interface Scan {
   pull?: boolean;
-}
-
-export interface BlackDuckFixPrData {
-  enabled?: boolean;
-  maxCount?: number;
-  createSinglePR?: boolean;
-  useUpgradeGuidance?: string[];
-  filter?: BlackDuckFixPrFilerData;
-}
-
-export interface BlackDuckFixPrFilerData {
-  severities?: string[];
 }

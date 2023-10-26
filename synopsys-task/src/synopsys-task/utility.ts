@@ -1,12 +1,6 @@
 import path from "path";
-import {
-  NON_RETRY_HTTP_CODES,
-  RETRY_COUNT,
-  RETRY_DELAY_IN_MILLISECONDS,
-  SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
-} from "./application-constant";
+import { SYNOPSYS_BRIDGE_ZIP_FILE_NAME } from "./application-constant";
 import * as toolLib from "azure-pipelines-tool-lib";
-import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -30,7 +24,7 @@ export async function extractZipped(
     return Promise.reject(new Error("File does not exist"));
   }
 
-  // Extract file name from file with full path
+  //Extract file name from file with full path
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(new Error("No destination directory found"));
   }
@@ -51,50 +45,26 @@ export async function getRemoteFile(
     return Promise.reject(new Error("URL cannot be empty"));
   }
 
-  let fileNameFromUrl = "";
-  if (taskLib.stats(destFilePath).isDirectory()) {
-    fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
-    destFilePath = path.join(
-      destFilePath,
-      fileNameFromUrl || SYNOPSYS_BRIDGE_ZIP_FILE_NAME
-    );
-  }
-
-  let retryCountLocal = RETRY_COUNT;
-  let retryDelay = RETRY_DELAY_IN_MILLISECONDS;
-  do {
-    try {
-      const toolPath = await toolLibLocal.downloadTool(url, destFilePath);
-      return {
-        filePath: toolPath,
-        fileName: fileNameFromUrl,
-      };
-    } catch (err) {
-      const error = err as Error;
-      if (retryCountLocal == 0) {
-        throw error;
-      }
-
-      if (
-        !NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
-        error.message.includes("did not match downloaded file size")
-      ) {
-        console.info(
-          "Synopsys Bridge download has been failed, Retries left: "
-            .concat(String(retryCountLocal))
-            .concat(", Waiting: ")
-            .concat(String(retryDelay / 1000))
-            .concat(" Seconds")
-        );
-        await sleep(retryDelay);
-        retryDelay = retryDelay * 2;
-        retryCountLocal--;
-      } else {
-        retryCountLocal = 0;
-      }
+  try {
+    let fileNameFromUrl = "";
+    if (taskLib.stats(destFilePath).isDirectory()) {
+      fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
+      destFilePath = path.join(
+        destFilePath,
+        fileNameFromUrl || SYNOPSYS_BRIDGE_ZIP_FILE_NAME
+      );
     }
-  } while (retryCountLocal >= 0);
-  return Promise.reject("Synopsys bridge download has been failed");
+
+    const toolPath = await toolLib.downloadTool(url, destFilePath);
+    const downloadFileResp: DownloadFileResponse = {
+      filePath: toolPath,
+      fileName: fileNameFromUrl,
+    };
+
+    return Promise.resolve(downloadFileResp);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 export function parseToBoolean(value: string | boolean): boolean {
@@ -117,10 +87,4 @@ export function getWorkSpaceDirectory(): string {
   } else {
     throw new Error("Workspace directory could not be located");
   }
-}
-
-export function sleep(duration: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, duration);
-  });
 }
