@@ -8,9 +8,15 @@ import {
 import process from "process";
 import * as sinon from "sinon";
 import * as toolLib from "azure-pipelines-tool-lib";
+import * as toolLibLocal from "../../../src/synopsys-task/download-tool";
 import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import * as constants from "../../../src/synopsys-task/application-constant";
 
 describe("Utilities", () => {
+
+    Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
+    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", {value: 100});
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
 
     let sandbox: sinon.SinonSandbox;
 
@@ -87,7 +93,7 @@ describe("Utilities", () => {
 
         it('getRemoteFile - success', async function () {
             const downloadFileResponse = {filePath: "/", fileName: "synopsys-bridge.zip"} as DownloadFileResponse
-            sandbox.stub(toolLib, "downloadTool").returns(Promise.resolve("/"));
+            sandbox.stub(toolLibLocal, "downloadTool").returns(Promise.resolve("/"));
             const result = await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip");
             expect(result.fileName).equals(downloadFileResponse.fileName)
             expect(result.filePath).equals(downloadFileResponse.filePath)
@@ -100,13 +106,20 @@ describe("Utilities", () => {
 
         });
 
-        it('getRemoteFile - failure', async function () {
-            sandbox.stub(toolLib, "downloadTool").throws(new Error("404"))
-            const result = await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
-                expect(error.message).includes("404")
+        it('getRemoteFile - failure 401', async function () {
+            sandbox.stub(toolLibLocal, "downloadTool").throws(new Error("401"))
+            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
+                expect(error.message).contains("401")
             });
-
         });
+
+        it('getRemoteFile - retry with 500', async function () {
+            sandbox.stub(toolLibLocal, "downloadTool").throws(new Error("500"))
+            await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip").catch(error => {
+                expect(error.message).contains("500")
+            });
+        });
+
     });
 
     context('parseToBoolean', () => {

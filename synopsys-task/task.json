@@ -10,7 +10,7 @@
   "version": {
     "Major": 1,
     "Minor": 3,
-    "Patch": 1
+    "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -124,6 +124,26 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Polaris Assessment Types seperated by commas. <a href='https://polaris.synopsys.com/developer/default/polaris-documentation/t_how-to-test' target='_blank'>Click Here</a> for more info.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_polaris_triage",
+      "type": "string",
+      "label": "Polaris Triage",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris Triage",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_polaris_branch_name",
+      "type": "string",
+      "label": "Polaris Branch Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Branch name in Polaris.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -288,12 +308,42 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_automation_fixpr",
+      "name": "bridge_blackduck_fixpr_enabled",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to push events only, Requires Azure Token.",
+      "helpMarkDown": "Flag to enable/disable the automatic fix pull request creations for Black Duck.\nDefault value is false",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_useUpgradeGuidance",
+      "type": "string",
+      "label": "Configure Short Term or Long Term Guidance",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Blackduck Hub upgrade guidance Values.Default is \"SHORT_TERM, LONG_TERM\"",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_filter_severities",
+      "type": "string",
+      "label": "List of SEVERITIES to be filtered",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Filter the vulnerabilities by given severities, Fix PR(s) will be created only for issues where the issue severity matches one of the values specified using this option Values. Default is \"CRITICAL,  HIGH\".",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_fixpr_maxCount",
+      "type": "string",
+      "label": "Maximum number of Pull Requests to be created",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -315,16 +365,6 @@
       "required": false,
       "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge.",
       "groupName": "optionalSettings"
-    },
-    {
-      "name": "bridge_polaris_triage",
-      "type": "string",
-      "label": "Polaris Triage",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Polaris Triage",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
     }
   ],
   "execution": {
