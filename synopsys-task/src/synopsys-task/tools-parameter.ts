@@ -5,6 +5,7 @@ import { Coverity } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
 import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
@@ -66,15 +67,18 @@ export class SynopsysToolsParameter {
           application: { name: inputs.POLARIS_APPLICATION_NAME },
           project: { name: inputs.POLARIS_PROJECT_NAME },
           assessment: { types: assessmentTypeArray },
+          branch: {},
         },
       },
     };
+    if (inputs.POLARIS_BRANCH_NAME) {
+      polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
+    }
 
     if (inputs.POLARIS_TRIAGE) {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
     const inputJson = JSON.stringify(polData);
-
     let stateFilePath = path.join(
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
@@ -179,13 +183,13 @@ export class SynopsysToolsParameter {
     }
 
     // Check and put environment variable for fix pull request
-    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_FIXPR_KEY)) {
-      console.log("Blackduck Automation Fix PR is enabled");
+    if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
+      console.log("Black Duck Fix PR is enabled");
+      blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
       blackduckData.data.azure = await this.getAzureRepoInfo();
-      blackduckData.data.blackduck.automation.fixpr = true;
     } else {
       // Disable fix pull request for adapters
-      blackduckData.data.blackduck.automation.fixpr = false;
+      blackduckData.data.blackduck.fixpr = { enabled: false };
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
@@ -300,6 +304,59 @@ export class SynopsysToolsParameter {
       .concat(stateFilePath)
       .concat(SynopsysToolsParameter.SPACE);
     return command;
+  }
+
+  private setBlackDuckFixPrInputs(): BlackDuckFixPrData | undefined {
+    if (
+      inputs.BLACKDUCK_FIXPR_MAXCOUNT &&
+      isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
+    ) {
+      throw new Error(
+        "Invalid value for ".concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+      );
+    }
+    const createSinglePr = parseToBoolean(
+      inputs.BLACKDUCK_FIXPR_CREATE_SINGLE_PR
+    );
+    if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
+      throw new Error(
+        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+          " is not applicable with "
+        ).concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+      );
+    }
+    const blackDuckFixPrData: BlackDuckFixPrData = {};
+    blackDuckFixPrData.enabled = true;
+    blackDuckFixPrData.createSinglePR = createSinglePr;
+    if (inputs.BLACKDUCK_FIXPR_MAXCOUNT && !createSinglePr) {
+      blackDuckFixPrData.maxCount = Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT);
+    }
+    if (
+      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE &&
+      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE.length > 0
+    ) {
+      blackDuckFixPrData.useUpgradeGuidance =
+        inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE;
+    }
+
+    const fixPRFilterSeverities: string[] = [];
+    if (
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES &&
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES != null &&
+      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0
+    ) {
+      for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
+        if (fixPrSeverity != null && fixPrSeverity !== "") {
+          fixPRFilterSeverities.push(fixPrSeverity.trim());
+        }
+      }
+    }
+    blackDuckFixPrData.filter = {
+      ...(fixPRFilterSeverities.length > 0
+        ? { severities: fixPRFilterSeverities }
+        : {}),
+    };
+    return blackDuckFixPrData;
   }
 
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
