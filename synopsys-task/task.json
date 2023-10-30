@@ -133,7 +133,9 @@
       "label": "Polaris Triage",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Polaris Triage"
+      "helpMarkDown": "Polaris Triage",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
     },
     {
       "name": "bridge_polaris_branch_name",
