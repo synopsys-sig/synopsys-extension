@@ -28,6 +28,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             sandbox.restore();
@@ -38,6 +39,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
 
@@ -49,6 +51,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('POLARIS_BRANCH_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
 
             expect(formattedCommand).contains('--stage polaris');

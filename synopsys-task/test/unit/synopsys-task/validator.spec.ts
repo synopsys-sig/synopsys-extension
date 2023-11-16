@@ -62,6 +62,7 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: []})
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ''})
@@ -86,6 +87,7 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
 
             const polarisValidationErrors = validator.validatePolarisInputs();
