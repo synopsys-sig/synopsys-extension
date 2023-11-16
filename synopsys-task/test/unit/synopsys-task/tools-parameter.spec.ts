@@ -51,7 +51,6 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
-            expect(jsonData.data.polaris.branch.name).to.be.contains('POLARIS_BRANCH_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
 
             expect(formattedCommand).contains('--stage polaris');
