@@ -28,6 +28,10 @@ export function validatePolarisInputs(): string[] {
     );
     paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
     paramsMap.set(
+      constants.POLARIS_BRANCH_NAME_KEY,
+      inputs.POLARIS_BRANCH_NAME
+    );
+    paramsMap.set(
       constants.POLARIS_ASSESSMENT_TYPES_KEY,
       inputs.POLARIS_ASSESSMENT_TYPES
     );
