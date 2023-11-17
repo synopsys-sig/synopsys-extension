@@ -142,7 +142,7 @@
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
-      "required": false,
+      "required": true,
       "helpMarkDown": "Branch name in Polaris.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
