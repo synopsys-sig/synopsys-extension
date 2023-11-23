@@ -9113,7 +9113,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.scrape = exports.extractZip = exports.extractTar = exports.extract7z = exports.cacheFile = exports.cacheDir = exports.downloadTool = exports.findLocalToolVersions = exports.findLocalTool = exports.evaluateVersions = exports.cleanVersion = exports.isExplicitVersion = exports.prependPath = exports.debug = void 0;
+exports.scrape = exports.extractZip = exports.extractTar = exports.extract7z = exports.cacheFile = exports.cacheDir = exports.downloadToolWithRetries = exports.downloadTool = exports.findLocalToolVersions = exports.findLocalTool = exports.evaluateVersions = exports.cleanVersion = exports.isExplicitVersion = exports.prependPath = exports.debug = void 0;
 const httpm = __nccwpck_require__(5538);
 const path = __nccwpck_require__(1017);
 const os = __nccwpck_require__(2037);
@@ -9309,7 +9309,7 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                 }
                 // make sure that the folder exists
                 tl.mkdirP(path.dirname(destPath));
-                console.log(tl.loc('TOOL_LIB_Downloading', url));
+                console.log(tl.loc('TOOL_LIB_Downloading', url.replace(/sig=[^&]*/, "sig=-REDACTED-")));
                 tl.debug('destination ' + destPath);
                 if (fs.existsSync(destPath)) {
                     throw new Error("Destination file path already exists");
@@ -9338,6 +9338,11 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                             .on('error', (err) => {
                             file.end();
                             reject(err);
+                        })
+                            .on('aborted', () => {
+                            // this block is for Node10 compatibility since it doesn't emit 'error' event after 'aborted' one
+                            file.end();
+                            reject(new Error('Aborted'));
                         })
                             .pipe(file);
                     }
@@ -9380,6 +9385,28 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
     });
 }
 exports.downloadTool = downloadTool;
+function downloadToolWithRetries(url, fileName, handlers, additionalHeaders, maxAttempts = 3, retryInterval = 500) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let attempt = 1;
+        let destinationPath = '';
+        while (attempt <= maxAttempts && destinationPath == '') {
+            try {
+                destinationPath = yield downloadTool(url, fileName, handlers, additionalHeaders);
+            }
+            catch (err) {
+                if (attempt === maxAttempts)
+                    throw err;
+                const attemptInterval = attempt * retryInterval;
+                // Error will be shown in downloadTool.
+                tl.debug(`Attempt ${attempt} failed. Retrying after ${attemptInterval} ms`);
+                yield delay(attemptInterval);
+                attempt++;
+            }
+        }
+        return destinationPath;
+    });
+}
+exports.downloadToolWithRetries = downloadToolWithRetries;
 //---------------------
 // Size functions
 //---------------------
@@ -9497,12 +9524,12 @@ exports.cacheFile = cacheFile;
  * @param dest     destination directory. Optional.
  * @param _7zPath  path to 7zr.exe. Optional, for long path support. Most .7z archives do not have this
  * problem. If your .7z archive contains very long paths, you can pass the path to 7zr.exe which will
- * gracefully handle long paths. By default 7zdec.exe is used because it is a very small program and is
- * bundled with the tool lib. However it does not support long paths. 7zr.exe is the reduced command line
+ * gracefully handle long paths. By default 7z.exe is used because it is a very small program and is
+ * bundled with the tool lib. However it does not support long paths. 7z.exe is the reduced command line
  * interface, it is smaller than the full command line interface, and it does support long paths. At the
  * time of this writing, it is freely available from the LZMA SDK that is available on the 7zip website.
- * Be sure to check the current license agreement. If 7zr.exe is bundled with your task, then the path
- * to 7zr.exe can be pass to this function.
+ * Be sure to check the current license agreement. If 7z.exe is bundled with your task, then the path
+ * to 7z.exe can be pass to this function.
  * @param overwriteDest Overwrite files in destination catalog. Optional.
  * @returns        path to the destination directory
  */
@@ -23534,7 +23561,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.2","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
+module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.7","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
 
 /***/ })
 
