@@ -325,9 +325,6 @@ export class SynopsysBridge {
       taskLib.debug(
         "Checking for latest version of Synopsys Bridge to download and configure"
       );
-      console.log(
-        "Checking for latest version of Synopsys Bridge to download and configure"
-      );
       version = await this.getSynopsysBridgeVersionFromLatestURL(
         this.bridgeArtifactoryURL.concat("/latest/versions.txt")
       );
