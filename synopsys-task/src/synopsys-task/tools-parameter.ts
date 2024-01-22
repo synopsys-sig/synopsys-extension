@@ -80,12 +80,6 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
-    if (
-      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
-      polData.data.reports = this.setSarifReportsInputs();
-    }
     const inputJson = JSON.stringify(polData);
     let stateFilePath = path.join(
       this.tempDir,
@@ -209,7 +203,7 @@ export class SynopsysToolsParameter {
     }
 
     if (
-      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
       blackduckData.data.reports = this.setSarifReportsInputs();
@@ -495,54 +489,29 @@ export class SynopsysToolsParameter {
   }
   private setSarifReportsInputs(): Reports {
     const sarifReportIssueTypes: string[] = [];
-    const polarisIssueTypes = inputs.REPORTS_SARIF_ISSUE_TYPES
-      ? inputs.REPORTS_SARIF_ISSUE_TYPES
-      : inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES;
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      polarisIssueTypes &&
-      polarisIssueTypes.length > 0
-    ) {
-      const polarisIssueTypes =
-        inputs.REPORTS_SARIF_ISSUE_TYPES ||
-        inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES;
-      for (const issueType of polarisIssueTypes) {
-        if (issueType != null && issueType.trim() !== "") {
-          sarifReportIssueTypes.push(issueType.trim());
-        }
-      }
-    }
     const sarifReportFilterSeverities: string[] = [];
-    let sarifSeverities = inputs.REPORTS_SARIF_SEVERITIES;
+    let sarifReportFilePath = "";
+
     if (
-      inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
-      inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
+      inputs.BLACKDUCK_URL &&
+      inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH?.trim()
     ) {
-      sarifSeverities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES;
-    } else if (
+      sarifReportFilePath = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim();
+    }
+
+    if (
+      inputs.BLACKDUCK_URL &&
       inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
       inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.length > 0
     ) {
-      sarifSeverities = inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES;
+      const sarifSeverities = inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.filter(
+        (severity) => severity && severity.trim() !== ""
+      ).map((severity) => severity.trim());
+      sarifReportFilterSeverities.push(...sarifSeverities);
     }
-    if (sarifSeverities != null && sarifSeverities.length > 0) {
-      for (const fixPrSeverity of sarifSeverities) {
-        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
-          sarifReportFilterSeverities.push(fixPrSeverity.trim());
-        }
-      }
-    }
+
     let groupSCAIssues = true;
-    if (isBoolean(inputs.REPORTS_SARIF_GROUP_SCA_ISSUES)) {
-      groupSCAIssues = JSON.parse(inputs.REPORTS_SARIF_GROUP_SCA_ISSUES);
-    } else if (
-      inputs.POLARIS_SERVER_URL &&
-      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
-    ) {
-      groupSCAIssues = JSON.parse(
-        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
-      );
-    } else if (
+    if (
       inputs.BLACKDUCK_URL &&
       isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ) {
@@ -550,12 +519,13 @@ export class SynopsysToolsParameter {
         inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
+    
     const reportData: Reports = {
       sarif: {
         create: true,
         severities: sarifReportFilterSeverities,
         file: {
-          path: inputs.REPORTS_SARIF_FILE_PATH.trim(),
+          path: sarifReportFilePath,
         },
         issue: {
           types: sarifReportIssueTypes,

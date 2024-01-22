@@ -10,6 +10,7 @@ import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as constants from "./application-constant";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -137,4 +138,19 @@ export function sleep(duration: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, duration);
   });
+}
+
+export function getDefaultSarifReportPath(
+  sarifReportDirectory: string,
+  appendFilePath: boolean
+): string {
+  const pwd = getWorkSpaceDirectory();
+  return !appendFilePath
+    ? path.join(pwd, constants.BRIDGE_LOCAL_DIRECTORY, sarifReportDirectory)
+    : path.join(
+        pwd,
+        constants.BRIDGE_LOCAL_DIRECTORY,
+        sarifReportDirectory,
+        constants.SARIF_DEFAULT_FILE_NAME
+      );
 }
