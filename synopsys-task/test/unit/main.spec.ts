@@ -60,18 +60,18 @@ describe("Main function test cases", () => {
 
     context('uploadSarifResultAsArtifact', () => {
 
-        it('should call uploadSarifResultAsArtifact with REPORTS_SARIF_CREATE true: success', async () => {
-            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: 'true'});
+        it('should call uploadSarifResultAsArtifact with BLACKDUCK_REPORTS_SARIF_CREATE true: success', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: 'true'});
             sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
             sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
             sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)
             sandbox.stub(diagnostics, 'uploadSarifResultAsArtifact').returns(undefined)
             main.run()
-            assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("test"), undefined);
+            assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("Blackduck SARIF Generator", ""), undefined);
         });
 
-        it('should call uploadSarifResultAsArtifact with REPORTS_SARIF_CREATE true: failure', async () => {
-            Object.defineProperty(inputs, 'REPORTS_SARIF_CREATE', {value: 'true'});
+        it('should call uploadSarifResultAsArtifact with BLACKDUCK_REPORTS_SARIF_CREATE true: failure', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: 'true'});
             sandbox.stub(SynopsysBridge.prototype, 'prepareCommand').resolves("test command")
             sandbox.stub(SynopsysBridge.prototype, 'downloadAndExtractBridge').resolves("test-path")
             sandbox.stub(SynopsysBridge.prototype, 'executeBridgeCommand').resolves(0)

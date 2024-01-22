@@ -2,12 +2,12 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import * as path from "path";
 import * as inputs from "./input";
-import { SARIF_UPLOAD_FOLDER_ARTIFACT_NAME } from "./application-constant";
+import { getDefaultSarifReportPath } from "./utility";
 
 export function uploadDiagnostics(workspaceDir: string) {
   const uploadArtifactPath = path.join(
     workspaceDir,
-    constants.BRIDGE_DIAGNOSTICS_FOLDER
+    constants.BRIDGE_LOCAL_DIRECTORY
   );
   let isBridgeDirectoryExists = false;
   isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
@@ -20,22 +20,22 @@ export function uploadDiagnostics(workspaceDir: string) {
   }
 }
 
-export function uploadSarifResultAsArtifact(workspaceDir: string) {
-  const uploadArtifactPath = inputs.REPORTS_SARIF_FILE_PATH.trim()
-    ? inputs.REPORTS_SARIF_FILE_PATH.trim()
-    : path.join(
-        workspaceDir,
-        constants.BRIDGE_DIAGNOSTICS_FOLDER,
-        constants.BRIDGE_SARIF_GENERATOR_FOLDER
-      );
+export function uploadSarifResultAsArtifact(
+  defaultSarifReportDirectory: string,
+  userSarifFilePath: string
+) {
+  const sarifFilePath = userSarifFilePath
+    ? userSarifFilePath
+    : getDefaultSarifReportPath(defaultSarifReportDirectory, true);
+
   console.log("uploadSarifResultAsArtifact :: start");
-  let isBridgeDirectoryExists = false;
-  isBridgeDirectoryExists = taskLib.exist(uploadArtifactPath);
-  console.log("isBridgeDirectoryExists ::" + isBridgeDirectoryExists);
-  if (isBridgeDirectoryExists) {
+  let isSarifReportDirectoryExists = false;
+  isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
+  console.log("isBridgeDirectoryExists ::" + isSarifReportDirectoryExists);
+  if (isSarifReportDirectoryExists) {
     taskLib.uploadArtifact(
       constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
-      uploadArtifactPath,
+      sarifFilePath,
       constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
     );
   }

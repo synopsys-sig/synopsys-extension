@@ -37,13 +37,16 @@ export async function run() {
     throw error;
   } finally {
     if (
-      parseToBoolean(inputs.REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      console.log("REPORTS_SARIF_CREATE enabled");
-      uploadSarifResultAsArtifact(workSpaceDir);
+      console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+      uploadSarifResultAsArtifact(
+        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+        inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+      );
     }
+    
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);
     }
