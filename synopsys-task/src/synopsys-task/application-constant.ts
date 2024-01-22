@@ -73,9 +73,33 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
-export const BRIDGE_DIAGNOSTICS_FOLDER = ".bridge";
 
+export const BLACKDUCK_REPORTS_SARIF_CREATE_KEY =
+  "bridge_blackduck_reports_sarif_create";
+export const BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  "blackduckReportsSarifCreate";
+
+export const BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY =
+  "bridge_blackduck_reports_sarif_file_path";
+export const BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR =
+  "blackduckReportsSarifFilePath";
+
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY =
+  "bridge_blackduck_reports_sarif_severities";
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR =
+  "blackduckReportsSarifSeverities";
+
+export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
+  "bridge_blackduck_reports_sarif_groupSCAIssues";
+export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR =
+  "blackduckReportsSarifGroupSCAIssues";
+
+export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
+export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
+export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
+export const DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
+  "Blackduck SARIF Generator";
+export const SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = "sarif_report";
 export const RETRY_DELAY_IN_MILLISECONDS = 15000;
 export const RETRY_COUNT = 3;
 export const NON_RETRY_HTTP_CODES = new Set([200, 201, 401, 403, 416]);

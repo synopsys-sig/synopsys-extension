@@ -1,11 +1,14 @@
 /.idea/
 /synopsys-task/node_modules/
 /synopsys-task/lib/
+/synopsys-task/TEMP
 /synopsys-task/.bridge/
 /synopsys-task/.taskkey
 /synopsys-task/coverity_input.json
+/synopsys-task/bd_input.json
 /synopsys-task/.nyc_output/
 /synopsys-task/coverage//
 .DS_Store
 *.synopsys-extension-*.vsix
 /synopsys-task/coverage/
+/synopsys-task/test/unit/synopsys-task/synopsys-bridge.zip
