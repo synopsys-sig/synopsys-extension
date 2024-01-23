@@ -1508,11 +1508,12 @@ class SynopsysToolsParameter {
         return {};
     }
     setSarifReportsInputs() {
+        var _a;
         const sarifReportIssueTypes = [];
         const sarifReportFilterSeverities = [];
         let sarifReportFilePath = "";
         if (inputs.BLACKDUCK_URL &&
-            inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim()) {
+            ((_a = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH) === null || _a === void 0 ? void 0 : _a.trim())) {
             sarifReportFilePath = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim();
         }
         if (inputs.BLACKDUCK_URL &&

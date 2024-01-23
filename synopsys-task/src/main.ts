@@ -46,7 +46,7 @@ export async function run() {
         inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
       );
     }
-    
+
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);
     }

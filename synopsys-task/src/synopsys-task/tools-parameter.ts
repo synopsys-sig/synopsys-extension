@@ -519,7 +519,7 @@ export class SynopsysToolsParameter {
         inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
-    
+
     const reportData: Reports = {
       sarif: {
         create: true,
