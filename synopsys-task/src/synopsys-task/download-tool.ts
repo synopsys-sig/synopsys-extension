@@ -90,11 +90,6 @@ export async function downloadTool(
                 file.end();
                 reject(err);
               })
-              .on("aborted", (err) => {
-                file.end();
-                _deleteFile(destPath);
-                reject("Aborted");
-              })
               .pipe(file);
           } catch (err) {
             reject(err);

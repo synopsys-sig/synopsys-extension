@@ -413,11 +413,6 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                             file.end();
                             reject(err);
                         })
-                            .on("aborted", (err) => {
-                            file.end();
-                            _deleteFile(destPath);
-                            reject("Aborted");
-                        })
                             .pipe(file);
                     }
                     catch (err) {
@@ -972,7 +967,7 @@ class SynopsysBridge {
                         }
                     }
                 }
-                if (retryCountLocal == 0) {
+                if (retryCountLocal === 0 && !(versionArray.length > 0)) {
                     taskLib.warning("Unable to retrieve the Synopsys Bridge Versions from Artifactory");
                 }
             } while (retryCountLocal > 0);
@@ -1779,6 +1774,7 @@ function validatePolarisInputs() {
         paramsMap.set(constants.POLARIS_APPLICATION_NAME_KEY, inputs.POLARIS_APPLICATION_NAME);
         paramsMap.set(constants.POLARIS_PROJECT_NAME_KEY, inputs.POLARIS_PROJECT_NAME);
         paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
+        paramsMap.set(constants.POLARIS_BRANCH_NAME_KEY, inputs.POLARIS_BRANCH_NAME);
         paramsMap.set(constants.POLARIS_ASSESSMENT_TYPES_KEY, inputs.POLARIS_ASSESSMENT_TYPES);
         errors = validateParameters(paramsMap, constants.POLARIS_KEY);
     }
