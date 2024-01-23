@@ -22,7 +22,6 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         afterEach(() => {
-            const polarisInputJson =
             taskLib.rmRF(polarisStateFile);
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''})
@@ -68,6 +67,60 @@ describe("Synopsys Tools Parameter test", () => {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for bridge_polaris_assessment_types')
             }
+        });
+
+        it('should success for polaris command formation with sarif report create', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris command formation with sarif report parameters', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_ISSUE_TYPES', {value: ['SAST', 'SCA']})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.reports.sarif.groupSCAIssues).to.be.equals(true);
+            expect(jsonData.data.reports.sarif.issue.types).to.be.contains('SAST');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
         });
     });
 
