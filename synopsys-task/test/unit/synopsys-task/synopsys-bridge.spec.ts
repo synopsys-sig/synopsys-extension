@@ -16,6 +16,7 @@ import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
 import {Socket} from "net";
+import os from "os";
 
 describe("Synopsys Bridge test", () => {
     Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
@@ -186,6 +187,8 @@ describe("Download Bridge", () => {
     let sandbox: sinon.SinonSandbox;
     let bridgeUrl: string
     const osName = process.platform
+    const cpuInfo = os.cpus()
+    const isIntel = cpuInfo[0].model.includes("Intel")
     let bridgeDefaultPath = "";
     if (osName === "linux") {
         bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX);
@@ -197,7 +200,11 @@ describe("Download Bridge", () => {
     } else if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC)
-        bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
+            if (isIntel) {
+                bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
+            } else {
+                bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macos_arm.zip"
+            }
     }
 
     context("air mode is enabled, executeBridgeCommand", () => {
