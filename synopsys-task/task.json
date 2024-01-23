@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
+  "id": "07cbb101-cc3b-6c5b-abd9-f9c83a7b588c",
   "name": "SynopsysSecurityScan",
   "friendlyName": "Synopsys Security Scan",
   "description": "Run security scans on Polaris, Black Duck or Coverity platforms",
