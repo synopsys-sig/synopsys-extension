@@ -24,19 +24,19 @@ import {
   SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
 } from "./input";
 import {
+  MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION,
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
 } from "./application-constant";
+import os from "os";
+import semver from "semver";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
   bridgeArtifactoryURL: string;
   bridgeUrlPattern: string;
   bridgeUrlLatestPattern: string;
-  WINDOWS_PLATFORM = "win64";
-  LINUX_PLATFORM = "linux64";
-  MAC_PLATFORM = "macosx";
 
   constructor() {
     this.bridgeExecutablePath = "";
@@ -289,6 +289,7 @@ export class SynopsysBridge {
   }
 
   async getBridgeUrl(): Promise<string | undefined> {
+    console.log("getBridgeUrl method");
     let bridgeUrl: string;
     let version = "";
     if (inputs.BRIDGE_DOWNLOAD_URL) {
@@ -302,7 +303,8 @@ export class SynopsysBridge {
       if (versionsArray) {
         version = versionsArray[1];
         if (!version) {
-          const regex = /\w*(synopsys-bridge-(win64|linux64|macosx).zip)/;
+          const regex =
+            /\w*(synopsys-bridge-(win64|linux64|macosx|macos_arm).zip)/;
           version = await this.getSynopsysBridgeVersionFromLatestURL(
             bridgeUrl.replace(regex, "versions.txt")
           );
@@ -517,19 +519,29 @@ export class SynopsysBridge {
     let bridgeDownloadUrl = this.bridgeUrlPattern.replace("$version", version);
     bridgeDownloadUrl = bridgeDownloadUrl.replace("$version", version);
     if (osName === "darwin") {
-      bridgeDownloadUrl = bridgeDownloadUrl.replace(
-        "$platform",
-        this.MAC_PLATFORM
+      const isValidVersionForARM = semver.gte(
+        version,
+        constants.MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION
       );
+      let osSuffix = constants.MAC_INTEL_PLATFORM;
+      if (isValidVersionForARM) {
+        const cpuInfo = os.cpus();
+        taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
+        const isIntel = cpuInfo[0].model.includes("Intel");
+        osSuffix = isIntel
+          ? constants.MAC_INTEL_PLATFORM
+          : constants.MAC_ARM_PLATFORM;
+      }
+      bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
     } else if (osName === "linux") {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
-        this.LINUX_PLATFORM
+        constants.LINUX_PLATFORM
       );
     } else if (osName === "win32") {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
-        this.WINDOWS_PLATFORM
+        constants.WINDOWS_PLATFORM
       );
     }
     return bridgeDownloadUrl;
@@ -539,19 +551,22 @@ export class SynopsysBridge {
     const osName = process.platform;
     let bridgeDownloadUrl = this.bridgeUrlLatestPattern;
     if (osName === "darwin") {
-      bridgeDownloadUrl = bridgeDownloadUrl.replace(
-        "$platform",
-        this.MAC_PLATFORM
-      );
+      const cpuInfo = os.cpus();
+      taskLib.debug(`cpuInfo :: ${JSON.stringify(cpuInfo)}`);
+      const isIntel = cpuInfo[0].model.includes("Intel");
+      const osSuffix = isIntel
+        ? constants.MAC_INTEL_PLATFORM
+        : constants.MAC_ARM_PLATFORM;
+      bridgeDownloadUrl = bridgeDownloadUrl.replace("$platform", osSuffix);
     } else if (osName === "linux") {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
-        this.LINUX_PLATFORM
+        constants.LINUX_PLATFORM
       );
     } else if (osName === "win32") {
       bridgeDownloadUrl = bridgeDownloadUrl.replace(
         "$platform",
-        this.WINDOWS_PLATFORM
+        constants.WINDOWS_PLATFORM
       );
     }
 

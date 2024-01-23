@@ -4,7 +4,8 @@ import {assert, expect} from "chai";
 import * as sinon from "sinon";
 import path from "path";
 import * as constants from "../../../src/synopsys-task/application-constant";
-import {SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC} from "../../../src/synopsys-task/application-constant";
+import * as taskLib from "azure-pipelines-task-lib";
+import os from "os";
 
 describe("Platform", () => {
 
@@ -47,12 +48,28 @@ describe("Platform", () => {
         let bridgeUrl: string
         let bridgeDefaultPath = "";
         let synopsysBridge: SynopsysBridge;
+        let sandbox: sinon.SinonSandbox;
 
         before(() => {
+            sandbox = sinon.createSandbox();
             synopsysBridge = new SynopsysBridge();
             Object.defineProperty(process, 'platform', {
                 value: "darwin"
             })
+            const fakeCpus = [
+                {
+                    model: "Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz",
+                    speed: 3190,
+                    times: {
+                        user: 54545,
+                        nice: 0,
+                        sys: 54545,
+                        idle: 8868390,
+                        irq: 0
+                    }
+                }]
+            const cpuInfo = sandbox.stub(os, "cpus");
+            cpuInfo.returns(fakeCpus);
             bridgeDefaultPath = path.join(process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC);
             bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
         })
