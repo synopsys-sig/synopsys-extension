@@ -34,7 +34,7 @@ describe("Synopsys Bridge upload diagnostics test", () => {
     context('uploadSarifResultAsArtifact', () => {
 
         it('should success with sarif file path and void/undefined type return', async function () {
-            Object.defineProperty(inputs, 'REPORTS_SARIF_FILE_PATH', {value: 'test-dir/test-path.json'})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', {value: 'test-dir/test-path.json'})
             sandbox.stub(taskLib, "exist").returns(true);
             const uploadArtifactStub = sandbox.stub(taskLib, 'uploadArtifact').returns(undefined);
             assert.strictEqual(
@@ -48,7 +48,7 @@ describe("Synopsys Bridge upload diagnostics test", () => {
         });
 
         it('should success with default sarif file path and void/undefined type return', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', {value: './bridge/SARIF Report Generator/test-path.json'})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', {value: './bridge/Blackduck SARIF Generator/test-path.json'})
             sandbox.stub(taskLib, "exist").returns(true);
             const uploadArtifactStub = sandbox.stub(taskLib, 'uploadArtifact').returns(undefined);
             assert.strictEqual(diagnostics.uploadSarifResultAsArtifact("","test"), undefined);
