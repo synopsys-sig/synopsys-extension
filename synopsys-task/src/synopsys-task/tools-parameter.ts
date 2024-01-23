@@ -80,6 +80,13 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
+    if (
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      polData.data.reports = this.setSarifReportsInputsForPolaris();
+    }
+
     const inputJson = JSON.stringify(polData);
     let stateFilePath = path.join(
       this.tempDir,
@@ -206,7 +213,7 @@ export class SynopsysToolsParameter {
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      blackduckData.data.reports = this.setSarifReportsInputs();
+      blackduckData.data.reports = this.setSarifReportsInputsForBlackduck();
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -487,8 +494,8 @@ export class SynopsysToolsParameter {
     }
     return {};
   }
-  private setSarifReportsInputs(): Reports {
-    const sarifReportIssueTypes: string[] = [];
+
+  private setSarifReportsInputsForBlackduck(): Reports {
     const sarifReportFilterSeverities: string[] = [];
     let sarifReportFilePath = "";
 
@@ -518,6 +525,62 @@ export class SynopsysToolsParameter {
       groupSCAIssues = JSON.parse(
         inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
+    }
+
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+        severities: sarifReportFilterSeverities,
+        file: {
+          path: sarifReportFilePath,
+        },
+        groupSCAIssues: groupSCAIssues,
+      },
+    };
+    return reportData;
+  }
+
+  private setSarifReportsInputsForPolaris(): Reports {
+    let sarifReportFilePath = "";
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_FILE_PATH?.trim()
+    ) {
+      sarifReportFilePath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+    }
+
+    const sarifReportFilterSeverities: string[] = [];
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
+    ) {
+      const severities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES.filter(
+        (severity) => severity && severity.trim() !== ""
+      ).map((severity) => severity.trim());
+      sarifReportFilterSeverities.push(...severities);
+    }
+
+    let groupSCAIssues = true;
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
+    ) {
+      groupSCAIssues = JSON.parse(
+        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
+      );
+    }
+
+    const sarifReportIssueTypes: string[] = [];
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES &&
+      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.length > 0
+    ) {
+      const issueTypes = inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.filter(
+        (issueType) => issueType && issueType.trim() !== ""
+      ).map((issueType) => issueType.trim());
+      sarifReportIssueTypes.push(...issueTypes);
     }
 
     const reportData: Reports = {
