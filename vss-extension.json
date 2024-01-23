@@ -3,8 +3,8 @@
   "id": "synopsys-security-scan",
   "name": "Synopsys Security Scan",
   "version": "1.4.0",
-  "publisher": "synopsys-security-scan",
-  "public": true,
+  "publisher": "dsi-synopsys",
+  "public": false,
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
