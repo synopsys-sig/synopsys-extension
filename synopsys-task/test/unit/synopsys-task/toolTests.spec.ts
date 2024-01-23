@@ -1,13 +1,13 @@
 import assert = require('assert');
 import path = require('path');
 import fs = require('fs');
-import * as tl from 'azure-pipelines-task-lib/task';
 import * as toolLib from '../../../src/synopsys-task/download-tool';
+import * as tl from "azure-pipelines-task-lib/task";
 import * as sinon from "sinon";
 import process from "process";
 import {afterEach} from "mocha";
+import nock = require ('nock');
 
-let cachePath = path.join(process.cwd(), 'CACHE');
 let tempPath = path.join(process.cwd(), 'TEMP');
 
 describe('Tool Tests', function () {
@@ -16,6 +16,13 @@ describe('Tool Tests', function () {
     before(function () {
         sandbox = sinon.createSandbox();
         process.env["AGENT_TEMPDIRECTORY"] = __dirname
+        nock('https://microsoft.com')
+            .persist()
+            .get('/bytes/35')
+            .reply(200, {
+                username: 'abc',
+                password: 'def'
+            });
 
     });
 
@@ -38,35 +45,15 @@ describe('Tool Tests', function () {
         }
     })
 
-    it('downloads a 100 byte file', function () {
 
+    it('downloads a 35 byte file', function () {
         return new Promise<void>(async (resolve, reject) => {
             try {
-                let downPath: string = await toolLib.downloadTool("https://httpbingo.org/bytes/100", fileName);
-                toolLib.debug('downloaded path: ' + downPath);
-                sandbox.stub(toolLib, "_getFileSizeOnDisk").returns(100)
-                sandbox.stub(fs, "existsSync").returns(false)
-
-                assert(tl.exist(downPath), 'downloaded file exists');
-                assert.equal(fs.statSync(downPath).size, 100, 'downloaded file is the correct size');
-                resolve();
-
-            }
-            catch (err) {
-                reject(err);
-            }
-        });
-    });
-
-    it('downloads a 100 byte file after a redirect', function () {
-
-        return new Promise<void>(async (resolve, reject) => {
-            try {
-                let downPath: string = await toolLib.downloadTool("https://httpbingo.org/redirect-to?url=" + encodeURI('https://httpbingo.org/bytes/100') + "&status_code=302", fileName);
+                let downPath: string = await toolLib.downloadTool("https://microsoft.com/bytes/35", fileName);
                 toolLib.debug('downloaded path: ' + downPath);
 
                 assert(tl.exist(downPath), 'downloaded file exists');
-                assert.equal(fs.statSync(downPath).size, 100, 'downloaded file is the correct size');
+                assert.equal(fs.statSync(downPath).size, 35, 'downloaded file is the correct size');
 
                 resolve();
             }
@@ -76,18 +63,40 @@ describe('Tool Tests', function () {
         });
     });
 
-    it('downloads to an absolute path', function () {
-        this.timeout(5000);
+    it('downloads a 35 byte file after a redirect', function () {
+        nock('https://microsoft.com')
+            .get('/redirect-to')
+            .reply(303, undefined, {
+                location:'https://microsoft.com/bytes/35'
+            });
 
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+
+                let downPath: string = await toolLib.downloadTool("https://microsoft.com/redirect-to" ,fileName);
+                toolLib.debug('downloaded path: ' + downPath);
+
+                assert(tl.exist(downPath), 'downloaded file exists');
+                assert.equal(fs.statSync(downPath).size, 35, 'downloaded file is the correct size');
+
+                resolve();
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
+    });
+
+    it('downloads to an aboslute path', function () {
         return new Promise<void>(async(resolve, reject)=> {
             try {
                 let tempDownloadFolder: string = 'temp_' + Math.floor(Math.random() * 2000000000);
-                let absolutePath: string = path.join(tempPath, tempDownloadFolder);
-                let downPath: string = await toolLib.downloadTool("https://httpbingo.org/bytes/100", absolutePath);
+                let aboslutePath: string = path.join(tempPath, tempDownloadFolder);
+                let downPath: string = await toolLib.downloadTool("https://microsoft.com/bytes/35", aboslutePath);
                 toolLib.debug('downloaded path: ' + downPath);
-                
+
                 assert(tl.exist(downPath), 'downloaded file exists');
-                assert(absolutePath == downPath);
+                assert(aboslutePath == downPath);
 
                 resolve();
             }
@@ -98,26 +107,65 @@ describe('Tool Tests', function () {
     });
 
     it('has status code in exception dictionary for HTTP error code responses', async function() {
+        nock('https://microsoft.com')
+            .get('/bytes/bad')
+            .reply(400, {
+                username: 'bad',
+                password: 'file'
+            });
+
         return new Promise<void>(async(resolve, reject)=> {
             try {
-                let errorCodeUrl: string = "https://httpbingo.org/status/400";
-                await toolLib.downloadTool(errorCodeUrl, fileName);
-            } 
-            catch (err: any){
-                assert.equal(err.message, "400", 'status code exists');
+                let errorCodeUrl: string = "https://microsoft.com/bytes/bad";
+                let downPath: string = await toolLib.downloadTool(errorCodeUrl ,fileName);
+
+                reject('a file was downloaded but it shouldnt have been');
+            }
+            catch (err){
+                assert.equal((err as Error).message, 400, 'status code exists');
+
                 resolve();
             }
         });
     });
 
     it('works with redirect code 302', async function () {
+        nock('https://microsoft.com')
+            .get('/redirect-to')
+            .reply(302, undefined, {
+                location:'https://microsoft.com/bytes/35'
+            });
         return new Promise<void>(async(resolve, reject)=> {
             try {
-                let statusCodeUrl: string = "https://httpbingo.org/redirect-to?url=https%3A%2F%2Fexample.com%2F&status_code=302";
+                let statusCodeUrl: string = "https://microsoft.com/redirect-to";
                 let downPath: string = await toolLib.downloadTool(statusCodeUrl, fileName);
+
                 resolve();
-            } 
-            catch (err){        
+            }
+            catch (err){
+                reject(err);
+            }
+        });
+    });
+
+    it("doesn't retry 502s more than 3 times", async function() {
+        this.timeout(5000);
+        nock('https://microsoft.com')
+            .get('/perm502')
+            .times(3)
+            .reply(502, undefined);
+
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+                let statusCodeUrl: string = "https://microsoft.com/perm502";
+                let downPath: string = await toolLib.downloadTool(statusCodeUrl, fileName);
+
+                reject('Shouldnt have succeeded');
+            } catch (err: any) {
+                err = err as Error
+                if (err.message == 502) {
+                    resolve();
+                }
                 reject(err);
             }
         });

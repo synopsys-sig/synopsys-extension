@@ -9,7 +9,7 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 3,
+    "Minor": 4,
     "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
@@ -142,7 +142,7 @@
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
-      "required": false,
+      "required": true,
       "helpMarkDown": "Branch name in Polaris.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"

@@ -43,6 +43,7 @@ tmr.setInput('bridge_polaris_serverUrl', 'http://testurl.com')
 tmr.setInput('bridge_polaris_accessToken', 'accessTokenTest')
 tmr.setInput('bridge_polaris_application_name', 'testapplicaiton')
 tmr.setInput('bridge_polaris_project_name','testprojectname')
+tmr.setInput('bridge_polaris_branch_name', 'testbranchname')
 tmr.setInput('bridge_polaris_assessment_types', 'SCA,SAST')
 tmr.setInput('bridge_polaris_triage', 'true')
 
