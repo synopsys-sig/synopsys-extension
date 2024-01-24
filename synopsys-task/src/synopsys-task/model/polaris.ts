@@ -1,7 +1,6 @@
 import { Reports } from "./reports";
 export interface Polaris {
   polaris: PolarisData;
-  reports?: Reports;
 }
 
 export interface PolarisData {
@@ -12,6 +11,7 @@ export interface PolarisData {
   branch: Branch;
   project: { name: string };
   assessment: { types: string[] };
+  reports?: Reports;
 }
 
 export interface Branch {

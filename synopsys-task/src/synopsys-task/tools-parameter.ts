@@ -84,7 +84,7 @@ export class SynopsysToolsParameter {
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      polData.data.reports = this.setSarifReportsInputsForPolaris();
+      polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
     }
 
     const inputJson = JSON.stringify(polData);

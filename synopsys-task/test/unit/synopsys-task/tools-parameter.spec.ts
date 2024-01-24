@@ -84,7 +84,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
-            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.polaris.reports.sarif.create).to.be.equals(true);
 
             expect(formattedCommand).contains('--stage polaris');
 
@@ -111,11 +111,11 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
-            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
-            expect(jsonData.data.reports.sarif.file.path).to.be.equals('test-path');
-            expect(jsonData.data.reports.sarif.severities).to.be.contains('CRITICAL');
-            expect(jsonData.data.reports.sarif.groupSCAIssues).to.be.equals(true);
-            expect(jsonData.data.reports.sarif.issue.types).to.be.contains('SAST');
+            expect(jsonData.data.polaris.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.polaris.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.polaris.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.polaris.reports.sarif.groupSCAIssues).to.be.equals(true);
+            expect(jsonData.data.polaris.reports.sarif.issue.types).to.be.contains('SAST');
 
             expect(formattedCommand).contains('--stage polaris');
 
