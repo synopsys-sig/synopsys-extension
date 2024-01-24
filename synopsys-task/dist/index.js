@@ -1325,7 +1325,7 @@ class SynopsysToolsParameter {
             }
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                blackduckData.data.reports = this.setSarifReportsInputs();
+                blackduckData.data.blackduck.reports = this.setSarifReportsInputs();
             }
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);

@@ -206,7 +206,7 @@ export class SynopsysToolsParameter {
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      blackduckData.data.reports = this.setSarifReportsInputs();
+      blackduckData.data.blackduck.reports = this.setSarifReportsInputs();
     }
 
     const inputJson = JSON.stringify(blackduckData);
