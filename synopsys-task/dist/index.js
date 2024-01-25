@@ -297,6 +297,8 @@ function uploadSarifResultAsArtifact(defaultSarifReportDirectory, userSarifFileP
         ? userSarifFilePath
         : (0, utility_1.getDefaultSarifReportPath)(defaultSarifReportDirectory, true);
     console.log("uploadSarifResultAsArtifact :: start");
+    console.log("defaultSarifReportDirectory :: ", defaultSarifReportDirectory);
+    console.log("sarifFilePath :: ", sarifFilePath);
     let isSarifReportDirectoryExists = false;
     isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
     console.log("isSarifReportDirectoryExists ::" + isSarifReportDirectoryExists);
