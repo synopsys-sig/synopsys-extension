@@ -494,7 +494,7 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');
-            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.blackduck.reports.sarif.create).to.be.equals(true);
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
@@ -517,10 +517,10 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');
-            expect(jsonData.data.reports.sarif.create).to.be.equals(true);
-            expect(jsonData.data.reports.sarif.file.path).to.be.equals('test-path');
-            expect(jsonData.data.reports.sarif.severities).to.be.contains('CRITICAL');
-            expect(jsonData.data.reports.sarif.groupSCAIssues).to.be.equals(false);
+            expect(jsonData.data.blackduck.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.blackduck.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.blackduck.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.blackduck.reports.sarif.groupSCAIssues).to.be.equals(false);
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
