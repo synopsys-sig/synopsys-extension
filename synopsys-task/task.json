@@ -360,7 +360,7 @@
     {
       "name": "blackduckReportsSarifCreate",
       "type": "boolean",
-      "label": "Enable SARIF Report Generation",
+      "label": "Generate SARIF Report for Black Duck Issues",
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag to enable/disable SARIF report generation",
@@ -370,10 +370,10 @@
     {
       "name": "blackduckReportsSarifGroupSCAIssues",
       "type": "boolean",
-      "label": "Enable SARIF Report Group SCA Issues",
+      "label": "Group SCA Issues by Component",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "Flag to enable/disable Component-Version grouping for SCA Issues in SARIF report rules section.",
+      "helpMarkDown": "Uncheck this to disable grouping and list SCA issues by vulnerability",
       "visibleRule": "blackduckReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
