@@ -168,7 +168,4 @@ e2e:
         exit 1
       else
         echo "All E2E tests for Bridge Integrations have passed Successfully."
-      fi  
-
-
-      
+      fi 
