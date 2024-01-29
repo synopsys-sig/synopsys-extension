@@ -1525,7 +1525,6 @@ class SynopsysToolsParameter {
     }
     setSarifReportsInputs() {
         var _a;
-        const sarifReportIssueTypes = [];
         const sarifReportFilterSeverities = [];
         let sarifReportFilePath = "";
         if (inputs.BLACKDUCK_URL &&
@@ -1549,9 +1548,6 @@ class SynopsysToolsParameter {
                 severities: sarifReportFilterSeverities,
                 file: {
                     path: sarifReportFilePath,
-                },
-                issue: {
-                    types: sarifReportIssueTypes,
                 },
                 groupSCAIssues: groupSCAIssues,
             },
