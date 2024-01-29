@@ -488,7 +488,6 @@ export class SynopsysToolsParameter {
     return {};
   }
   private setSarifReportsInputs(): Reports {
-    const sarifReportIssueTypes: string[] = [];
     const sarifReportFilterSeverities: string[] = [];
     let sarifReportFilePath = "";
 
@@ -526,9 +525,6 @@ export class SynopsysToolsParameter {
         severities: sarifReportFilterSeverities,
         file: {
           path: sarifReportFilePath,
-        },
-        issue: {
-          types: sarifReportIssueTypes,
         },
         groupSCAIssues: groupSCAIssues,
       },
