@@ -1,3 +1,5 @@
+import { Reports } from "./reports";
+
 export interface Polaris {
   polaris: PolarisData;
 }
