@@ -114,6 +114,7 @@ publish:
     - vss_extension=$(cat vss-extension.json)
     - vss_extension=$(echo $vss_extension | jq ".id = \"$name\"")
     - vss_extension=$(echo $vss_extension | jq ".name = \"$name\"")
+    - vss_extension=$(echo $vss_extension | jq ".public = false")
     - azure_extension_version=$(echo $vss_extension | jq -r '.version')
     - echo "AZURE_EXTENSION_VERSION=$azure_extension_version" >> build.env
     - rm vss-extension.json
