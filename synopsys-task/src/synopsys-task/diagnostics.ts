@@ -27,19 +27,19 @@ export function uploadSarifResultAsArtifact(
     ? userSarifFilePath
     : getDefaultSarifReportPath(defaultSarifReportDirectory, true);
 
-  console.log("uploadSarifResultAsArtifact :: start");
-  console.log("defaultSarifReportDirectory :: ", defaultSarifReportDirectory);
-  console.log("sarifFilePath :: ", sarifFilePath);
-
   let isSarifReportDirectoryExists = false;
   isSarifReportDirectoryExists = taskLib.exist(sarifFilePath);
-  console.log("isSarifReportDirectoryExists ::" + isSarifReportDirectoryExists);
   if (isSarifReportDirectoryExists) {
+    console.log(`Uploading SARIF report as artifact from: ${sarifFilePath}`);
     taskLib.uploadArtifact(
       constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME,
       sarifFilePath,
       constants.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME
     );
+    console.log("Upload SARIF report successfully in the artifact");
+  } else {
+    console.log(
+      `Uploading SARIF report as artifact failed as file path not found at: ${sarifFilePath}`
+    );
   }
-  console.log("uploadSarifResultAsArtifact :: end");
 }

@@ -430,7 +430,7 @@
     {
       "name": "blackduckReportsSarifFilePath",
       "type": "string",
-      "label": "SARIF Report File Path",
+      "label": "Black Duck SARIF Report File Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "File path including file name where SARIF report should be created",
@@ -440,7 +440,7 @@
     {
       "name": "blackduckReportsSarifSeverities",
       "type": "string",
-      "label": "SARIF Report Severities",
+      "label": "Black Duck SARIF Report Severities",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Indicates what SAST/SCA issues severity categories to include in SARIF file report",
