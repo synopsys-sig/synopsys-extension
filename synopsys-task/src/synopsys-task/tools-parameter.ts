@@ -206,7 +206,8 @@ export class SynopsysToolsParameter {
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      blackduckData.data.blackduck.reports = this.setSarifReportsInputs();
+      blackduckData.data.blackduck.reports =
+        this.setSarifReportsInputsForBlackduck();
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -487,7 +488,7 @@ export class SynopsysToolsParameter {
     }
     return {};
   }
-  private setSarifReportsInputs(): Reports {
+  private setSarifReportsInputsForBlackduck(): Reports {
     const sarifReportFilterSeverities: string[] = [];
     let sarifReportFilePath = "";
 
