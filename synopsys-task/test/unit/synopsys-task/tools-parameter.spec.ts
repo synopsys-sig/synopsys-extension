@@ -86,7 +86,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
-            expect(jsonData.data.polaris.prcomment.enabled).to.be.contains(true);
+            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
         });
 
         it('should success for polaris command formation with sarif report create', async function () {
