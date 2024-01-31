@@ -153,7 +153,7 @@
       "label": "Generate SARIF Report for Polaris Issues",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Flag to enable/disable SARIF report generation for Polaris issues",
+      "helpMarkDown": "Flag to enable/disable SARIF report generation",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -170,7 +170,7 @@
     {
       "name": "polarisReportsSarifFilePath",
       "type": "string",
-      "label": "SARIF Report File Path",
+      "label": "Polaris SARIF Report File Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "File path including file name where SARIF report should be created",
@@ -180,7 +180,7 @@
     {
       "name": "polarisReportsSarifSeverities",
       "type": "string",
-      "label": "SARIF Report Severities",
+      "label": "Polaris SARIF Report Severities",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Indicates what SAST/SCA issues severity categories to include in SARIF file report",
@@ -190,10 +190,10 @@
     {
       "name": "polarisReportsSarifIssueTypes",
       "type": "string",
-      "label": "SARIF Report Issue Types",
+      "label": "Polaris SARIF Report Issue Types",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Indicate which assessment issues type to include in SARIF file report",
+      "helpMarkDown": "Indicates which assessment issues type to include in SARIF file report",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
