@@ -78,8 +78,8 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_TRIAGE', '')
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', [])
+            Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
