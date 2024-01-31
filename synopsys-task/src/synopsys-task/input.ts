@@ -37,6 +37,11 @@ export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() || "";
 export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)?.trim() || "";
+export const POLARIS_PR_COMMENT_ENABLED =
+  taskLib.getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY)?.trim() || "";
+export const POLARIS_PR_COMMENT_SEVERITIES =
+  taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ",") ||
+  [];
 export const POLARIS_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() || "";
 export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
@@ -115,7 +120,7 @@ export const BLACKDUCK_SCAN_FAILURE_SEVERITIES =
   taskLib.getDelimitedInput(
     constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
     ","
-  ) || "";
+  ) || [];
 export const BLACKDUCK_FIXPR_ENABLED =
   taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() ||
   taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)?.trim() ||

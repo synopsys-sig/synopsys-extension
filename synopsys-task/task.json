@@ -148,6 +148,26 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "POLARIS_PR_COMMENT_SEVERITIES_KEY",
+      "type": "string",
+      "label": "Polaris PR Comment Severities",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_polaris_pr_comment_enabled",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisReportsSarifCreate",
       "type": "boolean",
       "label": "Generate SARIF Report for Polaris Issues",
