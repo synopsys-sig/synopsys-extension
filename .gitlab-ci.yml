@@ -30,7 +30,7 @@ variables:
   BD_PRODUCT_GROUP: PolarisNG Projects Group
   BD_VERSION_PHASE: DEVELOPMENT
   PUBLISHER_ID: E2Etest
-  ORG_NAME : madhusud
+  ORG_NAME : centralintegrations
   TESTNG_FAILED_XML: test-output/testng-failed.xml
 
 
@@ -150,7 +150,7 @@ e2e:
     - echo "Run e2e tests"
     - curl -L $URL -o $JAR_NAME
     - echo "scm=azure" >> /tmp/test.properties
-    - echo "runner=ubuntu-latest" >> /tmp/test.properties
+    - echo "runner=linux" >> /tmp/test.properties
     - echo "runner.os=linux" >> /tmp/test.properties
     - echo "azure.extension.name=$EXTENSION_NAME" >> /tmp/test.properties
     - echo "azure.version=$AZURE_EXTENSION_VERSION" >> /tmp/test.properties
