@@ -150,8 +150,8 @@ e2e:
     - echo "Run e2e tests"
     - curl -L $URL -o $JAR_NAME
     - echo "scm=azure" >> /tmp/test.properties
-    - echo "runner=linux" >> /tmp/test.properties
-    - echo "runner.os=linux" >> /tmp/test.properties
+    - echo "runner=Linux" >> /tmp/test.properties
+    - echo "runner.os=Linux" >> /tmp/test.properties
     - echo "azure.extension.name=$EXTENSION_NAME" >> /tmp/test.properties
     - echo "azure.version=$AZURE_EXTENSION_VERSION" >> /tmp/test.properties
     - echo "Xml path for E2E Tests is $XML_PATH_IN_JAR"
