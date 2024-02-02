@@ -153,7 +153,7 @@
       "label": "Generate SARIF Report for Polaris Issues",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Flag to enable/disable SARIF report generation",
+      "helpMarkDown": "Enable/disable SARIF report generation.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -163,7 +163,7 @@
       "label": "Group SCA Issues by Component",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "Uncheck this to disable grouping and list SCA issues by vulnerability",
+      "helpMarkDown": "Uncheck this to disable grouping by component and list SCA issues by vulnerability.",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
@@ -173,7 +173,7 @@
       "label": "Polaris SARIF Report File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "File path including file name where SARIF report should be created",
+      "helpMarkDown": "File path (including file name) where SARIF report is created.",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
@@ -183,7 +183,7 @@
       "label": "Polaris SARIF Report Severities",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Indicates what SAST/SCA issues severity categories to include in SARIF file report",
+      "helpMarkDown": "Comma separated list of issue severities to include in SARIF report. Supported values: CRITICAL,HIGH,MEDIUM,LOW.",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
@@ -193,7 +193,7 @@
       "label": "Polaris SARIF Report Issue Types",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Indicates which assessment issues type to include in SARIF file report",
+      "helpMarkDown": "Comma separated list of issues types to include in SARIF report. Supported values: SAST,SCA.",
       "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
