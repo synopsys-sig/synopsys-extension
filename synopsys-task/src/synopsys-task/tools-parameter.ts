@@ -599,5 +599,4 @@ export class SynopsysToolsParameter {
     };
     return reportData;
   }
-
 }
