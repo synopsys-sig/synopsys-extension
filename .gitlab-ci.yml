@@ -32,6 +32,7 @@ variables:
   PUBLISHER_ID: E2Etest
   ORG_NAME : centralintegrations
   TESTNG_FAILED_XML: test-output/testng-failed.xml
+  DISABLE_POLARIS_CLASSIC_ANALYSIS: "true"
 
 
 ##### MERGE REQUEST PIPELINE #####
