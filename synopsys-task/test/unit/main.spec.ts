@@ -101,6 +101,7 @@ describe("Main function test cases", () => {
                 expect(errorObj.message).includes("Error uploading artifacts");
             })
         });
+
     });
 
     context('uploadSarifResultAsArtifact', () => {

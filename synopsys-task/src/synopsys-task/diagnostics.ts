@@ -1,6 +1,7 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import * as path from "path";
+import * as inputs from "./input";
 import { getDefaultSarifReportPath } from "./utility";
 
 export function uploadDiagnostics(workspaceDir: string) {
