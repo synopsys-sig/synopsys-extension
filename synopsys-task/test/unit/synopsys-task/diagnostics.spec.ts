@@ -48,6 +48,7 @@ describe("Synopsys Bridge upload diagnostics test", () => {
             expect(uploadArtifactStub.returned(undefined)).to.be.true;
         });
 
+
         it('should success with default blackduck sarif file path and void/undefined type return', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH',
                 {value: './bridge/'.concat(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY).concat('/test-path.json')})
