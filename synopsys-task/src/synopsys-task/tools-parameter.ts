@@ -16,10 +16,11 @@ import {
   validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
 } from "./validator";
-import { parseToBoolean } from "./utility";
+import { parseToBoolean, isBoolean } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
+import { Reports } from "./model/reports";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -78,6 +79,7 @@ export class SynopsysToolsParameter {
     if (inputs.POLARIS_TRIAGE) {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
+
     const inputJson = JSON.stringify(polData);
     let stateFilePath = path.join(
       this.tempDir,
@@ -198,6 +200,14 @@ export class SynopsysToolsParameter {
       blackduckData.data.environment = this.setEnvironmentScanPullData();
       blackduckData.data.blackduck.automation.prcomment = true;
       blackduckData.data;
+    }
+
+    if (
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      blackduckData.data.blackduck.reports =
+        this.setSarifReportsInputsForBlackduck();
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -346,7 +356,7 @@ export class SynopsysToolsParameter {
       inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0
     ) {
       for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
-        if (fixPrSeverity != null && fixPrSeverity !== "") {
+        if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
           fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
       }
@@ -477,5 +487,49 @@ export class SynopsysToolsParameter {
       return environment;
     }
     return {};
+  }
+  private setSarifReportsInputsForBlackduck(): Reports {
+    const sarifReportFilterSeverities: string[] = [];
+    let sarifReportFilePath = "";
+
+    if (
+      inputs.BLACKDUCK_URL &&
+      inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH?.trim()
+    ) {
+      sarifReportFilePath = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim();
+    }
+
+    if (
+      inputs.BLACKDUCK_URL &&
+      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
+      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.length > 0
+    ) {
+      const sarifSeverities = inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.filter(
+        (severity) => severity && severity.trim() !== ""
+      ).map((severity) => severity.trim());
+      sarifReportFilterSeverities.push(...sarifSeverities);
+    }
+
+    let groupSCAIssues = true;
+    if (
+      inputs.BLACKDUCK_URL &&
+      isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
+    ) {
+      groupSCAIssues = JSON.parse(
+        inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
+      );
+    }
+
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+        severities: sarifReportFilterSeverities,
+        file: {
+          path: sarifReportFilePath,
+        },
+        groupSCAIssues: groupSCAIssues,
+      },
+    };
+    return reportData;
   }
 }

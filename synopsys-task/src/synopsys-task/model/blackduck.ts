@@ -1,4 +1,5 @@
 import { AzureData } from "./azure";
+import { Reports } from "./reports";
 export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
   ALL = "ALL",
   NONE = "NONE",
@@ -28,6 +29,7 @@ export interface BlackduckData {
   };
   automation: AutomationData;
   fixpr?: BlackDuckFixPrData;
+  reports?: Reports;
 }
 
 export interface AutomationData {

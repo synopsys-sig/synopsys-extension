@@ -428,5 +428,50 @@ describe("Synopsys Tools Parameter test", () => {
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
+
+        it('should success for blackduck command formation with sarif report create', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: true})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.reports.sarif.create).to.be.equals(true);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should success for blackduck command formation with sarif report parameters', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: false})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            console.log(formattedCommand)
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.blackduck.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.blackduck.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.blackduck.reports.sarif.groupSCAIssues).to.be.equals(false);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
     });
 });

@@ -7,7 +7,10 @@ import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 import * as inputs from "./synopsys-task/input";
-import { uploadDiagnostics } from "./synopsys-task/diagnostics";
+import {
+  uploadDiagnostics,
+  uploadSarifResultAsArtifact,
+} from "./synopsys-task/diagnostics";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -33,6 +36,17 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
+    if (
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+      uploadSarifResultAsArtifact(
+        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+        inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+      );
+    }
+
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);
     }
