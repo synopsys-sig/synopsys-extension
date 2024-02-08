@@ -32,6 +32,7 @@ variables:
   PUBLISHER_ID: E2Etest
   ORG_NAME : centralintegrations
   TESTNG_FAILED_XML: test-output/testng-failed.xml
+  DISABLE_POLARIS_CLASSIC_ANALYSIS: "true"
 
 
 ##### MERGE REQUEST PIPELINE #####
@@ -70,9 +71,6 @@ generate_sbom:
   only:
     refs:
       - main
-
-pop_polaris:
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
 
 polaris_bridge:
   stage: analysis
