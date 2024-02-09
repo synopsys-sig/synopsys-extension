@@ -103,7 +103,7 @@ e2e-publish:
   
 e2e-setup:
   stage: e2e-setup
-  dependencies: [publish]
+  dependencies: [e2e-publish]
   tags:
     - linux
   extends: .e2e-setup
