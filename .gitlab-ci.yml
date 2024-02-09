@@ -24,7 +24,7 @@ stages:
   - versioning
   - analysis
   - sbom
-  - publish
+  - e2e-publish
   - e2e-setup
   - e2e
   - e2e-cleanup
@@ -95,8 +95,8 @@ pop_blackduck:
       pip3 install blackduck requests
       export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
-publish:
-  stage: publish
+e2e-publish:
+  stage: e2e-publish
   tags:
     - linux
   extends: .extension-publish
@@ -110,7 +110,7 @@ e2e-setup:
 
 e2e-linux:
   stage: e2e
-  dependencies: [publish,e2e-setup]
+  dependencies: [e2e-publish,e2e-setup]
   tags:
     - linux
   extends: .e2e-extension
@@ -121,7 +121,7 @@ e2e-linux:
     
 e2e-mac:
   stage: e2e
-  dependencies: [publish,e2e-setup]
+  dependencies: [e2e-publish,e2e-setup]
   tags:
     - linux
   extends: .e2e-extension
@@ -132,7 +132,7 @@ e2e-mac:
     
 e2e-windows:
   stage: e2e
-  dependencies: [publish,e2e-setup]
+  dependencies: [e2e-publish,e2e-setup]
   tags:
     - linux
   extends: .e2e-extension
@@ -143,7 +143,7 @@ e2e-windows:
   
 e2e-clean-up:
   stage: e2e-cleanup
-  dependencies: [publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
+  dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
   tags:
     - linux
   extends: .e2e-clean-up
