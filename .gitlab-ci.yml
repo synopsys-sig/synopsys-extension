@@ -12,6 +12,10 @@ include:
   - project: altair/altair-build-common
     ref: master
     file: gitlab/ci/altair_common.yml
+  - project: qa-automation/test-integrations
+    ref: main
+    file: _ci/e2e_azure.yml
+  
 
 # List of job stages in their order of execution.
 stages:
@@ -20,8 +24,10 @@ stages:
   - versioning
   - analysis
   - sbom
-  - publish
+  - e2e-publish
+  - e2e-setup
   - e2e
+  - e2e-cleanup
   - notification
 
 variables:
@@ -89,83 +95,57 @@ pop_blackduck:
       pip3 install blackduck requests
       export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
-publish:
-  stage: publish
+e2e-publish:
+  stage: e2e-publish
   tags:
     - linux
-  before_script: 
-    - apt-get update && apt-get install -y ca-certificates gnupg uuid-runtime jq
-    - curl -sL https://deb.nodesource.com/setup_20.x | bash
-    - apt-get install -y nodejs
-    - npm install -g npm@10.2.4
-    - node -v
-    - npm version
-    - npm install -g tfx-cli 
-  script:
-    - uuid=$(uuidgen)
-    - echo $uuid
-    - t=$(date +"%s")
-    - echo $t
-    - name="Synopsys-security-scan-"$t
-    - echo $name
-    - echo "EXTENSION_NAME=$name" >> build.env
-    - vss_extension=$(cat vss-extension.json)
-    - vss_extension=$(echo $vss_extension | jq ".id = \"$name\"")
-    - vss_extension=$(echo $vss_extension | jq ".name = \"$name\"")
-    - vss_extension=$(echo $vss_extension | jq ".publisher = \"$PUBLISHER_ID\"")
-    - vss_extension=$(echo $vss_extension | jq ".public = false")
-    - azure_extension_version=$(echo $vss_extension | jq -r '.version')
-    - echo "AZURE_EXTENSION_VERSION=$azure_extension_version" >> build.env
-    - rm vss-extension.json
-    - echo $vss_extension > vss-extension.json
-    - cd synopsys-task
-    - task_json=$(cat task.json)
-    - task_json=$(echo $task_json | jq ".name = \"$name\"")
-    - task_json=$(echo $task_json | jq ".id = \"$uuid\"")
-    - rm task.json
-    - echo $task_json > task.json
-    - npm install
-    - npm run all
-    - rm -rf node_modules
-    - cd ..
-    - tfx extension create --manifest-globs vss-extension.json
-    - tfx extension publish --manifest-globs vss-extension.json --share-with $ORG_NAME --token $USER_INSTALL_TOKEN
-  artifacts:
-    reports:
-      dotenv: build.env     
-
-
-e2e:
-  stage: e2e
+  extends: .extension-publish
+  
+e2e-setup:
+  stage: e2e-setup
   dependencies: [publish]
   tags:
     - linux
-  before_script:
-    - apt-get update && apt-get install -y openjdk-11-jdk
-    - curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-    - az devops extension install --extension-id $EXTENSION_NAME --publisher-id $PUBLISHER_ID --organization https://dev.azure.com/$ORG_NAME
+  extends: .e2e-setup
 
-  script:
-    - echo "Run e2e tests"
-    - curl -L $URL -o $JAR_NAME
-    - echo "scm=azure" >> /tmp/test.properties
-    - echo "runner=Linux" >> /tmp/test.properties
-    - echo "runner.os=Linux" >> /tmp/test.properties
-    - echo "azure.extension.name=$EXTENSION_NAME" >> /tmp/test.properties
-    - echo "azure.version=$AZURE_EXTENSION_VERSION" >> /tmp/test.properties
-    - echo "Xml path for E2E Tests is $XML_PATH_IN_JAR"
-    - echo "pipeline=true" >> /tmp/test.properties
-    - cat /tmp/test.properties
-    - pwd  && ls -la
-    - cat /tmp/test.properties
-    - java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar $JAR_NAME -testjar $JAR_NAME  -xmlpathinjar $XML
-  after_script:
-    - az devops extension uninstall --extension-id $EXTENSION_NAME --publisher-id $PUBLISHER_ID --organization https://dev.azure.com/$ORG_NAME --yes
-    - curl --location --request DELETE "https://marketplace.visualstudio.com/_apis/gallery/publishers/$PUBLISHER_ID/extensions/$EXTENSION_NAME" --header "Accept:api-version=7.2-preview.2" --header "Authorization:Basic $PUBLISHER_BASIC_AUTH"
-    - |
-      if [[ -f "$TESTNG_FAILED_XML" ]]; then
-        echo "E2E Tests have failed for Bridge Integrations, please check the logs for the complete details."
-        exit 1
-      else
-        echo "All E2E tests for Bridge Integrations have passed Successfully."
-      fi 
+e2e-linux:
+  stage: e2e
+  dependencies: [e2e-publish,e2e-setup]
+  tags:
+    - linux
+  extends: .e2e-extension
+  variables:
+    XML_PATH_IN_JAR: $XML
+    RUNNER_NAME: "Linux"
+    RUNNER_OS: "Linux"
+    
+e2e-mac:
+  stage: e2e
+  dependencies: [e2e-publish,e2e-setup]
+  tags:
+    - linux
+  extends: .e2e-extension
+  variables:
+    XML_PATH_IN_JAR: $XML
+    RUNNER_NAME: "Darwin"
+    RUNNER_OS: "Mac"
+    
+e2e-windows:
+  stage: e2e
+  dependencies: [e2e-publish,e2e-setup]
+  tags:
+    - linux
+  extends: .e2e-extension
+  variables:
+    XML_PATH_IN_JAR: $XML
+    RUNNER_NAME: "Windows_NT"
+    RUNNER_OS: "Windows"
+  
+e2e-clean-up:
+  stage: e2e-cleanup
+  dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
+  tags:
+    - linux
+  extends: .e2e-clean-up
+  rules:
+    - when: always
