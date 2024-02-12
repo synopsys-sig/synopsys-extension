@@ -18,14 +18,6 @@ export function validatePolarisInputs(): string[] {
       constants.POLARIS_ACCESS_TOKEN_KEY,
       inputs.POLARIS_ACCESS_TOKEN
     );
-    paramsMap.set(
-      constants.POLARIS_APPLICATION_NAME_KEY,
-      inputs.POLARIS_APPLICATION_NAME
-    );
-    paramsMap.set(
-      constants.POLARIS_PROJECT_NAME_KEY,
-      inputs.POLARIS_PROJECT_NAME
-    );
     paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
     paramsMap.set(
       constants.POLARIS_BRANCH_NAME_KEY,
@@ -92,14 +84,6 @@ export function validateCoverityInputs(): string[] {
       inputs.COVERITY_USER_PASSWORD
     );
     paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
-    paramsMap.set(
-      constants.COVERITY_PROJECT_NAME_KEY,
-      inputs.COVERITY_PROJECT_NAME
-    );
-    paramsMap.set(
-      constants.COVERITY_STREAM_NAME_KEY,
-      inputs.COVERITY_STREAM_NAME
-    );
     errors = validateParameters(paramsMap, constants.COVERITY_KEY);
   }
   return errors;

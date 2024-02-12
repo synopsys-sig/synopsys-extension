@@ -38,4 +38,6 @@ export const AZURE_ENVIRONMENT_VARIABLES = {
   AZURE_REPOSITORY: "Build.Repository.Name",
   AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
   AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+  AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
+  AZURE_BUILD_REASON: "Build.Reason",
 };
