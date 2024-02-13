@@ -1235,16 +1235,12 @@ class SynopsysToolsParameter {
             polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
         }
         else {
-            console.info(">>>>> Polaris application name is not passed by user and it will be set as repository name");
-            console.info(">>>>> Repository from environment variable: " + azureRepositoryName);
             polData.data.polaris.application.name = azureRepositoryName;
         }
         if (inputs.POLARIS_PROJECT_NAME) {
             polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
         }
         else {
-            console.info(">>>>> Polaris project name is not passed by user and it will be set as repository name");
-            console.info(">>>>> Repository from environment variable: " + azureRepositoryName);
             polData.data.polaris.project.name = azureRepositoryName;
         }
         if (inputs.POLARIS_BRANCH_NAME) {
@@ -1394,43 +1390,29 @@ class SynopsysToolsParameter {
                 covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
             }
             else {
-                console.info(">>>>> Coverity Project name is not passed by user and it will be set as repository name");
-                console.info(">>>>> Repository from environment variable: " + azureRepositoryName);
                 covData.data.coverity.connect.project.name = azureRepositoryName;
             }
             if (inputs.COVERITY_STREAM_NAME) {
                 covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
             }
             else {
-                console.info(">>>>> Coverity Stream name is not passed by user and it will be set as repository name");
-                console.info(">>>>> Repository from environment variable: " + azureRepositoryName);
                 const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
                     "";
-                console.info(">>>>> Build Reason: " + buildReason);
                 if (buildReason == "PullRequest") {
-                    console.info(">>>>> This is a pull request event");
                     const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) || "";
-                    console.info(">>>>> Pull request target branch name from environment: " +
-                        pullRequestTargetBranchName);
                     covData.data.coverity.connect.stream.name =
                         azureRepositoryName && pullRequestTargetBranchName
                             ? azureRepositoryName
                                 .concat("-")
                                 .concat(pullRequestTargetBranchName)
                             : "";
-                    console.info(">>>>> Coverity stream name for pull request: " +
-                        covData.data.coverity.connect.stream.name);
                 }
                 else {
-                    console.info(">>>>> This is not a pull request event");
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
-                    console.info(">>>>> Source branch name from environment: " + sourceBranchName);
                     covData.data.coverity.connect.stream.name =
                         azureRepositoryName && sourceBranchName
                             ? azureRepositoryName.concat("-").concat(sourceBranchName)
                             : "";
-                    console.info(">>>>> Coverity stream name for non-pull request: " +
-                        covData.data.coverity.connect.stream.name);
                 }
             }
             if (inputs.COVERITY_LOCAL) {
