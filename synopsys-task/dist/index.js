@@ -607,7 +607,7 @@ exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_8 = taskLib
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
+exports.AZURE_BUILD_REASON = exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
 exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
     AZURE_PROJECT: "System.TeamProject",
@@ -617,6 +617,10 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
     AZURE_BUILD_REASON: "Build.Reason",
 };
+var AZURE_BUILD_REASON;
+(function (AZURE_BUILD_REASON) {
+    AZURE_BUILD_REASON["PULL_REQUEST"] = "PullRequest";
+})(AZURE_BUILD_REASON = exports.AZURE_BUILD_REASON || (exports.AZURE_BUILD_REASON = {}));
 
 
 /***/ }),
@@ -1398,7 +1402,7 @@ class SynopsysToolsParameter {
             else {
                 const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
                     "";
-                if (buildReason == "PullRequest") {
+                if (buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
                     const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) || "";
                     covData.data.coverity.connect.stream.name =
                         azureRepositoryName && pullRequestTargetBranchName

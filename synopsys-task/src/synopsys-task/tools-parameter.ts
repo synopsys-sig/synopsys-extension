@@ -8,7 +8,11 @@ import {
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
-import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+  AzureData,
+} from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -290,7 +294,7 @@ export class SynopsysToolsParameter {
       const buildReason =
         taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
         "";
-      if (buildReason == "PullRequest") {
+      if (buildReason == AZURE_BUILD_REASON.PULL_REQUEST) {
         const pullRequestTargetBranchName =
           taskLib.getVariable(
             AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
