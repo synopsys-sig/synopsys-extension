@@ -103,7 +103,7 @@
       "label": "Polaris Application",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Application name in Polaris.",
+      "helpMarkDown": "Application name in Polaris. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -113,7 +113,7 @@
       "label": "Polaris Project",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Project name in Polaris.",
+      "helpMarkDown": "Project name in Polaris. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -183,7 +183,7 @@
       "label": "Coverity Project",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Project name in Coverity",
+      "helpMarkDown": "Project name in Coverity. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -193,7 +193,7 @@
       "label": "Coverity Stream",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Stream name in Coverity.",
+      "helpMarkDown": "Stream name in Coverity. If not provided, for non-PR context azure repository name concatenated with source branch name (i.e. testRepo-feature1) and for PR context azure repository name concatenated with target branch name (i.e. testRepo-main) will be set as default value.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
