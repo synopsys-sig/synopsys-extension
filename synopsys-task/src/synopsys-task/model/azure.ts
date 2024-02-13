@@ -41,3 +41,7 @@ export const AZURE_ENVIRONMENT_VARIABLES = {
   AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
   AZURE_BUILD_REASON: "Build.Reason",
 };
+
+export enum AZURE_BUILD_REASON {
+  PULL_REQUEST = "PullRequest",
+}
