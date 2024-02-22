@@ -75,6 +75,11 @@ function run() {
                 console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
                 (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
             }
+            if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+                (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
+                console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+            }
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
             }
@@ -84,7 +89,7 @@ function run() {
 }
 exports.run = run;
 function logBridgeExitCodes(message) {
-    var exitCode = message.trim().slice(-1);
+    const exitCode = message.trim().slice(-1);
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
         : message;
@@ -106,8 +111,8 @@ run().catch((error) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
-exports.MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR = void 0;
+exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY = exports.COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_SERVER_URL_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
+exports.MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -129,6 +134,16 @@ exports.POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 exports.POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 exports.POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
+exports.POLARIS_REPORTS_SARIF_CREATE_KEY = "bridge_polaris_reports_sarif_create";
+exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = "polarisReportsSarifCreate";
+exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = "bridge_polaris_reports_sarif_file_path";
+exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = "polarisReportsSarifFilePath";
+exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = "bridge_polaris_reports_sarif_severities";
+exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = "polarisReportsSarifSeverities";
+exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = "bridge_polaris_reports_sarif_groupSCAIssues";
+exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = "polarisReportsSarifGroupSCAIssues";
+exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = "bridge_polaris_reports_sarif_issue_types";
+exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = "polarisReportsSarifIssueTypes";
 // Coverity
 exports.COVERITY_URL_KEY = "bridge_coverity_connect_url";
 exports.COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
@@ -175,6 +190,7 @@ exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_LOCAL_DIRECTORY = ".bridge";
 exports.SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
 exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = "Blackduck SARIF Generator";
+exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = "Polaris SARIF Generator";
 exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = "sarif_report";
 exports.RETRY_DELAY_IN_MILLISECONDS = 15000;
 exports.RETRY_COUNT = 3;
@@ -535,9 +551,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9;
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE = exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCK_FIXPR_MAXCOUNT = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_FIXPR_ENABLED = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_BRANCH_NAME = exports.POLARIS_TRIAGE = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
+exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE = exports.INCLUDE_DIAGNOSTICS = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCK_FIXPR_MAXCOUNT = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_FIXPR_ENABLED = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_BRANCH_NAME = exports.POLARIS_TRIAGE = exports.POLARIS_SERVER_URL = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
@@ -555,47 +571,65 @@ exports.POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(constants.POLARIS_A
 exports.POLARIS_SERVER_URL = ((_h = taskLib.getInput(constants.POLARIS_SERVER_URL_KEY)) === null || _h === void 0 ? void 0 : _h.trim()) || "";
 exports.POLARIS_TRIAGE = ((_j = taskLib.getInput(constants.POLARIS_TRIAGE_KEY)) === null || _j === void 0 ? void 0 : _j.trim()) || "";
 exports.POLARIS_BRANCH_NAME = ((_k = taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)) === null || _k === void 0 ? void 0 : _k.trim()) || "";
+exports.POLARIS_REPORTS_SARIF_CREATE = ((_l = taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)) === null || _l === void 0 ? void 0 : _l.trim()) || "";
+exports.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = ((_m = taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)) === null || _m === void 0 ? void 0 : _m.trim()) || "";
+exports.POLARIS_REPORTS_SARIF_FILE_PATH = ((_o = taskLib.getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) === null || _o === void 0 ? void 0 : _o.trim()) ||
+    ((_p = taskLib
+        .getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR)) === null || _p === void 0 ? void 0 : _p.trim()) ||
+    "";
+exports.POLARIS_REPORTS_SARIF_SEVERITIES = taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
+    "";
+exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_q = taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)) === null || _q === void 0 ? void 0 : _q.trim()) ||
+    ((_r = taskLib
+        .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR)) === null || _r === void 0 ? void 0 : _r.trim()) ||
+    "";
+exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, ",") ||
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR, ",") ||
+    "";
 // Coverity related inputs
-exports.COVERITY_URL = ((_l = taskLib.getInput(constants.COVERITY_URL_KEY)) === null || _l === void 0 ? void 0 : _l.trim()) || "";
-exports.COVERITY_USER = ((_m = taskLib.getInput(constants.COVERITY_USER_NAME_KEY)) === null || _m === void 0 ? void 0 : _m.trim()) || "";
-exports.COVERITY_USER_PASSWORD = ((_o = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY)) === null || _o === void 0 ? void 0 : _o.trim()) || "";
-exports.COVERITY_PROJECT_NAME = ((_p = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY)) === null || _p === void 0 ? void 0 : _p.trim()) || "";
-exports.COVERITY_STREAM_NAME = ((_q = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY)) === null || _q === void 0 ? void 0 : _q.trim()) || "";
-exports.COVERITY_INSTALL_DIRECTORY = ((_r = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)) === null || _r === void 0 ? void 0 : _r.trim()) || "";
-exports.COVERITY_POLICY_VIEW = ((_s = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) || "";
-exports.COVERITY_LOCAL = ((_t = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) === "true" || false;
+exports.COVERITY_URL = ((_s = taskLib.getInput(constants.COVERITY_URL_KEY)) === null || _s === void 0 ? void 0 : _s.trim()) || "";
+exports.COVERITY_USER = ((_t = taskLib.getInput(constants.COVERITY_USER_NAME_KEY)) === null || _t === void 0 ? void 0 : _t.trim()) || "";
+exports.COVERITY_USER_PASSWORD = ((_u = taskLib.getInput(constants.COVERITY_USER_PASSWORD_KEY)) === null || _u === void 0 ? void 0 : _u.trim()) || "";
+exports.COVERITY_PROJECT_NAME = ((_v = taskLib.getInput(constants.COVERITY_PROJECT_NAME_KEY)) === null || _v === void 0 ? void 0 : _v.trim()) || "";
+exports.COVERITY_STREAM_NAME = ((_w = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY)) === null || _w === void 0 ? void 0 : _w.trim()) || "";
+exports.COVERITY_INSTALL_DIRECTORY = ((_x = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)) === null || _x === void 0 ? void 0 : _x.trim()) || "";
+exports.COVERITY_POLICY_VIEW = ((_y = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) || "";
+exports.COVERITY_LOCAL = ((_z = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _z === void 0 ? void 0 : _z.trim()) === "true" || false;
 exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.COVERITY_VERSION = ((_u = taskLib.getInput(constants.COVERITY_VERSION_KEY)) === null || _u === void 0 ? void 0 : _u.trim()) || "";
+exports.COVERITY_VERSION = ((_0 = taskLib.getInput(constants.COVERITY_VERSION_KEY)) === null || _0 === void 0 ? void 0 : _0.trim()) || "";
 // Blackduck related inputs
-exports.BLACKDUCK_URL = ((_v = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _v === void 0 ? void 0 : _v.trim()) || "";
-exports.BLACKDUCK_API_TOKEN = ((_w = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _w === void 0 ? void 0 : _w.trim()) || "";
-exports.BLACKDUCK_INSTALL_DIRECTORY = ((_x = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)) === null || _x === void 0 ? void 0 : _x.trim()) || "";
-exports.BLACKDUCK_SCAN_FULL = ((_y = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) || "";
+exports.BLACKDUCK_URL = ((_1 = taskLib.getInput(constants.BLACKDUCK_URL_KEY)) === null || _1 === void 0 ? void 0 : _1.trim()) || "";
+exports.BLACKDUCK_API_TOKEN = ((_2 = taskLib.getInput(constants.BLACKDUCK_API_TOKEN_KEY)) === null || _2 === void 0 ? void 0 : _2.trim()) || "";
+exports.BLACKDUCK_INSTALL_DIRECTORY = ((_3 = taskLib.getPathInput(constants.BLACKDUCK_INSTALL_DIRECTORY_KEY)) === null || _3 === void 0 ? void 0 : _3.trim()) || "";
+exports.BLACKDUCK_SCAN_FULL = ((_4 = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY)) === null || _4 === void 0 ? void 0 : _4.trim()) || "";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") || "";
-exports.BLACKDUCK_FIXPR_ENABLED = ((_z = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)) === null || _z === void 0 ? void 0 : _z.trim()) ||
-    ((_0 = taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)) === null || _0 === void 0 ? void 0 : _0.trim()) ||
+exports.BLACKDUCK_FIXPR_ENABLED = ((_5 = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)) === null || _5 === void 0 ? void 0 : _5.trim()) ||
+    ((_6 = taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)) === null || _6 === void 0 ? void 0 : _6.trim()) ||
     "";
 exports.BLACKDUCK_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || "";
-exports.BLACKDUCK_FIXPR_MAXCOUNT = ((_1 = taskLib.getInput(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)) === null || _1 === void 0 ? void 0 : _1.trim()) || "";
-exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = ((_2 = taskLib.getInput(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)) === null || _2 === void 0 ? void 0 : _2.trim()) ||
+exports.BLACKDUCK_FIXPR_MAXCOUNT = ((_7 = taskLib.getInput(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)) === null || _7 === void 0 ? void 0 : _7.trim()) || "";
+exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = ((_8 = taskLib.getInput(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)) === null || _8 === void 0 ? void 0 : _8.trim()) ||
     "";
 exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, ",") || "";
 exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY, ",") || "";
-exports.INCLUDE_DIAGNOSTICS = ((_3 = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)) === null || _3 === void 0 ? void 0 : _3.trim()) || "";
-exports.BLACKDUCK_REPORTS_SARIF_CREATE = ((_4 = taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) === null || _4 === void 0 ? void 0 : _4.trim()) || "";
-exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = ((_5 = taskLib
-    .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) === null || _5 === void 0 ? void 0 : _5.trim()) || "";
-exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = ((_6 = taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) === null || _6 === void 0 ? void 0 : _6.trim()) ||
-    ((_7 = taskLib
-        .getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR)) === null || _7 === void 0 ? void 0 : _7.trim()) ||
+exports.INCLUDE_DIAGNOSTICS = ((_9 = taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)) === null || _9 === void 0 ? void 0 : _9.trim()) || "";
+exports.BLACKDUCK_REPORTS_SARIF_CREATE = ((_10 = taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) === null || _10 === void 0 ? void 0 : _10.trim()) || "";
+exports.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR = ((_11 = taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) === null || _11 === void 0 ? void 0 : _11.trim()) || "";
+exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = ((_12 = taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) === null || _12 === void 0 ? void 0 : _12.trim()) ||
+    ((_13 = taskLib
+        .getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR)) === null || _13 === void 0 ? void 0 : _13.trim()) ||
     "";
 exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
     taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR, ",") ||
     "";
-exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_8 = taskLib
-    .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)) === null || _8 === void 0 ? void 0 : _8.trim()) ||
-    ((_9 = taskLib
-        .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR)) === null || _9 === void 0 ? void 0 : _9.trim()) ||
+exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_14 = taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)) === null || _14 === void 0 ? void 0 : _14.trim()) ||
+    ((_15 = taskLib
+        .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_CLASSIC_EDITOR)) === null || _15 === void 0 ? void 0 : _15.trim()) ||
     "";
 
 
@@ -1234,6 +1268,10 @@ class SynopsysToolsParameter {
         if (inputs.POLARIS_TRIAGE) {
             polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
         }
+        if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+            (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
+            polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+        }
         const inputJson = JSON.stringify(polData);
         let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
@@ -1551,6 +1589,47 @@ class SynopsysToolsParameter {
                 severities: sarifReportFilterSeverities,
                 file: {
                     path: sarifReportFilePath,
+                },
+                groupSCAIssues: groupSCAIssues,
+            },
+        };
+        return reportData;
+    }
+    setSarifReportsInputsForPolaris() {
+        var _a;
+        let sarifReportFilePath = "";
+        if (inputs.POLARIS_SERVER_URL &&
+            ((_a = inputs.POLARIS_REPORTS_SARIF_FILE_PATH) === null || _a === void 0 ? void 0 : _a.trim())) {
+            sarifReportFilePath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+        }
+        const sarifReportFilterSeverities = [];
+        if (inputs.POLARIS_SERVER_URL &&
+            inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
+            inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0) {
+            const severities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES.filter((severity) => severity && severity.trim() !== "").map((severity) => severity.trim());
+            sarifReportFilterSeverities.push(...severities);
+        }
+        let groupSCAIssues = true;
+        if (inputs.POLARIS_SERVER_URL &&
+            (0, utility_1.isBoolean)(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)) {
+            groupSCAIssues = JSON.parse(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES);
+        }
+        const sarifReportIssueTypes = [];
+        if (inputs.POLARIS_SERVER_URL &&
+            inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES &&
+            inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.length > 0) {
+            const issueTypes = inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.filter((issueType) => issueType && issueType.trim() !== "").map((issueType) => issueType.trim());
+            sarifReportIssueTypes.push(...issueTypes);
+        }
+        const reportData = {
+            sarif: {
+                create: true,
+                severities: sarifReportFilterSeverities,
+                file: {
+                    path: sarifReportFilePath,
+                },
+                issue: {
+                    types: sarifReportIssueTypes,
                 },
                 groupSCAIssues: groupSCAIssues,
             },

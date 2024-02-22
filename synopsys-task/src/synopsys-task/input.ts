@@ -37,6 +37,48 @@ export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() || "";
 export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)?.trim() || "";
+export const POLARIS_REPORTS_SARIF_CREATE =
+  taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() || "";
+export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)
+    ?.trim() || "";
+export const POLARIS_REPORTS_SARIF_FILE_PATH =
+  taskLib.getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+export const POLARIS_REPORTS_SARIF_SEVERITIES =
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+    ","
+  ) ||
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
+    ","
+  ) ||
+  "";
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
+  taskLib
+    .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)
+    ?.trim() ||
+  taskLib
+    .getInput(
+      constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR
+    )
+    ?.trim() ||
+  "";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES =
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+    ","
+  ) ||
+  taskLib.getDelimitedInput(
+    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
+    ","
+  ) ||
+  "";
 
 // Coverity related inputs
 export const COVERITY_URL =

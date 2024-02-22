@@ -47,6 +47,17 @@ export async function run() {
       );
     }
 
+    if (
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+      uploadSarifResultAsArtifact(
+        constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+        inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+      );
+    }
+
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {
       uploadDiagnostics(workSpaceDir);
     }
@@ -56,7 +67,7 @@ export async function run() {
 }
 
 export function logBridgeExitCodes(message: string): string {
-  var exitCode = message.trim().slice(-1);
+  const exitCode = message.trim().slice(-1);
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
     : message;
