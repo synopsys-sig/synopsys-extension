@@ -1175,7 +1175,7 @@ class SynopsysToolsParameter {
                 }
             }
         }
-        const polData = {
+        let polData = {
             data: {
                 polaris: {
                     accesstoken: inputs.POLARIS_ACCESS_TOKEN,
@@ -1199,13 +1199,14 @@ class SynopsysToolsParameter {
                 throw new Error("Missing required azure token for pull request comment");
             }
             polData.data.azure = this.setAzureData("", inputs.AZURE_TOKEN, "", "", "", "", "");
-            polData.data.environment = this.setEnvironmentScanPullData();
             polData.data.polaris.prcomment = { severities: [], enabled: true };
             if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
                 polData.data.polaris.prcomment.severities =
                     inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
             }
         }
+        // Remove empty data from json object
+        polData = (0, utility_1.filterEmptyData)(polData);
         const inputJson = JSON.stringify(polData);
         let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
         taskLib.writeFile(stateFilePath, inputJson);
@@ -1549,7 +1550,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sleep = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.filterEmptyData = exports.sleep = exports.getWorkSpaceDirectory = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -1656,6 +1657,16 @@ function sleep(duration) {
     });
 }
 exports.sleep = sleep;
+function filterEmptyData(data) {
+    return JSON.parse(JSON.stringify(data), (key, value) => value === null ||
+        value === "" ||
+        value === 0 ||
+        value.length === 0 ||
+        (typeof value === "object" && Object.keys(value).length === 0)
+        ? undefined
+        : value);
+}
+exports.filterEmptyData = filterEmptyData;
 
 
 /***/ }),
@@ -1709,7 +1720,6 @@ function validatePolarisInputs() {
         paramsMap.set(constants.POLARIS_APPLICATION_NAME_KEY, inputs.POLARIS_APPLICATION_NAME);
         paramsMap.set(constants.POLARIS_PROJECT_NAME_KEY, inputs.POLARIS_PROJECT_NAME);
         paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
-        paramsMap.set(constants.POLARIS_BRANCH_NAME_KEY, inputs.POLARIS_BRANCH_NAME);
         paramsMap.set(constants.POLARIS_ASSESSMENT_TYPES_KEY, inputs.POLARIS_ASSESSMENT_TYPES);
         errors = validateParameters(paramsMap, constants.POLARIS_KEY);
     }

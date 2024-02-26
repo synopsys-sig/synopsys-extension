@@ -16,7 +16,7 @@ import {
   validateBlackduckFailureSeverities,
   validateCoverityInstallDirectoryParam,
 } from "./validator";
-import { parseToBoolean, isBoolean } from "./utility";
+import { parseToBoolean, isBoolean, filterEmptyData } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
@@ -60,7 +60,7 @@ export class SynopsysToolsParameter {
       }
     }
 
-    const polData: InputData<Polaris> = {
+    let polData: InputData<Polaris> = {
       data: {
         polaris: {
           accesstoken: inputs.POLARIS_ACCESS_TOKEN,
@@ -97,7 +97,6 @@ export class SynopsysToolsParameter {
         "",
         ""
       );
-      polData.data.environment = this.setEnvironmentScanPullData();
 
       polData.data.polaris.prcomment = { severities: [], enabled: true };
 
@@ -115,7 +114,11 @@ export class SynopsysToolsParameter {
       polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
     }
 
+    // Remove empty data from json object
+    polData = filterEmptyData(polData);
+
     const inputJson = JSON.stringify(polData);
+
     let stateFilePath = path.join(
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
