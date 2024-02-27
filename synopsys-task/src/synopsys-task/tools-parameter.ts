@@ -106,7 +106,6 @@ export class SynopsysToolsParameter {
       }
     }
 
-
     if (
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
