@@ -676,7 +676,7 @@ var BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["OK"] = "OK";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["TRIVIAL"] = "TRIVIAL";
     BLACKDUCK_SCAN_FAILURE_SEVERITIES["UNSPECIFIED"] = "UNSPECIFIED";
-})(BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
+})(BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES || (exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = {}));
 
 
 /***/ }),
@@ -1655,7 +1655,6 @@ class SynopsysToolsParameter {
         return reportData;
     }
 }
-exports.SynopsysToolsParameter = SynopsysToolsParameter;
 SynopsysToolsParameter.STAGE_OPTION = "--stage";
 SynopsysToolsParameter.BLACKDUCK_STAGE = "blackduck";
 SynopsysToolsParameter.BD_STATE_FILE_NAME = "bd_input.json";
@@ -1666,6 +1665,7 @@ SynopsysToolsParameter.SPACE = " ";
 SynopsysToolsParameter.COVERITY_STATE_FILE_NAME = "coverity_input.json";
 SynopsysToolsParameter.COVERITY_STAGE = "connect";
 SynopsysToolsParameter.DIAGNOSTICS_OPTION = "--diagnostics";
+exports.SynopsysToolsParameter = SynopsysToolsParameter;
 
 
 /***/ }),
@@ -2000,7 +2000,7 @@ exports.validateBlackDuckInputs = validateBlackDuckInputs;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._truncateBeforeSensitiveKeyword = exports._endsWith = exports._startsWith = exports.IssueSource = exports._vault = exports._knownVariableMap = void 0;
+exports._exposeCertSettings = exports._exposeProxySettings = exports._normalizeSeparators = exports._isRooted = exports._getDirectoryName = exports._ensureRooted = exports._isUncPath = exports._loadData = exports._ensurePatternRooted = exports._getFindInfoFromPattern = exports._cloneMatchOptions = exports._legacyFindFiles_convertPatternToRegExp = exports._which = exports._checkPath = exports._exist = exports._debug = exports._error = exports._warning = exports._command = exports._getVariableKey = exports._getVariable = exports._loc = exports._setResourcePath = exports._setErrStream = exports._setStdStream = exports._writeLine = exports._endsWith = exports._startsWith = exports._vault = exports._knownVariableMap = void 0;
 var fs = __nccwpck_require__(7147);
 var path = __nccwpck_require__(1017);
 var os = __nccwpck_require__(2037);
@@ -2020,21 +2020,12 @@ var crypto = __nccwpck_require__(6113);
  *  3) to know the real variable name and not just the formatted env var name.
  */
 exports._knownVariableMap = {};
-var _taskSdkToken;
-//-----------------------------------------------------
-// Enums
-//-----------------------------------------------------
-var IssueSource;
-(function (IssueSource) {
-    IssueSource["CustomerScript"] = "CustomerScript";
-    IssueSource["TaskInternal"] = "TaskInternal";
-})(IssueSource = exports.IssueSource || (exports.IssueSource = {}));
 //-----------------------------------------------------
 // Validation Checks
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', IssueSource.TaskInternal);
+    _warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
 }
 //-----------------------------------------------------
 // String convenience
@@ -2047,17 +2038,6 @@ function _endsWith(str, end) {
     return str.slice(-end.length) == end;
 }
 exports._endsWith = _endsWith;
-function _truncateBeforeSensitiveKeyword(str, sensitiveKeywordsPattern) {
-    if (!str) {
-        return str;
-    }
-    var index = str.search(sensitiveKeywordsPattern);
-    if (index <= 0) {
-        return str;
-    }
-    return str.substring(0, index) + "...";
-}
-exports._truncateBeforeSensitiveKeyword = _truncateBeforeSensitiveKeyword;
 //-----------------------------------------------------
 // General Helpers
 //-----------------------------------------------------
@@ -2136,7 +2116,7 @@ function _loadLocStrings(resourceFile, culture) {
         }
     }
     else {
-        _warning('LIB_ResourceFile does not exist', IssueSource.TaskInternal);
+        _warning('LIB_ResourceFile does not exist');
     }
     return locStrings;
 }
@@ -2171,7 +2151,7 @@ function _setResourcePath(path, ignoreWarnings) {
             _debug(_loc('LIB_ResourceFileAlreadySet', path));
         }
         else {
-            _warning(_loc('LIB_ResourceFileAlreadySet', path), IssueSource.TaskInternal);
+            _warning(_loc('LIB_ResourceFileAlreadySet', path));
         }
     }
 }
@@ -2205,7 +2185,7 @@ function _loc(key) {
     }
     else {
         if (Object.keys(_resourceFiles).length <= 0) {
-            _warning("Resource file haven't been set, can't find loc string for key: " + key, IssueSource.TaskInternal);
+            _warning("Resource file haven't been set, can't find loc string for key: " + key);
         }
         else {
             _warning("Can't find loc string for key: " + key);
@@ -2268,14 +2248,12 @@ function _command(command, properties, message) {
     _writeLine(taskCmd.toString());
 }
 exports._command = _command;
-function _warning(message, source) {
-    if (source === void 0) { source = IssueSource.TaskInternal; }
-    _command('task.issue', { 'type': 'warning', 'source': source, 'token': _taskSdkToken }, message);
+function _warning(message) {
+    _command('task.issue', { 'type': 'warning' }, message);
 }
 exports._warning = _warning;
-function _error(message, source) {
-    if (source === void 0) { source = IssueSource.TaskInternal; }
-    _command('task.issue', { 'type': 'error', 'source': source, 'token': _taskSdkToken }, message);
+function _error(message) {
+    _command('task.issue', { 'type': 'error' }, message);
 }
 exports._error = _error;
 function _debug(message) {
@@ -2664,9 +2642,6 @@ function _loadData() {
         }
     }
     _debug('loaded ' + loaded);
-    var token = process.env["TASK_SDK_COMMAND_TOKEN"];
-    delete process.env["TASK_SDK_COMMAND_TOKEN"];
-    _taskSdkToken = token ? String(token) : "";
     // store public variable metadata
     var names;
     try {
@@ -4534,7 +4509,7 @@ module.exports = v4;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.execAsync = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getNodeMajorVersion = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getPipelineFeature = exports.getBoolFeatureFlag = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setSanitizedResult = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.IssueSource = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
+exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getAgentMode = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.AgentHostedMode = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
 var shell = __nccwpck_require__(3516);
 var childProcess = __nccwpck_require__(2081);
 var fs = __nccwpck_require__(7147);
@@ -4579,7 +4554,6 @@ var FieldType;
     FieldType[FieldType["DataParameter"] = 1] = "DataParameter";
     FieldType[FieldType["Url"] = 2] = "Url";
 })(FieldType = exports.FieldType || (exports.FieldType = {}));
-exports.IssueSource = im.IssueSource;
 /** Platforms supported by our build agent */
 var Platform;
 (function (Platform) {
@@ -4598,14 +4572,30 @@ var AgentHostedMode;
 //-----------------------------------------------------
 exports.setStdStream = im._setStdStream;
 exports.setErrStream = im._setErrStream;
+//-----------------------------------------------------
+// Results
+//-----------------------------------------------------
+/**
+ * Sets the result of the task.
+ * Execution will continue.
+ * If not set, task will be Succeeded.
+ * If multiple calls are made to setResult the most pessimistic call wins (Failed) regardless of the order of calls.
+ *
+ * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
+ * @param message   A message which will be logged as an error issue if the result is Failed.
+ * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
+ *                  may still be running and prevent node from fully exiting. This argument is supported
+ *                  from agent version 2.142.0 or higher (otherwise will no-op).
+ * @returns         void
+ */
 function setResult(result, message, done) {
     exports.debug('task result: ' + TaskResult[result]);
     // add an error issue
     if (result == TaskResult.Failed && message) {
-        exports.error(message, exports.IssueSource.TaskInternal);
+        exports.error(message);
     }
     else if (result == TaskResult.SucceededWithIssues && message) {
-        exports.warning(message, exports.IssueSource.TaskInternal);
+        exports.warning(message);
     }
     // task.complete
     var properties = { 'result': TaskResult[result] };
@@ -4615,29 +4605,12 @@ function setResult(result, message, done) {
     exports.command('task.complete', properties, message);
 }
 exports.setResult = setResult;
-/**
- * Sets the result of the task with sanitized message.
- *
- * @param result    TaskResult enum of Succeeded, SucceededWithIssues, Failed, Cancelled or Skipped.
- * @param message   A message which will be logged as an error issue if the result is Failed. Message will be truncated
- *                  before first occurence of wellknown sensitive keyword.
- * @param done      Optional. Instructs the agent the task is done. This is helpful when child processes
- *                  may still be running and prevent node from fully exiting. This argument is supported
- *                  from agent version 2.142.0 or higher (otherwise will no-op).
- * @returns         void
- */
-function setSanitizedResult(result, message, done) {
-    var pattern = /password|key|secret|bearer|authorization|token|pat/i;
-    var sanitizedMessage = im._truncateBeforeSensitiveKeyword(message, pattern);
-    setResult(result, sanitizedMessage, done);
-}
-exports.setSanitizedResult = setSanitizedResult;
 //
 // Catching all exceptions
 //
 process.on('uncaughtException', function (err) {
     setResult(TaskResult.Failed, exports.loc('LIB_UnhandledEx', err.message));
-    exports.error(String(err.stack), im.IssueSource.TaskInternal);
+    exports.error(String(err.stack));
 });
 //
 // Catching unhandled rejections from promises and rethrowing them as exceptions
@@ -4789,43 +4762,6 @@ function getBoolInput(name, required) {
     return (getInput(name, required) || '').toUpperCase() == "TRUE";
 }
 exports.getBoolInput = getBoolInput;
-/**
- * Gets the value of an feature flag and converts to a bool.
- * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
- * @param     name     name of the feature flag to get.
- * @param     defaultValue default value of the feature flag in case it's not found in env. (optional. Default value = false)
- * @returns   boolean
- * @deprecated Don't use this for new development. Use getPipelineFeature instead.
- */
-function getBoolFeatureFlag(ffName, defaultValue) {
-    if (defaultValue === void 0) { defaultValue = false; }
-    var ffValue = process.env[ffName];
-    if (!ffValue) {
-        exports.debug("Feature flag " + ffName + " not found. Returning " + defaultValue + " as default.");
-        return defaultValue;
-    }
-    exports.debug("Feature flag " + ffName + " = " + ffValue);
-    return ffValue.toLowerCase() === "true";
-}
-exports.getBoolFeatureFlag = getBoolFeatureFlag;
-/**
- * Gets the value of an task feature and converts to a bool.
- * @IMPORTANT This method is only for internal Microsoft development. Do not use it for external tasks.
- * @param     name     name of the feature to get.
- * @returns   boolean
- */
-function getPipelineFeature(featureName) {
-    var variableName = im._getVariableKey("DistributedTask.Tasks." + featureName);
-    var featureValue = process.env[variableName];
-    if (!featureValue) {
-        exports.debug("Feature '" + featureName + "' not found. Returning false as default.");
-        return false;
-    }
-    var boolValue = featureValue.toLowerCase() === "true";
-    exports.debug("Feature '" + featureName + "' = '" + featureValue + "'. Processed as '" + boolValue + "'.");
-    return boolValue;
-}
-exports.getPipelineFeature = getPipelineFeature;
 /**
  * Gets the value of an input and splits the value using a delimiter (space, comma, etc).
  * Empty values are removed.  This function is useful for splitting an input containing a simple
@@ -5188,23 +5124,6 @@ function getPlatform() {
 }
 exports.getPlatform = getPlatform;
 /**
- * Resolves major version of Node.js engine used by the agent.
- * @returns {Number} Node's major version.
- */
-function getNodeMajorVersion() {
-    var _a;
-    var version = (_a = process === null || process === void 0 ? void 0 : process.versions) === null || _a === void 0 ? void 0 : _a.node;
-    if (!version) {
-        throw new Error(exports.loc('LIB_UndefinedNodeVersion'));
-    }
-    var parts = version.split('.').map(Number);
-    if (parts.length < 1) {
-        return NaN;
-    }
-    return parts[0];
-}
-exports.getNodeMajorVersion = getNodeMajorVersion;
-/**
  * Return hosted type of Agent
  * @returns {AgentHostedMode}
  */
@@ -5278,7 +5197,7 @@ function mkdirP(p) {
     var testDir = p;
     while (true) {
         // validate the loop is not out of control
-        if (stack.length >= Number(process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
+        if (stack.length >= (process.env['TASKLIB_TEST_MKDIRP_FAILSAFE'] || 1000)) {
             // let the framework throw
             exports.debug('loop is out of control');
             fs.mkdirSync(p);
@@ -5385,7 +5304,7 @@ function cp(source, dest, options, continueOnError, retryCount) {
         catch (e) {
             if (retryCount <= 0) {
                 if (continueOnError) {
-                    exports.warning(e, exports.IssueSource.TaskInternal);
+                    exports.warning(e);
                     break;
                 }
                 else {
@@ -5435,7 +5354,7 @@ function retry(func, args, retryOptions) {
         catch (e) {
             if (retryOptions.retryCount <= 0) {
                 if (retryOptions.continueOnError) {
-                    exports.warning(e, exports.IssueSource.TaskInternal);
+                    exports.warning(e);
                     break;
                 }
                 else {
@@ -5535,7 +5454,7 @@ function find(findPath, options) {
             }
             catch (err) {
                 if (err.code == 'ENOENT' && options.skipMissingFiles) {
-                    exports.warning("No such file or directory: \"" + item.path + "\" - skipping.", exports.IssueSource.TaskInternal);
+                    exports.warning("No such file or directory: \"" + item.path + "\" - skipping.");
                     return "continue";
                 }
                 throw err;
@@ -5847,33 +5766,6 @@ exports.rmRF = rmRF;
  * Output will be streamed to the live console.
  * Returns promise with return code
  *
- * @param     tool     path to tool to exec
- * @param     args     an arg string or array of args
- * @param     options  optional exec options.  See IExecOptions
- * @returns   number
- */
-function execAsync(tool, args, options) {
-    var tr = this.tool(tool);
-    tr.on('debug', function (data) {
-        exports.debug(data);
-    });
-    if (args) {
-        if (args instanceof Array) {
-            tr.arg(args);
-        }
-        else if (typeof (args) === 'string') {
-            tr.line(args);
-        }
-    }
-    return tr.execAsync(options);
-}
-exports.execAsync = execAsync;
-/**
- * Exec a tool.  Convenience wrapper over ToolRunner to exec with args in one call.
- * Output will be streamed to the live console.
- * Returns promise with return code
- *
- * @deprecated Use the {@link execAsync} method that returns a native Javascript Promise instead
  * @param     tool     path to tool to exec
  * @param     args     an arg string or array of args
  * @param     options  optional exec options.  See IExecOptions
@@ -6641,7 +6533,7 @@ exports.ToolRunner = trm.ToolRunner;
 //-----------------------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
-    exports.warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later', exports.IssueSource.TaskInternal);
+    exports.warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
 }
 //-------------------------------------------------------------------
 // Populate the vault with sensitive data.  Inputs and Endpoints
@@ -7289,184 +7181,6 @@ var ToolRunner = /** @class */ (function (_super) {
         result['windowsVerbatimArguments'] = options.windowsVerbatimArguments || this._isCmdFile();
         return result;
     };
-    ToolRunner.prototype.execWithPipingAsync = function (pipeOutputToTool, options) {
-        var _this = this;
-        this._debug('exec tool: ' + this.toolPath);
-        this._debug('arguments:');
-        this.args.forEach(function (arg) {
-            _this._debug('   ' + arg);
-        });
-        var success = true;
-        var optionsNonNull = this._cloneExecOptions(options);
-        if (!optionsNonNull.silent) {
-            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
-        }
-        var cp;
-        var toolPath = pipeOutputToTool.toolPath;
-        var toolPathFirst;
-        var successFirst = true;
-        var returnCodeFirst;
-        var fileStream;
-        var waitingEvents = 0; // number of process or stream events we are waiting on to complete
-        var returnCode = 0;
-        var error;
-        toolPathFirst = this.toolPath;
-        // Following node documentation example from this link on how to pipe output of one process to another
-        // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
-        //start the child process for both tools
-        waitingEvents++;
-        var cpFirst = child.spawn(this._getSpawnFileName(optionsNonNull), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(optionsNonNull));
-        waitingEvents++;
-        cp = child.spawn(pipeOutputToTool._getSpawnFileName(optionsNonNull), pipeOutputToTool._getSpawnArgs(optionsNonNull), pipeOutputToTool._getSpawnOptions(optionsNonNull));
-        fileStream = this.pipeOutputToFile ? fs.createWriteStream(this.pipeOutputToFile) : null;
-        return new Promise(function (resolve, reject) {
-            var _a, _b, _c, _d;
-            if (fileStream) {
-                waitingEvents++;
-                fileStream.on('finish', function () {
-                    waitingEvents--; //file write is complete
-                    fileStream = null;
-                    if (waitingEvents == 0) {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            resolve(returnCode);
-                        }
-                    }
-                });
-                fileStream.on('error', function (err) {
-                    waitingEvents--; //there were errors writing to the file, write is done
-                    _this._debug("Failed to pipe output of " + toolPathFirst + " to file " + _this.pipeOutputToFile + ". Error = " + err);
-                    fileStream = null;
-                    if (waitingEvents == 0) {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            resolve(returnCode);
-                        }
-                    }
-                });
-            }
-            //pipe stdout of first tool to stdin of second tool
-            (_a = cpFirst.stdout) === null || _a === void 0 ? void 0 : _a.on('data', function (data) {
-                var _a;
-                try {
-                    if (fileStream) {
-                        fileStream.write(data);
-                    }
-                    (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.write(data);
-                }
-                catch (err) {
-                    _this._debug('Failed to pipe output of ' + toolPathFirst + ' to ' + toolPath);
-                    _this._debug(toolPath + ' might have exited due to errors prematurely. Verify the arguments passed are valid.');
-                }
-            });
-            (_b = cpFirst.stderr) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
-                if (fileStream) {
-                    fileStream.write(data);
-                }
-                successFirst = !optionsNonNull.failOnStdErr;
-                if (!optionsNonNull.silent) {
-                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                    s.write(data);
-                }
-            });
-            cpFirst.on('error', function (err) {
-                var _a;
-                waitingEvents--; //first process is complete with errors
-                if (fileStream) {
-                    fileStream.end();
-                }
-                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
-                error = new Error(toolPathFirst + ' failed. ' + err.message);
-                if (waitingEvents == 0) {
-                    reject(error);
-                }
-            });
-            cpFirst.on('close', function (code, signal) {
-                var _a;
-                waitingEvents--; //first process is complete
-                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
-                    successFirst = false;
-                    returnCodeFirst = code;
-                    returnCode = returnCodeFirst;
-                }
-                _this._debug('success of first tool:' + successFirst);
-                if (fileStream) {
-                    fileStream.end();
-                }
-                (_a = cp.stdin) === null || _a === void 0 ? void 0 : _a.end();
-                if (waitingEvents == 0) {
-                    if (error) {
-                        reject(error);
-                    }
-                    else {
-                        resolve(returnCode);
-                    }
-                }
-            });
-            var stdbuffer = '';
-            (_c = cp.stdout) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
-                _this.emit('stdout', data);
-                if (!optionsNonNull.silent) {
-                    optionsNonNull.outStream.write(data);
-                }
-                _this._processLineBuffer(data, stdbuffer, function (line) {
-                    _this.emit('stdline', line);
-                });
-            });
-            var errbuffer = '';
-            (_d = cp.stderr) === null || _d === void 0 ? void 0 : _d.on('data', function (data) {
-                _this.emit('stderr', data);
-                success = !optionsNonNull.failOnStdErr;
-                if (!optionsNonNull.silent) {
-                    var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                    s.write(data);
-                }
-                _this._processLineBuffer(data, errbuffer, function (line) {
-                    _this.emit('errline', line);
-                });
-            });
-            cp.on('error', function (err) {
-                waitingEvents--; //process is done with errors
-                error = new Error(toolPath + ' failed. ' + err.message);
-                if (waitingEvents == 0) {
-                    reject(error);
-                }
-            });
-            cp.on('close', function (code, signal) {
-                waitingEvents--; //process is complete
-                _this._debug('rc:' + code);
-                returnCode = code;
-                if (stdbuffer.length > 0) {
-                    _this.emit('stdline', stdbuffer);
-                }
-                if (errbuffer.length > 0) {
-                    _this.emit('errline', errbuffer);
-                }
-                if (code != 0 && !optionsNonNull.ignoreReturnCode) {
-                    success = false;
-                }
-                _this._debug('success:' + success);
-                if (!successFirst) { //in the case output is piped to another tool, check exit code of both tools
-                    error = new Error(toolPathFirst + ' failed with return code: ' + returnCodeFirst);
-                }
-                else if (!success) {
-                    error = new Error(toolPath + ' failed with return code: ' + code);
-                }
-                if (waitingEvents == 0) {
-                    if (error) {
-                        reject(error);
-                    }
-                    else {
-                        resolve(returnCode);
-                    }
-                }
-            });
-        });
-    };
     ToolRunner.prototype.execWithPiping = function (pipeOutputToTool, options) {
         var _this = this;
         var _a, _b, _c, _d;
@@ -7714,104 +7428,6 @@ var ToolRunner = /** @class */ (function (_super) {
      * Output will be streamed to the live console.
      * Returns promise with return code
      *
-     * @param     tool     path to tool to exec
-     * @param     options  optional exec options.  See IExecOptions
-     * @returns   number
-     */
-    ToolRunner.prototype.execAsync = function (options) {
-        var _this = this;
-        var _a, _b, _c;
-        if (this.pipeOutputToTool) {
-            return this.execWithPipingAsync(this.pipeOutputToTool, options);
-        }
-        this._debug('exec tool: ' + this.toolPath);
-        this._debug('arguments:');
-        this.args.forEach(function (arg) {
-            _this._debug('   ' + arg);
-        });
-        var optionsNonNull = this._cloneExecOptions(options);
-        if (!optionsNonNull.silent) {
-            optionsNonNull.outStream.write(this._getCommandString(optionsNonNull) + os.EOL);
-        }
-        var state = new ExecState(optionsNonNull, this.toolPath);
-        state.on('debug', function (message) {
-            _this._debug(message);
-        });
-        var cp = child.spawn(this._getSpawnFileName(options), this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(options));
-        this.childProcess = cp;
-        // it is possible for the child process to end its last line without a new line.
-        // because stdout is buffered, this causes the last line to not get sent to the parent
-        // stream. Adding this event forces a flush before the child streams are closed.
-        (_a = cp.stdout) === null || _a === void 0 ? void 0 : _a.on('finish', function () {
-            if (!optionsNonNull.silent) {
-                optionsNonNull.outStream.write(os.EOL);
-            }
-        });
-        var stdbuffer = '';
-        (_b = cp.stdout) === null || _b === void 0 ? void 0 : _b.on('data', function (data) {
-            _this.emit('stdout', data);
-            if (!optionsNonNull.silent) {
-                optionsNonNull.outStream.write(data);
-            }
-            _this._processLineBuffer(data, stdbuffer, function (line) {
-                _this.emit('stdline', line);
-            });
-        });
-        var errbuffer = '';
-        (_c = cp.stderr) === null || _c === void 0 ? void 0 : _c.on('data', function (data) {
-            state.processStderr = true;
-            _this.emit('stderr', data);
-            if (!optionsNonNull.silent) {
-                var s = optionsNonNull.failOnStdErr ? optionsNonNull.errStream : optionsNonNull.outStream;
-                s.write(data);
-            }
-            _this._processLineBuffer(data, errbuffer, function (line) {
-                _this.emit('errline', line);
-            });
-        });
-        cp.on('error', function (err) {
-            state.processError = err.message;
-            state.processExited = true;
-            state.processClosed = true;
-            state.CheckComplete();
-        });
-        cp.on('exit', function (code, signal) {
-            state.processExitCode = code;
-            state.processExited = true;
-            _this._debug("Exit code " + code + " received from tool '" + _this.toolPath + "'");
-            state.CheckComplete();
-        });
-        cp.on('close', function (code, signal) {
-            state.processExitCode = code;
-            state.processExited = true;
-            state.processClosed = true;
-            _this._debug("STDIO streams have closed for tool '" + _this.toolPath + "'");
-            state.CheckComplete();
-        });
-        return new Promise(function (resolve, reject) {
-            state.on('done', function (error, exitCode) {
-                if (stdbuffer.length > 0) {
-                    _this.emit('stdline', stdbuffer);
-                }
-                if (errbuffer.length > 0) {
-                    _this.emit('errline', errbuffer);
-                }
-                cp.removeAllListeners();
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(exitCode);
-                }
-            });
-        });
-    };
-    /**
-     * Exec a tool.
-     * Output will be streamed to the live console.
-     * Returns promise with return code
-     *
-     * @deprecated Use the `execAsync` method that returns a native Javascript promise instead
      * @param     tool     path to tool to exec
      * @param     options  optional exec options.  See IExecOptions
      * @returns   number
@@ -10625,26 +10241,38 @@ module.exports = function callBoundIntrinsic(name, allowMissing) {
 
 var bind = __nccwpck_require__(8334);
 var GetIntrinsic = __nccwpck_require__(4538);
-var setFunctionLength = __nccwpck_require__(4056);
 
-var $TypeError = __nccwpck_require__(6361);
 var $apply = GetIntrinsic('%Function.prototype.apply%');
 var $call = GetIntrinsic('%Function.prototype.call%');
 var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
 
-var $defineProperty = __nccwpck_require__(6123);
+var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
+var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
 var $max = GetIntrinsic('%Math.max%');
 
-module.exports = function callBind(originalFunction) {
-	if (typeof originalFunction !== 'function') {
-		throw new $TypeError('a function is required');
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = null;
 	}
+}
+
+module.exports = function callBind(originalFunction) {
 	var func = $reflectApply(bind, $call, arguments);
-	return setFunctionLength(
-		func,
-		1 + $max(0, originalFunction.length - (arguments.length - 1)),
-		true
-	);
+	if ($gOPD && $defineProperty) {
+		var desc = $gOPD(func, 'length');
+		if (desc.configurable) {
+			// original length, plus the receiver, minus any additional arguments (after the receiver)
+			$defineProperty(
+				func,
+				'length',
+				{ value: 1 + $max(0, originalFunction.length - (arguments.length - 1)) }
+			);
+		}
+	}
+	return func;
 };
 
 var applyBind = function applyBind() {
@@ -10675,70 +10303,6 @@ module.exports = function (xs, fn) {
 
 var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-
-/***/ }),
-
-/***/ 4564:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-var $defineProperty = __nccwpck_require__(6123);
-
-var $SyntaxError = __nccwpck_require__(5474);
-var $TypeError = __nccwpck_require__(6361);
-
-var gopd = __nccwpck_require__(8501);
-
-/** @type {import('.')} */
-module.exports = function defineDataProperty(
-	obj,
-	property,
-	value
-) {
-	if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
-		throw new $TypeError('`obj` must be an object or a function`');
-	}
-	if (typeof property !== 'string' && typeof property !== 'symbol') {
-		throw new $TypeError('`property` must be a string or a symbol`');
-	}
-	if (arguments.length > 3 && typeof arguments[3] !== 'boolean' && arguments[3] !== null) {
-		throw new $TypeError('`nonEnumerable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 4 && typeof arguments[4] !== 'boolean' && arguments[4] !== null) {
-		throw new $TypeError('`nonWritable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 5 && typeof arguments[5] !== 'boolean' && arguments[5] !== null) {
-		throw new $TypeError('`nonConfigurable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
-		throw new $TypeError('`loose`, if provided, must be a boolean');
-	}
-
-	var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
-	var nonWritable = arguments.length > 4 ? arguments[4] : null;
-	var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
-	var loose = arguments.length > 6 ? arguments[6] : false;
-
-	/* @type {false | TypedPropertyDescriptor<unknown>} */
-	var desc = !!gopd && gopd(obj, property);
-
-	if ($defineProperty) {
-		$defineProperty(obj, property, {
-			configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
-			enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
-			value: value,
-			writable: nonWritable === null && desc ? desc.writable : !nonWritable
-		});
-	} else if (loose || (!nonEnumerable && !nonWritable && !nonConfigurable)) {
-		// must fall back to [[Set]], and was not explicitly asked to make non-enumerable, non-writable, or non-configurable
-		obj[property] = value; // eslint-disable-line no-param-reassign
-	} else {
-		throw new $SyntaxError('This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.');
-	}
 };
 
 
@@ -11066,114 +10630,6 @@ Node.ELEMENT_NODE = 1;
 Node.TEXT_NODE    = 3;
 
 module.exports = Node;
-
-/***/ }),
-
-/***/ 6123:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-var GetIntrinsic = __nccwpck_require__(4538);
-
-/** @type {import('.')} */
-var $defineProperty = GetIntrinsic('%Object.defineProperty%', true) || false;
-if ($defineProperty) {
-	try {
-		$defineProperty({}, 'a', { value: 1 });
-	} catch (e) {
-		// IE 8 has a broken defineProperty
-		$defineProperty = false;
-	}
-}
-
-module.exports = $defineProperty;
-
-
-/***/ }),
-
-/***/ 1933:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./eval')} */
-module.exports = EvalError;
-
-
-/***/ }),
-
-/***/ 8015:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('.')} */
-module.exports = Error;
-
-
-/***/ }),
-
-/***/ 4415:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./range')} */
-module.exports = RangeError;
-
-
-/***/ }),
-
-/***/ 6279:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./ref')} */
-module.exports = ReferenceError;
-
-
-/***/ }),
-
-/***/ 5474:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./syntax')} */
-module.exports = SyntaxError;
-
-
-/***/ }),
-
-/***/ 6361:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./type')} */
-module.exports = TypeError;
-
-
-/***/ }),
-
-/***/ 5065:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {import('./uri')} */
-module.exports = URIError;
-
 
 /***/ }),
 
@@ -11569,75 +11025,43 @@ exports.realpath = function realpath(p, cache, cb) {
 /* eslint no-invalid-this: 1 */
 
 var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
 var toStr = Object.prototype.toString;
-var max = Math.max;
 var funcType = '[object Function]';
-
-var concatty = function concatty(a, b) {
-    var arr = [];
-
-    for (var i = 0; i < a.length; i += 1) {
-        arr[i] = a[i];
-    }
-    for (var j = 0; j < b.length; j += 1) {
-        arr[j + a.length] = b[j];
-    }
-
-    return arr;
-};
-
-var slicy = function slicy(arrLike, offset) {
-    var arr = [];
-    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
-        arr[j] = arrLike[i];
-    }
-    return arr;
-};
-
-var joiny = function (arr, joiner) {
-    var str = '';
-    for (var i = 0; i < arr.length; i += 1) {
-        str += arr[i];
-        if (i + 1 < arr.length) {
-            str += joiner;
-        }
-    }
-    return str;
-};
 
 module.exports = function bind(that) {
     var target = this;
-    if (typeof target !== 'function' || toStr.apply(target) !== funcType) {
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
         throw new TypeError(ERROR_MESSAGE + target);
     }
-    var args = slicy(arguments, 1);
+    var args = slice.call(arguments, 1);
 
     var bound;
     var binder = function () {
         if (this instanceof bound) {
             var result = target.apply(
                 this,
-                concatty(args, arguments)
+                args.concat(slice.call(arguments))
             );
             if (Object(result) === result) {
                 return result;
             }
             return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
         }
-        return target.apply(
-            that,
-            concatty(args, arguments)
-        );
-
     };
 
-    var boundLength = max(0, target.length - args.length);
+    var boundLength = Math.max(0, target.length - args.length);
     var boundArgs = [];
     for (var i = 0; i < boundLength; i++) {
-        boundArgs[i] = '$' + i;
+        boundArgs.push('$' + i);
     }
 
-    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
 
     if (target.prototype) {
         var Empty = function Empty() {};
@@ -11673,15 +11097,9 @@ module.exports = Function.prototype.bind || implementation;
 
 var undefined;
 
-var $Error = __nccwpck_require__(8015);
-var $EvalError = __nccwpck_require__(1933);
-var $RangeError = __nccwpck_require__(4415);
-var $ReferenceError = __nccwpck_require__(6279);
-var $SyntaxError = __nccwpck_require__(5474);
-var $TypeError = __nccwpck_require__(6361);
-var $URIError = __nccwpck_require__(5065);
-
+var $SyntaxError = SyntaxError;
 var $Function = Function;
+var $TypeError = TypeError;
 
 // eslint-disable-next-line consistent-return
 var getEvalledConstructor = function (expressionSyntax) {
@@ -11720,24 +11138,18 @@ var ThrowTypeError = $gOPD
 	: throwTypeError;
 
 var hasSymbols = __nccwpck_require__(587)();
-var hasProto = __nccwpck_require__(5894)();
 
-var getProto = Object.getPrototypeOf || (
-	hasProto
-		? function (x) { return x.__proto__; } // eslint-disable-line no-proto
-		: null
-);
+var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
 
 var needsEval = {};
 
-var TypedArray = typeof Uint8Array === 'undefined' || !getProto ? undefined : getProto(Uint8Array);
+var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
 
 var INTRINSICS = {
-	__proto__: null,
 	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
 	'%Array%': Array,
 	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
-	'%ArrayIteratorPrototype%': hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined,
+	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
 	'%AsyncFromSyncIteratorPrototype%': undefined,
 	'%AsyncFunction%': needsEval,
 	'%AsyncGenerator%': needsEval,
@@ -11754,9 +11166,9 @@ var INTRINSICS = {
 	'%decodeURIComponent%': decodeURIComponent,
 	'%encodeURI%': encodeURI,
 	'%encodeURIComponent%': encodeURIComponent,
-	'%Error%': $Error,
+	'%Error%': Error,
 	'%eval%': eval, // eslint-disable-line no-eval
-	'%EvalError%': $EvalError,
+	'%EvalError%': EvalError,
 	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
 	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
 	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
@@ -11767,10 +11179,10 @@ var INTRINSICS = {
 	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
 	'%isFinite%': isFinite,
 	'%isNaN%': isNaN,
-	'%IteratorPrototype%': hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
 	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
 	'%Map%': typeof Map === 'undefined' ? undefined : Map,
-	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
 	'%Math%': Math,
 	'%Number%': Number,
 	'%Object%': Object,
@@ -11778,15 +11190,15 @@ var INTRINSICS = {
 	'%parseInt%': parseInt,
 	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
 	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
-	'%RangeError%': $RangeError,
-	'%ReferenceError%': $ReferenceError,
+	'%RangeError%': RangeError,
+	'%ReferenceError%': ReferenceError,
 	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
 	'%RegExp%': RegExp,
 	'%Set%': typeof Set === 'undefined' ? undefined : Set,
-	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
 	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
 	'%String%': String,
-	'%StringIteratorPrototype%': hasSymbols && getProto ? getProto(''[Symbol.iterator]()) : undefined,
+	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
 	'%Symbol%': hasSymbols ? Symbol : undefined,
 	'%SyntaxError%': $SyntaxError,
 	'%ThrowTypeError%': ThrowTypeError,
@@ -11796,20 +11208,18 @@ var INTRINSICS = {
 	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
 	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
 	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
-	'%URIError%': $URIError,
+	'%URIError%': URIError,
 	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
 	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
 	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet
 };
 
-if (getProto) {
-	try {
-		null.error; // eslint-disable-line no-unused-expressions
-	} catch (e) {
-		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
-		var errorProto = getProto(getProto(e));
-		INTRINSICS['%Error.prototype%'] = errorProto;
-	}
+try {
+	null.error; // eslint-disable-line no-unused-expressions
+} catch (e) {
+	// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+	var errorProto = getProto(getProto(e));
+	INTRINSICS['%Error.prototype%'] = errorProto;
 }
 
 var doEval = function doEval(name) {
@@ -11827,7 +11237,7 @@ var doEval = function doEval(name) {
 		}
 	} else if (name === '%AsyncIteratorPrototype%') {
 		var gen = doEval('%AsyncGenerator%');
-		if (gen && getProto) {
+		if (gen) {
 			value = getProto(gen.prototype);
 		}
 	}
@@ -11838,7 +11248,6 @@ var doEval = function doEval(name) {
 };
 
 var LEGACY_ALIASES = {
-	__proto__: null,
 	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
 	'%ArrayPrototype%': ['Array', 'prototype'],
 	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
@@ -11893,7 +11302,7 @@ var LEGACY_ALIASES = {
 };
 
 var bind = __nccwpck_require__(8334);
-var hasOwn = __nccwpck_require__(2157);
+var hasOwn = __nccwpck_require__(6339);
 var $concat = bind.call(Function.call, Array.prototype.concat);
 var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
 var $replace = bind.call(Function.call, String.prototype.replace);
@@ -12032,79 +11441,2491 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 /***/ }),
 
-/***/ 8501:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ 7625:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-"use strict";
+exports.setopts = setopts
+exports.ownProp = ownProp
+exports.makeAbs = makeAbs
+exports.finish = finish
+exports.mark = mark
+exports.isIgnored = isIgnored
+exports.childrenIgnored = childrenIgnored
 
-
-var GetIntrinsic = __nccwpck_require__(4538);
-
-var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
-
-if ($gOPD) {
-	try {
-		$gOPD([], 'length');
-	} catch (e) {
-		// IE 8 has a broken gOPD
-		$gOPD = null;
-	}
+function ownProp (obj, field) {
+  return Object.prototype.hasOwnProperty.call(obj, field)
 }
 
-module.exports = $gOPD;
+var fs = __nccwpck_require__(7147)
+var path = __nccwpck_require__(1017)
+var minimatch = __nccwpck_require__(6453)
+var isAbsolute = __nccwpck_require__(8714)
+var Minimatch = minimatch.Minimatch
+
+function alphasort (a, b) {
+  return a.localeCompare(b, 'en')
+}
+
+function setupIgnores (self, options) {
+  self.ignore = options.ignore || []
+
+  if (!Array.isArray(self.ignore))
+    self.ignore = [self.ignore]
+
+  if (self.ignore.length) {
+    self.ignore = self.ignore.map(ignoreMap)
+  }
+}
+
+// ignore patterns are always in dot:true mode.
+function ignoreMap (pattern) {
+  var gmatcher = null
+  if (pattern.slice(-3) === '/**') {
+    var gpattern = pattern.replace(/(\/\*\*)+$/, '')
+    gmatcher = new Minimatch(gpattern, { dot: true })
+  }
+
+  return {
+    matcher: new Minimatch(pattern, { dot: true }),
+    gmatcher: gmatcher
+  }
+}
+
+function setopts (self, pattern, options) {
+  if (!options)
+    options = {}
+
+  // base-matching: just use globstar for that.
+  if (options.matchBase && -1 === pattern.indexOf("/")) {
+    if (options.noglobstar) {
+      throw new Error("base matching requires globstar")
+    }
+    pattern = "**/" + pattern
+  }
+
+  self.silent = !!options.silent
+  self.pattern = pattern
+  self.strict = options.strict !== false
+  self.realpath = !!options.realpath
+  self.realpathCache = options.realpathCache || Object.create(null)
+  self.follow = !!options.follow
+  self.dot = !!options.dot
+  self.mark = !!options.mark
+  self.nodir = !!options.nodir
+  if (self.nodir)
+    self.mark = true
+  self.sync = !!options.sync
+  self.nounique = !!options.nounique
+  self.nonull = !!options.nonull
+  self.nosort = !!options.nosort
+  self.nocase = !!options.nocase
+  self.stat = !!options.stat
+  self.noprocess = !!options.noprocess
+  self.absolute = !!options.absolute
+  self.fs = options.fs || fs
+
+  self.maxLength = options.maxLength || Infinity
+  self.cache = options.cache || Object.create(null)
+  self.statCache = options.statCache || Object.create(null)
+  self.symlinks = options.symlinks || Object.create(null)
+
+  setupIgnores(self, options)
+
+  self.changedCwd = false
+  var cwd = process.cwd()
+  if (!ownProp(options, "cwd"))
+    self.cwd = cwd
+  else {
+    self.cwd = path.resolve(options.cwd)
+    self.changedCwd = self.cwd !== cwd
+  }
+
+  self.root = options.root || path.resolve(self.cwd, "/")
+  self.root = path.resolve(self.root)
+  if (process.platform === "win32")
+    self.root = self.root.replace(/\\/g, "/")
+
+  // TODO: is an absolute `cwd` supposed to be resolved against `root`?
+  // e.g. { cwd: '/test', root: __dirname } === path.join(__dirname, '/test')
+  self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd)
+  if (process.platform === "win32")
+    self.cwdAbs = self.cwdAbs.replace(/\\/g, "/")
+  self.nomount = !!options.nomount
+
+  // disable comments and negation in Minimatch.
+  // Note that they are not supported in Glob itself anyway.
+  options.nonegate = true
+  options.nocomment = true
+  // always treat \ in patterns as escapes, not path separators
+  options.allowWindowsEscape = false
+
+  self.minimatch = new Minimatch(pattern, options)
+  self.options = self.minimatch.options
+}
+
+function finish (self) {
+  var nou = self.nounique
+  var all = nou ? [] : Object.create(null)
+
+  for (var i = 0, l = self.matches.length; i < l; i ++) {
+    var matches = self.matches[i]
+    if (!matches || Object.keys(matches).length === 0) {
+      if (self.nonull) {
+        // do like the shell, and spit out the literal glob
+        var literal = self.minimatch.globSet[i]
+        if (nou)
+          all.push(literal)
+        else
+          all[literal] = true
+      }
+    } else {
+      // had matches
+      var m = Object.keys(matches)
+      if (nou)
+        all.push.apply(all, m)
+      else
+        m.forEach(function (m) {
+          all[m] = true
+        })
+    }
+  }
+
+  if (!nou)
+    all = Object.keys(all)
+
+  if (!self.nosort)
+    all = all.sort(alphasort)
+
+  // at *some* point we statted all of these
+  if (self.mark) {
+    for (var i = 0; i < all.length; i++) {
+      all[i] = self._mark(all[i])
+    }
+    if (self.nodir) {
+      all = all.filter(function (e) {
+        var notDir = !(/\/$/.test(e))
+        var c = self.cache[e] || self.cache[makeAbs(self, e)]
+        if (notDir && c)
+          notDir = c !== 'DIR' && !Array.isArray(c)
+        return notDir
+      })
+    }
+  }
+
+  if (self.ignore.length)
+    all = all.filter(function(m) {
+      return !isIgnored(self, m)
+    })
+
+  self.found = all
+}
+
+function mark (self, p) {
+  var abs = makeAbs(self, p)
+  var c = self.cache[abs]
+  var m = p
+  if (c) {
+    var isDir = c === 'DIR' || Array.isArray(c)
+    var slash = p.slice(-1) === '/'
+
+    if (isDir && !slash)
+      m += '/'
+    else if (!isDir && slash)
+      m = m.slice(0, -1)
+
+    if (m !== p) {
+      var mabs = makeAbs(self, m)
+      self.statCache[mabs] = self.statCache[abs]
+      self.cache[mabs] = self.cache[abs]
+    }
+  }
+
+  return m
+}
+
+// lotta situps...
+function makeAbs (self, f) {
+  var abs = f
+  if (f.charAt(0) === '/') {
+    abs = path.join(self.root, f)
+  } else if (isAbsolute(f) || f === '') {
+    abs = f
+  } else if (self.changedCwd) {
+    abs = path.resolve(self.cwd, f)
+  } else {
+    abs = path.resolve(f)
+  }
+
+  if (process.platform === 'win32')
+    abs = abs.replace(/\\/g, '/')
+
+  return abs
+}
+
+
+// Return true, if pattern ends with globstar '**', for the accompanying parent directory.
+// Ex:- If node_modules/** is the pattern, add 'node_modules' to ignore list along with it's contents
+function isIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return item.matcher.match(path) || !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
+
+function childrenIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
 
 
 /***/ }),
 
-/***/ 176:
+/***/ 1957:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-"use strict";
+// Approach:
+//
+// 1. Get the minimatch set
+// 2. For each pattern in the set, PROCESS(pattern, false)
+// 3. Store matches per-set, then uniq them
+//
+// PROCESS(pattern, inGlobStar)
+// Get the first [n] items from pattern that are all strings
+// Join these together.  This is PREFIX.
+//   If there is no more remaining, then stat(PREFIX) and
+//   add to matches if it succeeds.  END.
+//
+// If inGlobStar and PREFIX is symlink and points to dir
+//   set ENTRIES = []
+// else readdir(PREFIX) as ENTRIES
+//   If fail, END
+//
+// with ENTRIES
+//   If pattern[n] is GLOBSTAR
+//     // handle the case where the globstar match is empty
+//     // by pruning it out, and testing the resulting pattern
+//     PROCESS(pattern[0..n] + pattern[n+1 .. $], false)
+//     // handle other cases.
+//     for ENTRY in ENTRIES (not dotfiles)
+//       // attach globstar + tail onto the entry
+//       // Mark that this entry is a globstar match
+//       PROCESS(pattern[0..n] + ENTRY + pattern[n .. $], true)
+//
+//   else // not globstar
+//     for ENTRY in ENTRIES (not dotfiles, unless pattern[n] is dot)
+//       Test ENTRY against pattern[n]
+//       If fails, continue
+//       If passes, PROCESS(pattern[0..n] + item + pattern[n+1 .. $])
+//
+// Caveat:
+//   Cache all stats and readdirs results to minimize syscall.  Since all
+//   we ever care about is existence and directory-ness, we can just keep
+//   `true` for files, and [children,...] for directories, or `false` for
+//   things that don't exist.
+
+module.exports = glob
+
+var rp = __nccwpck_require__(6863)
+var minimatch = __nccwpck_require__(6453)
+var Minimatch = minimatch.Minimatch
+var inherits = __nccwpck_require__(4124)
+var EE = (__nccwpck_require__(2361).EventEmitter)
+var path = __nccwpck_require__(1017)
+var assert = __nccwpck_require__(9491)
+var isAbsolute = __nccwpck_require__(8714)
+var globSync = __nccwpck_require__(9010)
+var common = __nccwpck_require__(7625)
+var setopts = common.setopts
+var ownProp = common.ownProp
+var inflight = __nccwpck_require__(2492)
+var util = __nccwpck_require__(3837)
+var childrenIgnored = common.childrenIgnored
+var isIgnored = common.isIgnored
+
+var once = __nccwpck_require__(1223)
+
+function glob (pattern, options, cb) {
+  if (typeof options === 'function') cb = options, options = {}
+  if (!options) options = {}
+
+  if (options.sync) {
+    if (cb)
+      throw new TypeError('callback provided to sync glob')
+    return globSync(pattern, options)
+  }
+
+  return new Glob(pattern, options, cb)
+}
+
+glob.sync = globSync
+var GlobSync = glob.GlobSync = globSync.GlobSync
+
+// old api surface
+glob.glob = glob
+
+function extend (origin, add) {
+  if (add === null || typeof add !== 'object') {
+    return origin
+  }
+
+  var keys = Object.keys(add)
+  var i = keys.length
+  while (i--) {
+    origin[keys[i]] = add[keys[i]]
+  }
+  return origin
+}
+
+glob.hasMagic = function (pattern, options_) {
+  var options = extend({}, options_)
+  options.noprocess = true
+
+  var g = new Glob(pattern, options)
+  var set = g.minimatch.set
+
+  if (!pattern)
+    return false
+
+  if (set.length > 1)
+    return true
+
+  for (var j = 0; j < set[0].length; j++) {
+    if (typeof set[0][j] !== 'string')
+      return true
+  }
+
+  return false
+}
+
+glob.Glob = Glob
+inherits(Glob, EE)
+function Glob (pattern, options, cb) {
+  if (typeof options === 'function') {
+    cb = options
+    options = null
+  }
+
+  if (options && options.sync) {
+    if (cb)
+      throw new TypeError('callback provided to sync glob')
+    return new GlobSync(pattern, options)
+  }
+
+  if (!(this instanceof Glob))
+    return new Glob(pattern, options, cb)
+
+  setopts(this, pattern, options)
+  this._didRealPath = false
+
+  // process each pattern in the minimatch set
+  var n = this.minimatch.set.length
+
+  // The matches are stored as {<filename>: true,...} so that
+  // duplicates are automagically pruned.
+  // Later, we do an Object.keys() on these.
+  // Keep them as a list so we can fill in when nonull is set.
+  this.matches = new Array(n)
+
+  if (typeof cb === 'function') {
+    cb = once(cb)
+    this.on('error', cb)
+    this.on('end', function (matches) {
+      cb(null, matches)
+    })
+  }
+
+  var self = this
+  this._processing = 0
+
+  this._emitQueue = []
+  this._processQueue = []
+  this.paused = false
+
+  if (this.noprocess)
+    return this
+
+  if (n === 0)
+    return done()
+
+  var sync = true
+  for (var i = 0; i < n; i ++) {
+    this._process(this.minimatch.set[i], i, false, done)
+  }
+  sync = false
+
+  function done () {
+    --self._processing
+    if (self._processing <= 0) {
+      if (sync) {
+        process.nextTick(function () {
+          self._finish()
+        })
+      } else {
+        self._finish()
+      }
+    }
+  }
+}
+
+Glob.prototype._finish = function () {
+  assert(this instanceof Glob)
+  if (this.aborted)
+    return
+
+  if (this.realpath && !this._didRealpath)
+    return this._realpath()
+
+  common.finish(this)
+  this.emit('end', this.found)
+}
+
+Glob.prototype._realpath = function () {
+  if (this._didRealpath)
+    return
+
+  this._didRealpath = true
+
+  var n = this.matches.length
+  if (n === 0)
+    return this._finish()
+
+  var self = this
+  for (var i = 0; i < this.matches.length; i++)
+    this._realpathSet(i, next)
+
+  function next () {
+    if (--n === 0)
+      self._finish()
+  }
+}
+
+Glob.prototype._realpathSet = function (index, cb) {
+  var matchset = this.matches[index]
+  if (!matchset)
+    return cb()
+
+  var found = Object.keys(matchset)
+  var self = this
+  var n = found.length
+
+  if (n === 0)
+    return cb()
+
+  var set = this.matches[index] = Object.create(null)
+  found.forEach(function (p, i) {
+    // If there's a problem with the stat, then it means that
+    // one or more of the links in the realpath couldn't be
+    // resolved.  just return the abs value in that case.
+    p = self._makeAbs(p)
+    rp.realpath(p, self.realpathCache, function (er, real) {
+      if (!er)
+        set[real] = true
+      else if (er.syscall === 'stat')
+        set[p] = true
+      else
+        self.emit('error', er) // srsly wtf right here
+
+      if (--n === 0) {
+        self.matches[index] = set
+        cb()
+      }
+    })
+  })
+}
+
+Glob.prototype._mark = function (p) {
+  return common.mark(this, p)
+}
+
+Glob.prototype._makeAbs = function (f) {
+  return common.makeAbs(this, f)
+}
+
+Glob.prototype.abort = function () {
+  this.aborted = true
+  this.emit('abort')
+}
+
+Glob.prototype.pause = function () {
+  if (!this.paused) {
+    this.paused = true
+    this.emit('pause')
+  }
+}
+
+Glob.prototype.resume = function () {
+  if (this.paused) {
+    this.emit('resume')
+    this.paused = false
+    if (this._emitQueue.length) {
+      var eq = this._emitQueue.slice(0)
+      this._emitQueue.length = 0
+      for (var i = 0; i < eq.length; i ++) {
+        var e = eq[i]
+        this._emitMatch(e[0], e[1])
+      }
+    }
+    if (this._processQueue.length) {
+      var pq = this._processQueue.slice(0)
+      this._processQueue.length = 0
+      for (var i = 0; i < pq.length; i ++) {
+        var p = pq[i]
+        this._processing--
+        this._process(p[0], p[1], p[2], p[3])
+      }
+    }
+  }
+}
+
+Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
+  assert(this instanceof Glob)
+  assert(typeof cb === 'function')
+
+  if (this.aborted)
+    return
+
+  this._processing++
+  if (this.paused) {
+    this._processQueue.push([pattern, index, inGlobStar, cb])
+    return
+  }
+
+  //console.error('PROCESS %d', this._processing, pattern)
+
+  // Get the first [n] parts of pattern that are all strings.
+  var n = 0
+  while (typeof pattern[n] === 'string') {
+    n ++
+  }
+  // now n is the index of the first one that is *not* a string.
+
+  // see if there's anything else
+  var prefix
+  switch (n) {
+    // if not, then this is rather simple
+    case pattern.length:
+      this._processSimple(pattern.join('/'), index, cb)
+      return
+
+    case 0:
+      // pattern *starts* with some non-trivial item.
+      // going to readdir(cwd), but not include the prefix in matches.
+      prefix = null
+      break
+
+    default:
+      // pattern has some string bits in the front.
+      // whatever it starts with, whether that's 'absolute' like /foo/bar,
+      // or 'relative' like '../baz'
+      prefix = pattern.slice(0, n).join('/')
+      break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) ||
+      isAbsolute(pattern.map(function (p) {
+        return typeof p === 'string' ? p : '[*]'
+      }).join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip _processing
+  if (childrenIgnored(this, read))
+    return cb()
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb)
+}
+
+Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return cb()
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  //console.error('prd2', prefix, entries, remain[0]._glob, matchedEntries)
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return cb()
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return cb()
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix) {
+      if (prefix !== '/')
+        e = prefix + '/' + e
+      else
+        e = prefix + e
+    }
+    this._process([e].concat(remain), index, inGlobStar, cb)
+  }
+  cb()
+}
+
+Glob.prototype._emitMatch = function (index, e) {
+  if (this.aborted)
+    return
+
+  if (isIgnored(this, e))
+    return
+
+  if (this.paused) {
+    this._emitQueue.push([index, e])
+    return
+  }
+
+  var abs = isAbsolute(e) ? e : this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute)
+    e = abs
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  var st = this.statCache[abs]
+  if (st)
+    this.emit('stat', e, st)
+
+  this.emit('match', e)
+}
+
+Glob.prototype._readdirInGlobStar = function (abs, cb) {
+  if (this.aborted)
+    return
+
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false, cb)
+
+  var lstatkey = 'lstat\0' + abs
+  var self = this
+  var lstatcb = inflight(lstatkey, lstatcb_)
+
+  if (lstatcb)
+    self.fs.lstat(abs, lstatcb)
+
+  function lstatcb_ (er, lstat) {
+    if (er && er.code === 'ENOENT')
+      return cb()
+
+    var isSym = lstat && lstat.isSymbolicLink()
+    self.symlinks[abs] = isSym
+
+    // If it's not a symlink or a dir, then it's definitely a regular file.
+    // don't bother doing a readdir in that case.
+    if (!isSym && lstat && !lstat.isDirectory()) {
+      self.cache[abs] = 'FILE'
+      cb()
+    } else
+      self._readdir(abs, false, cb)
+  }
+}
+
+Glob.prototype._readdir = function (abs, inGlobStar, cb) {
+  if (this.aborted)
+    return
+
+  cb = inflight('readdir\0'+abs+'\0'+inGlobStar, cb)
+  if (!cb)
+    return
+
+  //console.error('RD %j %j', +inGlobStar, abs)
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs, cb)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return cb()
+
+    if (Array.isArray(c))
+      return cb(null, c)
+  }
+
+  var self = this
+  self.fs.readdir(abs, readdirCb(this, abs, cb))
+}
+
+function readdirCb (self, abs, cb) {
+  return function (er, entries) {
+    if (er)
+      self._readdirError(abs, er, cb)
+    else
+      self._readdirEntries(abs, entries, cb)
+  }
+}
+
+Glob.prototype._readdirEntries = function (abs, entries, cb) {
+  if (this.aborted)
+    return
+
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+  return cb(null, entries)
+}
+
+Glob.prototype._readdirError = function (f, er, cb) {
+  if (this.aborted)
+    return
+
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        this.emit('error', error)
+        this.abort()
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict) {
+        this.emit('error', er)
+        // If the error is handled, then we abort
+        // if not, we threw out of here
+        this.abort()
+      }
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+
+  return cb()
+}
+
+Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
 
 
-var $defineProperty = __nccwpck_require__(6123);
+Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+  //console.error('pgs2', prefix, remain[0], entries)
 
-var hasPropertyDescriptors = function hasPropertyDescriptors() {
-	return !!$defineProperty;
-};
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return cb()
 
-hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBug() {
-	// node v0.6 has a bug where array lengths can be Set but not Defined
-	if (!$defineProperty) {
-		return null;
-	}
-	try {
-		return $defineProperty([], 'length', { value: 1 }).length !== 1;
-	} catch (e) {
-		// In Firefox 4-22, defining length on an array throws an exception.
-		return true;
-	}
-};
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
 
-module.exports = hasPropertyDescriptors;
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false, cb)
+
+  var isSym = this.symlinks[abs]
+  var len = entries.length
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return cb()
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true, cb)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true, cb)
+  }
+
+  cb()
+}
+
+Glob.prototype._processSimple = function (prefix, index, cb) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var self = this
+  this._stat(prefix, function (er, exists) {
+    self._processSimple2(prefix, index, er, exists, cb)
+  })
+}
+Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
+
+  //console.error('ps2', prefix, exists)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return cb()
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+  cb()
+}
+
+// Returns either 'DIR', 'FILE', or false
+Glob.prototype._stat = function (f, cb) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return cb()
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return cb(null, c)
+
+    if (needDir && c === 'FILE')
+      return cb()
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (stat !== undefined) {
+    if (stat === false)
+      return cb(null, stat)
+    else {
+      var type = stat.isDirectory() ? 'DIR' : 'FILE'
+      if (needDir && type === 'FILE')
+        return cb()
+      else
+        return cb(null, type, stat)
+    }
+  }
+
+  var self = this
+  var statcb = inflight('stat\0' + abs, lstatcb_)
+  if (statcb)
+    self.fs.lstat(abs, statcb)
+
+  function lstatcb_ (er, lstat) {
+    if (lstat && lstat.isSymbolicLink()) {
+      // If it's a symlink, then treat it as the target, unless
+      // the target does not exist, then treat it as a file.
+      return self.fs.stat(abs, function (er, stat) {
+        if (er)
+          self._stat2(f, abs, null, lstat, cb)
+        else
+          self._stat2(f, abs, er, stat, cb)
+      })
+    } else {
+      self._stat2(f, abs, er, lstat, cb)
+    }
+  }
+}
+
+Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
+  if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+    this.statCache[abs] = false
+    return cb()
+  }
+
+  var needDir = f.slice(-1) === '/'
+  this.statCache[abs] = stat
+
+  if (abs.slice(-1) === '/' && stat && !stat.isDirectory())
+    return cb(null, false, stat)
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return cb()
+
+  return cb(null, c, stat)
+}
 
 
 /***/ }),
 
-/***/ 5894:
-/***/ ((module) => {
+/***/ 6453:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-"use strict";
+module.exports = minimatch
+minimatch.Minimatch = Minimatch
+
+var path = (function () { try { return __nccwpck_require__(1017) } catch (e) {}}()) || {
+  sep: '/'
+}
+minimatch.sep = path.sep
+
+var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
+var expand = __nccwpck_require__(3717)
+
+var plTypes = {
+  '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
+  '?': { open: '(?:', close: ')?' },
+  '+': { open: '(?:', close: ')+' },
+  '*': { open: '(?:', close: ')*' },
+  '@': { open: '(?:', close: ')' }
+}
+
+// any single thing other than /
+// don't need to escape / when using new RegExp()
+var qmark = '[^/]'
+
+// * => any number of characters
+var star = qmark + '*?'
+
+// ** when dots are allowed.  Anything goes, except .. and .
+// not (^ or / followed by one or two dots followed by $ or /),
+// followed by anything, any number of times.
+var twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
+
+// not a ^ or / followed by a dot,
+// followed by anything, any number of times.
+var twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
+
+// characters that need to be escaped in RegExp.
+var reSpecials = charSet('().*{}+?[]^$\\!')
+
+// "abc" -> { a:true, b:true, c:true }
+function charSet (s) {
+  return s.split('').reduce(function (set, c) {
+    set[c] = true
+    return set
+  }, {})
+}
+
+// normalizes slashes.
+var slashSplit = /\/+/
+
+minimatch.filter = filter
+function filter (pattern, options) {
+  options = options || {}
+  return function (p, i, list) {
+    return minimatch(p, pattern, options)
+  }
+}
+
+function ext (a, b) {
+  b = b || {}
+  var t = {}
+  Object.keys(a).forEach(function (k) {
+    t[k] = a[k]
+  })
+  Object.keys(b).forEach(function (k) {
+    t[k] = b[k]
+  })
+  return t
+}
+
+minimatch.defaults = function (def) {
+  if (!def || typeof def !== 'object' || !Object.keys(def).length) {
+    return minimatch
+  }
+
+  var orig = minimatch
+
+  var m = function minimatch (p, pattern, options) {
+    return orig(p, pattern, ext(def, options))
+  }
+
+  m.Minimatch = function Minimatch (pattern, options) {
+    return new orig.Minimatch(pattern, ext(def, options))
+  }
+  m.Minimatch.defaults = function defaults (options) {
+    return orig.defaults(ext(def, options)).Minimatch
+  }
+
+  m.filter = function filter (pattern, options) {
+    return orig.filter(pattern, ext(def, options))
+  }
+
+  m.defaults = function defaults (options) {
+    return orig.defaults(ext(def, options))
+  }
+
+  m.makeRe = function makeRe (pattern, options) {
+    return orig.makeRe(pattern, ext(def, options))
+  }
+
+  m.braceExpand = function braceExpand (pattern, options) {
+    return orig.braceExpand(pattern, ext(def, options))
+  }
+
+  m.match = function (list, pattern, options) {
+    return orig.match(list, pattern, ext(def, options))
+  }
+
+  return m
+}
+
+Minimatch.defaults = function (def) {
+  return minimatch.defaults(def).Minimatch
+}
+
+function minimatch (p, pattern, options) {
+  assertValidPattern(pattern)
+
+  if (!options) options = {}
+
+  // shortcut: comments match nothing.
+  if (!options.nocomment && pattern.charAt(0) === '#') {
+    return false
+  }
+
+  return new Minimatch(pattern, options).match(p)
+}
+
+function Minimatch (pattern, options) {
+  if (!(this instanceof Minimatch)) {
+    return new Minimatch(pattern, options)
+  }
+
+  assertValidPattern(pattern)
+
+  if (!options) options = {}
+
+  pattern = pattern.trim()
+
+  // windows support: need to use /, not \
+  if (!options.allowWindowsEscape && path.sep !== '/') {
+    pattern = pattern.split(path.sep).join('/')
+  }
+
+  this.options = options
+  this.set = []
+  this.pattern = pattern
+  this.regexp = null
+  this.negate = false
+  this.comment = false
+  this.empty = false
+  this.partial = !!options.partial
+
+  // make the set of regexps etc.
+  this.make()
+}
+
+Minimatch.prototype.debug = function () {}
+
+Minimatch.prototype.make = make
+function make () {
+  var pattern = this.pattern
+  var options = this.options
+
+  // empty patterns and comments match nothing.
+  if (!options.nocomment && pattern.charAt(0) === '#') {
+    this.comment = true
+    return
+  }
+  if (!pattern) {
+    this.empty = true
+    return
+  }
+
+  // step 1: figure out negation, etc.
+  this.parseNegate()
+
+  // step 2: expand braces
+  var set = this.globSet = this.braceExpand()
+
+  if (options.debug) this.debug = function debug() { console.error.apply(console, arguments) }
+
+  this.debug(this.pattern, set)
+
+  // step 3: now we have a set, so turn each one into a series of path-portion
+  // matching patterns.
+  // These will be regexps, except in the case of "**", which is
+  // set to the GLOBSTAR object for globstar behavior,
+  // and will not contain any / characters
+  set = this.globParts = set.map(function (s) {
+    return s.split(slashSplit)
+  })
+
+  this.debug(this.pattern, set)
+
+  // glob --> regexps
+  set = set.map(function (s, si, set) {
+    return s.map(this.parse, this)
+  }, this)
+
+  this.debug(this.pattern, set)
+
+  // filter out everything that didn't compile properly.
+  set = set.filter(function (s) {
+    return s.indexOf(false) === -1
+  })
+
+  this.debug(this.pattern, set)
+
+  this.set = set
+}
+
+Minimatch.prototype.parseNegate = parseNegate
+function parseNegate () {
+  var pattern = this.pattern
+  var negate = false
+  var options = this.options
+  var negateOffset = 0
+
+  if (options.nonegate) return
+
+  for (var i = 0, l = pattern.length
+    ; i < l && pattern.charAt(i) === '!'
+    ; i++) {
+    negate = !negate
+    negateOffset++
+  }
+
+  if (negateOffset) this.pattern = pattern.substr(negateOffset)
+  this.negate = negate
+}
+
+// Brace expansion:
+// a{b,c}d -> abd acd
+// a{b,}c -> abc ac
+// a{0..3}d -> a0d a1d a2d a3d
+// a{b,c{d,e}f}g -> abg acdfg acefg
+// a{b,c}d{e,f}g -> abdeg acdeg abdeg abdfg
+//
+// Invalid sets are not expanded.
+// a{2..}b -> a{2..}b
+// a{b}c -> a{b}c
+minimatch.braceExpand = function (pattern, options) {
+  return braceExpand(pattern, options)
+}
+
+Minimatch.prototype.braceExpand = braceExpand
+
+function braceExpand (pattern, options) {
+  if (!options) {
+    if (this instanceof Minimatch) {
+      options = this.options
+    } else {
+      options = {}
+    }
+  }
+
+  pattern = typeof pattern === 'undefined'
+    ? this.pattern : pattern
+
+  assertValidPattern(pattern)
+
+  // Thanks to Yeting Li <https://github.com/yetingli> for
+  // improving this regexp to avoid a ReDOS vulnerability.
+  if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
+    // shortcut. no need to expand.
+    return [pattern]
+  }
+
+  return expand(pattern)
+}
+
+var MAX_PATTERN_LENGTH = 1024 * 64
+var assertValidPattern = function (pattern) {
+  if (typeof pattern !== 'string') {
+    throw new TypeError('invalid pattern')
+  }
+
+  if (pattern.length > MAX_PATTERN_LENGTH) {
+    throw new TypeError('pattern is too long')
+  }
+}
+
+// parse a component of the expanded set.
+// At this point, no pattern may contain "/" in it
+// so we're going to return a 2d array, where each entry is the full
+// pattern, split on '/', and then turned into a regular expression.
+// A regexp is made at the end which joins each array with an
+// escaped /, and another full one which joins each regexp with |.
+//
+// Following the lead of Bash 4.1, note that "**" only has special meaning
+// when it is the *only* thing in a path portion.  Otherwise, any series
+// of * is equivalent to a single *.  Globstar behavior is enabled by
+// default, and can be disabled by setting options.noglobstar.
+Minimatch.prototype.parse = parse
+var SUBPARSE = {}
+function parse (pattern, isSub) {
+  assertValidPattern(pattern)
+
+  var options = this.options
+
+  // shortcuts
+  if (pattern === '**') {
+    if (!options.noglobstar)
+      return GLOBSTAR
+    else
+      pattern = '*'
+  }
+  if (pattern === '') return ''
+
+  var re = ''
+  var hasMagic = !!options.nocase
+  var escaping = false
+  // ? => one single character
+  var patternListStack = []
+  var negativeLists = []
+  var stateChar
+  var inClass = false
+  var reClassStart = -1
+  var classStart = -1
+  // . and .. never match anything that doesn't start with .,
+  // even when options.dot is set.
+  var patternStart = pattern.charAt(0) === '.' ? '' // anything
+  // not (start or / followed by . or .. followed by / or end)
+  : options.dot ? '(?!(?:^|\\\/)\\.{1,2}(?:$|\\\/))'
+  : '(?!\\.)'
+  var self = this
+
+  function clearStateChar () {
+    if (stateChar) {
+      // we had some state-tracking character
+      // that wasn't consumed by this pass.
+      switch (stateChar) {
+        case '*':
+          re += star
+          hasMagic = true
+        break
+        case '?':
+          re += qmark
+          hasMagic = true
+        break
+        default:
+          re += '\\' + stateChar
+        break
+      }
+      self.debug('clearStateChar %j %j', stateChar, re)
+      stateChar = false
+    }
+  }
+
+  for (var i = 0, len = pattern.length, c
+    ; (i < len) && (c = pattern.charAt(i))
+    ; i++) {
+    this.debug('%s\t%s %s %j', pattern, i, re, c)
+
+    // skip over any that are escaped.
+    if (escaping && reSpecials[c]) {
+      re += '\\' + c
+      escaping = false
+      continue
+    }
+
+    switch (c) {
+      /* istanbul ignore next */
+      case '/': {
+        // completely not allowed, even escaped.
+        // Should already be path-split by now.
+        return false
+      }
+
+      case '\\':
+        clearStateChar()
+        escaping = true
+      continue
+
+      // the various stateChar values
+      // for the "extglob" stuff.
+      case '?':
+      case '*':
+      case '+':
+      case '@':
+      case '!':
+        this.debug('%s\t%s %s %j <-- stateChar', pattern, i, re, c)
+
+        // all of those are literals inside a class, except that
+        // the glob [!a] means [^a] in regexp
+        if (inClass) {
+          this.debug('  in class')
+          if (c === '!' && i === classStart + 1) c = '^'
+          re += c
+          continue
+        }
+
+        // if we already have a stateChar, then it means
+        // that there was something like ** or +? in there.
+        // Handle the stateChar, then proceed with this one.
+        self.debug('call clearStateChar %j', stateChar)
+        clearStateChar()
+        stateChar = c
+        // if extglob is disabled, then +(asdf|foo) isn't a thing.
+        // just clear the statechar *now*, rather than even diving into
+        // the patternList stuff.
+        if (options.noext) clearStateChar()
+      continue
+
+      case '(':
+        if (inClass) {
+          re += '('
+          continue
+        }
+
+        if (!stateChar) {
+          re += '\\('
+          continue
+        }
+
+        patternListStack.push({
+          type: stateChar,
+          start: i - 1,
+          reStart: re.length,
+          open: plTypes[stateChar].open,
+          close: plTypes[stateChar].close
+        })
+        // negation is (?:(?!js)[^/]*)
+        re += stateChar === '!' ? '(?:(?!(?:' : '(?:'
+        this.debug('plType %j %j', stateChar, re)
+        stateChar = false
+      continue
+
+      case ')':
+        if (inClass || !patternListStack.length) {
+          re += '\\)'
+          continue
+        }
+
+        clearStateChar()
+        hasMagic = true
+        var pl = patternListStack.pop()
+        // negation is (?:(?!js)[^/]*)
+        // The others are (?:<pattern>)<type>
+        re += pl.close
+        if (pl.type === '!') {
+          negativeLists.push(pl)
+        }
+        pl.reEnd = re.length
+      continue
+
+      case '|':
+        if (inClass || !patternListStack.length || escaping) {
+          re += '\\|'
+          escaping = false
+          continue
+        }
+
+        clearStateChar()
+        re += '|'
+      continue
+
+      // these are mostly the same in regexp and glob
+      case '[':
+        // swallow any state-tracking char before the [
+        clearStateChar()
+
+        if (inClass) {
+          re += '\\' + c
+          continue
+        }
+
+        inClass = true
+        classStart = i
+        reClassStart = re.length
+        re += c
+      continue
+
+      case ']':
+        //  a right bracket shall lose its special
+        //  meaning and represent itself in
+        //  a bracket expression if it occurs
+        //  first in the list.  -- POSIX.2 2.8.3.2
+        if (i === classStart + 1 || !inClass) {
+          re += '\\' + c
+          escaping = false
+          continue
+        }
+
+        // handle the case where we left a class open.
+        // "[z-a]" is valid, equivalent to "\[z-a\]"
+        // split where the last [ was, make sure we don't have
+        // an invalid re. if so, re-walk the contents of the
+        // would-be class to re-translate any characters that
+        // were passed through as-is
+        // TODO: It would probably be faster to determine this
+        // without a try/catch and a new RegExp, but it's tricky
+        // to do safely.  For now, this is safe and works.
+        var cs = pattern.substring(classStart + 1, i)
+        try {
+          RegExp('[' + cs + ']')
+        } catch (er) {
+          // not a valid class!
+          var sp = this.parse(cs, SUBPARSE)
+          re = re.substr(0, reClassStart) + '\\[' + sp[0] + '\\]'
+          hasMagic = hasMagic || sp[1]
+          inClass = false
+          continue
+        }
+
+        // finish up the class.
+        hasMagic = true
+        inClass = false
+        re += c
+      continue
+
+      default:
+        // swallow any state char that wasn't consumed
+        clearStateChar()
+
+        if (escaping) {
+          // no need
+          escaping = false
+        } else if (reSpecials[c]
+          && !(c === '^' && inClass)) {
+          re += '\\'
+        }
+
+        re += c
+
+    } // switch
+  } // for
+
+  // handle the case where we left a class open.
+  // "[abc" is valid, equivalent to "\[abc"
+  if (inClass) {
+    // split where the last [ was, and escape it
+    // this is a huge pita.  We now have to re-walk
+    // the contents of the would-be class to re-translate
+    // any characters that were passed through as-is
+    cs = pattern.substr(classStart + 1)
+    sp = this.parse(cs, SUBPARSE)
+    re = re.substr(0, reClassStart) + '\\[' + sp[0]
+    hasMagic = hasMagic || sp[1]
+  }
+
+  // handle the case where we had a +( thing at the *end*
+  // of the pattern.
+  // each pattern list stack adds 3 chars, and we need to go through
+  // and escape any | chars that were passed through as-is for the regexp.
+  // Go through and escape them, taking care not to double-escape any
+  // | chars that were already escaped.
+  for (pl = patternListStack.pop(); pl; pl = patternListStack.pop()) {
+    var tail = re.slice(pl.reStart + pl.open.length)
+    this.debug('setting tail', re, pl)
+    // maybe some even number of \, then maybe 1 \, followed by a |
+    tail = tail.replace(/((?:\\{2}){0,64})(\\?)\|/g, function (_, $1, $2) {
+      if (!$2) {
+        // the | isn't already escaped, so escape it.
+        $2 = '\\'
+      }
+
+      // need to escape all those slashes *again*, without escaping the
+      // one that we need for escaping the | character.  As it works out,
+      // escaping an even number of slashes can be done by simply repeating
+      // it exactly after itself.  That's why this trick works.
+      //
+      // I am sorry that you have to see this.
+      return $1 + $1 + $2 + '|'
+    })
+
+    this.debug('tail=%j\n   %s', tail, tail, pl, re)
+    var t = pl.type === '*' ? star
+      : pl.type === '?' ? qmark
+      : '\\' + pl.type
+
+    hasMagic = true
+    re = re.slice(0, pl.reStart) + t + '\\(' + tail
+  }
+
+  // handle trailing things that only matter at the very end.
+  clearStateChar()
+  if (escaping) {
+    // trailing \\
+    re += '\\\\'
+  }
+
+  // only need to apply the nodot start if the re starts with
+  // something that could conceivably capture a dot
+  var addPatternStart = false
+  switch (re.charAt(0)) {
+    case '[': case '.': case '(': addPatternStart = true
+  }
+
+  // Hack to work around lack of negative lookbehind in JS
+  // A pattern like: *.!(x).!(y|z) needs to ensure that a name
+  // like 'a.xyz.yz' doesn't match.  So, the first negative
+  // lookahead, has to look ALL the way ahead, to the end of
+  // the pattern.
+  for (var n = negativeLists.length - 1; n > -1; n--) {
+    var nl = negativeLists[n]
+
+    var nlBefore = re.slice(0, nl.reStart)
+    var nlFirst = re.slice(nl.reStart, nl.reEnd - 8)
+    var nlLast = re.slice(nl.reEnd - 8, nl.reEnd)
+    var nlAfter = re.slice(nl.reEnd)
+
+    nlLast += nlAfter
+
+    // Handle nested stuff like *(*.js|!(*.json)), where open parens
+    // mean that we should *not* include the ) in the bit that is considered
+    // "after" the negated section.
+    var openParensBefore = nlBefore.split('(').length - 1
+    var cleanAfter = nlAfter
+    for (i = 0; i < openParensBefore; i++) {
+      cleanAfter = cleanAfter.replace(/\)[+*?]?/, '')
+    }
+    nlAfter = cleanAfter
+
+    var dollar = ''
+    if (nlAfter === '' && isSub !== SUBPARSE) {
+      dollar = '$'
+    }
+    var newRe = nlBefore + nlFirst + nlAfter + dollar + nlLast
+    re = newRe
+  }
+
+  // if the re is not "" at this point, then we need to make sure
+  // it doesn't match against an empty path part.
+  // Otherwise a/* will match a/, which it should not.
+  if (re !== '' && hasMagic) {
+    re = '(?=.)' + re
+  }
+
+  if (addPatternStart) {
+    re = patternStart + re
+  }
+
+  // parsing just a piece of a larger pattern.
+  if (isSub === SUBPARSE) {
+    return [re, hasMagic]
+  }
+
+  // skip the regexp for non-magical patterns
+  // unescape anything in it, though, so that it'll be
+  // an exact match against a file etc.
+  if (!hasMagic) {
+    return globUnescape(pattern)
+  }
+
+  var flags = options.nocase ? 'i' : ''
+  try {
+    var regExp = new RegExp('^' + re + '$', flags)
+  } catch (er) /* istanbul ignore next - should be impossible */ {
+    // If it was an invalid regular expression, then it can't match
+    // anything.  This trick looks for a character after the end of
+    // the string, which is of course impossible, except in multi-line
+    // mode, but it's not a /m regex.
+    return new RegExp('$.')
+  }
+
+  regExp._glob = pattern
+  regExp._src = re
+
+  return regExp
+}
+
+minimatch.makeRe = function (pattern, options) {
+  return new Minimatch(pattern, options || {}).makeRe()
+}
+
+Minimatch.prototype.makeRe = makeRe
+function makeRe () {
+  if (this.regexp || this.regexp === false) return this.regexp
+
+  // at this point, this.set is a 2d array of partial
+  // pattern strings, or "**".
+  //
+  // It's better to use .match().  This function shouldn't
+  // be used, really, but it's pretty convenient sometimes,
+  // when you just want to work with a regex.
+  var set = this.set
+
+  if (!set.length) {
+    this.regexp = false
+    return this.regexp
+  }
+  var options = this.options
+
+  var twoStar = options.noglobstar ? star
+    : options.dot ? twoStarDot
+    : twoStarNoDot
+  var flags = options.nocase ? 'i' : ''
+
+  var re = set.map(function (pattern) {
+    return pattern.map(function (p) {
+      return (p === GLOBSTAR) ? twoStar
+      : (typeof p === 'string') ? regExpEscape(p)
+      : p._src
+    }).join('\\\/')
+  }).join('|')
+
+  // must match entire pattern
+  // ending in a * or ** will make it less strict.
+  re = '^(?:' + re + ')$'
+
+  // can match anything, as long as it's not this.
+  if (this.negate) re = '^(?!' + re + ').*$'
+
+  try {
+    this.regexp = new RegExp(re, flags)
+  } catch (ex) /* istanbul ignore next - should be impossible */ {
+    this.regexp = false
+  }
+  return this.regexp
+}
+
+minimatch.match = function (list, pattern, options) {
+  options = options || {}
+  var mm = new Minimatch(pattern, options)
+  list = list.filter(function (f) {
+    return mm.match(f)
+  })
+  if (mm.options.nonull && !list.length) {
+    list.push(pattern)
+  }
+  return list
+}
+
+Minimatch.prototype.match = function match (f, partial) {
+  if (typeof partial === 'undefined') partial = this.partial
+  this.debug('match', f, this.pattern)
+  // short-circuit in the case of busted things.
+  // comments, etc.
+  if (this.comment) return false
+  if (this.empty) return f === ''
+
+  if (f === '/' && partial) return true
+
+  var options = this.options
+
+  // windows: need to use /, not \
+  if (path.sep !== '/') {
+    f = f.split(path.sep).join('/')
+  }
+
+  // treat the test path as a set of pathparts.
+  f = f.split(slashSplit)
+  this.debug(this.pattern, 'split', f)
+
+  // just ONE of the pattern sets in this.set needs to match
+  // in order for it to be valid.  If negating, then just one
+  // match means that we have failed.
+  // Either way, return on the first hit.
+
+  var set = this.set
+  this.debug(this.pattern, 'set', set)
+
+  // Find the basename of the path by looking for the last non-empty segment
+  var filename
+  var i
+  for (i = f.length - 1; i >= 0; i--) {
+    filename = f[i]
+    if (filename) break
+  }
+
+  for (i = 0; i < set.length; i++) {
+    var pattern = set[i]
+    var file = f
+    if (options.matchBase && pattern.length === 1) {
+      file = [filename]
+    }
+    var hit = this.matchOne(file, pattern, partial)
+    if (hit) {
+      if (options.flipNegate) return true
+      return !this.negate
+    }
+  }
+
+  // didn't get any hits.  this is success if it's a negative
+  // pattern, failure otherwise.
+  if (options.flipNegate) return false
+  return this.negate
+}
+
+// set partial to true to test if, for example,
+// "/a/b" matches the start of "/*/b/*/d"
+// Partial means, if you run out of file before you run
+// out of pattern, then that's fine, as long as all
+// the parts match.
+Minimatch.prototype.matchOne = function (file, pattern, partial) {
+  var options = this.options
+
+  this.debug('matchOne',
+    { 'this': this, file: file, pattern: pattern })
+
+  this.debug('matchOne', file.length, pattern.length)
+
+  for (var fi = 0,
+      pi = 0,
+      fl = file.length,
+      pl = pattern.length
+      ; (fi < fl) && (pi < pl)
+      ; fi++, pi++) {
+    this.debug('matchOne loop')
+    var p = pattern[pi]
+    var f = file[fi]
+
+    this.debug(pattern, p, f)
+
+    // should be impossible.
+    // some invalid regexp stuff in the set.
+    /* istanbul ignore if */
+    if (p === false) return false
+
+    if (p === GLOBSTAR) {
+      this.debug('GLOBSTAR', [pattern, p, f])
+
+      // "**"
+      // a/**/b/**/c would match the following:
+      // a/b/x/y/z/c
+      // a/x/y/z/b/c
+      // a/b/x/b/x/c
+      // a/b/c
+      // To do this, take the rest of the pattern after
+      // the **, and see if it would match the file remainder.
+      // If so, return success.
+      // If not, the ** "swallows" a segment, and try again.
+      // This is recursively awful.
+      //
+      // a/**/b/**/c matching a/b/x/y/z/c
+      // - a matches a
+      // - doublestar
+      //   - matchOne(b/x/y/z/c, b/**/c)
+      //     - b matches b
+      //     - doublestar
+      //       - matchOne(x/y/z/c, c) -> no
+      //       - matchOne(y/z/c, c) -> no
+      //       - matchOne(z/c, c) -> no
+      //       - matchOne(c, c) yes, hit
+      var fr = fi
+      var pr = pi + 1
+      if (pr === pl) {
+        this.debug('** at the end')
+        // a ** at the end will just swallow the rest.
+        // We have found a match.
+        // however, it will not swallow /.x, unless
+        // options.dot is set.
+        // . and .. are *never* matched by **, for explosively
+        // exponential reasons.
+        for (; fi < fl; fi++) {
+          if (file[fi] === '.' || file[fi] === '..' ||
+            (!options.dot && file[fi].charAt(0) === '.')) return false
+        }
+        return true
+      }
+
+      // ok, let's see if we can swallow whatever we can.
+      while (fr < fl) {
+        var swallowee = file[fr]
+
+        this.debug('\nglobstar while', file, fr, pattern, pr, swallowee)
+
+        // XXX remove this slice.  Just pass the start index.
+        if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
+          this.debug('globstar found match!', fr, fl, swallowee)
+          // found a match.
+          return true
+        } else {
+          // can't swallow "." or ".." ever.
+          // can only swallow ".foo" when explicitly asked.
+          if (swallowee === '.' || swallowee === '..' ||
+            (!options.dot && swallowee.charAt(0) === '.')) {
+            this.debug('dot detected!', file, fr, pattern, pr)
+            break
+          }
+
+          // ** swallows a segment, and continue.
+          this.debug('globstar swallow a segment, and continue')
+          fr++
+        }
+      }
+
+      // no match was found.
+      // However, in partial mode, we can't say this is necessarily over.
+      // If there's more *pattern* left, then
+      /* istanbul ignore if */
+      if (partial) {
+        // ran out of file
+        this.debug('\n>>> no match, partial?', file, fr, pattern, pr)
+        if (fr === fl) return true
+      }
+      return false
+    }
+
+    // something other than **
+    // non-magic patterns just have to match exactly
+    // patterns with magic have been turned into regexps.
+    var hit
+    if (typeof p === 'string') {
+      hit = f === p
+      this.debug('string match', p, f, hit)
+    } else {
+      hit = f.match(p)
+      this.debug('pattern match', p, f, hit)
+    }
+
+    if (!hit) return false
+  }
+
+  // Note: ending in / means that we'll get a final ""
+  // at the end of the pattern.  This can only match a
+  // corresponding "" at the end of the file.
+  // If the file ends in /, then it can only match a
+  // a pattern that ends in /, unless the pattern just
+  // doesn't have any more for it. But, a/b/ should *not*
+  // match "a/b/*", even though "" matches against the
+  // [^/]*? pattern, except in partial mode, where it might
+  // simply not be reached yet.
+  // However, a/b/ should still satisfy a/*
+
+  // now either we fell off the end of the pattern, or we're done.
+  if (fi === fl && pi === pl) {
+    // ran out of pattern and filename at the same time.
+    // an exact hit!
+    return true
+  } else if (fi === fl) {
+    // ran out of file, but still had pattern left.
+    // this is ok if we're doing the match as part of
+    // a glob fs traversal.
+    return partial
+  } else /* istanbul ignore else */ if (pi === pl) {
+    // ran out of pattern, still have file left.
+    // this is only acceptable if we're on the very last
+    // empty segment of a file with a trailing slash.
+    // a/* should match a/b/
+    return (fi === fl - 1) && (file[fi] === '')
+  }
+
+  // should be unreachable.
+  /* istanbul ignore next */
+  throw new Error('wtf?')
+}
+
+// replace stuff like \* with *
+function globUnescape (s) {
+  return s.replace(/\\(.)/g, '$1')
+}
+
+function regExpEscape (s) {
+  return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+}
 
 
-var test = {
-	__proto__: null,
-	foo: {}
-};
+/***/ }),
 
-var $Object = Object;
+/***/ 9010:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-/** @type {import('.')} */
-module.exports = function hasProto() {
-	// @ts-expect-error: TS errors on an inherited property for some reason
-	return { __proto__: test }.foo === test.foo
-		&& !(test instanceof $Object);
-};
+module.exports = globSync
+globSync.GlobSync = GlobSync
+
+var rp = __nccwpck_require__(6863)
+var minimatch = __nccwpck_require__(6453)
+var Minimatch = minimatch.Minimatch
+var Glob = (__nccwpck_require__(1957).Glob)
+var util = __nccwpck_require__(3837)
+var path = __nccwpck_require__(1017)
+var assert = __nccwpck_require__(9491)
+var isAbsolute = __nccwpck_require__(8714)
+var common = __nccwpck_require__(7625)
+var setopts = common.setopts
+var ownProp = common.ownProp
+var childrenIgnored = common.childrenIgnored
+var isIgnored = common.isIgnored
+
+function globSync (pattern, options) {
+  if (typeof options === 'function' || arguments.length === 3)
+    throw new TypeError('callback provided to sync glob\n'+
+                        'See: https://github.com/isaacs/node-glob/issues/167')
+
+  return new GlobSync(pattern, options).found
+}
+
+function GlobSync (pattern, options) {
+  if (!pattern)
+    throw new Error('must provide pattern')
+
+  if (typeof options === 'function' || arguments.length === 3)
+    throw new TypeError('callback provided to sync glob\n'+
+                        'See: https://github.com/isaacs/node-glob/issues/167')
+
+  if (!(this instanceof GlobSync))
+    return new GlobSync(pattern, options)
+
+  setopts(this, pattern, options)
+
+  if (this.noprocess)
+    return this
+
+  var n = this.minimatch.set.length
+  this.matches = new Array(n)
+  for (var i = 0; i < n; i ++) {
+    this._process(this.minimatch.set[i], i, false)
+  }
+  this._finish()
+}
+
+GlobSync.prototype._finish = function () {
+  assert.ok(this instanceof GlobSync)
+  if (this.realpath) {
+    var self = this
+    this.matches.forEach(function (matchset, index) {
+      var set = self.matches[index] = Object.create(null)
+      for (var p in matchset) {
+        try {
+          p = self._makeAbs(p)
+          var real = rp.realpathSync(p, self.realpathCache)
+          set[real] = true
+        } catch (er) {
+          if (er.syscall === 'stat')
+            set[self._makeAbs(p)] = true
+          else
+            throw er
+        }
+      }
+    })
+  }
+  common.finish(this)
+}
+
+
+GlobSync.prototype._process = function (pattern, index, inGlobStar) {
+  assert.ok(this instanceof GlobSync)
+
+  // Get the first [n] parts of pattern that are all strings.
+  var n = 0
+  while (typeof pattern[n] === 'string') {
+    n ++
+  }
+  // now n is the index of the first one that is *not* a string.
+
+  // See if there's anything else
+  var prefix
+  switch (n) {
+    // if not, then this is rather simple
+    case pattern.length:
+      this._processSimple(pattern.join('/'), index)
+      return
+
+    case 0:
+      // pattern *starts* with some non-trivial item.
+      // going to readdir(cwd), but not include the prefix in matches.
+      prefix = null
+      break
+
+    default:
+      // pattern has some string bits in the front.
+      // whatever it starts with, whether that's 'absolute' like /foo/bar,
+      // or 'relative' like '../baz'
+      prefix = pattern.slice(0, n).join('/')
+      break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) ||
+      isAbsolute(pattern.map(function (p) {
+        return typeof p === 'string' ? p : '[*]'
+      }).join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip processing
+  if (childrenIgnored(this, read))
+    return
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar)
+}
+
+
+GlobSync.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar) {
+  var entries = this._readdir(abs, inGlobStar)
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix.slice(-1) !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix)
+      newPattern = [prefix, e]
+    else
+      newPattern = [e]
+    this._process(newPattern.concat(remain), index, inGlobStar)
+  }
+}
+
+
+GlobSync.prototype._emitMatch = function (index, e) {
+  if (isIgnored(this, e))
+    return
+
+  var abs = this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute) {
+    e = abs
+  }
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  if (this.stat)
+    this._stat(e)
+}
+
+
+GlobSync.prototype._readdirInGlobStar = function (abs) {
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false)
+
+  var entries
+  var lstat
+  var stat
+  try {
+    lstat = this.fs.lstatSync(abs)
+  } catch (er) {
+    if (er.code === 'ENOENT') {
+      // lstat failed, doesn't exist
+      return null
+    }
+  }
+
+  var isSym = lstat && lstat.isSymbolicLink()
+  this.symlinks[abs] = isSym
+
+  // If it's not a symlink or a dir, then it's definitely a regular file.
+  // don't bother doing a readdir in that case.
+  if (!isSym && lstat && !lstat.isDirectory())
+    this.cache[abs] = 'FILE'
+  else
+    entries = this._readdir(abs, false)
+
+  return entries
+}
+
+GlobSync.prototype._readdir = function (abs, inGlobStar) {
+  var entries
+
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return null
+
+    if (Array.isArray(c))
+      return c
+  }
+
+  try {
+    return this._readdirEntries(abs, this.fs.readdirSync(abs))
+  } catch (er) {
+    this._readdirError(abs, er)
+    return null
+  }
+}
+
+GlobSync.prototype._readdirEntries = function (abs, entries) {
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+
+  // mark and cache dir-ness
+  return entries
+}
+
+GlobSync.prototype._readdirError = function (f, er) {
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        throw error
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict)
+        throw er
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+}
+
+GlobSync.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar) {
+
+  var entries = this._readdir(abs, inGlobStar)
+
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return
+
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
+
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false)
+
+  var len = entries.length
+  var isSym = this.symlinks[abs]
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true)
+  }
+}
+
+GlobSync.prototype._processSimple = function (prefix, index) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var exists = this._stat(prefix)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+}
+
+// Returns either 'DIR', 'FILE', or false
+GlobSync.prototype._stat = function (f) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return false
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return c
+
+    if (needDir && c === 'FILE')
+      return false
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (!stat) {
+    var lstat
+    try {
+      lstat = this.fs.lstatSync(abs)
+    } catch (er) {
+      if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+        this.statCache[abs] = false
+        return false
+      }
+    }
+
+    if (lstat && lstat.isSymbolicLink()) {
+      try {
+        stat = this.fs.statSync(abs)
+      } catch (er) {
+        stat = lstat
+      }
+    } else {
+      stat = lstat
+    }
+  }
+
+  this.statCache[abs] = stat
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return false
+
+  return c
+}
+
+GlobSync.prototype._mark = function (p) {
+  return common.mark(this, p)
+}
+
+GlobSync.prototype._makeAbs = function (f) {
+  return common.makeAbs(this, f)
+}
 
 
 /***/ }),
@@ -12180,18 +14001,15 @@ module.exports = function hasSymbols() {
 
 /***/ }),
 
-/***/ 2157:
+/***/ 6339:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var call = Function.prototype.call;
-var $hasOwn = Object.prototype.hasOwnProperty;
 var bind = __nccwpck_require__(8334);
 
-/** @type {import('.')} */
-module.exports = bind.call(call, $hasOwn);
+module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
 
 /***/ }),
@@ -12303,6 +14121,348 @@ if (typeof Object.create === 'function') {
     }
   }
 }
+
+
+/***/ }),
+
+/***/ 7129:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+// A linked list to keep track of recently-used-ness
+const Yallist = __nccwpck_require__(665)
+
+const MAX = Symbol('max')
+const LENGTH = Symbol('length')
+const LENGTH_CALCULATOR = Symbol('lengthCalculator')
+const ALLOW_STALE = Symbol('allowStale')
+const MAX_AGE = Symbol('maxAge')
+const DISPOSE = Symbol('dispose')
+const NO_DISPOSE_ON_SET = Symbol('noDisposeOnSet')
+const LRU_LIST = Symbol('lruList')
+const CACHE = Symbol('cache')
+const UPDATE_AGE_ON_GET = Symbol('updateAgeOnGet')
+
+const naiveLength = () => 1
+
+// lruList is a yallist where the head is the youngest
+// item, and the tail is the oldest.  the list contains the Hit
+// objects as the entries.
+// Each Hit object has a reference to its Yallist.Node.  This
+// never changes.
+//
+// cache is a Map (or PseudoMap) that matches the keys to
+// the Yallist.Node object.
+class LRUCache {
+  constructor (options) {
+    if (typeof options === 'number')
+      options = { max: options }
+
+    if (!options)
+      options = {}
+
+    if (options.max && (typeof options.max !== 'number' || options.max < 0))
+      throw new TypeError('max must be a non-negative number')
+    // Kind of weird to have a default max of Infinity, but oh well.
+    const max = this[MAX] = options.max || Infinity
+
+    const lc = options.length || naiveLength
+    this[LENGTH_CALCULATOR] = (typeof lc !== 'function') ? naiveLength : lc
+    this[ALLOW_STALE] = options.stale || false
+    if (options.maxAge && typeof options.maxAge !== 'number')
+      throw new TypeError('maxAge must be a number')
+    this[MAX_AGE] = options.maxAge || 0
+    this[DISPOSE] = options.dispose
+    this[NO_DISPOSE_ON_SET] = options.noDisposeOnSet || false
+    this[UPDATE_AGE_ON_GET] = options.updateAgeOnGet || false
+    this.reset()
+  }
+
+  // resize the cache when the max changes.
+  set max (mL) {
+    if (typeof mL !== 'number' || mL < 0)
+      throw new TypeError('max must be a non-negative number')
+
+    this[MAX] = mL || Infinity
+    trim(this)
+  }
+  get max () {
+    return this[MAX]
+  }
+
+  set allowStale (allowStale) {
+    this[ALLOW_STALE] = !!allowStale
+  }
+  get allowStale () {
+    return this[ALLOW_STALE]
+  }
+
+  set maxAge (mA) {
+    if (typeof mA !== 'number')
+      throw new TypeError('maxAge must be a non-negative number')
+
+    this[MAX_AGE] = mA
+    trim(this)
+  }
+  get maxAge () {
+    return this[MAX_AGE]
+  }
+
+  // resize the cache when the lengthCalculator changes.
+  set lengthCalculator (lC) {
+    if (typeof lC !== 'function')
+      lC = naiveLength
+
+    if (lC !== this[LENGTH_CALCULATOR]) {
+      this[LENGTH_CALCULATOR] = lC
+      this[LENGTH] = 0
+      this[LRU_LIST].forEach(hit => {
+        hit.length = this[LENGTH_CALCULATOR](hit.value, hit.key)
+        this[LENGTH] += hit.length
+      })
+    }
+    trim(this)
+  }
+  get lengthCalculator () { return this[LENGTH_CALCULATOR] }
+
+  get length () { return this[LENGTH] }
+  get itemCount () { return this[LRU_LIST].length }
+
+  rforEach (fn, thisp) {
+    thisp = thisp || this
+    for (let walker = this[LRU_LIST].tail; walker !== null;) {
+      const prev = walker.prev
+      forEachStep(this, fn, walker, thisp)
+      walker = prev
+    }
+  }
+
+  forEach (fn, thisp) {
+    thisp = thisp || this
+    for (let walker = this[LRU_LIST].head; walker !== null;) {
+      const next = walker.next
+      forEachStep(this, fn, walker, thisp)
+      walker = next
+    }
+  }
+
+  keys () {
+    return this[LRU_LIST].toArray().map(k => k.key)
+  }
+
+  values () {
+    return this[LRU_LIST].toArray().map(k => k.value)
+  }
+
+  reset () {
+    if (this[DISPOSE] &&
+        this[LRU_LIST] &&
+        this[LRU_LIST].length) {
+      this[LRU_LIST].forEach(hit => this[DISPOSE](hit.key, hit.value))
+    }
+
+    this[CACHE] = new Map() // hash of items by key
+    this[LRU_LIST] = new Yallist() // list of items in order of use recency
+    this[LENGTH] = 0 // length of items in the list
+  }
+
+  dump () {
+    return this[LRU_LIST].map(hit =>
+      isStale(this, hit) ? false : {
+        k: hit.key,
+        v: hit.value,
+        e: hit.now + (hit.maxAge || 0)
+      }).toArray().filter(h => h)
+  }
+
+  dumpLru () {
+    return this[LRU_LIST]
+  }
+
+  set (key, value, maxAge) {
+    maxAge = maxAge || this[MAX_AGE]
+
+    if (maxAge && typeof maxAge !== 'number')
+      throw new TypeError('maxAge must be a number')
+
+    const now = maxAge ? Date.now() : 0
+    const len = this[LENGTH_CALCULATOR](value, key)
+
+    if (this[CACHE].has(key)) {
+      if (len > this[MAX]) {
+        del(this, this[CACHE].get(key))
+        return false
+      }
+
+      const node = this[CACHE].get(key)
+      const item = node.value
+
+      // dispose of the old one before overwriting
+      // split out into 2 ifs for better coverage tracking
+      if (this[DISPOSE]) {
+        if (!this[NO_DISPOSE_ON_SET])
+          this[DISPOSE](key, item.value)
+      }
+
+      item.now = now
+      item.maxAge = maxAge
+      item.value = value
+      this[LENGTH] += len - item.length
+      item.length = len
+      this.get(key)
+      trim(this)
+      return true
+    }
+
+    const hit = new Entry(key, value, len, now, maxAge)
+
+    // oversized objects fall out of cache automatically.
+    if (hit.length > this[MAX]) {
+      if (this[DISPOSE])
+        this[DISPOSE](key, value)
+
+      return false
+    }
+
+    this[LENGTH] += hit.length
+    this[LRU_LIST].unshift(hit)
+    this[CACHE].set(key, this[LRU_LIST].head)
+    trim(this)
+    return true
+  }
+
+  has (key) {
+    if (!this[CACHE].has(key)) return false
+    const hit = this[CACHE].get(key).value
+    return !isStale(this, hit)
+  }
+
+  get (key) {
+    return get(this, key, true)
+  }
+
+  peek (key) {
+    return get(this, key, false)
+  }
+
+  pop () {
+    const node = this[LRU_LIST].tail
+    if (!node)
+      return null
+
+    del(this, node)
+    return node.value
+  }
+
+  del (key) {
+    del(this, this[CACHE].get(key))
+  }
+
+  load (arr) {
+    // reset the cache
+    this.reset()
+
+    const now = Date.now()
+    // A previous serialized cache has the most recent items first
+    for (let l = arr.length - 1; l >= 0; l--) {
+      const hit = arr[l]
+      const expiresAt = hit.e || 0
+      if (expiresAt === 0)
+        // the item was created without expiration in a non aged cache
+        this.set(hit.k, hit.v)
+      else {
+        const maxAge = expiresAt - now
+        // dont add already expired items
+        if (maxAge > 0) {
+          this.set(hit.k, hit.v, maxAge)
+        }
+      }
+    }
+  }
+
+  prune () {
+    this[CACHE].forEach((value, key) => get(this, key, false))
+  }
+}
+
+const get = (self, key, doUse) => {
+  const node = self[CACHE].get(key)
+  if (node) {
+    const hit = node.value
+    if (isStale(self, hit)) {
+      del(self, node)
+      if (!self[ALLOW_STALE])
+        return undefined
+    } else {
+      if (doUse) {
+        if (self[UPDATE_AGE_ON_GET])
+          node.value.now = Date.now()
+        self[LRU_LIST].unshiftNode(node)
+      }
+    }
+    return hit.value
+  }
+}
+
+const isStale = (self, hit) => {
+  if (!hit || (!hit.maxAge && !self[MAX_AGE]))
+    return false
+
+  const diff = Date.now() - hit.now
+  return hit.maxAge ? diff > hit.maxAge
+    : self[MAX_AGE] && (diff > self[MAX_AGE])
+}
+
+const trim = self => {
+  if (self[LENGTH] > self[MAX]) {
+    for (let walker = self[LRU_LIST].tail;
+      self[LENGTH] > self[MAX] && walker !== null;) {
+      // We know that we're about to delete this one, and also
+      // what the next least recently used key will be, so just
+      // go ahead and set it now.
+      const prev = walker.prev
+      del(self, walker)
+      walker = prev
+    }
+  }
+}
+
+const del = (self, node) => {
+  if (node) {
+    const hit = node.value
+    if (self[DISPOSE])
+      self[DISPOSE](hit.key, hit.value)
+
+    self[LENGTH] -= hit.length
+    self[CACHE].delete(hit.key)
+    self[LRU_LIST].removeNode(node)
+  }
+}
+
+class Entry {
+  constructor (key, value, length, now, maxAge) {
+    this.key = key
+    this.value = value
+    this.length = length
+    this.now = now
+    this.maxAge = maxAge || 0
+  }
+}
+
+const forEachStep = (self, fn, node, thisp) => {
+  let hit = node.value
+  if (isStale(self, hit)) {
+    del(self, node)
+    if (!self[ALLOW_STALE])
+      hit = undefined
+  }
+  if (hit)
+    fn.call(thisp, hit.value, hit.key, self)
+}
+
+module.exports = LRUCache
 
 
 /***/ }),
@@ -13509,14 +15669,6 @@ module.exports = function inspect_(obj, options, depth, seen) {
     }
     if (isString(obj)) {
         return markBoxed(inspect(String(obj)));
-    }
-    // note: in IE 8, sometimes `global !== window` but both are the prototypes of each other
-    /* eslint-env browser */
-    if (typeof window !== 'undefined' && obj === window) {
-        return '{ [object Window] }';
-    }
-    if (obj === global) {
-        return '{ [object globalThis] }';
     }
     if (!isDate(obj) && !isRegExp(obj)) {
         var ys = arrObjKeys(obj, inspect);
@@ -16039,8 +18191,7 @@ var isoSentinel = 'utf8=%26%2310003%3B'; // encodeURIComponent('&#10003;')
 var charsetSentinel = 'utf8=%E2%9C%93'; // encodeURIComponent('✓')
 
 var parseValues = function parseQueryStringValues(str, options) {
-    var obj = { __proto__: null };
-
+    var obj = {};
     var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\?/, '') : str;
     var limit = options.parameterLimit === Infinity ? undefined : options.parameterLimit;
     var parts = cleanStr.split(options.delimiter, limit);
@@ -17215,7 +19366,7 @@ class Range {
 
 module.exports = Range
 
-const LRU = __nccwpck_require__(1196)
+const LRU = __nccwpck_require__(7129)
 const cache = new LRU({ max: 1000 })
 
 const parseOptions = __nccwpck_require__(785)
@@ -17963,43 +20114,35 @@ const coerce = (version, options) => {
 
   let match = null
   if (!options.rtl) {
-    match = version.match(options.includePrerelease ? re[t.COERCEFULL] : re[t.COERCE])
+    match = version.match(re[t.COERCE])
   } else {
     // Find the right-most coercible string that does not share
     // a terminus with a more left-ward coercible string.
     // Eg, '1.2.3.4' wants to coerce '2.3.4', not '3.4' or '4'
-    // With includePrerelease option set, '1.2.3.4-rc' wants to coerce '2.3.4-rc', not '2.3.4'
     //
     // Walk through the string checking with a /g regexp
     // Manually set the index so as to pick up overlapping matches.
     // Stop when we get a match that ends at the string end, since no
     // coercible string can be more right-ward without the same terminus.
-    const coerceRtlRegex = options.includePrerelease ? re[t.COERCERTLFULL] : re[t.COERCERTL]
     let next
-    while ((next = coerceRtlRegex.exec(version)) &&
+    while ((next = re[t.COERCERTL].exec(version)) &&
         (!match || match.index + match[0].length !== version.length)
     ) {
       if (!match ||
             next.index + next[0].length !== match.index + match[0].length) {
         match = next
       }
-      coerceRtlRegex.lastIndex = next.index + next[1].length + next[2].length
+      re[t.COERCERTL].lastIndex = next.index + next[1].length + next[2].length
     }
     // leave it in a clean state
-    coerceRtlRegex.lastIndex = -1
+    re[t.COERCERTL].lastIndex = -1
   }
 
   if (match === null) {
     return null
   }
 
-  const major = match[2]
-  const minor = match[3] || '0'
-  const patch = match[4] || '0'
-  const prerelease = options.includePrerelease && match[5] ? `-${match[5]}` : ''
-  const build = options.includePrerelease && match[6] ? `+${match[6]}` : ''
-
-  return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options)
+  return parse(`${match[2]}.${match[3] || '0'}.${match[4] || '0'}`, options)
 }
 module.exports = coerce
 
@@ -18691,17 +20834,12 @@ createToken('XRANGELOOSE', `^${src[t.GTLT]}\\s*${src[t.XRANGEPLAINLOOSE]}$`)
 
 // Coercion.
 // Extract anything that could conceivably be a part of a valid semver
-createToken('COERCEPLAIN', `${'(^|[^\\d])' +
+createToken('COERCE', `${'(^|[^\\d])' +
               '(\\d{1,'}${MAX_SAFE_COMPONENT_LENGTH}})` +
               `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?` +
-              `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?`)
-createToken('COERCE', `${src[t.COERCEPLAIN]}(?:$|[^\\d])`)
-createToken('COERCEFULL', src[t.COERCEPLAIN] +
-              `(?:${src[t.PRERELEASE]})?` +
-              `(?:${src[t.BUILD]})?` +
+              `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?` +
               `(?:$|[^\\d])`)
 createToken('COERCERTL', src[t.COERCE], true)
-createToken('COERCERTLFULL', src[t.COERCEFULL], true)
 
 // Tilde ranges.
 // Meaning is "reasonably at or greater than"
@@ -18752,798 +20890,6 @@ createToken('STAR', '(<|>)?=?\\s*\\*')
 // >=0.0.0 is like a star
 createToken('GTE0', '^\\s*>=\\s*0\\.0\\.0\\s*$')
 createToken('GTE0PRE', '^\\s*>=\\s*0\\.0\\.0-0\\s*$')
-
-
-/***/ }),
-
-/***/ 1196:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-// A linked list to keep track of recently-used-ness
-const Yallist = __nccwpck_require__(220)
-
-const MAX = Symbol('max')
-const LENGTH = Symbol('length')
-const LENGTH_CALCULATOR = Symbol('lengthCalculator')
-const ALLOW_STALE = Symbol('allowStale')
-const MAX_AGE = Symbol('maxAge')
-const DISPOSE = Symbol('dispose')
-const NO_DISPOSE_ON_SET = Symbol('noDisposeOnSet')
-const LRU_LIST = Symbol('lruList')
-const CACHE = Symbol('cache')
-const UPDATE_AGE_ON_GET = Symbol('updateAgeOnGet')
-
-const naiveLength = () => 1
-
-// lruList is a yallist where the head is the youngest
-// item, and the tail is the oldest.  the list contains the Hit
-// objects as the entries.
-// Each Hit object has a reference to its Yallist.Node.  This
-// never changes.
-//
-// cache is a Map (or PseudoMap) that matches the keys to
-// the Yallist.Node object.
-class LRUCache {
-  constructor (options) {
-    if (typeof options === 'number')
-      options = { max: options }
-
-    if (!options)
-      options = {}
-
-    if (options.max && (typeof options.max !== 'number' || options.max < 0))
-      throw new TypeError('max must be a non-negative number')
-    // Kind of weird to have a default max of Infinity, but oh well.
-    const max = this[MAX] = options.max || Infinity
-
-    const lc = options.length || naiveLength
-    this[LENGTH_CALCULATOR] = (typeof lc !== 'function') ? naiveLength : lc
-    this[ALLOW_STALE] = options.stale || false
-    if (options.maxAge && typeof options.maxAge !== 'number')
-      throw new TypeError('maxAge must be a number')
-    this[MAX_AGE] = options.maxAge || 0
-    this[DISPOSE] = options.dispose
-    this[NO_DISPOSE_ON_SET] = options.noDisposeOnSet || false
-    this[UPDATE_AGE_ON_GET] = options.updateAgeOnGet || false
-    this.reset()
-  }
-
-  // resize the cache when the max changes.
-  set max (mL) {
-    if (typeof mL !== 'number' || mL < 0)
-      throw new TypeError('max must be a non-negative number')
-
-    this[MAX] = mL || Infinity
-    trim(this)
-  }
-  get max () {
-    return this[MAX]
-  }
-
-  set allowStale (allowStale) {
-    this[ALLOW_STALE] = !!allowStale
-  }
-  get allowStale () {
-    return this[ALLOW_STALE]
-  }
-
-  set maxAge (mA) {
-    if (typeof mA !== 'number')
-      throw new TypeError('maxAge must be a non-negative number')
-
-    this[MAX_AGE] = mA
-    trim(this)
-  }
-  get maxAge () {
-    return this[MAX_AGE]
-  }
-
-  // resize the cache when the lengthCalculator changes.
-  set lengthCalculator (lC) {
-    if (typeof lC !== 'function')
-      lC = naiveLength
-
-    if (lC !== this[LENGTH_CALCULATOR]) {
-      this[LENGTH_CALCULATOR] = lC
-      this[LENGTH] = 0
-      this[LRU_LIST].forEach(hit => {
-        hit.length = this[LENGTH_CALCULATOR](hit.value, hit.key)
-        this[LENGTH] += hit.length
-      })
-    }
-    trim(this)
-  }
-  get lengthCalculator () { return this[LENGTH_CALCULATOR] }
-
-  get length () { return this[LENGTH] }
-  get itemCount () { return this[LRU_LIST].length }
-
-  rforEach (fn, thisp) {
-    thisp = thisp || this
-    for (let walker = this[LRU_LIST].tail; walker !== null;) {
-      const prev = walker.prev
-      forEachStep(this, fn, walker, thisp)
-      walker = prev
-    }
-  }
-
-  forEach (fn, thisp) {
-    thisp = thisp || this
-    for (let walker = this[LRU_LIST].head; walker !== null;) {
-      const next = walker.next
-      forEachStep(this, fn, walker, thisp)
-      walker = next
-    }
-  }
-
-  keys () {
-    return this[LRU_LIST].toArray().map(k => k.key)
-  }
-
-  values () {
-    return this[LRU_LIST].toArray().map(k => k.value)
-  }
-
-  reset () {
-    if (this[DISPOSE] &&
-        this[LRU_LIST] &&
-        this[LRU_LIST].length) {
-      this[LRU_LIST].forEach(hit => this[DISPOSE](hit.key, hit.value))
-    }
-
-    this[CACHE] = new Map() // hash of items by key
-    this[LRU_LIST] = new Yallist() // list of items in order of use recency
-    this[LENGTH] = 0 // length of items in the list
-  }
-
-  dump () {
-    return this[LRU_LIST].map(hit =>
-      isStale(this, hit) ? false : {
-        k: hit.key,
-        v: hit.value,
-        e: hit.now + (hit.maxAge || 0)
-      }).toArray().filter(h => h)
-  }
-
-  dumpLru () {
-    return this[LRU_LIST]
-  }
-
-  set (key, value, maxAge) {
-    maxAge = maxAge || this[MAX_AGE]
-
-    if (maxAge && typeof maxAge !== 'number')
-      throw new TypeError('maxAge must be a number')
-
-    const now = maxAge ? Date.now() : 0
-    const len = this[LENGTH_CALCULATOR](value, key)
-
-    if (this[CACHE].has(key)) {
-      if (len > this[MAX]) {
-        del(this, this[CACHE].get(key))
-        return false
-      }
-
-      const node = this[CACHE].get(key)
-      const item = node.value
-
-      // dispose of the old one before overwriting
-      // split out into 2 ifs for better coverage tracking
-      if (this[DISPOSE]) {
-        if (!this[NO_DISPOSE_ON_SET])
-          this[DISPOSE](key, item.value)
-      }
-
-      item.now = now
-      item.maxAge = maxAge
-      item.value = value
-      this[LENGTH] += len - item.length
-      item.length = len
-      this.get(key)
-      trim(this)
-      return true
-    }
-
-    const hit = new Entry(key, value, len, now, maxAge)
-
-    // oversized objects fall out of cache automatically.
-    if (hit.length > this[MAX]) {
-      if (this[DISPOSE])
-        this[DISPOSE](key, value)
-
-      return false
-    }
-
-    this[LENGTH] += hit.length
-    this[LRU_LIST].unshift(hit)
-    this[CACHE].set(key, this[LRU_LIST].head)
-    trim(this)
-    return true
-  }
-
-  has (key) {
-    if (!this[CACHE].has(key)) return false
-    const hit = this[CACHE].get(key).value
-    return !isStale(this, hit)
-  }
-
-  get (key) {
-    return get(this, key, true)
-  }
-
-  peek (key) {
-    return get(this, key, false)
-  }
-
-  pop () {
-    const node = this[LRU_LIST].tail
-    if (!node)
-      return null
-
-    del(this, node)
-    return node.value
-  }
-
-  del (key) {
-    del(this, this[CACHE].get(key))
-  }
-
-  load (arr) {
-    // reset the cache
-    this.reset()
-
-    const now = Date.now()
-    // A previous serialized cache has the most recent items first
-    for (let l = arr.length - 1; l >= 0; l--) {
-      const hit = arr[l]
-      const expiresAt = hit.e || 0
-      if (expiresAt === 0)
-        // the item was created without expiration in a non aged cache
-        this.set(hit.k, hit.v)
-      else {
-        const maxAge = expiresAt - now
-        // dont add already expired items
-        if (maxAge > 0) {
-          this.set(hit.k, hit.v, maxAge)
-        }
-      }
-    }
-  }
-
-  prune () {
-    this[CACHE].forEach((value, key) => get(this, key, false))
-  }
-}
-
-const get = (self, key, doUse) => {
-  const node = self[CACHE].get(key)
-  if (node) {
-    const hit = node.value
-    if (isStale(self, hit)) {
-      del(self, node)
-      if (!self[ALLOW_STALE])
-        return undefined
-    } else {
-      if (doUse) {
-        if (self[UPDATE_AGE_ON_GET])
-          node.value.now = Date.now()
-        self[LRU_LIST].unshiftNode(node)
-      }
-    }
-    return hit.value
-  }
-}
-
-const isStale = (self, hit) => {
-  if (!hit || (!hit.maxAge && !self[MAX_AGE]))
-    return false
-
-  const diff = Date.now() - hit.now
-  return hit.maxAge ? diff > hit.maxAge
-    : self[MAX_AGE] && (diff > self[MAX_AGE])
-}
-
-const trim = self => {
-  if (self[LENGTH] > self[MAX]) {
-    for (let walker = self[LRU_LIST].tail;
-      self[LENGTH] > self[MAX] && walker !== null;) {
-      // We know that we're about to delete this one, and also
-      // what the next least recently used key will be, so just
-      // go ahead and set it now.
-      const prev = walker.prev
-      del(self, walker)
-      walker = prev
-    }
-  }
-}
-
-const del = (self, node) => {
-  if (node) {
-    const hit = node.value
-    if (self[DISPOSE])
-      self[DISPOSE](hit.key, hit.value)
-
-    self[LENGTH] -= hit.length
-    self[CACHE].delete(hit.key)
-    self[LRU_LIST].removeNode(node)
-  }
-}
-
-class Entry {
-  constructor (key, value, length, now, maxAge) {
-    this.key = key
-    this.value = value
-    this.length = length
-    this.now = now
-    this.maxAge = maxAge || 0
-  }
-}
-
-const forEachStep = (self, fn, node, thisp) => {
-  let hit = node.value
-  if (isStale(self, hit)) {
-    del(self, node)
-    if (!self[ALLOW_STALE])
-      hit = undefined
-  }
-  if (hit)
-    fn.call(thisp, hit.value, hit.key, self)
-}
-
-module.exports = LRUCache
-
-
-/***/ }),
-
-/***/ 5327:
-/***/ ((module) => {
-
-"use strict";
-
-module.exports = function (Yallist) {
-  Yallist.prototype[Symbol.iterator] = function* () {
-    for (let walker = this.head; walker; walker = walker.next) {
-      yield walker.value
-    }
-  }
-}
-
-
-/***/ }),
-
-/***/ 220:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-module.exports = Yallist
-
-Yallist.Node = Node
-Yallist.create = Yallist
-
-function Yallist (list) {
-  var self = this
-  if (!(self instanceof Yallist)) {
-    self = new Yallist()
-  }
-
-  self.tail = null
-  self.head = null
-  self.length = 0
-
-  if (list && typeof list.forEach === 'function') {
-    list.forEach(function (item) {
-      self.push(item)
-    })
-  } else if (arguments.length > 0) {
-    for (var i = 0, l = arguments.length; i < l; i++) {
-      self.push(arguments[i])
-    }
-  }
-
-  return self
-}
-
-Yallist.prototype.removeNode = function (node) {
-  if (node.list !== this) {
-    throw new Error('removing node which does not belong to this list')
-  }
-
-  var next = node.next
-  var prev = node.prev
-
-  if (next) {
-    next.prev = prev
-  }
-
-  if (prev) {
-    prev.next = next
-  }
-
-  if (node === this.head) {
-    this.head = next
-  }
-  if (node === this.tail) {
-    this.tail = prev
-  }
-
-  node.list.length--
-  node.next = null
-  node.prev = null
-  node.list = null
-
-  return next
-}
-
-Yallist.prototype.unshiftNode = function (node) {
-  if (node === this.head) {
-    return
-  }
-
-  if (node.list) {
-    node.list.removeNode(node)
-  }
-
-  var head = this.head
-  node.list = this
-  node.next = head
-  if (head) {
-    head.prev = node
-  }
-
-  this.head = node
-  if (!this.tail) {
-    this.tail = node
-  }
-  this.length++
-}
-
-Yallist.prototype.pushNode = function (node) {
-  if (node === this.tail) {
-    return
-  }
-
-  if (node.list) {
-    node.list.removeNode(node)
-  }
-
-  var tail = this.tail
-  node.list = this
-  node.prev = tail
-  if (tail) {
-    tail.next = node
-  }
-
-  this.tail = node
-  if (!this.head) {
-    this.head = node
-  }
-  this.length++
-}
-
-Yallist.prototype.push = function () {
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    push(this, arguments[i])
-  }
-  return this.length
-}
-
-Yallist.prototype.unshift = function () {
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    unshift(this, arguments[i])
-  }
-  return this.length
-}
-
-Yallist.prototype.pop = function () {
-  if (!this.tail) {
-    return undefined
-  }
-
-  var res = this.tail.value
-  this.tail = this.tail.prev
-  if (this.tail) {
-    this.tail.next = null
-  } else {
-    this.head = null
-  }
-  this.length--
-  return res
-}
-
-Yallist.prototype.shift = function () {
-  if (!this.head) {
-    return undefined
-  }
-
-  var res = this.head.value
-  this.head = this.head.next
-  if (this.head) {
-    this.head.prev = null
-  } else {
-    this.tail = null
-  }
-  this.length--
-  return res
-}
-
-Yallist.prototype.forEach = function (fn, thisp) {
-  thisp = thisp || this
-  for (var walker = this.head, i = 0; walker !== null; i++) {
-    fn.call(thisp, walker.value, i, this)
-    walker = walker.next
-  }
-}
-
-Yallist.prototype.forEachReverse = function (fn, thisp) {
-  thisp = thisp || this
-  for (var walker = this.tail, i = this.length - 1; walker !== null; i--) {
-    fn.call(thisp, walker.value, i, this)
-    walker = walker.prev
-  }
-}
-
-Yallist.prototype.get = function (n) {
-  for (var i = 0, walker = this.head; walker !== null && i < n; i++) {
-    // abort out of the list early if we hit a cycle
-    walker = walker.next
-  }
-  if (i === n && walker !== null) {
-    return walker.value
-  }
-}
-
-Yallist.prototype.getReverse = function (n) {
-  for (var i = 0, walker = this.tail; walker !== null && i < n; i++) {
-    // abort out of the list early if we hit a cycle
-    walker = walker.prev
-  }
-  if (i === n && walker !== null) {
-    return walker.value
-  }
-}
-
-Yallist.prototype.map = function (fn, thisp) {
-  thisp = thisp || this
-  var res = new Yallist()
-  for (var walker = this.head; walker !== null;) {
-    res.push(fn.call(thisp, walker.value, this))
-    walker = walker.next
-  }
-  return res
-}
-
-Yallist.prototype.mapReverse = function (fn, thisp) {
-  thisp = thisp || this
-  var res = new Yallist()
-  for (var walker = this.tail; walker !== null;) {
-    res.push(fn.call(thisp, walker.value, this))
-    walker = walker.prev
-  }
-  return res
-}
-
-Yallist.prototype.reduce = function (fn, initial) {
-  var acc
-  var walker = this.head
-  if (arguments.length > 1) {
-    acc = initial
-  } else if (this.head) {
-    walker = this.head.next
-    acc = this.head.value
-  } else {
-    throw new TypeError('Reduce of empty list with no initial value')
-  }
-
-  for (var i = 0; walker !== null; i++) {
-    acc = fn(acc, walker.value, i)
-    walker = walker.next
-  }
-
-  return acc
-}
-
-Yallist.prototype.reduceReverse = function (fn, initial) {
-  var acc
-  var walker = this.tail
-  if (arguments.length > 1) {
-    acc = initial
-  } else if (this.tail) {
-    walker = this.tail.prev
-    acc = this.tail.value
-  } else {
-    throw new TypeError('Reduce of empty list with no initial value')
-  }
-
-  for (var i = this.length - 1; walker !== null; i--) {
-    acc = fn(acc, walker.value, i)
-    walker = walker.prev
-  }
-
-  return acc
-}
-
-Yallist.prototype.toArray = function () {
-  var arr = new Array(this.length)
-  for (var i = 0, walker = this.head; walker !== null; i++) {
-    arr[i] = walker.value
-    walker = walker.next
-  }
-  return arr
-}
-
-Yallist.prototype.toArrayReverse = function () {
-  var arr = new Array(this.length)
-  for (var i = 0, walker = this.tail; walker !== null; i++) {
-    arr[i] = walker.value
-    walker = walker.prev
-  }
-  return arr
-}
-
-Yallist.prototype.slice = function (from, to) {
-  to = to || this.length
-  if (to < 0) {
-    to += this.length
-  }
-  from = from || 0
-  if (from < 0) {
-    from += this.length
-  }
-  var ret = new Yallist()
-  if (to < from || to < 0) {
-    return ret
-  }
-  if (from < 0) {
-    from = 0
-  }
-  if (to > this.length) {
-    to = this.length
-  }
-  for (var i = 0, walker = this.head; walker !== null && i < from; i++) {
-    walker = walker.next
-  }
-  for (; walker !== null && i < to; i++, walker = walker.next) {
-    ret.push(walker.value)
-  }
-  return ret
-}
-
-Yallist.prototype.sliceReverse = function (from, to) {
-  to = to || this.length
-  if (to < 0) {
-    to += this.length
-  }
-  from = from || 0
-  if (from < 0) {
-    from += this.length
-  }
-  var ret = new Yallist()
-  if (to < from || to < 0) {
-    return ret
-  }
-  if (from < 0) {
-    from = 0
-  }
-  if (to > this.length) {
-    to = this.length
-  }
-  for (var i = this.length, walker = this.tail; walker !== null && i > to; i--) {
-    walker = walker.prev
-  }
-  for (; walker !== null && i > from; i--, walker = walker.prev) {
-    ret.push(walker.value)
-  }
-  return ret
-}
-
-Yallist.prototype.splice = function (start, deleteCount, ...nodes) {
-  if (start > this.length) {
-    start = this.length - 1
-  }
-  if (start < 0) {
-    start = this.length + start;
-  }
-
-  for (var i = 0, walker = this.head; walker !== null && i < start; i++) {
-    walker = walker.next
-  }
-
-  var ret = []
-  for (var i = 0; walker && i < deleteCount; i++) {
-    ret.push(walker.value)
-    walker = this.removeNode(walker)
-  }
-  if (walker === null) {
-    walker = this.tail
-  }
-
-  if (walker !== this.head && walker !== this.tail) {
-    walker = walker.prev
-  }
-
-  for (var i = 0; i < nodes.length; i++) {
-    walker = insert(this, walker, nodes[i])
-  }
-  return ret;
-}
-
-Yallist.prototype.reverse = function () {
-  var head = this.head
-  var tail = this.tail
-  for (var walker = head; walker !== null; walker = walker.prev) {
-    var p = walker.prev
-    walker.prev = walker.next
-    walker.next = p
-  }
-  this.head = tail
-  this.tail = head
-  return this
-}
-
-function insert (self, node, value) {
-  var inserted = node === self.head ?
-    new Node(value, null, node, self) :
-    new Node(value, node, node.next, self)
-
-  if (inserted.next === null) {
-    self.tail = inserted
-  }
-  if (inserted.prev === null) {
-    self.head = inserted
-  }
-
-  self.length++
-
-  return inserted
-}
-
-function push (self, item) {
-  self.tail = new Node(item, self.tail, null, self)
-  if (!self.head) {
-    self.head = self.tail
-  }
-  self.length++
-}
-
-function unshift (self, item) {
-  self.head = new Node(item, null, self.head, self)
-  if (!self.tail) {
-    self.tail = self.head
-  }
-  self.length++
-}
-
-function Node (value, prev, next, list) {
-  if (!(this instanceof Node)) {
-    return new Node(value, prev, next, list)
-  }
-
-  this.list = list
-  this.value = value
-
-  if (prev) {
-    prev.next = this
-    this.prev = prev
-  } else {
-    this.prev = null
-  }
-
-  if (next) {
-    next.prev = this
-    this.next = next
-  } else {
-    this.next = null
-  }
-}
-
-try {
-  // add if support for Symbol.iterator is present
-  __nccwpck_require__(5327)(Yallist)
-} catch (er) {}
 
 
 /***/ }),
@@ -20143,58 +21489,6 @@ module.exports = validRange
 
 /***/ }),
 
-/***/ 4056:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-var GetIntrinsic = __nccwpck_require__(4538);
-var define = __nccwpck_require__(4564);
-var hasDescriptors = __nccwpck_require__(176)();
-var gOPD = __nccwpck_require__(8501);
-
-var $TypeError = __nccwpck_require__(6361);
-var $floor = GetIntrinsic('%Math.floor%');
-
-/** @typedef {(...args: unknown[]) => unknown} Func */
-
-/** @type {<T extends Func = Func>(fn: T, length: number, loose?: boolean) => T} */
-module.exports = function setFunctionLength(fn, length) {
-	if (typeof fn !== 'function') {
-		throw new $TypeError('`fn` is not a function');
-	}
-	if (typeof length !== 'number' || length < 0 || length > 0xFFFFFFFF || $floor(length) !== length) {
-		throw new $TypeError('`length` must be a positive 32-bit integer');
-	}
-
-	var loose = arguments.length > 2 && !!arguments[2];
-
-	var functionLengthIsConfigurable = true;
-	var functionLengthIsWritable = true;
-	if ('length' in fn && gOPD) {
-		var desc = gOPD(fn, 'length');
-		if (desc && !desc.configurable) {
-			functionLengthIsConfigurable = false;
-		}
-		if (desc && !desc.writable) {
-			functionLengthIsWritable = false;
-		}
-	}
-
-	if (functionLengthIsConfigurable || functionLengthIsWritable || !loose) {
-		if (hasDescriptors) {
-			define(/** @type {Parameters<define>[0]} */ (fn), 'length', length, true, true);
-		} else {
-			define(/** @type {Parameters<define>[0]} */ (fn), 'length', length);
-		}
-	}
-	return fn;
-};
-
-
-/***/ }),
-
 /***/ 5123:
 /***/ ((module) => {
 
@@ -20227,2495 +21521,6 @@ module.exports = [
   'uniq',
   'which',
 ];
-
-
-/***/ }),
-
-/***/ 1015:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-exports.setopts = setopts
-exports.ownProp = ownProp
-exports.makeAbs = makeAbs
-exports.finish = finish
-exports.mark = mark
-exports.isIgnored = isIgnored
-exports.childrenIgnored = childrenIgnored
-
-function ownProp (obj, field) {
-  return Object.prototype.hasOwnProperty.call(obj, field)
-}
-
-var fs = __nccwpck_require__(7147)
-var path = __nccwpck_require__(1017)
-var minimatch = __nccwpck_require__(3357)
-var isAbsolute = __nccwpck_require__(8714)
-var Minimatch = minimatch.Minimatch
-
-function alphasort (a, b) {
-  return a.localeCompare(b, 'en')
-}
-
-function setupIgnores (self, options) {
-  self.ignore = options.ignore || []
-
-  if (!Array.isArray(self.ignore))
-    self.ignore = [self.ignore]
-
-  if (self.ignore.length) {
-    self.ignore = self.ignore.map(ignoreMap)
-  }
-}
-
-// ignore patterns are always in dot:true mode.
-function ignoreMap (pattern) {
-  var gmatcher = null
-  if (pattern.slice(-3) === '/**') {
-    var gpattern = pattern.replace(/(\/\*\*)+$/, '')
-    gmatcher = new Minimatch(gpattern, { dot: true })
-  }
-
-  return {
-    matcher: new Minimatch(pattern, { dot: true }),
-    gmatcher: gmatcher
-  }
-}
-
-function setopts (self, pattern, options) {
-  if (!options)
-    options = {}
-
-  // base-matching: just use globstar for that.
-  if (options.matchBase && -1 === pattern.indexOf("/")) {
-    if (options.noglobstar) {
-      throw new Error("base matching requires globstar")
-    }
-    pattern = "**/" + pattern
-  }
-
-  self.silent = !!options.silent
-  self.pattern = pattern
-  self.strict = options.strict !== false
-  self.realpath = !!options.realpath
-  self.realpathCache = options.realpathCache || Object.create(null)
-  self.follow = !!options.follow
-  self.dot = !!options.dot
-  self.mark = !!options.mark
-  self.nodir = !!options.nodir
-  if (self.nodir)
-    self.mark = true
-  self.sync = !!options.sync
-  self.nounique = !!options.nounique
-  self.nonull = !!options.nonull
-  self.nosort = !!options.nosort
-  self.nocase = !!options.nocase
-  self.stat = !!options.stat
-  self.noprocess = !!options.noprocess
-  self.absolute = !!options.absolute
-  self.fs = options.fs || fs
-
-  self.maxLength = options.maxLength || Infinity
-  self.cache = options.cache || Object.create(null)
-  self.statCache = options.statCache || Object.create(null)
-  self.symlinks = options.symlinks || Object.create(null)
-
-  setupIgnores(self, options)
-
-  self.changedCwd = false
-  var cwd = process.cwd()
-  if (!ownProp(options, "cwd"))
-    self.cwd = cwd
-  else {
-    self.cwd = path.resolve(options.cwd)
-    self.changedCwd = self.cwd !== cwd
-  }
-
-  self.root = options.root || path.resolve(self.cwd, "/")
-  self.root = path.resolve(self.root)
-  if (process.platform === "win32")
-    self.root = self.root.replace(/\\/g, "/")
-
-  // TODO: is an absolute `cwd` supposed to be resolved against `root`?
-  // e.g. { cwd: '/test', root: __dirname } === path.join(__dirname, '/test')
-  self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd)
-  if (process.platform === "win32")
-    self.cwdAbs = self.cwdAbs.replace(/\\/g, "/")
-  self.nomount = !!options.nomount
-
-  // disable comments and negation in Minimatch.
-  // Note that they are not supported in Glob itself anyway.
-  options.nonegate = true
-  options.nocomment = true
-  // always treat \ in patterns as escapes, not path separators
-  options.allowWindowsEscape = false
-
-  self.minimatch = new Minimatch(pattern, options)
-  self.options = self.minimatch.options
-}
-
-function finish (self) {
-  var nou = self.nounique
-  var all = nou ? [] : Object.create(null)
-
-  for (var i = 0, l = self.matches.length; i < l; i ++) {
-    var matches = self.matches[i]
-    if (!matches || Object.keys(matches).length === 0) {
-      if (self.nonull) {
-        // do like the shell, and spit out the literal glob
-        var literal = self.minimatch.globSet[i]
-        if (nou)
-          all.push(literal)
-        else
-          all[literal] = true
-      }
-    } else {
-      // had matches
-      var m = Object.keys(matches)
-      if (nou)
-        all.push.apply(all, m)
-      else
-        m.forEach(function (m) {
-          all[m] = true
-        })
-    }
-  }
-
-  if (!nou)
-    all = Object.keys(all)
-
-  if (!self.nosort)
-    all = all.sort(alphasort)
-
-  // at *some* point we statted all of these
-  if (self.mark) {
-    for (var i = 0; i < all.length; i++) {
-      all[i] = self._mark(all[i])
-    }
-    if (self.nodir) {
-      all = all.filter(function (e) {
-        var notDir = !(/\/$/.test(e))
-        var c = self.cache[e] || self.cache[makeAbs(self, e)]
-        if (notDir && c)
-          notDir = c !== 'DIR' && !Array.isArray(c)
-        return notDir
-      })
-    }
-  }
-
-  if (self.ignore.length)
-    all = all.filter(function(m) {
-      return !isIgnored(self, m)
-    })
-
-  self.found = all
-}
-
-function mark (self, p) {
-  var abs = makeAbs(self, p)
-  var c = self.cache[abs]
-  var m = p
-  if (c) {
-    var isDir = c === 'DIR' || Array.isArray(c)
-    var slash = p.slice(-1) === '/'
-
-    if (isDir && !slash)
-      m += '/'
-    else if (!isDir && slash)
-      m = m.slice(0, -1)
-
-    if (m !== p) {
-      var mabs = makeAbs(self, m)
-      self.statCache[mabs] = self.statCache[abs]
-      self.cache[mabs] = self.cache[abs]
-    }
-  }
-
-  return m
-}
-
-// lotta situps...
-function makeAbs (self, f) {
-  var abs = f
-  if (f.charAt(0) === '/') {
-    abs = path.join(self.root, f)
-  } else if (isAbsolute(f) || f === '') {
-    abs = f
-  } else if (self.changedCwd) {
-    abs = path.resolve(self.cwd, f)
-  } else {
-    abs = path.resolve(f)
-  }
-
-  if (process.platform === 'win32')
-    abs = abs.replace(/\\/g, '/')
-
-  return abs
-}
-
-
-// Return true, if pattern ends with globstar '**', for the accompanying parent directory.
-// Ex:- If node_modules/** is the pattern, add 'node_modules' to ignore list along with it's contents
-function isIgnored (self, path) {
-  if (!self.ignore.length)
-    return false
-
-  return self.ignore.some(function(item) {
-    return item.matcher.match(path) || !!(item.gmatcher && item.gmatcher.match(path))
-  })
-}
-
-function childrenIgnored (self, path) {
-  if (!self.ignore.length)
-    return false
-
-  return self.ignore.some(function(item) {
-    return !!(item.gmatcher && item.gmatcher.match(path))
-  })
-}
-
-
-/***/ }),
-
-/***/ 1533:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-// Approach:
-//
-// 1. Get the minimatch set
-// 2. For each pattern in the set, PROCESS(pattern, false)
-// 3. Store matches per-set, then uniq them
-//
-// PROCESS(pattern, inGlobStar)
-// Get the first [n] items from pattern that are all strings
-// Join these together.  This is PREFIX.
-//   If there is no more remaining, then stat(PREFIX) and
-//   add to matches if it succeeds.  END.
-//
-// If inGlobStar and PREFIX is symlink and points to dir
-//   set ENTRIES = []
-// else readdir(PREFIX) as ENTRIES
-//   If fail, END
-//
-// with ENTRIES
-//   If pattern[n] is GLOBSTAR
-//     // handle the case where the globstar match is empty
-//     // by pruning it out, and testing the resulting pattern
-//     PROCESS(pattern[0..n] + pattern[n+1 .. $], false)
-//     // handle other cases.
-//     for ENTRY in ENTRIES (not dotfiles)
-//       // attach globstar + tail onto the entry
-//       // Mark that this entry is a globstar match
-//       PROCESS(pattern[0..n] + ENTRY + pattern[n .. $], true)
-//
-//   else // not globstar
-//     for ENTRY in ENTRIES (not dotfiles, unless pattern[n] is dot)
-//       Test ENTRY against pattern[n]
-//       If fails, continue
-//       If passes, PROCESS(pattern[0..n] + item + pattern[n+1 .. $])
-//
-// Caveat:
-//   Cache all stats and readdirs results to minimize syscall.  Since all
-//   we ever care about is existence and directory-ness, we can just keep
-//   `true` for files, and [children,...] for directories, or `false` for
-//   things that don't exist.
-
-module.exports = glob
-
-var rp = __nccwpck_require__(6863)
-var minimatch = __nccwpck_require__(3357)
-var Minimatch = minimatch.Minimatch
-var inherits = __nccwpck_require__(4124)
-var EE = (__nccwpck_require__(2361).EventEmitter)
-var path = __nccwpck_require__(1017)
-var assert = __nccwpck_require__(9491)
-var isAbsolute = __nccwpck_require__(8714)
-var globSync = __nccwpck_require__(7132)
-var common = __nccwpck_require__(1015)
-var setopts = common.setopts
-var ownProp = common.ownProp
-var inflight = __nccwpck_require__(2492)
-var util = __nccwpck_require__(3837)
-var childrenIgnored = common.childrenIgnored
-var isIgnored = common.isIgnored
-
-var once = __nccwpck_require__(1223)
-
-function glob (pattern, options, cb) {
-  if (typeof options === 'function') cb = options, options = {}
-  if (!options) options = {}
-
-  if (options.sync) {
-    if (cb)
-      throw new TypeError('callback provided to sync glob')
-    return globSync(pattern, options)
-  }
-
-  return new Glob(pattern, options, cb)
-}
-
-glob.sync = globSync
-var GlobSync = glob.GlobSync = globSync.GlobSync
-
-// old api surface
-glob.glob = glob
-
-function extend (origin, add) {
-  if (add === null || typeof add !== 'object') {
-    return origin
-  }
-
-  var keys = Object.keys(add)
-  var i = keys.length
-  while (i--) {
-    origin[keys[i]] = add[keys[i]]
-  }
-  return origin
-}
-
-glob.hasMagic = function (pattern, options_) {
-  var options = extend({}, options_)
-  options.noprocess = true
-
-  var g = new Glob(pattern, options)
-  var set = g.minimatch.set
-
-  if (!pattern)
-    return false
-
-  if (set.length > 1)
-    return true
-
-  for (var j = 0; j < set[0].length; j++) {
-    if (typeof set[0][j] !== 'string')
-      return true
-  }
-
-  return false
-}
-
-glob.Glob = Glob
-inherits(Glob, EE)
-function Glob (pattern, options, cb) {
-  if (typeof options === 'function') {
-    cb = options
-    options = null
-  }
-
-  if (options && options.sync) {
-    if (cb)
-      throw new TypeError('callback provided to sync glob')
-    return new GlobSync(pattern, options)
-  }
-
-  if (!(this instanceof Glob))
-    return new Glob(pattern, options, cb)
-
-  setopts(this, pattern, options)
-  this._didRealPath = false
-
-  // process each pattern in the minimatch set
-  var n = this.minimatch.set.length
-
-  // The matches are stored as {<filename>: true,...} so that
-  // duplicates are automagically pruned.
-  // Later, we do an Object.keys() on these.
-  // Keep them as a list so we can fill in when nonull is set.
-  this.matches = new Array(n)
-
-  if (typeof cb === 'function') {
-    cb = once(cb)
-    this.on('error', cb)
-    this.on('end', function (matches) {
-      cb(null, matches)
-    })
-  }
-
-  var self = this
-  this._processing = 0
-
-  this._emitQueue = []
-  this._processQueue = []
-  this.paused = false
-
-  if (this.noprocess)
-    return this
-
-  if (n === 0)
-    return done()
-
-  var sync = true
-  for (var i = 0; i < n; i ++) {
-    this._process(this.minimatch.set[i], i, false, done)
-  }
-  sync = false
-
-  function done () {
-    --self._processing
-    if (self._processing <= 0) {
-      if (sync) {
-        process.nextTick(function () {
-          self._finish()
-        })
-      } else {
-        self._finish()
-      }
-    }
-  }
-}
-
-Glob.prototype._finish = function () {
-  assert(this instanceof Glob)
-  if (this.aborted)
-    return
-
-  if (this.realpath && !this._didRealpath)
-    return this._realpath()
-
-  common.finish(this)
-  this.emit('end', this.found)
-}
-
-Glob.prototype._realpath = function () {
-  if (this._didRealpath)
-    return
-
-  this._didRealpath = true
-
-  var n = this.matches.length
-  if (n === 0)
-    return this._finish()
-
-  var self = this
-  for (var i = 0; i < this.matches.length; i++)
-    this._realpathSet(i, next)
-
-  function next () {
-    if (--n === 0)
-      self._finish()
-  }
-}
-
-Glob.prototype._realpathSet = function (index, cb) {
-  var matchset = this.matches[index]
-  if (!matchset)
-    return cb()
-
-  var found = Object.keys(matchset)
-  var self = this
-  var n = found.length
-
-  if (n === 0)
-    return cb()
-
-  var set = this.matches[index] = Object.create(null)
-  found.forEach(function (p, i) {
-    // If there's a problem with the stat, then it means that
-    // one or more of the links in the realpath couldn't be
-    // resolved.  just return the abs value in that case.
-    p = self._makeAbs(p)
-    rp.realpath(p, self.realpathCache, function (er, real) {
-      if (!er)
-        set[real] = true
-      else if (er.syscall === 'stat')
-        set[p] = true
-      else
-        self.emit('error', er) // srsly wtf right here
-
-      if (--n === 0) {
-        self.matches[index] = set
-        cb()
-      }
-    })
-  })
-}
-
-Glob.prototype._mark = function (p) {
-  return common.mark(this, p)
-}
-
-Glob.prototype._makeAbs = function (f) {
-  return common.makeAbs(this, f)
-}
-
-Glob.prototype.abort = function () {
-  this.aborted = true
-  this.emit('abort')
-}
-
-Glob.prototype.pause = function () {
-  if (!this.paused) {
-    this.paused = true
-    this.emit('pause')
-  }
-}
-
-Glob.prototype.resume = function () {
-  if (this.paused) {
-    this.emit('resume')
-    this.paused = false
-    if (this._emitQueue.length) {
-      var eq = this._emitQueue.slice(0)
-      this._emitQueue.length = 0
-      for (var i = 0; i < eq.length; i ++) {
-        var e = eq[i]
-        this._emitMatch(e[0], e[1])
-      }
-    }
-    if (this._processQueue.length) {
-      var pq = this._processQueue.slice(0)
-      this._processQueue.length = 0
-      for (var i = 0; i < pq.length; i ++) {
-        var p = pq[i]
-        this._processing--
-        this._process(p[0], p[1], p[2], p[3])
-      }
-    }
-  }
-}
-
-Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
-  assert(this instanceof Glob)
-  assert(typeof cb === 'function')
-
-  if (this.aborted)
-    return
-
-  this._processing++
-  if (this.paused) {
-    this._processQueue.push([pattern, index, inGlobStar, cb])
-    return
-  }
-
-  //console.error('PROCESS %d', this._processing, pattern)
-
-  // Get the first [n] parts of pattern that are all strings.
-  var n = 0
-  while (typeof pattern[n] === 'string') {
-    n ++
-  }
-  // now n is the index of the first one that is *not* a string.
-
-  // see if there's anything else
-  var prefix
-  switch (n) {
-    // if not, then this is rather simple
-    case pattern.length:
-      this._processSimple(pattern.join('/'), index, cb)
-      return
-
-    case 0:
-      // pattern *starts* with some non-trivial item.
-      // going to readdir(cwd), but not include the prefix in matches.
-      prefix = null
-      break
-
-    default:
-      // pattern has some string bits in the front.
-      // whatever it starts with, whether that's 'absolute' like /foo/bar,
-      // or 'relative' like '../baz'
-      prefix = pattern.slice(0, n).join('/')
-      break
-  }
-
-  var remain = pattern.slice(n)
-
-  // get the list of entries.
-  var read
-  if (prefix === null)
-    read = '.'
-  else if (isAbsolute(prefix) ||
-      isAbsolute(pattern.map(function (p) {
-        return typeof p === 'string' ? p : '[*]'
-      }).join('/'))) {
-    if (!prefix || !isAbsolute(prefix))
-      prefix = '/' + prefix
-    read = prefix
-  } else
-    read = prefix
-
-  var abs = this._makeAbs(read)
-
-  //if ignored, skip _processing
-  if (childrenIgnored(this, read))
-    return cb()
-
-  var isGlobStar = remain[0] === minimatch.GLOBSTAR
-  if (isGlobStar)
-    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb)
-  else
-    this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb)
-}
-
-Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
-  var self = this
-  this._readdir(abs, inGlobStar, function (er, entries) {
-    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
-  })
-}
-
-Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
-
-  // if the abs isn't a dir, then nothing can match!
-  if (!entries)
-    return cb()
-
-  // It will only match dot entries if it starts with a dot, or if
-  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
-  var pn = remain[0]
-  var negate = !!this.minimatch.negate
-  var rawGlob = pn._glob
-  var dotOk = this.dot || rawGlob.charAt(0) === '.'
-
-  var matchedEntries = []
-  for (var i = 0; i < entries.length; i++) {
-    var e = entries[i]
-    if (e.charAt(0) !== '.' || dotOk) {
-      var m
-      if (negate && !prefix) {
-        m = !e.match(pn)
-      } else {
-        m = e.match(pn)
-      }
-      if (m)
-        matchedEntries.push(e)
-    }
-  }
-
-  //console.error('prd2', prefix, entries, remain[0]._glob, matchedEntries)
-
-  var len = matchedEntries.length
-  // If there are no matched entries, then nothing matches.
-  if (len === 0)
-    return cb()
-
-  // if this is the last remaining pattern bit, then no need for
-  // an additional stat *unless* the user has specified mark or
-  // stat explicitly.  We know they exist, since readdir returned
-  // them.
-
-  if (remain.length === 1 && !this.mark && !this.stat) {
-    if (!this.matches[index])
-      this.matches[index] = Object.create(null)
-
-    for (var i = 0; i < len; i ++) {
-      var e = matchedEntries[i]
-      if (prefix) {
-        if (prefix !== '/')
-          e = prefix + '/' + e
-        else
-          e = prefix + e
-      }
-
-      if (e.charAt(0) === '/' && !this.nomount) {
-        e = path.join(this.root, e)
-      }
-      this._emitMatch(index, e)
-    }
-    // This was the last one, and no stats were needed
-    return cb()
-  }
-
-  // now test all matched entries as stand-ins for that part
-  // of the pattern.
-  remain.shift()
-  for (var i = 0; i < len; i ++) {
-    var e = matchedEntries[i]
-    var newPattern
-    if (prefix) {
-      if (prefix !== '/')
-        e = prefix + '/' + e
-      else
-        e = prefix + e
-    }
-    this._process([e].concat(remain), index, inGlobStar, cb)
-  }
-  cb()
-}
-
-Glob.prototype._emitMatch = function (index, e) {
-  if (this.aborted)
-    return
-
-  if (isIgnored(this, e))
-    return
-
-  if (this.paused) {
-    this._emitQueue.push([index, e])
-    return
-  }
-
-  var abs = isAbsolute(e) ? e : this._makeAbs(e)
-
-  if (this.mark)
-    e = this._mark(e)
-
-  if (this.absolute)
-    e = abs
-
-  if (this.matches[index][e])
-    return
-
-  if (this.nodir) {
-    var c = this.cache[abs]
-    if (c === 'DIR' || Array.isArray(c))
-      return
-  }
-
-  this.matches[index][e] = true
-
-  var st = this.statCache[abs]
-  if (st)
-    this.emit('stat', e, st)
-
-  this.emit('match', e)
-}
-
-Glob.prototype._readdirInGlobStar = function (abs, cb) {
-  if (this.aborted)
-    return
-
-  // follow all symlinked directories forever
-  // just proceed as if this is a non-globstar situation
-  if (this.follow)
-    return this._readdir(abs, false, cb)
-
-  var lstatkey = 'lstat\0' + abs
-  var self = this
-  var lstatcb = inflight(lstatkey, lstatcb_)
-
-  if (lstatcb)
-    self.fs.lstat(abs, lstatcb)
-
-  function lstatcb_ (er, lstat) {
-    if (er && er.code === 'ENOENT')
-      return cb()
-
-    var isSym = lstat && lstat.isSymbolicLink()
-    self.symlinks[abs] = isSym
-
-    // If it's not a symlink or a dir, then it's definitely a regular file.
-    // don't bother doing a readdir in that case.
-    if (!isSym && lstat && !lstat.isDirectory()) {
-      self.cache[abs] = 'FILE'
-      cb()
-    } else
-      self._readdir(abs, false, cb)
-  }
-}
-
-Glob.prototype._readdir = function (abs, inGlobStar, cb) {
-  if (this.aborted)
-    return
-
-  cb = inflight('readdir\0'+abs+'\0'+inGlobStar, cb)
-  if (!cb)
-    return
-
-  //console.error('RD %j %j', +inGlobStar, abs)
-  if (inGlobStar && !ownProp(this.symlinks, abs))
-    return this._readdirInGlobStar(abs, cb)
-
-  if (ownProp(this.cache, abs)) {
-    var c = this.cache[abs]
-    if (!c || c === 'FILE')
-      return cb()
-
-    if (Array.isArray(c))
-      return cb(null, c)
-  }
-
-  var self = this
-  self.fs.readdir(abs, readdirCb(this, abs, cb))
-}
-
-function readdirCb (self, abs, cb) {
-  return function (er, entries) {
-    if (er)
-      self._readdirError(abs, er, cb)
-    else
-      self._readdirEntries(abs, entries, cb)
-  }
-}
-
-Glob.prototype._readdirEntries = function (abs, entries, cb) {
-  if (this.aborted)
-    return
-
-  // if we haven't asked to stat everything, then just
-  // assume that everything in there exists, so we can avoid
-  // having to stat it a second time.
-  if (!this.mark && !this.stat) {
-    for (var i = 0; i < entries.length; i ++) {
-      var e = entries[i]
-      if (abs === '/')
-        e = abs + e
-      else
-        e = abs + '/' + e
-      this.cache[e] = true
-    }
-  }
-
-  this.cache[abs] = entries
-  return cb(null, entries)
-}
-
-Glob.prototype._readdirError = function (f, er, cb) {
-  if (this.aborted)
-    return
-
-  // handle errors, and cache the information
-  switch (er.code) {
-    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
-    case 'ENOTDIR': // totally normal. means it *does* exist.
-      var abs = this._makeAbs(f)
-      this.cache[abs] = 'FILE'
-      if (abs === this.cwdAbs) {
-        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
-        error.path = this.cwd
-        error.code = er.code
-        this.emit('error', error)
-        this.abort()
-      }
-      break
-
-    case 'ENOENT': // not terribly unusual
-    case 'ELOOP':
-    case 'ENAMETOOLONG':
-    case 'UNKNOWN':
-      this.cache[this._makeAbs(f)] = false
-      break
-
-    default: // some unusual error.  Treat as failure.
-      this.cache[this._makeAbs(f)] = false
-      if (this.strict) {
-        this.emit('error', er)
-        // If the error is handled, then we abort
-        // if not, we threw out of here
-        this.abort()
-      }
-      if (!this.silent)
-        console.error('glob error', er)
-      break
-  }
-
-  return cb()
-}
-
-Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
-  var self = this
-  this._readdir(abs, inGlobStar, function (er, entries) {
-    self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
-  })
-}
-
-
-Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
-  //console.error('pgs2', prefix, remain[0], entries)
-
-  // no entries means not a dir, so it can never have matches
-  // foo.txt/** doesn't match foo.txt
-  if (!entries)
-    return cb()
-
-  // test without the globstar, and with every child both below
-  // and replacing the globstar.
-  var remainWithoutGlobStar = remain.slice(1)
-  var gspref = prefix ? [ prefix ] : []
-  var noGlobStar = gspref.concat(remainWithoutGlobStar)
-
-  // the noGlobStar pattern exits the inGlobStar state
-  this._process(noGlobStar, index, false, cb)
-
-  var isSym = this.symlinks[abs]
-  var len = entries.length
-
-  // If it's a symlink, and we're in a globstar, then stop
-  if (isSym && inGlobStar)
-    return cb()
-
-  for (var i = 0; i < len; i++) {
-    var e = entries[i]
-    if (e.charAt(0) === '.' && !this.dot)
-      continue
-
-    // these two cases enter the inGlobStar state
-    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
-    this._process(instead, index, true, cb)
-
-    var below = gspref.concat(entries[i], remain)
-    this._process(below, index, true, cb)
-  }
-
-  cb()
-}
-
-Glob.prototype._processSimple = function (prefix, index, cb) {
-  // XXX review this.  Shouldn't it be doing the mounting etc
-  // before doing stat?  kinda weird?
-  var self = this
-  this._stat(prefix, function (er, exists) {
-    self._processSimple2(prefix, index, er, exists, cb)
-  })
-}
-Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
-
-  //console.error('ps2', prefix, exists)
-
-  if (!this.matches[index])
-    this.matches[index] = Object.create(null)
-
-  // If it doesn't exist, then just mark the lack of results
-  if (!exists)
-    return cb()
-
-  if (prefix && isAbsolute(prefix) && !this.nomount) {
-    var trail = /[\/\\]$/.test(prefix)
-    if (prefix.charAt(0) === '/') {
-      prefix = path.join(this.root, prefix)
-    } else {
-      prefix = path.resolve(this.root, prefix)
-      if (trail)
-        prefix += '/'
-    }
-  }
-
-  if (process.platform === 'win32')
-    prefix = prefix.replace(/\\/g, '/')
-
-  // Mark this as a match
-  this._emitMatch(index, prefix)
-  cb()
-}
-
-// Returns either 'DIR', 'FILE', or false
-Glob.prototype._stat = function (f, cb) {
-  var abs = this._makeAbs(f)
-  var needDir = f.slice(-1) === '/'
-
-  if (f.length > this.maxLength)
-    return cb()
-
-  if (!this.stat && ownProp(this.cache, abs)) {
-    var c = this.cache[abs]
-
-    if (Array.isArray(c))
-      c = 'DIR'
-
-    // It exists, but maybe not how we need it
-    if (!needDir || c === 'DIR')
-      return cb(null, c)
-
-    if (needDir && c === 'FILE')
-      return cb()
-
-    // otherwise we have to stat, because maybe c=true
-    // if we know it exists, but not what it is.
-  }
-
-  var exists
-  var stat = this.statCache[abs]
-  if (stat !== undefined) {
-    if (stat === false)
-      return cb(null, stat)
-    else {
-      var type = stat.isDirectory() ? 'DIR' : 'FILE'
-      if (needDir && type === 'FILE')
-        return cb()
-      else
-        return cb(null, type, stat)
-    }
-  }
-
-  var self = this
-  var statcb = inflight('stat\0' + abs, lstatcb_)
-  if (statcb)
-    self.fs.lstat(abs, statcb)
-
-  function lstatcb_ (er, lstat) {
-    if (lstat && lstat.isSymbolicLink()) {
-      // If it's a symlink, then treat it as the target, unless
-      // the target does not exist, then treat it as a file.
-      return self.fs.stat(abs, function (er, stat) {
-        if (er)
-          self._stat2(f, abs, null, lstat, cb)
-        else
-          self._stat2(f, abs, er, stat, cb)
-      })
-    } else {
-      self._stat2(f, abs, er, lstat, cb)
-    }
-  }
-}
-
-Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
-  if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
-    this.statCache[abs] = false
-    return cb()
-  }
-
-  var needDir = f.slice(-1) === '/'
-  this.statCache[abs] = stat
-
-  if (abs.slice(-1) === '/' && stat && !stat.isDirectory())
-    return cb(null, false, stat)
-
-  var c = true
-  if (stat)
-    c = stat.isDirectory() ? 'DIR' : 'FILE'
-  this.cache[abs] = this.cache[abs] || c
-
-  if (needDir && c === 'FILE')
-    return cb()
-
-  return cb(null, c, stat)
-}
-
-
-/***/ }),
-
-/***/ 7132:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-module.exports = globSync
-globSync.GlobSync = GlobSync
-
-var rp = __nccwpck_require__(6863)
-var minimatch = __nccwpck_require__(3357)
-var Minimatch = minimatch.Minimatch
-var Glob = (__nccwpck_require__(1533).Glob)
-var util = __nccwpck_require__(3837)
-var path = __nccwpck_require__(1017)
-var assert = __nccwpck_require__(9491)
-var isAbsolute = __nccwpck_require__(8714)
-var common = __nccwpck_require__(1015)
-var setopts = common.setopts
-var ownProp = common.ownProp
-var childrenIgnored = common.childrenIgnored
-var isIgnored = common.isIgnored
-
-function globSync (pattern, options) {
-  if (typeof options === 'function' || arguments.length === 3)
-    throw new TypeError('callback provided to sync glob\n'+
-                        'See: https://github.com/isaacs/node-glob/issues/167')
-
-  return new GlobSync(pattern, options).found
-}
-
-function GlobSync (pattern, options) {
-  if (!pattern)
-    throw new Error('must provide pattern')
-
-  if (typeof options === 'function' || arguments.length === 3)
-    throw new TypeError('callback provided to sync glob\n'+
-                        'See: https://github.com/isaacs/node-glob/issues/167')
-
-  if (!(this instanceof GlobSync))
-    return new GlobSync(pattern, options)
-
-  setopts(this, pattern, options)
-
-  if (this.noprocess)
-    return this
-
-  var n = this.minimatch.set.length
-  this.matches = new Array(n)
-  for (var i = 0; i < n; i ++) {
-    this._process(this.minimatch.set[i], i, false)
-  }
-  this._finish()
-}
-
-GlobSync.prototype._finish = function () {
-  assert.ok(this instanceof GlobSync)
-  if (this.realpath) {
-    var self = this
-    this.matches.forEach(function (matchset, index) {
-      var set = self.matches[index] = Object.create(null)
-      for (var p in matchset) {
-        try {
-          p = self._makeAbs(p)
-          var real = rp.realpathSync(p, self.realpathCache)
-          set[real] = true
-        } catch (er) {
-          if (er.syscall === 'stat')
-            set[self._makeAbs(p)] = true
-          else
-            throw er
-        }
-      }
-    })
-  }
-  common.finish(this)
-}
-
-
-GlobSync.prototype._process = function (pattern, index, inGlobStar) {
-  assert.ok(this instanceof GlobSync)
-
-  // Get the first [n] parts of pattern that are all strings.
-  var n = 0
-  while (typeof pattern[n] === 'string') {
-    n ++
-  }
-  // now n is the index of the first one that is *not* a string.
-
-  // See if there's anything else
-  var prefix
-  switch (n) {
-    // if not, then this is rather simple
-    case pattern.length:
-      this._processSimple(pattern.join('/'), index)
-      return
-
-    case 0:
-      // pattern *starts* with some non-trivial item.
-      // going to readdir(cwd), but not include the prefix in matches.
-      prefix = null
-      break
-
-    default:
-      // pattern has some string bits in the front.
-      // whatever it starts with, whether that's 'absolute' like /foo/bar,
-      // or 'relative' like '../baz'
-      prefix = pattern.slice(0, n).join('/')
-      break
-  }
-
-  var remain = pattern.slice(n)
-
-  // get the list of entries.
-  var read
-  if (prefix === null)
-    read = '.'
-  else if (isAbsolute(prefix) ||
-      isAbsolute(pattern.map(function (p) {
-        return typeof p === 'string' ? p : '[*]'
-      }).join('/'))) {
-    if (!prefix || !isAbsolute(prefix))
-      prefix = '/' + prefix
-    read = prefix
-  } else
-    read = prefix
-
-  var abs = this._makeAbs(read)
-
-  //if ignored, skip processing
-  if (childrenIgnored(this, read))
-    return
-
-  var isGlobStar = remain[0] === minimatch.GLOBSTAR
-  if (isGlobStar)
-    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar)
-  else
-    this._processReaddir(prefix, read, abs, remain, index, inGlobStar)
-}
-
-
-GlobSync.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar) {
-  var entries = this._readdir(abs, inGlobStar)
-
-  // if the abs isn't a dir, then nothing can match!
-  if (!entries)
-    return
-
-  // It will only match dot entries if it starts with a dot, or if
-  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
-  var pn = remain[0]
-  var negate = !!this.minimatch.negate
-  var rawGlob = pn._glob
-  var dotOk = this.dot || rawGlob.charAt(0) === '.'
-
-  var matchedEntries = []
-  for (var i = 0; i < entries.length; i++) {
-    var e = entries[i]
-    if (e.charAt(0) !== '.' || dotOk) {
-      var m
-      if (negate && !prefix) {
-        m = !e.match(pn)
-      } else {
-        m = e.match(pn)
-      }
-      if (m)
-        matchedEntries.push(e)
-    }
-  }
-
-  var len = matchedEntries.length
-  // If there are no matched entries, then nothing matches.
-  if (len === 0)
-    return
-
-  // if this is the last remaining pattern bit, then no need for
-  // an additional stat *unless* the user has specified mark or
-  // stat explicitly.  We know they exist, since readdir returned
-  // them.
-
-  if (remain.length === 1 && !this.mark && !this.stat) {
-    if (!this.matches[index])
-      this.matches[index] = Object.create(null)
-
-    for (var i = 0; i < len; i ++) {
-      var e = matchedEntries[i]
-      if (prefix) {
-        if (prefix.slice(-1) !== '/')
-          e = prefix + '/' + e
-        else
-          e = prefix + e
-      }
-
-      if (e.charAt(0) === '/' && !this.nomount) {
-        e = path.join(this.root, e)
-      }
-      this._emitMatch(index, e)
-    }
-    // This was the last one, and no stats were needed
-    return
-  }
-
-  // now test all matched entries as stand-ins for that part
-  // of the pattern.
-  remain.shift()
-  for (var i = 0; i < len; i ++) {
-    var e = matchedEntries[i]
-    var newPattern
-    if (prefix)
-      newPattern = [prefix, e]
-    else
-      newPattern = [e]
-    this._process(newPattern.concat(remain), index, inGlobStar)
-  }
-}
-
-
-GlobSync.prototype._emitMatch = function (index, e) {
-  if (isIgnored(this, e))
-    return
-
-  var abs = this._makeAbs(e)
-
-  if (this.mark)
-    e = this._mark(e)
-
-  if (this.absolute) {
-    e = abs
-  }
-
-  if (this.matches[index][e])
-    return
-
-  if (this.nodir) {
-    var c = this.cache[abs]
-    if (c === 'DIR' || Array.isArray(c))
-      return
-  }
-
-  this.matches[index][e] = true
-
-  if (this.stat)
-    this._stat(e)
-}
-
-
-GlobSync.prototype._readdirInGlobStar = function (abs) {
-  // follow all symlinked directories forever
-  // just proceed as if this is a non-globstar situation
-  if (this.follow)
-    return this._readdir(abs, false)
-
-  var entries
-  var lstat
-  var stat
-  try {
-    lstat = this.fs.lstatSync(abs)
-  } catch (er) {
-    if (er.code === 'ENOENT') {
-      // lstat failed, doesn't exist
-      return null
-    }
-  }
-
-  var isSym = lstat && lstat.isSymbolicLink()
-  this.symlinks[abs] = isSym
-
-  // If it's not a symlink or a dir, then it's definitely a regular file.
-  // don't bother doing a readdir in that case.
-  if (!isSym && lstat && !lstat.isDirectory())
-    this.cache[abs] = 'FILE'
-  else
-    entries = this._readdir(abs, false)
-
-  return entries
-}
-
-GlobSync.prototype._readdir = function (abs, inGlobStar) {
-  var entries
-
-  if (inGlobStar && !ownProp(this.symlinks, abs))
-    return this._readdirInGlobStar(abs)
-
-  if (ownProp(this.cache, abs)) {
-    var c = this.cache[abs]
-    if (!c || c === 'FILE')
-      return null
-
-    if (Array.isArray(c))
-      return c
-  }
-
-  try {
-    return this._readdirEntries(abs, this.fs.readdirSync(abs))
-  } catch (er) {
-    this._readdirError(abs, er)
-    return null
-  }
-}
-
-GlobSync.prototype._readdirEntries = function (abs, entries) {
-  // if we haven't asked to stat everything, then just
-  // assume that everything in there exists, so we can avoid
-  // having to stat it a second time.
-  if (!this.mark && !this.stat) {
-    for (var i = 0; i < entries.length; i ++) {
-      var e = entries[i]
-      if (abs === '/')
-        e = abs + e
-      else
-        e = abs + '/' + e
-      this.cache[e] = true
-    }
-  }
-
-  this.cache[abs] = entries
-
-  // mark and cache dir-ness
-  return entries
-}
-
-GlobSync.prototype._readdirError = function (f, er) {
-  // handle errors, and cache the information
-  switch (er.code) {
-    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
-    case 'ENOTDIR': // totally normal. means it *does* exist.
-      var abs = this._makeAbs(f)
-      this.cache[abs] = 'FILE'
-      if (abs === this.cwdAbs) {
-        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
-        error.path = this.cwd
-        error.code = er.code
-        throw error
-      }
-      break
-
-    case 'ENOENT': // not terribly unusual
-    case 'ELOOP':
-    case 'ENAMETOOLONG':
-    case 'UNKNOWN':
-      this.cache[this._makeAbs(f)] = false
-      break
-
-    default: // some unusual error.  Treat as failure.
-      this.cache[this._makeAbs(f)] = false
-      if (this.strict)
-        throw er
-      if (!this.silent)
-        console.error('glob error', er)
-      break
-  }
-}
-
-GlobSync.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar) {
-
-  var entries = this._readdir(abs, inGlobStar)
-
-  // no entries means not a dir, so it can never have matches
-  // foo.txt/** doesn't match foo.txt
-  if (!entries)
-    return
-
-  // test without the globstar, and with every child both below
-  // and replacing the globstar.
-  var remainWithoutGlobStar = remain.slice(1)
-  var gspref = prefix ? [ prefix ] : []
-  var noGlobStar = gspref.concat(remainWithoutGlobStar)
-
-  // the noGlobStar pattern exits the inGlobStar state
-  this._process(noGlobStar, index, false)
-
-  var len = entries.length
-  var isSym = this.symlinks[abs]
-
-  // If it's a symlink, and we're in a globstar, then stop
-  if (isSym && inGlobStar)
-    return
-
-  for (var i = 0; i < len; i++) {
-    var e = entries[i]
-    if (e.charAt(0) === '.' && !this.dot)
-      continue
-
-    // these two cases enter the inGlobStar state
-    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
-    this._process(instead, index, true)
-
-    var below = gspref.concat(entries[i], remain)
-    this._process(below, index, true)
-  }
-}
-
-GlobSync.prototype._processSimple = function (prefix, index) {
-  // XXX review this.  Shouldn't it be doing the mounting etc
-  // before doing stat?  kinda weird?
-  var exists = this._stat(prefix)
-
-  if (!this.matches[index])
-    this.matches[index] = Object.create(null)
-
-  // If it doesn't exist, then just mark the lack of results
-  if (!exists)
-    return
-
-  if (prefix && isAbsolute(prefix) && !this.nomount) {
-    var trail = /[\/\\]$/.test(prefix)
-    if (prefix.charAt(0) === '/') {
-      prefix = path.join(this.root, prefix)
-    } else {
-      prefix = path.resolve(this.root, prefix)
-      if (trail)
-        prefix += '/'
-    }
-  }
-
-  if (process.platform === 'win32')
-    prefix = prefix.replace(/\\/g, '/')
-
-  // Mark this as a match
-  this._emitMatch(index, prefix)
-}
-
-// Returns either 'DIR', 'FILE', or false
-GlobSync.prototype._stat = function (f) {
-  var abs = this._makeAbs(f)
-  var needDir = f.slice(-1) === '/'
-
-  if (f.length > this.maxLength)
-    return false
-
-  if (!this.stat && ownProp(this.cache, abs)) {
-    var c = this.cache[abs]
-
-    if (Array.isArray(c))
-      c = 'DIR'
-
-    // It exists, but maybe not how we need it
-    if (!needDir || c === 'DIR')
-      return c
-
-    if (needDir && c === 'FILE')
-      return false
-
-    // otherwise we have to stat, because maybe c=true
-    // if we know it exists, but not what it is.
-  }
-
-  var exists
-  var stat = this.statCache[abs]
-  if (!stat) {
-    var lstat
-    try {
-      lstat = this.fs.lstatSync(abs)
-    } catch (er) {
-      if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
-        this.statCache[abs] = false
-        return false
-      }
-    }
-
-    if (lstat && lstat.isSymbolicLink()) {
-      try {
-        stat = this.fs.statSync(abs)
-      } catch (er) {
-        stat = lstat
-      }
-    } else {
-      stat = lstat
-    }
-  }
-
-  this.statCache[abs] = stat
-
-  var c = true
-  if (stat)
-    c = stat.isDirectory() ? 'DIR' : 'FILE'
-
-  this.cache[abs] = this.cache[abs] || c
-
-  if (needDir && c === 'FILE')
-    return false
-
-  return c
-}
-
-GlobSync.prototype._mark = function (p) {
-  return common.mark(this, p)
-}
-
-GlobSync.prototype._makeAbs = function (f) {
-  return common.makeAbs(this, f)
-}
-
-
-/***/ }),
-
-/***/ 3357:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-module.exports = minimatch
-minimatch.Minimatch = Minimatch
-
-var path = (function () { try { return __nccwpck_require__(1017) } catch (e) {}}()) || {
-  sep: '/'
-}
-minimatch.sep = path.sep
-
-var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
-var expand = __nccwpck_require__(3717)
-
-var plTypes = {
-  '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
-  '?': { open: '(?:', close: ')?' },
-  '+': { open: '(?:', close: ')+' },
-  '*': { open: '(?:', close: ')*' },
-  '@': { open: '(?:', close: ')' }
-}
-
-// any single thing other than /
-// don't need to escape / when using new RegExp()
-var qmark = '[^/]'
-
-// * => any number of characters
-var star = qmark + '*?'
-
-// ** when dots are allowed.  Anything goes, except .. and .
-// not (^ or / followed by one or two dots followed by $ or /),
-// followed by anything, any number of times.
-var twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
-
-// not a ^ or / followed by a dot,
-// followed by anything, any number of times.
-var twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
-
-// characters that need to be escaped in RegExp.
-var reSpecials = charSet('().*{}+?[]^$\\!')
-
-// "abc" -> { a:true, b:true, c:true }
-function charSet (s) {
-  return s.split('').reduce(function (set, c) {
-    set[c] = true
-    return set
-  }, {})
-}
-
-// normalizes slashes.
-var slashSplit = /\/+/
-
-minimatch.filter = filter
-function filter (pattern, options) {
-  options = options || {}
-  return function (p, i, list) {
-    return minimatch(p, pattern, options)
-  }
-}
-
-function ext (a, b) {
-  b = b || {}
-  var t = {}
-  Object.keys(a).forEach(function (k) {
-    t[k] = a[k]
-  })
-  Object.keys(b).forEach(function (k) {
-    t[k] = b[k]
-  })
-  return t
-}
-
-minimatch.defaults = function (def) {
-  if (!def || typeof def !== 'object' || !Object.keys(def).length) {
-    return minimatch
-  }
-
-  var orig = minimatch
-
-  var m = function minimatch (p, pattern, options) {
-    return orig(p, pattern, ext(def, options))
-  }
-
-  m.Minimatch = function Minimatch (pattern, options) {
-    return new orig.Minimatch(pattern, ext(def, options))
-  }
-  m.Minimatch.defaults = function defaults (options) {
-    return orig.defaults(ext(def, options)).Minimatch
-  }
-
-  m.filter = function filter (pattern, options) {
-    return orig.filter(pattern, ext(def, options))
-  }
-
-  m.defaults = function defaults (options) {
-    return orig.defaults(ext(def, options))
-  }
-
-  m.makeRe = function makeRe (pattern, options) {
-    return orig.makeRe(pattern, ext(def, options))
-  }
-
-  m.braceExpand = function braceExpand (pattern, options) {
-    return orig.braceExpand(pattern, ext(def, options))
-  }
-
-  m.match = function (list, pattern, options) {
-    return orig.match(list, pattern, ext(def, options))
-  }
-
-  return m
-}
-
-Minimatch.defaults = function (def) {
-  return minimatch.defaults(def).Minimatch
-}
-
-function minimatch (p, pattern, options) {
-  assertValidPattern(pattern)
-
-  if (!options) options = {}
-
-  // shortcut: comments match nothing.
-  if (!options.nocomment && pattern.charAt(0) === '#') {
-    return false
-  }
-
-  return new Minimatch(pattern, options).match(p)
-}
-
-function Minimatch (pattern, options) {
-  if (!(this instanceof Minimatch)) {
-    return new Minimatch(pattern, options)
-  }
-
-  assertValidPattern(pattern)
-
-  if (!options) options = {}
-
-  pattern = pattern.trim()
-
-  // windows support: need to use /, not \
-  if (!options.allowWindowsEscape && path.sep !== '/') {
-    pattern = pattern.split(path.sep).join('/')
-  }
-
-  this.options = options
-  this.set = []
-  this.pattern = pattern
-  this.regexp = null
-  this.negate = false
-  this.comment = false
-  this.empty = false
-  this.partial = !!options.partial
-
-  // make the set of regexps etc.
-  this.make()
-}
-
-Minimatch.prototype.debug = function () {}
-
-Minimatch.prototype.make = make
-function make () {
-  var pattern = this.pattern
-  var options = this.options
-
-  // empty patterns and comments match nothing.
-  if (!options.nocomment && pattern.charAt(0) === '#') {
-    this.comment = true
-    return
-  }
-  if (!pattern) {
-    this.empty = true
-    return
-  }
-
-  // step 1: figure out negation, etc.
-  this.parseNegate()
-
-  // step 2: expand braces
-  var set = this.globSet = this.braceExpand()
-
-  if (options.debug) this.debug = function debug() { console.error.apply(console, arguments) }
-
-  this.debug(this.pattern, set)
-
-  // step 3: now we have a set, so turn each one into a series of path-portion
-  // matching patterns.
-  // These will be regexps, except in the case of "**", which is
-  // set to the GLOBSTAR object for globstar behavior,
-  // and will not contain any / characters
-  set = this.globParts = set.map(function (s) {
-    return s.split(slashSplit)
-  })
-
-  this.debug(this.pattern, set)
-
-  // glob --> regexps
-  set = set.map(function (s, si, set) {
-    return s.map(this.parse, this)
-  }, this)
-
-  this.debug(this.pattern, set)
-
-  // filter out everything that didn't compile properly.
-  set = set.filter(function (s) {
-    return s.indexOf(false) === -1
-  })
-
-  this.debug(this.pattern, set)
-
-  this.set = set
-}
-
-Minimatch.prototype.parseNegate = parseNegate
-function parseNegate () {
-  var pattern = this.pattern
-  var negate = false
-  var options = this.options
-  var negateOffset = 0
-
-  if (options.nonegate) return
-
-  for (var i = 0, l = pattern.length
-    ; i < l && pattern.charAt(i) === '!'
-    ; i++) {
-    negate = !negate
-    negateOffset++
-  }
-
-  if (negateOffset) this.pattern = pattern.substr(negateOffset)
-  this.negate = negate
-}
-
-// Brace expansion:
-// a{b,c}d -> abd acd
-// a{b,}c -> abc ac
-// a{0..3}d -> a0d a1d a2d a3d
-// a{b,c{d,e}f}g -> abg acdfg acefg
-// a{b,c}d{e,f}g -> abdeg acdeg abdeg abdfg
-//
-// Invalid sets are not expanded.
-// a{2..}b -> a{2..}b
-// a{b}c -> a{b}c
-minimatch.braceExpand = function (pattern, options) {
-  return braceExpand(pattern, options)
-}
-
-Minimatch.prototype.braceExpand = braceExpand
-
-function braceExpand (pattern, options) {
-  if (!options) {
-    if (this instanceof Minimatch) {
-      options = this.options
-    } else {
-      options = {}
-    }
-  }
-
-  pattern = typeof pattern === 'undefined'
-    ? this.pattern : pattern
-
-  assertValidPattern(pattern)
-
-  // Thanks to Yeting Li <https://github.com/yetingli> for
-  // improving this regexp to avoid a ReDOS vulnerability.
-  if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
-    // shortcut. no need to expand.
-    return [pattern]
-  }
-
-  return expand(pattern)
-}
-
-var MAX_PATTERN_LENGTH = 1024 * 64
-var assertValidPattern = function (pattern) {
-  if (typeof pattern !== 'string') {
-    throw new TypeError('invalid pattern')
-  }
-
-  if (pattern.length > MAX_PATTERN_LENGTH) {
-    throw new TypeError('pattern is too long')
-  }
-}
-
-// parse a component of the expanded set.
-// At this point, no pattern may contain "/" in it
-// so we're going to return a 2d array, where each entry is the full
-// pattern, split on '/', and then turned into a regular expression.
-// A regexp is made at the end which joins each array with an
-// escaped /, and another full one which joins each regexp with |.
-//
-// Following the lead of Bash 4.1, note that "**" only has special meaning
-// when it is the *only* thing in a path portion.  Otherwise, any series
-// of * is equivalent to a single *.  Globstar behavior is enabled by
-// default, and can be disabled by setting options.noglobstar.
-Minimatch.prototype.parse = parse
-var SUBPARSE = {}
-function parse (pattern, isSub) {
-  assertValidPattern(pattern)
-
-  var options = this.options
-
-  // shortcuts
-  if (pattern === '**') {
-    if (!options.noglobstar)
-      return GLOBSTAR
-    else
-      pattern = '*'
-  }
-  if (pattern === '') return ''
-
-  var re = ''
-  var hasMagic = !!options.nocase
-  var escaping = false
-  // ? => one single character
-  var patternListStack = []
-  var negativeLists = []
-  var stateChar
-  var inClass = false
-  var reClassStart = -1
-  var classStart = -1
-  // . and .. never match anything that doesn't start with .,
-  // even when options.dot is set.
-  var patternStart = pattern.charAt(0) === '.' ? '' // anything
-  // not (start or / followed by . or .. followed by / or end)
-  : options.dot ? '(?!(?:^|\\\/)\\.{1,2}(?:$|\\\/))'
-  : '(?!\\.)'
-  var self = this
-
-  function clearStateChar () {
-    if (stateChar) {
-      // we had some state-tracking character
-      // that wasn't consumed by this pass.
-      switch (stateChar) {
-        case '*':
-          re += star
-          hasMagic = true
-        break
-        case '?':
-          re += qmark
-          hasMagic = true
-        break
-        default:
-          re += '\\' + stateChar
-        break
-      }
-      self.debug('clearStateChar %j %j', stateChar, re)
-      stateChar = false
-    }
-  }
-
-  for (var i = 0, len = pattern.length, c
-    ; (i < len) && (c = pattern.charAt(i))
-    ; i++) {
-    this.debug('%s\t%s %s %j', pattern, i, re, c)
-
-    // skip over any that are escaped.
-    if (escaping && reSpecials[c]) {
-      re += '\\' + c
-      escaping = false
-      continue
-    }
-
-    switch (c) {
-      /* istanbul ignore next */
-      case '/': {
-        // completely not allowed, even escaped.
-        // Should already be path-split by now.
-        return false
-      }
-
-      case '\\':
-        clearStateChar()
-        escaping = true
-      continue
-
-      // the various stateChar values
-      // for the "extglob" stuff.
-      case '?':
-      case '*':
-      case '+':
-      case '@':
-      case '!':
-        this.debug('%s\t%s %s %j <-- stateChar', pattern, i, re, c)
-
-        // all of those are literals inside a class, except that
-        // the glob [!a] means [^a] in regexp
-        if (inClass) {
-          this.debug('  in class')
-          if (c === '!' && i === classStart + 1) c = '^'
-          re += c
-          continue
-        }
-
-        // if we already have a stateChar, then it means
-        // that there was something like ** or +? in there.
-        // Handle the stateChar, then proceed with this one.
-        self.debug('call clearStateChar %j', stateChar)
-        clearStateChar()
-        stateChar = c
-        // if extglob is disabled, then +(asdf|foo) isn't a thing.
-        // just clear the statechar *now*, rather than even diving into
-        // the patternList stuff.
-        if (options.noext) clearStateChar()
-      continue
-
-      case '(':
-        if (inClass) {
-          re += '('
-          continue
-        }
-
-        if (!stateChar) {
-          re += '\\('
-          continue
-        }
-
-        patternListStack.push({
-          type: stateChar,
-          start: i - 1,
-          reStart: re.length,
-          open: plTypes[stateChar].open,
-          close: plTypes[stateChar].close
-        })
-        // negation is (?:(?!js)[^/]*)
-        re += stateChar === '!' ? '(?:(?!(?:' : '(?:'
-        this.debug('plType %j %j', stateChar, re)
-        stateChar = false
-      continue
-
-      case ')':
-        if (inClass || !patternListStack.length) {
-          re += '\\)'
-          continue
-        }
-
-        clearStateChar()
-        hasMagic = true
-        var pl = patternListStack.pop()
-        // negation is (?:(?!js)[^/]*)
-        // The others are (?:<pattern>)<type>
-        re += pl.close
-        if (pl.type === '!') {
-          negativeLists.push(pl)
-        }
-        pl.reEnd = re.length
-      continue
-
-      case '|':
-        if (inClass || !patternListStack.length || escaping) {
-          re += '\\|'
-          escaping = false
-          continue
-        }
-
-        clearStateChar()
-        re += '|'
-      continue
-
-      // these are mostly the same in regexp and glob
-      case '[':
-        // swallow any state-tracking char before the [
-        clearStateChar()
-
-        if (inClass) {
-          re += '\\' + c
-          continue
-        }
-
-        inClass = true
-        classStart = i
-        reClassStart = re.length
-        re += c
-      continue
-
-      case ']':
-        //  a right bracket shall lose its special
-        //  meaning and represent itself in
-        //  a bracket expression if it occurs
-        //  first in the list.  -- POSIX.2 2.8.3.2
-        if (i === classStart + 1 || !inClass) {
-          re += '\\' + c
-          escaping = false
-          continue
-        }
-
-        // handle the case where we left a class open.
-        // "[z-a]" is valid, equivalent to "\[z-a\]"
-        // split where the last [ was, make sure we don't have
-        // an invalid re. if so, re-walk the contents of the
-        // would-be class to re-translate any characters that
-        // were passed through as-is
-        // TODO: It would probably be faster to determine this
-        // without a try/catch and a new RegExp, but it's tricky
-        // to do safely.  For now, this is safe and works.
-        var cs = pattern.substring(classStart + 1, i)
-        try {
-          RegExp('[' + cs + ']')
-        } catch (er) {
-          // not a valid class!
-          var sp = this.parse(cs, SUBPARSE)
-          re = re.substr(0, reClassStart) + '\\[' + sp[0] + '\\]'
-          hasMagic = hasMagic || sp[1]
-          inClass = false
-          continue
-        }
-
-        // finish up the class.
-        hasMagic = true
-        inClass = false
-        re += c
-      continue
-
-      default:
-        // swallow any state char that wasn't consumed
-        clearStateChar()
-
-        if (escaping) {
-          // no need
-          escaping = false
-        } else if (reSpecials[c]
-          && !(c === '^' && inClass)) {
-          re += '\\'
-        }
-
-        re += c
-
-    } // switch
-  } // for
-
-  // handle the case where we left a class open.
-  // "[abc" is valid, equivalent to "\[abc"
-  if (inClass) {
-    // split where the last [ was, and escape it
-    // this is a huge pita.  We now have to re-walk
-    // the contents of the would-be class to re-translate
-    // any characters that were passed through as-is
-    cs = pattern.substr(classStart + 1)
-    sp = this.parse(cs, SUBPARSE)
-    re = re.substr(0, reClassStart) + '\\[' + sp[0]
-    hasMagic = hasMagic || sp[1]
-  }
-
-  // handle the case where we had a +( thing at the *end*
-  // of the pattern.
-  // each pattern list stack adds 3 chars, and we need to go through
-  // and escape any | chars that were passed through as-is for the regexp.
-  // Go through and escape them, taking care not to double-escape any
-  // | chars that were already escaped.
-  for (pl = patternListStack.pop(); pl; pl = patternListStack.pop()) {
-    var tail = re.slice(pl.reStart + pl.open.length)
-    this.debug('setting tail', re, pl)
-    // maybe some even number of \, then maybe 1 \, followed by a |
-    tail = tail.replace(/((?:\\{2}){0,64})(\\?)\|/g, function (_, $1, $2) {
-      if (!$2) {
-        // the | isn't already escaped, so escape it.
-        $2 = '\\'
-      }
-
-      // need to escape all those slashes *again*, without escaping the
-      // one that we need for escaping the | character.  As it works out,
-      // escaping an even number of slashes can be done by simply repeating
-      // it exactly after itself.  That's why this trick works.
-      //
-      // I am sorry that you have to see this.
-      return $1 + $1 + $2 + '|'
-    })
-
-    this.debug('tail=%j\n   %s', tail, tail, pl, re)
-    var t = pl.type === '*' ? star
-      : pl.type === '?' ? qmark
-      : '\\' + pl.type
-
-    hasMagic = true
-    re = re.slice(0, pl.reStart) + t + '\\(' + tail
-  }
-
-  // handle trailing things that only matter at the very end.
-  clearStateChar()
-  if (escaping) {
-    // trailing \\
-    re += '\\\\'
-  }
-
-  // only need to apply the nodot start if the re starts with
-  // something that could conceivably capture a dot
-  var addPatternStart = false
-  switch (re.charAt(0)) {
-    case '[': case '.': case '(': addPatternStart = true
-  }
-
-  // Hack to work around lack of negative lookbehind in JS
-  // A pattern like: *.!(x).!(y|z) needs to ensure that a name
-  // like 'a.xyz.yz' doesn't match.  So, the first negative
-  // lookahead, has to look ALL the way ahead, to the end of
-  // the pattern.
-  for (var n = negativeLists.length - 1; n > -1; n--) {
-    var nl = negativeLists[n]
-
-    var nlBefore = re.slice(0, nl.reStart)
-    var nlFirst = re.slice(nl.reStart, nl.reEnd - 8)
-    var nlLast = re.slice(nl.reEnd - 8, nl.reEnd)
-    var nlAfter = re.slice(nl.reEnd)
-
-    nlLast += nlAfter
-
-    // Handle nested stuff like *(*.js|!(*.json)), where open parens
-    // mean that we should *not* include the ) in the bit that is considered
-    // "after" the negated section.
-    var openParensBefore = nlBefore.split('(').length - 1
-    var cleanAfter = nlAfter
-    for (i = 0; i < openParensBefore; i++) {
-      cleanAfter = cleanAfter.replace(/\)[+*?]?/, '')
-    }
-    nlAfter = cleanAfter
-
-    var dollar = ''
-    if (nlAfter === '' && isSub !== SUBPARSE) {
-      dollar = '$'
-    }
-    var newRe = nlBefore + nlFirst + nlAfter + dollar + nlLast
-    re = newRe
-  }
-
-  // if the re is not "" at this point, then we need to make sure
-  // it doesn't match against an empty path part.
-  // Otherwise a/* will match a/, which it should not.
-  if (re !== '' && hasMagic) {
-    re = '(?=.)' + re
-  }
-
-  if (addPatternStart) {
-    re = patternStart + re
-  }
-
-  // parsing just a piece of a larger pattern.
-  if (isSub === SUBPARSE) {
-    return [re, hasMagic]
-  }
-
-  // skip the regexp for non-magical patterns
-  // unescape anything in it, though, so that it'll be
-  // an exact match against a file etc.
-  if (!hasMagic) {
-    return globUnescape(pattern)
-  }
-
-  var flags = options.nocase ? 'i' : ''
-  try {
-    var regExp = new RegExp('^' + re + '$', flags)
-  } catch (er) /* istanbul ignore next - should be impossible */ {
-    // If it was an invalid regular expression, then it can't match
-    // anything.  This trick looks for a character after the end of
-    // the string, which is of course impossible, except in multi-line
-    // mode, but it's not a /m regex.
-    return new RegExp('$.')
-  }
-
-  regExp._glob = pattern
-  regExp._src = re
-
-  return regExp
-}
-
-minimatch.makeRe = function (pattern, options) {
-  return new Minimatch(pattern, options || {}).makeRe()
-}
-
-Minimatch.prototype.makeRe = makeRe
-function makeRe () {
-  if (this.regexp || this.regexp === false) return this.regexp
-
-  // at this point, this.set is a 2d array of partial
-  // pattern strings, or "**".
-  //
-  // It's better to use .match().  This function shouldn't
-  // be used, really, but it's pretty convenient sometimes,
-  // when you just want to work with a regex.
-  var set = this.set
-
-  if (!set.length) {
-    this.regexp = false
-    return this.regexp
-  }
-  var options = this.options
-
-  var twoStar = options.noglobstar ? star
-    : options.dot ? twoStarDot
-    : twoStarNoDot
-  var flags = options.nocase ? 'i' : ''
-
-  var re = set.map(function (pattern) {
-    return pattern.map(function (p) {
-      return (p === GLOBSTAR) ? twoStar
-      : (typeof p === 'string') ? regExpEscape(p)
-      : p._src
-    }).join('\\\/')
-  }).join('|')
-
-  // must match entire pattern
-  // ending in a * or ** will make it less strict.
-  re = '^(?:' + re + ')$'
-
-  // can match anything, as long as it's not this.
-  if (this.negate) re = '^(?!' + re + ').*$'
-
-  try {
-    this.regexp = new RegExp(re, flags)
-  } catch (ex) /* istanbul ignore next - should be impossible */ {
-    this.regexp = false
-  }
-  return this.regexp
-}
-
-minimatch.match = function (list, pattern, options) {
-  options = options || {}
-  var mm = new Minimatch(pattern, options)
-  list = list.filter(function (f) {
-    return mm.match(f)
-  })
-  if (mm.options.nonull && !list.length) {
-    list.push(pattern)
-  }
-  return list
-}
-
-Minimatch.prototype.match = function match (f, partial) {
-  if (typeof partial === 'undefined') partial = this.partial
-  this.debug('match', f, this.pattern)
-  // short-circuit in the case of busted things.
-  // comments, etc.
-  if (this.comment) return false
-  if (this.empty) return f === ''
-
-  if (f === '/' && partial) return true
-
-  var options = this.options
-
-  // windows: need to use /, not \
-  if (path.sep !== '/') {
-    f = f.split(path.sep).join('/')
-  }
-
-  // treat the test path as a set of pathparts.
-  f = f.split(slashSplit)
-  this.debug(this.pattern, 'split', f)
-
-  // just ONE of the pattern sets in this.set needs to match
-  // in order for it to be valid.  If negating, then just one
-  // match means that we have failed.
-  // Either way, return on the first hit.
-
-  var set = this.set
-  this.debug(this.pattern, 'set', set)
-
-  // Find the basename of the path by looking for the last non-empty segment
-  var filename
-  var i
-  for (i = f.length - 1; i >= 0; i--) {
-    filename = f[i]
-    if (filename) break
-  }
-
-  for (i = 0; i < set.length; i++) {
-    var pattern = set[i]
-    var file = f
-    if (options.matchBase && pattern.length === 1) {
-      file = [filename]
-    }
-    var hit = this.matchOne(file, pattern, partial)
-    if (hit) {
-      if (options.flipNegate) return true
-      return !this.negate
-    }
-  }
-
-  // didn't get any hits.  this is success if it's a negative
-  // pattern, failure otherwise.
-  if (options.flipNegate) return false
-  return this.negate
-}
-
-// set partial to true to test if, for example,
-// "/a/b" matches the start of "/*/b/*/d"
-// Partial means, if you run out of file before you run
-// out of pattern, then that's fine, as long as all
-// the parts match.
-Minimatch.prototype.matchOne = function (file, pattern, partial) {
-  var options = this.options
-
-  this.debug('matchOne',
-    { 'this': this, file: file, pattern: pattern })
-
-  this.debug('matchOne', file.length, pattern.length)
-
-  for (var fi = 0,
-      pi = 0,
-      fl = file.length,
-      pl = pattern.length
-      ; (fi < fl) && (pi < pl)
-      ; fi++, pi++) {
-    this.debug('matchOne loop')
-    var p = pattern[pi]
-    var f = file[fi]
-
-    this.debug(pattern, p, f)
-
-    // should be impossible.
-    // some invalid regexp stuff in the set.
-    /* istanbul ignore if */
-    if (p === false) return false
-
-    if (p === GLOBSTAR) {
-      this.debug('GLOBSTAR', [pattern, p, f])
-
-      // "**"
-      // a/**/b/**/c would match the following:
-      // a/b/x/y/z/c
-      // a/x/y/z/b/c
-      // a/b/x/b/x/c
-      // a/b/c
-      // To do this, take the rest of the pattern after
-      // the **, and see if it would match the file remainder.
-      // If so, return success.
-      // If not, the ** "swallows" a segment, and try again.
-      // This is recursively awful.
-      //
-      // a/**/b/**/c matching a/b/x/y/z/c
-      // - a matches a
-      // - doublestar
-      //   - matchOne(b/x/y/z/c, b/**/c)
-      //     - b matches b
-      //     - doublestar
-      //       - matchOne(x/y/z/c, c) -> no
-      //       - matchOne(y/z/c, c) -> no
-      //       - matchOne(z/c, c) -> no
-      //       - matchOne(c, c) yes, hit
-      var fr = fi
-      var pr = pi + 1
-      if (pr === pl) {
-        this.debug('** at the end')
-        // a ** at the end will just swallow the rest.
-        // We have found a match.
-        // however, it will not swallow /.x, unless
-        // options.dot is set.
-        // . and .. are *never* matched by **, for explosively
-        // exponential reasons.
-        for (; fi < fl; fi++) {
-          if (file[fi] === '.' || file[fi] === '..' ||
-            (!options.dot && file[fi].charAt(0) === '.')) return false
-        }
-        return true
-      }
-
-      // ok, let's see if we can swallow whatever we can.
-      while (fr < fl) {
-        var swallowee = file[fr]
-
-        this.debug('\nglobstar while', file, fr, pattern, pr, swallowee)
-
-        // XXX remove this slice.  Just pass the start index.
-        if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
-          this.debug('globstar found match!', fr, fl, swallowee)
-          // found a match.
-          return true
-        } else {
-          // can't swallow "." or ".." ever.
-          // can only swallow ".foo" when explicitly asked.
-          if (swallowee === '.' || swallowee === '..' ||
-            (!options.dot && swallowee.charAt(0) === '.')) {
-            this.debug('dot detected!', file, fr, pattern, pr)
-            break
-          }
-
-          // ** swallows a segment, and continue.
-          this.debug('globstar swallow a segment, and continue')
-          fr++
-        }
-      }
-
-      // no match was found.
-      // However, in partial mode, we can't say this is necessarily over.
-      // If there's more *pattern* left, then
-      /* istanbul ignore if */
-      if (partial) {
-        // ran out of file
-        this.debug('\n>>> no match, partial?', file, fr, pattern, pr)
-        if (fr === fl) return true
-      }
-      return false
-    }
-
-    // something other than **
-    // non-magic patterns just have to match exactly
-    // patterns with magic have been turned into regexps.
-    var hit
-    if (typeof p === 'string') {
-      hit = f === p
-      this.debug('string match', p, f, hit)
-    } else {
-      hit = f.match(p)
-      this.debug('pattern match', p, f, hit)
-    }
-
-    if (!hit) return false
-  }
-
-  // Note: ending in / means that we'll get a final ""
-  // at the end of the pattern.  This can only match a
-  // corresponding "" at the end of the file.
-  // If the file ends in /, then it can only match a
-  // a pattern that ends in /, unless the pattern just
-  // doesn't have any more for it. But, a/b/ should *not*
-  // match "a/b/*", even though "" matches against the
-  // [^/]*? pattern, except in partial mode, where it might
-  // simply not be reached yet.
-  // However, a/b/ should still satisfy a/*
-
-  // now either we fell off the end of the pattern, or we're done.
-  if (fi === fl && pi === pl) {
-    // ran out of pattern and filename at the same time.
-    // an exact hit!
-    return true
-  } else if (fi === fl) {
-    // ran out of file, but still had pattern left.
-    // this is ok if we're doing the match as part of
-    // a glob fs traversal.
-    return partial
-  } else /* istanbul ignore else */ if (pi === pl) {
-    // ran out of pattern, still have file left.
-    // this is only acceptable if we're on the very last
-    // empty segment of a file with a trailing slash.
-    // a/* should match a/b/
-    return (fi === fl - 1) && (file[fi] === '')
-  }
-
-  // should be unreachable.
-  /* istanbul ignore next */
-  throw new Error('wtf?')
-}
-
-// replace stuff like \* with *
-function globUnescape (s) {
-  return s.replace(/\\(.)/g, '$1')
-}
-
-function regExpEscape (s) {
-  return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-}
 
 
 /***/ }),
@@ -23279,7 +22084,7 @@ module.exports = _chmod;
 
 var os = __nccwpck_require__(2037);
 var fs = __nccwpck_require__(7147);
-var glob = __nccwpck_require__(1533);
+var glob = __nccwpck_require__(1957);
 var shell = __nccwpck_require__(3516);
 
 var shellMethods = Object.create(shell);
@@ -24995,7 +23800,7 @@ module.exports = _ln;
 var path = __nccwpck_require__(1017);
 var fs = __nccwpck_require__(7147);
 var common = __nccwpck_require__(3687);
-var glob = __nccwpck_require__(1533);
+var glob = __nccwpck_require__(1957);
 
 var globPatternRecursive = path.sep + '**';
 
@@ -26577,7 +25382,7 @@ var GetIntrinsic = __nccwpck_require__(4538);
 var callBound = __nccwpck_require__(8803);
 var inspect = __nccwpck_require__(504);
 
-var $TypeError = __nccwpck_require__(6361);
+var $TypeError = GetIntrinsic('%TypeError%');
 var $WeakMap = GetIntrinsic('%WeakMap%', true);
 var $Map = GetIntrinsic('%Map%', true);
 
@@ -26589,10 +25394,13 @@ var $mapSet = callBound('Map.prototype.set', true);
 var $mapHas = callBound('Map.prototype.has', true);
 
 /*
-* This function traverses the list returning the node corresponding to the given key.
-*
-* That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list. By doing so, all the recently used nodes can be accessed relatively quickly.
-*/
+ * This function traverses the list returning the node corresponding to the
+ * given key.
+ *
+ * That node is also moved to the head of the list, so that if it's accessed
+ * again we don't need to traverse the whole list. By doing so, all the recently
+ * used nodes can be accessed relatively quickly.
+ */
 var listGetNode = function (list, key) { // eslint-disable-line consistent-return
 	for (var prev = list, curr; (curr = prev.next) !== null; prev = curr) {
 		if (curr.key === key) {
@@ -26679,7 +25487,11 @@ module.exports = function getSideChannel() {
 				$mapSet($m, key, value);
 			} else {
 				if (!$o) {
-					// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
+					/*
+					 * Initialize the linked list as an empty node, so that we don't have
+					 * to special-case handling of the first node: we can always refer to
+					 * it as (previous node).next, instead of something like (list).head
+					 */
 					$o = { key: {}, next: null };
 				}
 				listSet($o, key, value);
@@ -27669,6 +26481,456 @@ function wrappy (fn, cb) {
     return ret
   }
 }
+
+
+/***/ }),
+
+/***/ 4091:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = function (Yallist) {
+  Yallist.prototype[Symbol.iterator] = function* () {
+    for (let walker = this.head; walker; walker = walker.next) {
+      yield walker.value
+    }
+  }
+}
+
+
+/***/ }),
+
+/***/ 665:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+module.exports = Yallist
+
+Yallist.Node = Node
+Yallist.create = Yallist
+
+function Yallist (list) {
+  var self = this
+  if (!(self instanceof Yallist)) {
+    self = new Yallist()
+  }
+
+  self.tail = null
+  self.head = null
+  self.length = 0
+
+  if (list && typeof list.forEach === 'function') {
+    list.forEach(function (item) {
+      self.push(item)
+    })
+  } else if (arguments.length > 0) {
+    for (var i = 0, l = arguments.length; i < l; i++) {
+      self.push(arguments[i])
+    }
+  }
+
+  return self
+}
+
+Yallist.prototype.removeNode = function (node) {
+  if (node.list !== this) {
+    throw new Error('removing node which does not belong to this list')
+  }
+
+  var next = node.next
+  var prev = node.prev
+
+  if (next) {
+    next.prev = prev
+  }
+
+  if (prev) {
+    prev.next = next
+  }
+
+  if (node === this.head) {
+    this.head = next
+  }
+  if (node === this.tail) {
+    this.tail = prev
+  }
+
+  node.list.length--
+  node.next = null
+  node.prev = null
+  node.list = null
+
+  return next
+}
+
+Yallist.prototype.unshiftNode = function (node) {
+  if (node === this.head) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var head = this.head
+  node.list = this
+  node.next = head
+  if (head) {
+    head.prev = node
+  }
+
+  this.head = node
+  if (!this.tail) {
+    this.tail = node
+  }
+  this.length++
+}
+
+Yallist.prototype.pushNode = function (node) {
+  if (node === this.tail) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var tail = this.tail
+  node.list = this
+  node.prev = tail
+  if (tail) {
+    tail.next = node
+  }
+
+  this.tail = node
+  if (!this.head) {
+    this.head = node
+  }
+  this.length++
+}
+
+Yallist.prototype.push = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    push(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.unshift = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    unshift(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.pop = function () {
+  if (!this.tail) {
+    return undefined
+  }
+
+  var res = this.tail.value
+  this.tail = this.tail.prev
+  if (this.tail) {
+    this.tail.next = null
+  } else {
+    this.head = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.shift = function () {
+  if (!this.head) {
+    return undefined
+  }
+
+  var res = this.head.value
+  this.head = this.head.next
+  if (this.head) {
+    this.head.prev = null
+  } else {
+    this.tail = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.forEach = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.head, i = 0; walker !== null; i++) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.next
+  }
+}
+
+Yallist.prototype.forEachReverse = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.tail, i = this.length - 1; walker !== null; i--) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.prev
+  }
+}
+
+Yallist.prototype.get = function (n) {
+  for (var i = 0, walker = this.head; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.next
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.getReverse = function (n) {
+  for (var i = 0, walker = this.tail; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.prev
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.map = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.head; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.next
+  }
+  return res
+}
+
+Yallist.prototype.mapReverse = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.tail; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.prev
+  }
+  return res
+}
+
+Yallist.prototype.reduce = function (fn, initial) {
+  var acc
+  var walker = this.head
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.head) {
+    walker = this.head.next
+    acc = this.head.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = 0; walker !== null; i++) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.next
+  }
+
+  return acc
+}
+
+Yallist.prototype.reduceReverse = function (fn, initial) {
+  var acc
+  var walker = this.tail
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.tail) {
+    walker = this.tail.prev
+    acc = this.tail.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = this.length - 1; walker !== null; i--) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.prev
+  }
+
+  return acc
+}
+
+Yallist.prototype.toArray = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.head; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.next
+  }
+  return arr
+}
+
+Yallist.prototype.toArrayReverse = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.tail; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.prev
+  }
+  return arr
+}
+
+Yallist.prototype.slice = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = 0, walker = this.head; walker !== null && i < from; i++) {
+    walker = walker.next
+  }
+  for (; walker !== null && i < to; i++, walker = walker.next) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.sliceReverse = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = this.length, walker = this.tail; walker !== null && i > to; i--) {
+    walker = walker.prev
+  }
+  for (; walker !== null && i > from; i--, walker = walker.prev) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.splice = function (start, deleteCount, ...nodes) {
+  if (start > this.length) {
+    start = this.length - 1
+  }
+  if (start < 0) {
+    start = this.length + start;
+  }
+
+  for (var i = 0, walker = this.head; walker !== null && i < start; i++) {
+    walker = walker.next
+  }
+
+  var ret = []
+  for (var i = 0; walker && i < deleteCount; i++) {
+    ret.push(walker.value)
+    walker = this.removeNode(walker)
+  }
+  if (walker === null) {
+    walker = this.tail
+  }
+
+  if (walker !== this.head && walker !== this.tail) {
+    walker = walker.prev
+  }
+
+  for (var i = 0; i < nodes.length; i++) {
+    walker = insert(this, walker, nodes[i])
+  }
+  return ret;
+}
+
+Yallist.prototype.reverse = function () {
+  var head = this.head
+  var tail = this.tail
+  for (var walker = head; walker !== null; walker = walker.prev) {
+    var p = walker.prev
+    walker.prev = walker.next
+    walker.next = p
+  }
+  this.head = tail
+  this.tail = head
+  return this
+}
+
+function insert (self, node, value) {
+  var inserted = node === self.head ?
+    new Node(value, null, node, self) :
+    new Node(value, node, node.next, self)
+
+  if (inserted.next === null) {
+    self.tail = inserted
+  }
+  if (inserted.prev === null) {
+    self.head = inserted
+  }
+
+  self.length++
+
+  return inserted
+}
+
+function push (self, item) {
+  self.tail = new Node(item, self.tail, null, self)
+  if (!self.head) {
+    self.head = self.tail
+  }
+  self.length++
+}
+
+function unshift (self, item) {
+  self.head = new Node(item, null, self.head, self)
+  if (!self.tail) {
+    self.tail = self.head
+  }
+  self.length++
+}
+
+function Node (value, prev, next, list) {
+  if (!(this instanceof Node)) {
+    return new Node(value, prev, next, list)
+  }
+
+  this.list = list
+  this.value = value
+
+  if (prev) {
+    prev.next = this
+    this.prev = prev
+  } else {
+    this.prev = null
+  }
+
+  if (next) {
+    next.prev = this
+    this.next = next
+  } else {
+    this.next = null
+  }
+}
+
+try {
+  // add if support for Symbol.iterator is present
+  __nccwpck_require__(4091)(Yallist)
+} catch (er) {}
 
 
 /***/ }),
