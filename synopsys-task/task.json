@@ -142,8 +142,28 @@
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
-      "required": true,
+      "required": false,
       "helpMarkDown": "Branch name in Polaris.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentSeverities",
+      "type": "string",
+      "label": "Polaris PR Comment Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentEnabled",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -404,7 +424,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "visibleRule": "scanType = coverity || scanType = blackduck",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
       "groupName": "scanOptions"
     },
     {

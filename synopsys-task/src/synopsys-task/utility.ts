@@ -154,3 +154,15 @@ export function getDefaultSarifReportPath(
         constants.SARIF_DEFAULT_FILE_NAME
       );
 }
+
+export function filterEmptyData(data: object) {
+  return JSON.parse(JSON.stringify(data), (key, value) =>
+    value === null ||
+    value === "" ||
+    value === 0 ||
+    value.length === 0 ||
+    (typeof value === "object" && Object.keys(value).length === 0)
+      ? undefined
+      : value
+  );
+}

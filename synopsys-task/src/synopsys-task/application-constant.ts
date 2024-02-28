@@ -25,6 +25,14 @@ export const POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 export const POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 export const POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
+export const POLARIS_PR_COMMENT_ENABLED_KEY =
+  "bridge_polaris_prcomment_enabled";
+export const POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR =
+  "polarisPRCommentEnabled";
+export const POLARIS_PR_COMMENT_SEVERITIES_KEY =
+  "bridge_polaris_prcomment_severities";
+export const POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR =
+  "polarisPRCommentSeverities";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY =
   "bridge_polaris_reports_sarif_create";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
