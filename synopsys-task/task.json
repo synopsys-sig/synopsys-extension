@@ -458,7 +458,7 @@
     }
   ],
   "execution": {
-    "Node16": {
+    "Node": {
       "target": "dist/index.js"
     }
   }
