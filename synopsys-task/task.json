@@ -148,7 +148,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_pr_comment_severities",
+      "name": "polarisPRCommentSeverities",
       "type": "string",
       "label": "Polaris PR Comment Severities",
       "defaultValue": "",
@@ -158,7 +158,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_pr_comment_enabled",
+      "name": "polarisPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
