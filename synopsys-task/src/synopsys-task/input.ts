@@ -39,12 +39,17 @@ export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY)?.trim() || "";
 export const POLARIS_PR_COMMENT_ENABLED =
   taskLib.getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY)?.trim() ||
-    taskLib.getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR)?.trim() ||
-    "";
+  taskLib
+    .getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
 export const POLARIS_PR_COMMENT_SEVERITIES =
   taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    [];
+  taskLib.getDelimitedInput(
+    constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR,
+    ","
+  ) ||
+  [];
 export const POLARIS_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() || "";
 export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =

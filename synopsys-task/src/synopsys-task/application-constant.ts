@@ -28,11 +28,11 @@ export const POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 export const POLARIS_PR_COMMENT_ENABLED_KEY =
   "bridge_polaris_pr_comment_enabled";
 export const POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-    "polarisPRCommentEnabled";
+  "polarisPRCommentEnabled";
 export const POLARIS_PR_COMMENT_SEVERITIES_KEY =
   "bridge_polaris_pr_comment_severities";
 export const POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR =
-    "polarisPRCommentSeverities";
+  "polarisPRCommentSeverities";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY =
   "bridge_polaris_reports_sarif_create";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
