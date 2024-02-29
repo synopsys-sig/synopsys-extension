@@ -99,7 +99,7 @@ describe("Validator test", () => {
 
             const polarisValidationErrors = validator.validatePolarisInputs();
             expect(polarisValidationErrors.length).greaterThan(0);
-            expect(polarisValidationErrors[0]).contains(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_branch_name,bridge_polaris_assessment_types] - required parameters for polaris is missing'])
+            expect(polarisValidationErrors[0]).contains(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing'])
         });
     });
 

@@ -69,6 +69,26 @@ describe("Synopsys Tools Parameter test", () => {
             }
         });
 
+        it('should success for polaris command formation with PR comment',  async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+        });
+
         it('should success for polaris command formation with sarif report create', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
@@ -475,7 +495,7 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-            expect(jsonData.data.blackduck.token).to.be.equals('token');   
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');

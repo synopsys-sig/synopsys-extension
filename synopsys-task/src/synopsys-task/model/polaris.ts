@@ -1,7 +1,10 @@
+import { AzureData } from "./azure";
+
 import { Reports } from "./reports";
 
 export interface Polaris {
   polaris: PolarisData;
+  azure?: AzureData;
 }
 
 export interface PolarisData {
@@ -12,9 +15,15 @@ export interface PolarisData {
   branch: Branch;
   project: { name: string };
   assessment: { types: string[] };
+  prcomment?: PRComment;
   reports?: Reports;
 }
 
 export interface Branch {
   name?: string;
+}
+
+export interface PRComment {
+  enabled: boolean;
+  severities: string[];
 }
