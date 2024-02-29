@@ -48,18 +48,12 @@ build_job:
     - .build
   stage: build
 
-unit_test_job:
+unit_test_and_coverage_job:
   stage: unit_test_and_coverage
   extends:
-    -  .unit_test
+    -  .unit_test_and_coverage
   dependencies: [build_job]
 
-code_coverage_job:
-  stage: unit_test_and_coverage
-  extends:
-    -  .code_coverage
-  needs:
-    - unit_test_job
 
 .export_sbom_variables:
   before_script:

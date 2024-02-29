@@ -36,21 +36,12 @@
     - npm ci
     - npm run format && npm run lint && npm run build && npm run package
 
-.unit_test:
+.unit_test_and_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
     - cd synopsys-task
     - npm ci
-    - npm test > unit_test.log
-    - cat unit_test.log
-  artifacts:
-    paths:
-      - ./synopsys-task/unit_test.log
-
-.code_coverage:
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
-  script:
-    - cat synopsys-task/unit_test.log
+    - npm test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 .new_pop_blackduck_analysis:
