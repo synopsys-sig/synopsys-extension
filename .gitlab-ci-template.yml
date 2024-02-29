@@ -39,10 +39,14 @@
 
 .code_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  before_script:
+    - |
+      apt-get update -y
+      apt-get install -y nyc
   script:
     - cd synopsys-task
     - npm ci
-    - npm run nyc npm run test
+    - nyc npm test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 .new_pop_blackduck_analysis:
