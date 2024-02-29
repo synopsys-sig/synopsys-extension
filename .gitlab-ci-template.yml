@@ -36,6 +36,8 @@
     - npm ci
     - npm run all
     - ls
+    - cd coverage
+    - ls
   artifacts:
     paths:
       - coverage/index.html
