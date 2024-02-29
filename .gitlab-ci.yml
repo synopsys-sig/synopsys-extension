@@ -8,7 +8,6 @@ stages:
   - unit_coverage
 
 
-
 variables:
   BUILD_TOOL: npm
   GIT_DEPTH: 10
@@ -37,5 +36,5 @@ code_coverage_job:
   stage: unit_coverage
   extends:
     -  .code_coverage
-  dependencies: [build_job,unit_test_job]
-
+  needs:
+    - unit_test_job
