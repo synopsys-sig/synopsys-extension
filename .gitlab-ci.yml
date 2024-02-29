@@ -1,20 +1,6 @@
 include:
   - local: '.gitlab-ci-template.yml'
-  - project: clops/gitlab-ci-pop-analysis
-    ref: master
-    file: pop_analysis.yaml
-  - project: releng/common-gitlab-ci
-    ref: master
-    file: sbom-generate.yml
-  - project: altair/altair-build-common
-    ref: master
-    file: gitlab/ci/altair_versioning.yml
-  - project: altair/altair-build-common
-    ref: master
-    file: gitlab/ci/altair_common.yml
-  - project: qa-automation/test-integrations
-    ref: main
-    file: _ci/e2e_azure.yml
+
   
 
 # List of job stages in their order of execution.
