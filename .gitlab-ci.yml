@@ -60,10 +60,6 @@ code_coverage_job:
     -  .code_coverage
   dependencies: [unit_test_job]
 
-code_coverage_job:
-  stage: coverage_report
-  extends:
-    -  .code_coverage
 
 #check_dist_job:
 #  extends:
