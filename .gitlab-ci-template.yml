@@ -41,12 +41,7 @@
   script:
     - cd synopsys-task
     - npm ci
-    - pwd
     - npm test > unit_test.log
-    - pwd
-    - ls
-    - pwd
-    - cat unit_test.log
   artifacts:
     paths:
       - ./synopsys-task/unit_test.log
@@ -54,10 +49,8 @@
 .code_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
-    - ls
     - cd synopsys-task
-    - ls
-    #- cat unit_test.log
+    - cat unit_test.log
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 #.changelog:
