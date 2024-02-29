@@ -48,16 +48,15 @@ build_job:
     - .build
   stage: build
 
-code_coverage_job:
-  stage: coverage_report
-  extends:
-    -  .code_coverage
-
-
 unit_test_job:
   stage: coverage_report
   extends:
     -  .unit_test
+
+code_coverage_job:
+  stage: coverage_report
+  extends:
+    -  .code_coverage
 
 #check_dist_job:
 #  extends:
