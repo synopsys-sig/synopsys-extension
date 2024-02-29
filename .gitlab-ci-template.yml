@@ -42,7 +42,7 @@
   script:
     - cd synopsys-task
     - npm ci
-    - npm test -- --coverage --collectCoverageFrom='coverage/index.html'
+    - npm test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 .new_pop_blackduck_analysis:
