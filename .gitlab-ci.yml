@@ -45,20 +45,25 @@ variables:
 
 build_job:
   extends:
-    - .build_unit_tests
+    - .build
   stage: build
-
-test_job:
-  stage: test_job
-  extends:
-    - .code_coverage
-  dependencies: [build_job]
 
 code_coverage_job:
   stage: coverage_report
   extends:
-    - .code_coverage
-  dependencies: [build_job]
+    -  .code_coverage
+
+
+unit_test_job:
+  stage: coverage_report
+  extends:
+    -  .unit_test
+
+#check_dist_job:
+#  extends:
+#    - .check_dist
+#  stage: Check_dist
+
 
 .export_sbom_variables:
   before_script:

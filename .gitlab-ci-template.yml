@@ -36,20 +36,20 @@
     - npm ci
     - npm run format && npm run lint && npm run build && npm run package
 
-.unit_tests:
+.unit_test:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
-  cache:
-    key: ${CI_JOB_NAME}
-    paths:
-      - .m2/
   script:
     - cd synopsys-task
     - npm ci
-    - npm run test
+    - npm test
 
 .code_coverage:
+  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  script:
+    - cd synopsys-task
+    - npm ci
+    - npm test -- --coverage --collectCoverageFrom='src/**/*.{ts,jxs}'
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
-
 
 .new_pop_blackduck_analysis:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
