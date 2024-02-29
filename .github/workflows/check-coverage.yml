@@ -46,4 +46,5 @@ jobs:
           if [[ $coverageValue < 90 ]]; then
               echo "##[error]Line coverage is below 90%"
               exit 1
-          fi
+          fi  
+

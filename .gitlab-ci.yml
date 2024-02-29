@@ -57,10 +57,7 @@ code_coverage_job:
 #  extends:
 #    - .check_dist
 #  stage: Check_dist
-code_coverage_threshold:
-  stage: coverage_threshold
-  extends:
-    -  .threshold
+
 
 .export_sbom_variables:
   before_script:
