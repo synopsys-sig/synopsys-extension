@@ -53,10 +53,10 @@
 
 .code_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
-  script:
-    - cd synopsys-task
-    - ls
-    - cat unit_test.log
+  #script:
+    #- cd synopsys-task
+    #- ls
+    #- cat unit_test.log
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 #.changelog:
