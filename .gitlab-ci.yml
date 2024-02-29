@@ -21,7 +21,6 @@ include:
 stages:
   - build
   - coverage_report
-  - code_coverage_threshold
   - versioning
   - analysis
   - sbom

@@ -17,12 +17,12 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3.4.1
         with:
-          node-version: 20.x
+          node-version: 16.x
 
       - name: Install dependencies
         run: cd synopsys-task && npm ci
