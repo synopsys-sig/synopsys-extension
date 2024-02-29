@@ -37,7 +37,7 @@
     - npm run all
   artifacts:
     paths:
-      - coverage/
+      - synopsys-task/coverage/
 
 
 .code_coverage:
