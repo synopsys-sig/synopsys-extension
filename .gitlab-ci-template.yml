@@ -41,7 +41,6 @@
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   before_script:
     - |
-      apt-get update -y
       apt-get install -y nyc
   script:
     - cd synopsys-task
