@@ -41,8 +41,11 @@
   script:
     - cd synopsys-task
     - npm ci
+    - pwd
     - npm test > unit_test.log
+    - pwd
     - ls
+    - pwd
     - cat unit_test.log
   artifacts:
     paths:
