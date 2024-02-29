@@ -107,7 +107,7 @@ e2e-publish:
   stage: e2e-publish
   tags:
     - linux
-  extends: .extension-publish
+  #extends: .extension-publish
 
 e2e-setup:
   stage: e2e-setup
