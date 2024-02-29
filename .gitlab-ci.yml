@@ -20,7 +20,7 @@ include:
 # List of job stages in their order of execution.
 stages:
   - build
-  - unit_test_coverage
+  - unit_test_and_coverage
   - versioning
   - analysis
   - sbom
@@ -49,13 +49,13 @@ build_job:
   stage: build
 
 unit_test_job:
-  stage: unit_test_coverage
+  stage: unit_test_and_coverage
   extends:
     -  .unit_test
   dependencies: [build_job]
 
 code_coverage_job:
-  stage: unit_test_coverage
+  stage: unit_test_and_coverage
   extends:
     -  .code_coverage
   needs:
