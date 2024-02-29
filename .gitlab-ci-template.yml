@@ -23,7 +23,7 @@
 #####  Gitlab CI Job Implementations
 #################################################################################
 
-.build_unit_tests:
+.build:
   extends:
     - .retry
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
@@ -34,16 +34,22 @@
   script:
     - cd synopsys-task
     - npm ci
-    - npm run all
+    - npm run format && npm run lint && npm run build && npm run package
 
-
-.code_coverage:
+.unit_tests:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .m2/
   script:
     - cd synopsys-task
     - npm ci
-    - npm test -- --coverage --collectCoverageFrom='src/**/*.{ts,jxs}'
+    - npm run test
+
+.code_coverage:
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+
 
 .new_pop_blackduck_analysis:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14

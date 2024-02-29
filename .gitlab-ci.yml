@@ -43,21 +43,22 @@ variables:
 
 ##### MERGE REQUEST PIPELINE #####
 
-build_unit_test_job:
+build_job:
   extends:
     - .build_unit_tests
   stage: build
 
+test_job:
+  stage: test_job
+  extends:
+    - .code_coverage
+  dependencies: [build_job]
+
 code_coverage_job:
   stage: coverage_report
   extends:
-    -  .code_coverage
-
-#check_dist_job:
-#  extends:
-#    - .check_dist
-#  stage: Check_dist
-
+    - .code_coverage
+  dependencies: [build_job]
 
 .export_sbom_variables:
   before_script:
