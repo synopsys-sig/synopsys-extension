@@ -42,6 +42,7 @@
     - cd synopsys-task
     - npm ci
     - npm test > unit_test.log
+    - cat unit_test.log
   artifacts:
     paths:
       - ./synopsys-task/unit_test.log
