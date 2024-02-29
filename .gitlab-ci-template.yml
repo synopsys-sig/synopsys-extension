@@ -35,6 +35,9 @@
     - cd synopsys-task
     - npm ci
     - npm run all
+  artifacts:
+    paths:
+      - coverage/index.html
 
 
 .code_coverage:
