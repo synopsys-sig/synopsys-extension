@@ -96,10 +96,11 @@ pop_blackduck:
       export RELEASE_VERSION=$(cat vss-extension.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
 e2e-publish:
-  stage: e2e-publish
-  tags:
-    - linux
-  extends: .extension-publish
+  script: ls
+    #stage: e2e-publish
+  #tags:
+    #- linux
+  #extends: .extension-publish
   
 e2e-setup:
   stage: e2e-setup
