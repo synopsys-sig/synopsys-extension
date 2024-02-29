@@ -41,14 +41,17 @@
   script:
     - cd synopsys-task
     - npm ci
-    - npm test
+    - npm test > unit_test.log
+  artifacts:
+    paths:
+      - unit_test.log
 
 .code_coverage:
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
     - cd synopsys-task
-    - npm ci
-    - npm test -- --coverage --collectCoverageFrom='src/**/*.{ts,jxs}'
+    - ls
+    - cat unit_test.log
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 #.changelog:
