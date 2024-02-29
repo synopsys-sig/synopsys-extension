@@ -58,7 +58,7 @@ code_coverage_job:
   stage: unit_coverage
   extends:
     -  .code_coverage
-  dependencies: [unit_test_job]
+  dependencies: [build_job,unit_test_job]
 
 
 #check_dist_job:
