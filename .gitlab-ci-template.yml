@@ -37,7 +37,7 @@
     - npm run all
   artifacts:
     paths:
-      - coverage/index.html
+      - /coverage/index.html
 
 
 .code_coverage:
