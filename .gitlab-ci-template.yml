@@ -44,9 +44,10 @@
   image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
   script:
     - cd synopsys-task
-    - coverageFile=coverage/index.html
-    - coverageSpan=$(grep -B 1 '<span class="quiet">Lines</span>' $coverageFile | head -n 1)
-    - coverageHtml=$(echo "$coverageSpan" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-    - coverageInPercent=$(echo $coverageHtml | sed -n 's/.*<span class="strong">\([0-9.]*%\).*/\1/p' | tr -d ' ')
-    - echo Line Coverage: $coverageInPercent
+    - coverageFile="coverage/index.html"
+    - coverageSpan="$(grep -B 1 '<span class="quiet">Lines</span>' $coverageFile | head -n 1)"
+    #-
+    #- coverageHtml=$(echo "$coverageSpan" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    #- coverageInPercent=$(echo $coverageHtml | sed -n 's/.*<span class="strong">\([0-9.]*%\).*/\1/p' | tr -d ' ')
+    #- echo Line Coverage: $coverageSpan
   coverage: 90%
