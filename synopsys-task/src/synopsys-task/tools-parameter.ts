@@ -105,6 +105,7 @@ export class SynopsysToolsParameter {
           inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
       }
     }
+
     if (inputs.POLARIS_TEST_SCA_TYPE) {
       polData.data.polaris.test = {
         sca: {
