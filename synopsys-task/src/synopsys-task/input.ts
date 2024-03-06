@@ -52,6 +52,10 @@ export const POLARIS_PR_COMMENT_SEVERITIES =
   [];
 export const POLARIS_TEST_SCA_TYPE =
   taskLib.getInput(constants.POLARIS_TEST_SCA_TYPE_KEY)?.trim() || "";
+export const POLARIS_TEST_SCA_TYPE_CLASSIC_EDITOR =
+  taskLib
+    .getInput(constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR)
+    ?.trim() || "";
 export const POLARIS_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() || "";
 export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =

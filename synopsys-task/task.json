@@ -166,7 +166,7 @@
       "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
     },
     {
-      "name": "bridge_polaris_test_sca_type",
+      "name": "polarisTestScaType",
       "type": "string",
       "label": "Polaris Test SCA Type",
       "defaultValue": "",

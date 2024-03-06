@@ -34,6 +34,7 @@ export const POLARIS_PR_COMMENT_SEVERITIES_KEY =
 export const POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR =
   "polarisPRCommentSeverities";
 export const POLARIS_TEST_SCA_TYPE_KEY = "bridge_polaris_test_sca_type";
+export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY =
   "bridge_polaris_reports_sarif_create";
 export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
