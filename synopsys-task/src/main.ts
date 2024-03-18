@@ -11,6 +11,10 @@ import {
   uploadDiagnostics,
   uploadSarifResultAsArtifact,
 } from "./synopsys-task/diagnostics";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+} from "./synopsys-task/model/azure";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -40,22 +44,32 @@ export async function run() {
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-      uploadSarifResultAsArtifact(
-        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-        inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
-      );
+      const buildReason =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+        "";
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+        uploadSarifResultAsArtifact(
+          constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+          inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+        );
+      }
     }
 
     if (
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-      uploadSarifResultAsArtifact(
-        constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-        inputs.POLARIS_REPORTS_SARIF_FILE_PATH
-      );
+      const buildReason =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+        "";
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+        uploadSarifResultAsArtifact(
+          constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+          inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+        );
+      }
     }
 
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {

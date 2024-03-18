@@ -46,6 +46,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const diagnostics_1 = __nccwpck_require__(2926);
+const azure_1 = __nccwpck_require__(3655);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
@@ -72,13 +73,21 @@ function run() {
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
@@ -652,14 +661,19 @@ exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_16 = taskLib
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
+exports.AZURE_BUILD_REASON = exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
 exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
     AZURE_PROJECT: "System.TeamProject",
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
     AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+    AZURE_BUILD_REASON: "Build.Reason",
 };
+var AZURE_BUILD_REASON;
+(function (AZURE_BUILD_REASON) {
+    AZURE_BUILD_REASON["PULL_REQUEST"] = "PullRequest";
+})(AZURE_BUILD_REASON = exports.AZURE_BUILD_REASON || (exports.AZURE_BUILD_REASON = {}));
 
 
 /***/ }),
@@ -1291,9 +1305,15 @@ class SynopsysToolsParameter {
                     inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
             }
         }
+        const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
         if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
             (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-            polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+            if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+            }
+            else {
+                taskLib.warning("Polaris SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+            }
         }
         // Remove empty data from json object
         polData = (0, utility_1.filterEmptyData)(polData);
@@ -1387,10 +1407,16 @@ class SynopsysToolsParameter {
                 blackduckData.data.blackduck.automation.prcomment = true;
                 blackduckData.data;
             }
+            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                blackduckData.data.blackduck.reports =
-                    this.setSarifReportsInputsForBlackduck();
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    blackduckData.data.blackduck.reports =
+                        this.setSarifReportsInputsForBlackduck();
+                }
+                else {
+                    taskLib.warning("BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+                }
             }
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
