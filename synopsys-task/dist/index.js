@@ -46,6 +46,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const diagnostics_1 = __nccwpck_require__(2926);
+const azure_1 = __nccwpck_require__(3655);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
@@ -72,13 +73,21 @@ function run() {
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
@@ -562,7 +571,7 @@ const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput("bridge_download_url")) === null || _a === void 0 ? void 0 : _a.trim()) || "";
-exports.ENABLE_NETWORK_AIRGAP = taskLib.getBoolInput("bridge_network_airgap") || "";
+exports.ENABLE_NETWORK_AIRGAP = taskLib.getBoolInput("bridge_network_airgap") || false;
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = taskLib.getPathInput("synopsys_bridge_install_directory", false, false) || "";
 exports.BRIDGE_DOWNLOAD_VERSION = ((_b = taskLib.getPathInput("bridge_download_version")) === null || _b === void 0 ? void 0 : _b.trim()) || "";
 // Polaris related inputs
@@ -608,7 +617,7 @@ exports.COVERITY_PROJECT_NAME = ((_x = taskLib.getInput(constants.COVERITY_PROJE
 exports.COVERITY_STREAM_NAME = ((_y = taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) || "";
 exports.COVERITY_INSTALL_DIRECTORY = ((_z = taskLib.getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY)) === null || _z === void 0 ? void 0 : _z.trim()) || "";
 exports.COVERITY_POLICY_VIEW = ((_0 = taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)) === null || _0 === void 0 ? void 0 : _0.trim()) || "";
-exports.COVERITY_LOCAL = ((_1 = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _1 === void 0 ? void 0 : _1.trim()) || "";
+exports.COVERITY_LOCAL = ((_1 = taskLib.getInput(constants.COVERITY_LOCAL_KEY)) === null || _1 === void 0 ? void 0 : _1.trim()) === "true" || false;
 exports.COVERITY_AUTOMATION_PRCOMMENT = taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 exports.COVERITY_VERSION = ((_2 = taskLib.getInput(constants.COVERITY_VERSION_KEY)) === null || _2 === void 0 ? void 0 : _2.trim()) || "";
 // Blackduck related inputs
@@ -652,14 +661,19 @@ exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_16 = taskLib
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
+exports.AZURE_BUILD_REASON = exports.AZURE_ENVIRONMENT_VARIABLES = void 0;
 exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
     AZURE_PROJECT: "System.TeamProject",
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
     AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+    AZURE_BUILD_REASON: "Build.Reason",
 };
+var AZURE_BUILD_REASON;
+(function (AZURE_BUILD_REASON) {
+    AZURE_BUILD_REASON["PULL_REQUEST"] = "PullRequest";
+})(AZURE_BUILD_REASON = exports.AZURE_BUILD_REASON || (exports.AZURE_BUILD_REASON = {}));
 
 
 /***/ }),
@@ -1269,11 +1283,12 @@ class SynopsysToolsParameter {
                     application: { name: inputs.POLARIS_APPLICATION_NAME },
                     project: { name: inputs.POLARIS_PROJECT_NAME },
                     assessment: { types: assessmentTypeArray },
+                    branch: {},
                 },
             },
         };
         if (inputs.POLARIS_BRANCH_NAME) {
-            polData.data.polaris.branch = { name: inputs.POLARIS_BRANCH_NAME };
+            polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
         }
         if (inputs.POLARIS_TRIAGE) {
             polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
@@ -1290,9 +1305,15 @@ class SynopsysToolsParameter {
                     inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
             }
         }
+        const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
         if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
             (0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-            polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+            if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+            }
+            else {
+                taskLib.warning("Polaris SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+            }
         }
         // Remove empty data from json object
         polData = (0, utility_1.filterEmptyData)(polData);
@@ -1320,6 +1341,10 @@ class SynopsysToolsParameter {
                     blackduck: {
                         url: inputs.BLACKDUCK_URL,
                         token: inputs.BLACKDUCK_API_TOKEN,
+                        automation: {},
+                    },
+                    network: {
+                        airGap: inputs.ENABLE_NETWORK_AIRGAP,
                     },
                 },
             };
@@ -1329,14 +1354,15 @@ class SynopsysToolsParameter {
                 };
             }
             if (inputs.BLACKDUCK_SCAN_FULL) {
+                let scanFullValue = false;
                 if (inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
                     inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false") {
-                    const scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
-                    blackduckData.data.blackduck.scan = { full: scanFullValue };
+                    scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
                 }
                 else {
                     throw new Error("Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY));
                 }
+                blackduckData.data.blackduck.scan = { full: scanFullValue };
             }
             if (failureSeverities && failureSeverities.length > 0) {
                 (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
@@ -1370,20 +1396,27 @@ class SynopsysToolsParameter {
                 blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
                 blackduckData.data.azure = yield this.getAzureRepoInfo();
             }
+            else {
+                // Disable fix pull request for adapters
+                blackduckData.data.blackduck.fixpr = { enabled: false };
+            }
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
                 console.info("BlackDuck Automation comment is enabled");
                 blackduckData.data.azure = yield this.getAzureRepoInfo();
                 blackduckData.data.environment = this.setEnvironmentScanPullData();
-                blackduckData.data.blackduck.automation = { prcomment: true };
+                blackduckData.data.blackduck.automation.prcomment = true;
                 blackduckData.data;
             }
-            if ((0, utility_1.parseToBoolean)(inputs.ENABLE_NETWORK_AIRGAP)) {
-                blackduckData.data.network = { airGap: true };
-            }
+            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
                 (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)) {
-                blackduckData.data.blackduck.reports =
-                    this.setSarifReportsInputsForBlackduck();
+                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    blackduckData.data.blackduck.reports =
+                        this.setSarifReportsInputsForBlackduck();
+                }
+                else {
+                    taskLib.warning("BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+                }
             }
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
@@ -1417,10 +1450,15 @@ class SynopsysToolsParameter {
                             project: { name: inputs.COVERITY_PROJECT_NAME },
                             stream: { name: inputs.COVERITY_STREAM_NAME },
                         },
+                        automation: {},
+                        network: {
+                            airGap: inputs.ENABLE_NETWORK_AIRGAP,
+                        },
                     },
+                    project: {},
                 },
             };
-            if ((0, utility_1.parseToBoolean)(inputs.COVERITY_LOCAL)) {
+            if (inputs.COVERITY_LOCAL) {
                 covData.data.coverity.local = true;
             }
             if (inputs.COVERITY_INSTALL_DIRECTORY) {
@@ -1439,13 +1477,10 @@ class SynopsysToolsParameter {
                 console.info("Coverity Automation comment is enabled");
                 covData.data.azure = yield this.getAzureRepoInfo();
                 covData.data.environment = this.setEnvironmentScanPullData();
-                covData.data.coverity.automation = { prcomment: true };
+                covData.data.coverity.automation.prcomment = true;
             }
             if (inputs.COVERITY_VERSION) {
                 covData.data.coverity.version = inputs.COVERITY_VERSION;
-            }
-            if ((0, utility_1.parseToBoolean)(inputs.ENABLE_NETWORK_AIRGAP)) {
-                covData.data.coverity.network = { airGap: true };
             }
             const inputJson = JSON.stringify(covData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);

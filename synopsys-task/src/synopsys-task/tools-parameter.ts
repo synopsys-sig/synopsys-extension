@@ -8,7 +8,11 @@ import {
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
-import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+  AzureData,
+} from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -105,11 +109,20 @@ export class SynopsysToolsParameter {
       }
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     if (
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+      } else {
+        taskLib.warning(
+          "Polaris SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+        );
+      }
     }
 
     // Remove empty data from json object
@@ -234,12 +247,21 @@ export class SynopsysToolsParameter {
       blackduckData.data.network = { airGap: true };
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     if (
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      blackduckData.data.blackduck.reports =
-        this.setSarifReportsInputsForBlackduck();
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        blackduckData.data.blackduck.reports =
+          this.setSarifReportsInputsForBlackduck();
+      } else {
+        taskLib.warning(
+          "BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+        );
+      }
     }
 
     const inputJson = JSON.stringify(blackduckData);
