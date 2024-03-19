@@ -6,7 +6,7 @@ export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url")?.trim() || "";
 
 export const ENABLE_NETWORK_AIRGAP =
-  taskLib.getBoolInput("bridge_network_airgap") || false;
+  taskLib.getBoolInput("bridge_network_airgap") || "";
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
   taskLib.getPathInput("synopsys_bridge_install_directory", false, false) || "";
@@ -116,7 +116,7 @@ export const COVERITY_INSTALL_DIRECTORY =
 export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY)?.trim() || "";
 export const COVERITY_LOCAL =
-  taskLib.getInput(constants.COVERITY_LOCAL_KEY)?.trim() === "true" || false;
+  taskLib.getInput(constants.COVERITY_LOCAL_KEY)?.trim() || "";
 export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 export const COVERITY_VERSION =
