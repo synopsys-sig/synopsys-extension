@@ -109,6 +109,14 @@ export class SynopsysToolsParameter {
       }
     }
 
+    if (inputs.POLARIS_TEST_SCA_TYPE) {
+      polData.data.polaris.test = {
+        sca: {
+          type: inputs.POLARIS_TEST_SCA_TYPE,
+        },
+      };
+    }
+
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
