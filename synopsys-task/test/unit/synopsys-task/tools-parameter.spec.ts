@@ -22,7 +22,6 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         afterEach(() => {
-            const polarisInputJson =
             taskLib.rmRF(polarisStateFile);
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''})
@@ -31,6 +30,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''})
             sandbox.restore();
         });
 
@@ -42,6 +42,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
 
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -52,6 +53,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.test.sca.type).to.be.contains('SCA-SIGNATURE');
 
             expect(formattedCommand).contains('--stage polaris');
 
@@ -68,6 +70,80 @@ describe("Synopsys Tools Parameter test", () => {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for bridge_polaris_assessment_types')
             }
+        });
+
+        it('should success for polaris command formation with PR comment',  async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+        });
+
+        it('should success for polaris command formation with sarif report create', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.reports.sarif.create).to.be.equals(true);
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris command formation with sarif report parameters', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_ISSUE_TYPES', {value: ['SAST', 'SCA']})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.reports.sarif.create).to.be.equals(true);
+            expect(jsonData.data.polaris.reports.sarif.file.path).to.be.equals('test-path');
+            expect(jsonData.data.polaris.reports.sarif.severities).to.be.contains('CRITICAL');
+            expect(jsonData.data.polaris.reports.sarif.groupSCAIssues).to.be.equals(true);
+            expect(jsonData.data.polaris.reports.sarif.issue.types).to.be.contains('SAST');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
         });
     });
 
@@ -422,7 +498,7 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-            expect(jsonData.data.blackduck.token).to.be.equals('token');   
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');

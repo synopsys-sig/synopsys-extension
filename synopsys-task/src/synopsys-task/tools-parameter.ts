@@ -17,10 +17,10 @@ import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import {
-  validateCoverityInstallDirectoryParam,
   validateBlackduckFailureSeverities,
+  validateCoverityInstallDirectoryParam,
 } from "./validator";
-import { parseToBoolean, isBoolean } from "./utility";
+import { parseToBoolean, isBoolean, filterEmptyData } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
@@ -64,7 +64,7 @@ export class SynopsysToolsParameter {
       }
     }
 
-    const polData: InputData<Polaris> = {
+    let polData: InputData<Polaris> = {
       data: {
         polaris: {
           accesstoken: inputs.POLARIS_ACCESS_TOKEN,
@@ -100,7 +100,61 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
+    if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
+      console.info("Polaris PR comment is enabled");
+      if (!inputs.AZURE_TOKEN) {
+        throw new Error(
+          "Missing required azure token for pull request comment"
+        );
+      }
+
+      polData.data.azure = this.setAzureData(
+        "",
+        inputs.AZURE_TOKEN,
+        "",
+        "",
+        "",
+        "",
+        ""
+      );
+
+      polData.data.polaris.prcomment = { severities: [], enabled: true };
+
+      if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
+        polData.data.polaris.prcomment.severities =
+          inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+      }
+    }
+
+    if (inputs.POLARIS_TEST_SCA_TYPE) {
+      polData.data.polaris.test = {
+        sca: {
+          type: inputs.POLARIS_TEST_SCA_TYPE,
+        },
+      };
+    }
+
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
+    if (
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+      } else {
+        taskLib.warning(
+          "Polaris SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+        );
+      }
+    }
+
+    // Remove empty data from json object
+    polData = filterEmptyData(polData);
+
     const inputJson = JSON.stringify(polData);
+
     let stateFilePath = path.join(
       this.tempDir,
       SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
@@ -110,7 +164,6 @@ export class SynopsysToolsParameter {
     // Wrap the file path with double quotes, to make it work with directory path with space as well
     stateFilePath = '"'.concat(stateFilePath).concat('"');
 
-    taskLib.debug("Generated state json file content is - ".concat(inputJson));
     taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
@@ -222,12 +275,21 @@ export class SynopsysToolsParameter {
       blackduckData.data;
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     if (
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
       parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
     ) {
-      blackduckData.data.blackduck.reports =
-        this.setSarifReportsInputsForBlackduck();
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        blackduckData.data.blackduck.reports =
+          this.setSarifReportsInputsForBlackduck();
+      } else {
+        taskLib.warning(
+          "BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+        );
+      }
     }
 
     const inputJson = JSON.stringify(blackduckData);
@@ -546,6 +608,7 @@ export class SynopsysToolsParameter {
     }
     return {};
   }
+
   private setSarifReportsInputsForBlackduck(): Reports {
     const sarifReportFilterSeverities: string[] = [];
     let sarifReportFilePath = "";
@@ -584,6 +647,65 @@ export class SynopsysToolsParameter {
         severities: sarifReportFilterSeverities,
         file: {
           path: sarifReportFilePath,
+        },
+        groupSCAIssues: groupSCAIssues,
+      },
+    };
+    return reportData;
+  }
+
+  private setSarifReportsInputsForPolaris(): Reports {
+    let sarifReportFilePath = "";
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_FILE_PATH?.trim()
+    ) {
+      sarifReportFilePath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+    }
+
+    const sarifReportFilterSeverities: string[] = [];
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES &&
+      inputs.POLARIS_REPORTS_SARIF_SEVERITIES.length > 0
+    ) {
+      const severities = inputs.POLARIS_REPORTS_SARIF_SEVERITIES.filter(
+        (severity) => severity && severity.trim() !== ""
+      ).map((severity) => severity.trim());
+      sarifReportFilterSeverities.push(...severities);
+    }
+
+    let groupSCAIssues = true;
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
+    ) {
+      groupSCAIssues = JSON.parse(
+        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
+      );
+    }
+
+    const sarifReportIssueTypes: string[] = [];
+    if (
+      inputs.POLARIS_SERVER_URL &&
+      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES &&
+      inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.length > 0
+    ) {
+      const issueTypes = inputs.POLARIS_REPORTS_SARIF_ISSUE_TYPES.filter(
+        (issueType) => issueType && issueType.trim() !== ""
+      ).map((issueType) => issueType.trim());
+      sarifReportIssueTypes.push(...issueTypes);
+    }
+
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+        severities: sarifReportFilterSeverities,
+        file: {
+          path: sarifReportFilePath,
+        },
+        issue: {
+          types: sarifReportIssueTypes,
         },
         groupSCAIssues: groupSCAIssues,
       },

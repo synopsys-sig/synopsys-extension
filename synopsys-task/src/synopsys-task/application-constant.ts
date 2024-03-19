@@ -25,6 +25,36 @@ export const POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 export const POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 export const POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 export const POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
+export const POLARIS_PR_COMMENT_ENABLED_KEY =
+  "bridge_polaris_prcomment_enabled";
+export const POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR =
+  "polarisPRCommentEnabled";
+export const POLARIS_PR_COMMENT_SEVERITIES_KEY =
+  "bridge_polaris_prcomment_severities";
+export const POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR =
+  "polarisPRCommentSeverities";
+export const POLARIS_TEST_SCA_TYPE_KEY = "bridge_polaris_test_sca_type";
+export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
+export const POLARIS_REPORTS_SARIF_CREATE_KEY =
+  "bridge_polaris_reports_sarif_create";
+export const POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR =
+  "polarisReportsSarifCreate";
+export const POLARIS_REPORTS_SARIF_FILE_PATH_KEY =
+  "bridge_polaris_reports_sarif_file_path";
+export const POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR =
+  "polarisReportsSarifFilePath";
+export const POLARIS_REPORTS_SARIF_SEVERITIES_KEY =
+  "bridge_polaris_reports_sarif_severities";
+export const POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR =
+  "polarisReportsSarifSeverities";
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY =
+  "bridge_polaris_reports_sarif_groupSCAIssues";
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR =
+  "polarisReportsSarifGroupSCAIssues";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY =
+  "bridge_polaris_reports_sarif_issue_types";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
+  "polarisReportsSarifIssueTypes";
 
 // Coverity
 export const COVERITY_URL_KEY = "bridge_coverity_connect_url";
@@ -99,6 +129,8 @@ export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
 export const DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY =
   "Blackduck SARIF Generator";
+export const DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY =
+  "Polaris SARIF Generator";
 export const SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = "sarif_report";
 export const RETRY_DELAY_IN_MILLISECONDS = 15000;
 export const RETRY_COUNT = 3;

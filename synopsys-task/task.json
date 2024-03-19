@@ -9,7 +9,7 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 5,
+    "Minor": 7,
     "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
@@ -142,9 +142,87 @@
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
-      "required": true,
+      "required": false,
       "helpMarkDown": "Branch name in Polaris.",
       "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentSeverities",
+      "type": "string",
+      "label": "Polaris PR Comment Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentEnabled",
+      "type": "boolean",
+      "label": "Add Comments to Pull Requests",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
+    },
+    {
+      "name": "polarisTestScaType",
+      "type": "string",
+      "label": "Polaris Test SCA Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisReportsSarifCreate",
+      "type": "boolean",
+      "label": "Generate SARIF Report for Polaris Issues",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Enable/disable SARIF report generation.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisReportsSarifGroupSCAIssues",
+      "type": "boolean",
+      "label": "Group SCA Issues by Component",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Uncheck this to disable grouping by component and list SCA issues by vulnerability.",
+      "visibleRule": "polarisReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisReportsSarifFilePath",
+      "type": "string",
+      "label": "Polaris SARIF Report File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "File path (including file name) where SARIF report is created.",
+      "visibleRule": "polarisReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisReportsSarifSeverities",
+      "type": "string",
+      "label": "Polaris SARIF Report Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma separated list of issue severities to include in SARIF report. Supported values: CRITICAL,HIGH,MEDIUM,LOW.",
+      "visibleRule": "polarisReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisReportsSarifIssueTypes",
+      "type": "string",
+      "label": "Polaris SARIF Report Issue Types",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma separated list of issues types to include in SARIF report. Supported values: SAST,SCA.",
+      "visibleRule": "polarisReportsSarifCreate = true",
       "groupName": "scanOptions"
     },
     {
@@ -354,7 +432,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "visibleRule": "scanType = coverity || scanType = blackduck",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
       "groupName": "scanOptions"
     },
     {
@@ -408,7 +486,10 @@
     }
   ],
   "execution": {
-    "Node": {
+    "Node10": {
+      "target": "dist/index.js"
+    },
+    "Node16": {
       "target": "dist/index.js"
     }
   }

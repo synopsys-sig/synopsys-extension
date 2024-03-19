@@ -15,12 +15,12 @@ include:
   - project: qa-automation/test-integrations
     ref: main
     file: _ci/e2e_azure.yml
-  
+
 
 # List of job stages in their order of execution.
 stages:
   - build
-  - coverage_report
+  - unit_test_and_coverage
   - versioning
   - analysis
   - sbom
@@ -43,20 +43,16 @@ variables:
 
 ##### MERGE REQUEST PIPELINE #####
 
-build_unit_test_job:
+build_job:
   extends:
-    - .build_unit_tests
+    - .build
   stage: build
 
-code_coverage_job:
-  stage: coverage_report
+unit_test_and_coverage_job:
+  stage: unit_test_and_coverage
   extends:
-    -  .code_coverage
-
-#check_dist_job:
-#  extends:
-#    - .check_dist
-#  stage: Check_dist
+    -  .unit_test_and_coverage
+  dependencies: [build_job]
 
 
 .export_sbom_variables:
@@ -83,7 +79,7 @@ polaris_bridge:
   extends: .polaris_bridge
 
 pop_blackduck:
-  image: gcr.io/snps-polaris-ops-prod/ember_cli:3.28.5-node_16.14
+  image: us-docker.pkg.dev/cloudops-artifacts-prd/polaris/ember_cli:3.28.5-node_16.14
   variables:
     POP_BLACKDUCK_INPROGRESS: 1
   extends:
@@ -100,7 +96,7 @@ e2e-publish:
   tags:
     - linux
   extends: .extension-publish
-  
+
 e2e-setup:
   stage: e2e-setup
   dependencies: [e2e-publish]
@@ -118,7 +114,7 @@ e2e-linux:
     XML_PATH_IN_JAR: $XML
     RUNNER_NAME: "Linux"
     RUNNER_OS: "Linux"
-    
+
 e2e-mac:
   stage: e2e
   dependencies: [e2e-publish,e2e-setup]
@@ -129,7 +125,7 @@ e2e-mac:
     XML_PATH_IN_JAR: $XML
     RUNNER_NAME: "Darwin"
     RUNNER_OS: "Mac"
-    
+
 e2e-windows:
   stage: e2e
   dependencies: [e2e-publish,e2e-setup]
@@ -140,7 +136,7 @@ e2e-windows:
     XML_PATH_IN_JAR: $XML
     RUNNER_NAME: "Windows_NT"
     RUNNER_OS: "Windows"
-  
+
 e2e-clean-up:
   stage: e2e-cleanup
   dependencies: [e2e-publish,e2e-setup,e2e-linux,e2e-mac,e2e-windows]
