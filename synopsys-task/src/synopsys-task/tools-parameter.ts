@@ -445,12 +445,12 @@ export class SynopsysToolsParameter {
       const parsedUrl = url.parse(collectionUri);
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
       azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
-      if (azureOrganization === "") {
-        const startIndex = collectionUri.indexOf("://") + 3;
-        const endIndex = collectionUri.indexOf(".visualstudio.com/");
-        if (startIndex >= 0 && endIndex >= 0) {
-          azureOrganization = collectionUri.substring(startIndex, endIndex);
-        }
+      if (
+        parsedUrl.host &&
+        !azureOrganization &&
+        parsedUrl.host.indexOf("visualstudio.com") !== -1
+      ) {
+        azureOrganization = parsedUrl.host.split(".")[0];
       }
     }
     const azureProject =
@@ -510,7 +510,7 @@ export class SynopsysToolsParameter {
       }
       return azureData;
     }
-
+    console.debug("Azure data is undefined.");
     return undefined;
   }
 
