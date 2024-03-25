@@ -448,9 +448,11 @@ export class SynopsysToolsParameter {
       if (
         parsedUrl.host &&
         !azureOrganization &&
-        parsedUrl.host.indexOf("visualstudio.com") !== -1
+        parsedUrl.host.indexOf(".visualstudio.com") !== -1
       ) {
-        azureOrganization = parsedUrl.host.split(".")[0];
+        if (parsedUrl.host.split(".")[0]) {
+          azureOrganization = parsedUrl.host.split(".")[0];
+        }
       }
     }
     const azureProject =
@@ -471,11 +473,11 @@ export class SynopsysToolsParameter {
         "Missing required azure token for fix pull request/automation comment"
       );
     }
-    console.debug("Azure Instance URL:", azureInstanceUrl);
-    console.debug("Azure Organization:", azureOrganization);
-    console.debug("Azure Project:", azureProject);
-    console.debug("Azure Repo:", azureRepo);
-    console.debug("Azure Repo Branch Name:", azureRepoBranchName);
+    taskLib.debug("Azure Instance URL:".concat(azureInstanceUrl));
+    taskLib.debug("Azure Organization:".concat(azureOrganization));
+    taskLib.debug("Azure Project:".concat(azureProject));
+    taskLib.debug("Azure Repo:".concat(azureRepo));
+    taskLib.debug("Azure Repo Branch Name:".concat(azureRepoBranchName));
 
     // This condition is required as per ts-lint as these fields may have undefined as well
     if (
@@ -510,7 +512,7 @@ export class SynopsysToolsParameter {
       }
       return azureData;
     }
-    console.debug("Azure data is undefined.");
+    taskLib.debug("Azure data is undefined.");
     return undefined;
   }
 
