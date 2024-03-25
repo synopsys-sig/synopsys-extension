@@ -1558,6 +1558,13 @@ class SynopsysToolsParameter {
                 const parsedUrl = url.parse(collectionUri);
                 azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
                 azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+                if (azureOrganization === "") {
+                    const startIndex = collectionUri.indexOf("://") + 3;
+                    const endIndex = collectionUri.indexOf(".visualstudio.com/");
+                    if (startIndex >= 0 && endIndex >= 0) {
+                        azureOrganization = collectionUri.substring(startIndex, endIndex);
+                    }
+                }
             }
             const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
             const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
@@ -1567,6 +1574,11 @@ class SynopsysToolsParameter {
             if (azureToken == "") {
                 throw new Error("Missing required azure token for fix pull request/automation comment");
             }
+            console.debug("Azure Instance URL:", azureInstanceUrl);
+            console.debug("Azure Organization:", azureOrganization);
+            console.debug("Azure Project:", azureProject);
+            console.debug("Azure Repo:", azureRepo);
+            console.debug("Azure Repo Branch Name:", azureRepoBranchName);
             // This condition is required as per ts-lint as these fields may have undefined as well
             if (azureInstanceUrl != "" &&
                 azureToken != "" &&
