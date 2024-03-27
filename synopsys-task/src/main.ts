@@ -36,7 +36,14 @@ export async function run() {
     }
 
     // Execute prepared commands
-    await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
+    //await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
+    const exitCode = 2;
+    console.log("Setting exit code in variable: exitStatus");
+    console.log(
+      "##vso[task.setvariable variable=exitStatus;isoutput=true]" + exitCode
+    );
+    console.log("Exit code is: " + exitCode);
+    return exitCode;
   } catch (error: any) {
     throw error;
   } finally {

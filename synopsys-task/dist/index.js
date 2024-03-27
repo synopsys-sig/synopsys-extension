@@ -65,7 +65,12 @@ function run() {
                 bridgePath = yield sb.getSynopsysBridgePath();
             }
             // Execute prepared commands
-            yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            //await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
+            const exitCode = 2;
+            console.log("Setting exit code in variable: exitStatus");
+            console.log("##vso[task.setvariable variable=exitStatus;isoutput=true]" + exitCode);
+            console.log("Exit code is: " + exitCode);
+            return exitCode;
         }
         catch (error) {
             throw error;
