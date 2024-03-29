@@ -15,6 +15,7 @@ export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 
 export const AZURE_TOKEN_KEY = "azure_token";
+export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
 export const SCAN_TYPE_KEY = "scanType";
 
 // Polaris

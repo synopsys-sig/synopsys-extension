@@ -50,7 +50,9 @@ export const INCLUDE_DIAGNOSTICS =
 
 // Polaris related inputs
 export const AZURE_TOKEN =
-  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() || "";
+  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
+    taskLib.getInput(constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||"";
+
 
 export const SCAN_TYPE =
   taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
