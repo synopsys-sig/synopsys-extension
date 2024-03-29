@@ -5,6 +5,7 @@ import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as inputs from "../../../src/synopsys-task/input";
+import * as constants from "../../../src/synopsys-task/application-constant";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
 
@@ -68,7 +69,10 @@ describe("Synopsys Tools Parameter test", () => {
                 const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for bridge_polaris_assessment_types')
+                expect(errorObj.message).contains('Invalid value for '
+                    .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+                    .concat(" or ")
+                    .concat(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY))
             }
         });
 
@@ -343,7 +347,10 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
             synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
-                    expect(errorObj.message).contains('Invalid value for bridge_blackduck_scan_failure_severities')})
+                    expect(errorObj.message).contains('Invalid value for '
+                        .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+                        .concat(" or ")
+                        .concat(constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))})
         });
 
         it('should success for blackduck command formation with fix pr true', async function () {
@@ -416,7 +423,12 @@ describe("Synopsys Tools Parameter test", () => {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains('bridge_blackduck_fixpr_maxCount is not applicable with bridge_blackduck_fixpr_createSinglePR')
+                expect(errorObj.message).contains(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(" or ")
+                    .concat(constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+                    .concat(" is not applicable with ")
+                    .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+                    .concat(" or ")
+                    .concat(constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY))
             }
         });
 
@@ -430,7 +442,10 @@ describe("Synopsys Tools Parameter test", () => {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for bridge_blackduck_fixpr_maxCount')
+                expect(errorObj.message).contains("Invalid value for "
+                    .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+                    .concat(" or ")
+                    .concat(constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY))
             }
         });
 

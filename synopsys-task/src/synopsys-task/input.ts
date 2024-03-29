@@ -1,9 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
-import {
-  BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
-  BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
-} from "./application-constant";
 
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
@@ -51,8 +47,8 @@ export const INCLUDE_DIAGNOSTICS =
 // Polaris related inputs
 export const AZURE_TOKEN =
   taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
-    taskLib.getInput(constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||"";
-
+  taskLib.getInput(constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
+  "";
 
 export const SCAN_TYPE =
   taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
@@ -124,12 +120,11 @@ export const POLARIS_TEST_SCA_TYPE =
 
 export const POLARIS_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() ||
-  taskLib.getInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() ||
-  "";
-export const POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
   taskLib
     .getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)
-    ?.trim() || "";
+    ?.trim() ||
+  taskLib.getInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() ||
+  "";
 export const POLARIS_REPORTS_SARIF_FILE_PATH =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)?.trim() ||
   taskLib
@@ -339,14 +334,12 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE =
 export const BLACKDUCK_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)?.trim() ||
   taskLib
+    .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  taskLib
     .getInput(constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_CREATE_KEY)
     ?.trim() ||
   "";
-
-export const BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR =
-  taskLib
-    .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)
-    ?.trim() || "";
 
 export const BLACKDUCK_REPORTS_SARIF_FILE_PATH =
   taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)?.trim() ||

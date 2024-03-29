@@ -40,10 +40,7 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
-    if (
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
       const buildReason =
         taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
         "";
@@ -56,10 +53,7 @@ export async function run() {
       }
     }
 
-    if (
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       const buildReason =
         taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
         "";

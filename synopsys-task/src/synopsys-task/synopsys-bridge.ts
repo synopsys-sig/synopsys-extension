@@ -102,10 +102,16 @@ export class SynopsysBridge {
           new Error(
             "Requires at least one scan type: ("
               .concat(constants.POLARIS_SERVER_URL_KEY)
+              .concat(" or ")
+              .concat(constants.BRIDGE_POLARIS_SERVER_URL_KEY)
               .concat(",")
               .concat(constants.COVERITY_URL_KEY)
+              .concat(" or ")
+              .concat(constants.BRIDGE_COVERITY_URL_KEY)
               .concat(",")
               .concat(constants.BLACKDUCK_URL_KEY)
+              .concat(" or ")
+              .concat(constants.BRIDGE_BLACKDUCK_URL_KEY)
               .concat(")")
           )
         );
