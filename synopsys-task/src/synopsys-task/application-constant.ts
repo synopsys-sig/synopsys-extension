@@ -363,7 +363,7 @@ export const SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_DOWNLOAD_VERSION_KEY = "bridge_download_version";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY =
-  "synopsys_bridge_download_url";
+  "synopsys_bridge_download_version";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR =
   "synopsysBridgeDownloadVersion";
 
