@@ -102,8 +102,6 @@ describe("Validator test", () => {
             expect(polarisValidationErrors.length).greaterThan(0);
             expect(polarisValidationErrors[0]).contains("["
                 .concat(constants.POLARIS_ACCESS_TOKEN_KEY).concat(",")
-                .concat(constants.POLARIS_APPLICATION_NAME_KEY).concat(",")
-                .concat(constants.POLARIS_PROJECT_NAME_KEY).concat(",")
                 .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
                 .concat("] - required parameters for polaris is missing"))
         });
@@ -137,9 +135,7 @@ describe("Validator test", () => {
             const coverityValidationErrors = validator.validateCoverityInputs();
             expect(coverityValidationErrors.length).greaterThan(0);
             expect(coverityValidationErrors[0]).contains("["
-                .concat(constants.COVERITY_PASSPHRASE_KEY).concat(",")
-                .concat(constants.COVERITY_PROJECT_NAME_KEY).concat(",")
-                .concat(constants.COVERITY_STREAM_NAME_KEY)
+                .concat(constants.COVERITY_PASSPHRASE_KEY)
                 .concat("] - required parameters for coverity is missing"))
         });
 

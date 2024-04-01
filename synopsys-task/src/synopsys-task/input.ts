@@ -14,7 +14,7 @@ export const ENABLE_NETWORK_AIRGAP =
   taskLib.getBoolInput(constants.NETWORK_AIRGAP_KEY) ||
   taskLib.getBoolInput(constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR) ||
   taskLib.getBoolInput(constants.BRIDGE_NETWORK_AIRGAP_KEY) ||
-  false;
+  "";
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
   taskLib.getPathInput(

@@ -11,9 +11,9 @@ export interface PolarisData {
   triage?: string;
   accesstoken: string;
   serverUrl: string;
-  application: { name: string };
-  branch: Branch;
-  project: { name: string };
+  application: { name?: string };
+  branch?: Branch;
+  project: { name?: string };
   assessment: { types: string[] };
   prcomment?: PRComment;
   reports?: Reports;
