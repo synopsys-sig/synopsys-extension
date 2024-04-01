@@ -674,6 +674,7 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
     AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+    AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
     AZURE_BUILD_REASON: "Build.Reason",
 };
 var AZURE_BUILD_REASON;
@@ -1286,13 +1287,26 @@ class SynopsysToolsParameter {
                 polaris: {
                     accesstoken: inputs.POLARIS_ACCESS_TOKEN,
                     serverUrl: inputs.POLARIS_SERVER_URL,
-                    application: { name: inputs.POLARIS_APPLICATION_NAME },
-                    project: { name: inputs.POLARIS_PROJECT_NAME },
+                    application: {},
+                    project: {},
                     assessment: { types: assessmentTypeArray },
                     branch: {},
                 },
             },
         };
+        const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+        if (inputs.POLARIS_APPLICATION_NAME) {
+            polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
+        }
+        else {
+            polData.data.polaris.application.name = azureRepositoryName;
+        }
+        if (inputs.POLARIS_PROJECT_NAME) {
+            polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
+        }
+        else {
+            polData.data.polaris.project.name = azureRepositoryName;
+        }
         if (inputs.POLARIS_BRANCH_NAME) {
             polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
         }
@@ -1460,8 +1474,8 @@ class SynopsysToolsParameter {
                                 password: inputs.COVERITY_USER_PASSWORD,
                             },
                             url: inputs.COVERITY_URL,
-                            project: { name: inputs.COVERITY_PROJECT_NAME },
-                            stream: { name: inputs.COVERITY_STREAM_NAME },
+                            project: {},
+                            stream: {},
                         },
                         automation: {},
                         network: {
@@ -1471,6 +1485,36 @@ class SynopsysToolsParameter {
                     project: {},
                 },
             };
+            const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+            if (inputs.COVERITY_PROJECT_NAME) {
+                covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
+            }
+            else {
+                covData.data.coverity.connect.project.name = azureRepositoryName;
+            }
+            if (inputs.COVERITY_STREAM_NAME) {
+                covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
+            }
+            else {
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                if (buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                    const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) || "";
+                    covData.data.coverity.connect.stream.name =
+                        azureRepositoryName && pullRequestTargetBranchName
+                            ? azureRepositoryName
+                                .concat("-")
+                                .concat(pullRequestTargetBranchName)
+                            : "";
+                }
+                else {
+                    const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
+                    covData.data.coverity.connect.stream.name =
+                        azureRepositoryName && sourceBranchName
+                            ? azureRepositoryName.concat("-").concat(sourceBranchName)
+                            : "";
+                }
+            }
             if (inputs.COVERITY_LOCAL) {
                 covData.data.coverity.local = true;
             }
@@ -1943,8 +1987,6 @@ function validatePolarisInputs() {
     if (inputs.POLARIS_SERVER_URL) {
         const paramsMap = new Map();
         paramsMap.set(constants.POLARIS_ACCESS_TOKEN_KEY, inputs.POLARIS_ACCESS_TOKEN);
-        paramsMap.set(constants.POLARIS_APPLICATION_NAME_KEY, inputs.POLARIS_APPLICATION_NAME);
-        paramsMap.set(constants.POLARIS_PROJECT_NAME_KEY, inputs.POLARIS_PROJECT_NAME);
         paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
         paramsMap.set(constants.POLARIS_ASSESSMENT_TYPES_KEY, inputs.POLARIS_ASSESSMENT_TYPES);
         errors = validateParameters(paramsMap, constants.POLARIS_KEY);
@@ -1999,8 +2041,6 @@ function validateCoverityInputs() {
         paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
         paramsMap.set(constants.COVERITY_USER_PASSWORD_KEY, inputs.COVERITY_USER_PASSWORD);
         paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
-        paramsMap.set(constants.COVERITY_PROJECT_NAME_KEY, inputs.COVERITY_PROJECT_NAME);
-        paramsMap.set(constants.COVERITY_STREAM_NAME_KEY, inputs.COVERITY_STREAM_NAME);
         errors = validateParameters(paramsMap, constants.COVERITY_KEY);
     }
     return errors;

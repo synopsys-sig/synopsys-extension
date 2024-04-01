@@ -99,7 +99,7 @@ describe("Validator test", () => {
 
             const polarisValidationErrors = validator.validatePolarisInputs();
             expect(polarisValidationErrors.length).greaterThan(0);
-            expect(polarisValidationErrors[0]).contains(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing'])
+            expect(polarisValidationErrors[0]).contains(['[bridge_polaris_accessToken,bridge_polaris_assessment_types] - required parameters for polaris is missing'])
         });
     });
 
@@ -130,7 +130,7 @@ describe("Validator test", () => {
 
             const coverityValidationErrors = validator.validateCoverityInputs();
             expect(coverityValidationErrors.length).greaterThan(0);
-            expect(coverityValidationErrors[0]).contains(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing'])
+            expect(coverityValidationErrors[0]).contains(['[bridge_coverity_connect_user_password] - required parameters for coverity is missing'])
         });
 
         it('should return false for invalid coverity install directory', function () {
