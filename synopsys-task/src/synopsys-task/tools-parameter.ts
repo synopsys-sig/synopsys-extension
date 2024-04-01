@@ -69,12 +69,28 @@ export class SynopsysToolsParameter {
         polaris: {
           accesstoken: inputs.POLARIS_ACCESS_TOKEN,
           serverUrl: inputs.POLARIS_SERVER_URL,
-          application: { name: inputs.POLARIS_APPLICATION_NAME },
-          project: { name: inputs.POLARIS_PROJECT_NAME },
+          application: {},
+          project: {},
           assessment: { types: assessmentTypeArray },
         },
       },
     };
+
+    const azureRepositoryName =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+
+    if (inputs.POLARIS_APPLICATION_NAME) {
+      polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
+    } else {
+      polData.data.polaris.application.name = azureRepositoryName;
+    }
+
+    if (inputs.POLARIS_PROJECT_NAME) {
+      polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
+    } else {
+      polData.data.polaris.project.name = azureRepositoryName;
+    }
+
     if (inputs.POLARIS_BRANCH_NAME) {
       polData.data.polaris.branch = { name: inputs.POLARIS_BRANCH_NAME };
     }
@@ -309,12 +325,50 @@ export class SynopsysToolsParameter {
               password: inputs.COVERITY_USER_PASSWORD,
             },
             url: inputs.COVERITY_URL,
-            project: { name: inputs.COVERITY_PROJECT_NAME },
-            stream: { name: inputs.COVERITY_STREAM_NAME },
+            project: {},
+            stream: {},
           },
         },
       },
     };
+
+    const azureRepositoryName =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+
+    if (inputs.COVERITY_PROJECT_NAME) {
+      covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
+    } else {
+      covData.data.coverity.connect.project.name = azureRepositoryName;
+    }
+
+    if (inputs.COVERITY_STREAM_NAME) {
+      covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
+    } else {
+      const buildReason =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+        "";
+      if (buildReason == AZURE_BUILD_REASON.PULL_REQUEST) {
+        const pullRequestTargetBranchName =
+          taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
+          ) || "";
+        covData.data.coverity.connect.stream.name =
+          azureRepositoryName && pullRequestTargetBranchName
+            ? azureRepositoryName
+                .concat("-")
+                .concat(pullRequestTargetBranchName)
+            : "";
+      } else {
+        const sourceBranchName =
+          taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+          ) || "";
+        covData.data.coverity.connect.stream.name =
+          azureRepositoryName && sourceBranchName
+            ? azureRepositoryName.concat("-").concat(sourceBranchName)
+            : "";
+      }
+    }
 
     if (parseToBoolean(inputs.COVERITY_LOCAL)) {
       covData.data.coverity.local = true;
