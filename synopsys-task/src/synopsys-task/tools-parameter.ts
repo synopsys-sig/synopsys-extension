@@ -72,7 +72,6 @@ export class SynopsysToolsParameter {
           application: {},
           project: {},
           assessment: { types: assessmentTypeArray },
-          branch: {},
         },
       },
     };
@@ -93,7 +92,7 @@ export class SynopsysToolsParameter {
     }
 
     if (inputs.POLARIS_BRANCH_NAME) {
-      polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
+      polData.data.polaris.branch = { name: inputs.POLARIS_BRANCH_NAME };
     }
 
     if (inputs.POLARIS_TRIAGE) {
@@ -187,10 +186,6 @@ export class SynopsysToolsParameter {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
           token: inputs.BLACKDUCK_API_TOKEN,
-          automation: {},
-        },
-        network: {
-          airGap: inputs.ENABLE_NETWORK_AIRGAP,
         },
       },
     };
@@ -202,18 +197,18 @@ export class SynopsysToolsParameter {
     }
 
     if (inputs.BLACKDUCK_SCAN_FULL) {
-      let scanFullValue = false;
       if (
         inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
         inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false"
       ) {
-        scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+        const scanFullValue =
+          inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+        blackduckData.data.blackduck.scan = { full: scanFullValue };
       } else {
         throw new Error(
           "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
         );
       }
-      blackduckData.data.blackduck.scan = { full: scanFullValue };
     }
 
     if (failureSeverities && failureSeverities.length > 0) {
@@ -262,17 +257,18 @@ export class SynopsysToolsParameter {
       console.log("Black Duck Fix PR is enabled");
       blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
       blackduckData.data.azure = await this.getAzureRepoInfo();
-    } else {
-      // Disable fix pull request for adapters
-      blackduckData.data.blackduck.fixpr = { enabled: false };
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       console.info("BlackDuck Automation comment is enabled");
       blackduckData.data.azure = await this.getAzureRepoInfo();
       blackduckData.data.environment = this.setEnvironmentScanPullData();
-      blackduckData.data.blackduck.automation.prcomment = true;
+      blackduckData.data.blackduck.automation = { prcomment: true };
       blackduckData.data;
+    }
+
+    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
+      blackduckData.data.network = { airGap: true };
     }
 
     const buildReason =
@@ -332,12 +328,7 @@ export class SynopsysToolsParameter {
             project: {},
             stream: {},
           },
-          automation: {},
-          network: {
-            airGap: inputs.ENABLE_NETWORK_AIRGAP,
-          },
         },
-        project: {},
       },
     };
 
@@ -379,7 +370,7 @@ export class SynopsysToolsParameter {
       }
     }
 
-    if (inputs.COVERITY_LOCAL) {
+    if (parseToBoolean(inputs.COVERITY_LOCAL)) {
       covData.data.coverity.local = true;
     }
 
@@ -403,11 +394,15 @@ export class SynopsysToolsParameter {
       console.info("Coverity Automation comment is enabled");
       covData.data.azure = await this.getAzureRepoInfo();
       covData.data.environment = this.setEnvironmentScanPullData();
-      covData.data.coverity.automation.prcomment = true;
+      covData.data.coverity.automation = { prcomment: true };
     }
 
     if (inputs.COVERITY_VERSION) {
       covData.data.coverity.version = inputs.COVERITY_VERSION;
+    }
+
+    if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
+      covData.data.coverity.network = { airGap: true };
     }
 
     const inputJson = JSON.stringify(covData);
@@ -610,16 +605,19 @@ export class SynopsysToolsParameter {
   }
 
   private setSarifReportsInputsForBlackduck(): Reports {
-    const sarifReportFilterSeverities: string[] = [];
-    let sarifReportFilePath = "";
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+      },
+    };
 
-    if (
-      inputs.BLACKDUCK_URL &&
-      inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH?.trim()
-    ) {
-      sarifReportFilePath = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim();
+    if (inputs.BLACKDUCK_URL && inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH) {
+      reportData.sarif.file = {
+        path: inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH,
+      };
     }
 
+    const sarifReportFilterSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_URL &&
       inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
@@ -630,37 +628,33 @@ export class SynopsysToolsParameter {
       ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...sarifSeverities);
     }
+    if (sarifReportFilterSeverities.length > 0) {
+      reportData.sarif.severities = sarifReportFilterSeverities;
+    }
 
-    let groupSCAIssues = true;
     if (
       inputs.BLACKDUCK_URL &&
       isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ) {
-      groupSCAIssues = JSON.parse(
+      reportData.sarif.groupSCAIssues = JSON.parse(
         inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
 
-    const reportData: Reports = {
-      sarif: {
-        create: true,
-        severities: sarifReportFilterSeverities,
-        file: {
-          path: sarifReportFilePath,
-        },
-        groupSCAIssues: groupSCAIssues,
-      },
-    };
     return reportData;
   }
 
   private setSarifReportsInputsForPolaris(): Reports {
-    let sarifReportFilePath = "";
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      inputs.POLARIS_REPORTS_SARIF_FILE_PATH?.trim()
-    ) {
-      sarifReportFilePath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+      },
+    };
+
+    if (inputs.POLARIS_SERVER_URL && inputs.POLARIS_REPORTS_SARIF_FILE_PATH) {
+      reportData.sarif.file = {
+        path: inputs.POLARIS_REPORTS_SARIF_FILE_PATH,
+      };
     }
 
     const sarifReportFilterSeverities: string[] = [];
@@ -674,13 +668,15 @@ export class SynopsysToolsParameter {
       ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...severities);
     }
+    if (sarifReportFilterSeverities.length > 0) {
+      reportData.sarif.severities = sarifReportFilterSeverities;
+    }
 
-    let groupSCAIssues = true;
     if (
       inputs.POLARIS_SERVER_URL &&
       isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ) {
-      groupSCAIssues = JSON.parse(
+      reportData.sarif.groupSCAIssues = JSON.parse(
         inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
@@ -696,20 +692,10 @@ export class SynopsysToolsParameter {
       ).map((issueType) => issueType.trim());
       sarifReportIssueTypes.push(...issueTypes);
     }
+    if (sarifReportIssueTypes.length > 0) {
+      reportData.sarif.issue = { types: sarifReportIssueTypes };
+    }
 
-    const reportData: Reports = {
-      sarif: {
-        create: true,
-        severities: sarifReportFilterSeverities,
-        file: {
-          path: sarifReportFilePath,
-        },
-        issue: {
-          types: sarifReportIssueTypes,
-        },
-        groupSCAIssues: groupSCAIssues,
-      },
-    };
     return reportData;
   }
 }

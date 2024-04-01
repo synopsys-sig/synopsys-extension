@@ -3,7 +3,7 @@ import { Environment } from "./blackduck";
 
 export interface Coverity {
   coverity: CoverityConnect;
-  project: ProjectData;
+  project?: ProjectData;
   azure?: AzureData;
   environment?: Environment;
 }
@@ -20,8 +20,8 @@ export interface AutomationData {
 export interface CoverityConnect {
   connect: CoverityData;
   install?: { directory: string };
-  automation: AutomationData;
-  network: NetworkAirGap;
+  automation?: AutomationData;
+  network?: NetworkAirGap;
   local?: boolean;
   version?: string;
 }
