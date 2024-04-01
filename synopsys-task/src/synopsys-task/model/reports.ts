@@ -1,5 +1,5 @@
 export interface Reports {
-  sarif?: Sarif;
+  sarif: Sarif;
 }
 
 export interface Sarif {

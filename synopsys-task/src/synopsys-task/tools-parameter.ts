@@ -551,16 +551,19 @@ export class SynopsysToolsParameter {
   }
 
   private setSarifReportsInputsForBlackduck(): Reports {
-    const sarifReportFilterSeverities: string[] = [];
-    let sarifReportFilePath = "";
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+      },
+    };
 
-    if (
-      inputs.BLACKDUCK_URL &&
-      inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH?.trim()
-    ) {
-      sarifReportFilePath = inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH.trim();
+    if (inputs.BLACKDUCK_URL && inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH) {
+      reportData.sarif.file = {
+        path: inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH,
+      };
     }
 
+    const sarifReportFilterSeverities: string[] = [];
     if (
       inputs.BLACKDUCK_URL &&
       inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
@@ -571,37 +574,33 @@ export class SynopsysToolsParameter {
       ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...sarifSeverities);
     }
+    if (sarifReportFilterSeverities.length > 0) {
+      reportData.sarif.severities = sarifReportFilterSeverities;
+    }
 
-    let groupSCAIssues = true;
     if (
       inputs.BLACKDUCK_URL &&
       isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ) {
-      groupSCAIssues = JSON.parse(
+      reportData.sarif.groupSCAIssues = JSON.parse(
         inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
 
-    const reportData: Reports = {
-      sarif: {
-        create: true,
-        severities: sarifReportFilterSeverities,
-        file: {
-          path: sarifReportFilePath,
-        },
-        groupSCAIssues: groupSCAIssues,
-      },
-    };
     return reportData;
   }
 
   private setSarifReportsInputsForPolaris(): Reports {
-    let sarifReportFilePath = "";
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      inputs.POLARIS_REPORTS_SARIF_FILE_PATH?.trim()
-    ) {
-      sarifReportFilePath = inputs.POLARIS_REPORTS_SARIF_FILE_PATH.trim();
+    const reportData: Reports = {
+      sarif: {
+        create: true,
+      },
+    };
+
+    if (inputs.POLARIS_SERVER_URL && inputs.POLARIS_REPORTS_SARIF_FILE_PATH) {
+      reportData.sarif.file = {
+        path: inputs.POLARIS_REPORTS_SARIF_FILE_PATH,
+      };
     }
 
     const sarifReportFilterSeverities: string[] = [];
@@ -615,13 +614,15 @@ export class SynopsysToolsParameter {
       ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...severities);
     }
+    if (sarifReportFilterSeverities.length > 0) {
+      reportData.sarif.severities = sarifReportFilterSeverities;
+    }
 
-    let groupSCAIssues = true;
     if (
       inputs.POLARIS_SERVER_URL &&
       isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ) {
-      groupSCAIssues = JSON.parse(
+      reportData.sarif.groupSCAIssues = JSON.parse(
         inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
       );
     }
@@ -637,20 +638,10 @@ export class SynopsysToolsParameter {
       ).map((issueType) => issueType.trim());
       sarifReportIssueTypes.push(...issueTypes);
     }
+    if (sarifReportIssueTypes.length > 0) {
+      reportData.sarif.issue = { types: sarifReportIssueTypes };
+    }
 
-    const reportData: Reports = {
-      sarif: {
-        create: true,
-        severities: sarifReportFilterSeverities,
-        file: {
-          path: sarifReportFilePath,
-        },
-        issue: {
-          types: sarifReportIssueTypes,
-        },
-        groupSCAIssues: groupSCAIssues,
-      },
-    };
     return reportData;
   }
 }
