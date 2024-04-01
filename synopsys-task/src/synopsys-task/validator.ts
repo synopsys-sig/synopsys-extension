@@ -82,9 +82,9 @@ export function validateCoverityInputs(): string[] {
   let errors: string[] = [];
   if (inputs.COVERITY_URL) {
     const paramsMap = new Map();
-    paramsMap.set(constants.COVERITY_USER_NAME_KEY, inputs.COVERITY_USER);
+    paramsMap.set(constants.COVERITY_USER_KEY, inputs.COVERITY_USER);
     paramsMap.set(
-      constants.COVERITY_USER_PASSWORD_KEY,
+      constants.COVERITY_PASSPHRASE_KEY,
       inputs.COVERITY_USER_PASSWORD
     );
     paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
@@ -134,10 +134,7 @@ export function validateBlackDuckInputs(): string[] {
   if (inputs.BLACKDUCK_URL) {
     const paramsMap = new Map();
     paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_URL);
-    paramsMap.set(
-      constants.BLACKDUCK_API_TOKEN_KEY,
-      inputs.BLACKDUCK_API_TOKEN
-    );
+    paramsMap.set(constants.BLACKDUCK_TOKEN_KEY, inputs.BLACKDUCK_API_TOKEN);
     errors = validateParameters(paramsMap, constants.BLACKDUCK_KEY);
   }
   return errors;

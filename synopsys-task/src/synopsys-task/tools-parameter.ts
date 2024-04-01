@@ -121,10 +121,7 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
@@ -262,10 +259,7 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         blackduckData.data.blackduck.reports =
           this.setSarifReportsInputsForBlackduck();
