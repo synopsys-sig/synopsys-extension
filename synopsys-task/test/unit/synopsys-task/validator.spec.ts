@@ -2,7 +2,6 @@ import * as inputs from '../../../src/synopsys-task/input';
 import * as validator from '../../../src/synopsys-task/validator';
 import { expect } from 'chai';
 import * as mocha from 'mocha';
-import * as constants from "../../../src/synopsys-task/application-constant";
 
 describe("Validator test", () => {
     context('validator context',() => {
@@ -80,7 +79,7 @@ describe("Validator test", () => {
         it('should have error for no scan type provided', function () {
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).greaterThan(0);
-            expect(validationsErrors[0]).contains(constants.POLARIS_SERVER_URL_KEY);
+            expect(validationsErrors[0]).contains('bridge_polaris_serverUrl');
         });
 
         it('should return empty array for validatePolarisInputs', function () {
@@ -100,12 +99,7 @@ describe("Validator test", () => {
 
             const polarisValidationErrors = validator.validatePolarisInputs();
             expect(polarisValidationErrors.length).greaterThan(0);
-            expect(polarisValidationErrors[0]).contains("["
-                .concat(constants.POLARIS_ACCESS_TOKEN_KEY).concat(" or ").concat(constants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY).concat(",")
-                .concat(constants.POLARIS_APPLICATION_NAME_KEY).concat(" or ").concat(constants.BRIDGE_POLARIS_APPLICATION_NAME_KEY).concat(",")
-                .concat(constants.POLARIS_PROJECT_NAME_KEY).concat(" or ").concat(constants.BRIDGE_POLARIS_PROJECT_NAME_KEY).concat(",")
-                .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY).concat(" or ").concat(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY)
-                .concat("] - required parameters for polaris is missing"));
+            expect(polarisValidationErrors[0]).contains(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing'])
         });
     });
 
@@ -136,11 +130,7 @@ describe("Validator test", () => {
 
             const coverityValidationErrors = validator.validateCoverityInputs();
             expect(coverityValidationErrors.length).greaterThan(0);
-            expect(coverityValidationErrors[0]).contains("["
-                .concat(constants.COVERITY_PASSPHRASE_KEY).concat(" or ").concat(constants.BRIDGE_COVERITY_USER_PASSWORD_KEY).concat(",")
-                .concat(constants.COVERITY_PROJECT_NAME_KEY).concat(" or ").concat(constants.BRIDGE_COVERITY_PROJECT_NAME_KEY).concat(",")
-                .concat(constants.COVERITY_STREAM_NAME_KEY).concat(" or ").concat(constants.BRIDGE_COVERITY_STREAM_NAME_KEY)
-                .concat("] - required parameters for coverity is missing"));
+            expect(coverityValidationErrors[0]).contains(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing'])
         });
 
         it('should return false for invalid coverity install directory', function () {
@@ -177,7 +167,7 @@ describe("Validator test", () => {
         it('should have error for no scan type provided', function () {
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).greaterThan(0);
-            expect(validationsErrors[1]).contains(constants.BLACKDUCK_URL_KEY);
+            expect(validationsErrors[1]).contains('bridge_blackduck_url');
         });
 
         it('should return empty array for validateBlackduckInputs', function () {
@@ -199,14 +189,12 @@ describe("Validator test", () => {
             expect(isValid).equals(false);
         });
 
-        it('should return mandatory fields missing error for validateBlackDuckInputs', function () {
+        it('should return mandatory fields missing error for validatePolarisInputs', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
 
             const bdValidationErrors = validator.validateBlackDuckInputs();
             expect(bdValidationErrors.length).greaterThan(0);
-            expect(bdValidationErrors[0]).contains("["
-                .concat(constants.BLACKDUCK_TOKEN_KEY).concat(" or ").concat(constants.BRIDGE_BLACKDUCK_API_TOKEN_KEY)
-                .concat("] - required parameters for blackduck is missing"));
+            expect(bdValidationErrors[0]).contains(['[bridge_blackduck_token] - required parameters for blackduck is missing'])
         });
     });
 });

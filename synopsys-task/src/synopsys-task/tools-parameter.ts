@@ -58,10 +58,7 @@ export class SynopsysToolsParameter {
           assessmentTypeArray.push(assessmentType.trim());
         } else {
           throw new Error(
-            "Invalid value for "
-              .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
-              .concat(" or ")
-              .concat(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY)
+            "Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
           );
         }
       }
@@ -124,7 +121,10 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
+    if (
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
@@ -194,10 +194,7 @@ export class SynopsysToolsParameter {
         scanFullValue = inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
       } else {
         throw new Error(
-          "Missing boolean value for "
-            .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
-            .concat(" or ")
-            .concat(constants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY)
+          "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
         );
       }
       blackduckData.data.blackduck.scan = { full: scanFullValue };
@@ -220,10 +217,9 @@ export class SynopsysToolsParameter {
       for (const failureSeverity of failureSeverities) {
         if (values.indexOf(failureSeverity) == -1) {
           throw new Error(
-            "Invalid value for "
-              .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
-              .concat(" or ")
-              .concat(constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+            "Invalid value for ".concat(
+              constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
+            )
           );
         } else {
           failureSeverityEnums.push(
@@ -266,7 +262,10 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
+    if (
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
+      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
+    ) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         blackduckData.data.blackduck.reports =
           this.setSarifReportsInputsForBlackduck();
@@ -389,10 +388,7 @@ export class SynopsysToolsParameter {
       isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
     ) {
       throw new Error(
-        "Invalid value for "
-          .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
-          .concat(" or ")
-          .concat(constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+        "Invalid value for ".concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
       );
     }
     const createSinglePr = parseToBoolean(
@@ -400,12 +396,9 @@ export class SynopsysToolsParameter {
     );
     if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
       throw new Error(
-        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(" or ")
-          .concat(constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY)
-          .concat(" is not applicable with ")
-          .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
-          .concat(" or ")
-          .concat(constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+          " is not applicable with "
+        ).concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
       );
     }
     const blackDuckFixPrData: BlackDuckFixPrData = {};
