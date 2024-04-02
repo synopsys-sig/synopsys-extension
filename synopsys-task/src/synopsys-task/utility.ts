@@ -166,3 +166,12 @@ export function filterEmptyData(data: object) {
       : value
   );
 }
+
+export function getDelimitedInput(data: string[][]) {
+  for (const value of data) {
+    if (value.length > 0) {
+      return value;
+    }
+  }
+  return [];
+}

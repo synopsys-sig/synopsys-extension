@@ -178,7 +178,7 @@ export class SynopsysToolsParameter {
     const failureSeverities: string[] =
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
-    const blackduckData: InputData<Blackduck> = {
+    let blackduckData: InputData<Blackduck> = {
       data: {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
@@ -282,6 +282,9 @@ export class SynopsysToolsParameter {
       }
     }
 
+    // Remove empty data from json object
+    blackduckData = filterEmptyData(blackduckData);
+
     const inputJson = JSON.stringify(blackduckData);
 
     let stateFilePath = path.join(
@@ -310,7 +313,7 @@ export class SynopsysToolsParameter {
 
   async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
-    const covData: InputData<Coverity> = {
+    let covData: InputData<Coverity> = {
       data: {
         coverity: {
           connect: {
@@ -398,6 +401,9 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
       covData.data.coverity.network = { airGap: true };
     }
+
+    // Remove empty data from json object
+    covData = filterEmptyData(covData);
 
     const inputJson = JSON.stringify(covData);
 
