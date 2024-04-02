@@ -470,11 +470,9 @@ export class SynopsysToolsParameter {
         }
       }
     }
-    blackDuckFixPrData.filter = {
-      ...(fixPRFilterSeverities.length > 0
-        ? { severities: fixPRFilterSeverities }
-        : {}),
-    };
+    if (fixPRFilterSeverities.length > 0) {
+      blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
+    }
     return blackDuckFixPrData;
   }
 
