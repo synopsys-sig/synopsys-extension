@@ -784,6 +784,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCK_REPORTS_SARIF_CREATE = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCK_FIXPR_MAXCOUNT = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_FIXPR_ENABLED = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_TEST_SCA_TYPE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.POLARIS_BRANCH_NAME = exports.POLARIS_TRIAGE = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
+const utility_1 = __nccwpck_require__(837);
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = ((_a = taskLib.getInput(constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY)) === null || _a === void 0 ? void 0 : _a.trim()) ||
     ((_b = taskLib
@@ -828,9 +829,11 @@ exports.POLARIS_PROJECT_NAME = ((_w = taskLib.getInput(constants.POLARIS_PROJECT
     ((_x = taskLib.getInput(constants.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR)) === null || _x === void 0 ? void 0 : _x.trim()) ||
     ((_y = taskLib.getInput(constants.BRIDGE_POLARIS_PROJECT_NAME_KEY)) === null || _y === void 0 ? void 0 : _y.trim()) ||
     "";
-exports.POLARIS_ASSESSMENT_TYPES = taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ",");
+exports.POLARIS_ASSESSMENT_TYPES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ","),
+]);
 exports.POLARIS_TRIAGE = ((_z = taskLib.getInput(constants.POLARIS_TRIAGE_KEY)) === null || _z === void 0 ? void 0 : _z.trim()) ||
     ((_0 = taskLib.getInput(constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR)) === null || _0 === void 0 ? void 0 : _0.trim()) ||
     ((_1 = taskLib.getInput(constants.BRIDGE_POLARIS_TRIAGE_KEY)) === null || _1 === void 0 ? void 0 : _1.trim()) ||
@@ -844,10 +847,11 @@ exports.POLARIS_PR_COMMENT_ENABLED = ((_5 = taskLib.getInput(constants.POLARIS_P
         .getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR)) === null || _6 === void 0 ? void 0 : _6.trim()) ||
     ((_7 = taskLib.getInput(constants.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY)) === null || _7 === void 0 ? void 0 : _7.trim()) ||
     "";
-exports.POLARIS_PR_COMMENT_SEVERITIES = taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY, ",") ||
-    [];
+exports.POLARIS_PR_COMMENT_SEVERITIES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY, ","),
+]);
 exports.POLARIS_TEST_SCA_TYPE = ((_8 = taskLib.getInput(constants.POLARIS_TEST_SCA_TYPE_KEY)) === null || _8 === void 0 ? void 0 : _8.trim()) ||
     ((_9 = taskLib
         .getInput(constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR)) === null || _9 === void 0 ? void 0 : _9.trim()) ||
@@ -864,10 +868,11 @@ exports.POLARIS_REPORTS_SARIF_FILE_PATH = ((_14 = taskLib.getInput(constants.POL
     ((_16 = taskLib
         .getInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) === null || _16 === void 0 ? void 0 : _16.trim()) ||
     "";
-exports.POLARIS_REPORTS_SARIF_SEVERITIES = taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
-    "";
+exports.POLARIS_REPORTS_SARIF_SEVERITIES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY, ","),
+]);
 exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_17 = taskLib
     .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)) === null || _17 === void 0 ? void 0 : _17.trim()) ||
     ((_18 = taskLib
@@ -875,10 +880,11 @@ exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_17 = taskLib
     ((_19 = taskLib
         .getInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)) === null || _19 === void 0 ? void 0 : _19.trim()) ||
     "";
-exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, ",") ||
-    "";
+exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, ","),
+]);
 // Coverity related inputs
 exports.COVERITY_URL = ((_20 = taskLib.getInput(constants.COVERITY_URL_KEY)) === null || _20 === void 0 ? void 0 : _20.trim()) ||
     ((_21 = taskLib.getInput(constants.COVERITY_URL_KEY_CLASSIC_EDITOR)) === null || _21 === void 0 ? void 0 : _21.trim()) ||
@@ -942,10 +948,11 @@ exports.BLACKDUCK_SCAN_FULL = ((_56 = taskLib.getInput(constants.BLACKDUCK_SCAN_
     ((_57 = taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR)) === null || _57 === void 0 ? void 0 : _57.trim()) ||
     ((_58 = taskLib.getInput(constants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY)) === null || _58 === void 0 ? void 0 : _58.trim()) ||
     "";
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ",") ||
-    [];
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, ","),
+]);
 exports.BLACKDUCK_FIXPR_ENABLED = ((_59 = taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)) === null || _59 === void 0 ? void 0 : _59.trim()) ||
     ((_60 = taskLib
         .getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR)) === null || _60 === void 0 ? void 0 : _60.trim()) ||
@@ -967,14 +974,16 @@ exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = ((_66 = taskLib.getInput(constants.BL
     ((_68 = taskLib
         .getInput(constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)) === null || _68 === void 0 ? void 0 : _68.trim()) ||
     "";
-exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, ",") ||
-    "";
-exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY, ",") ||
-    "";
+exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, ","),
+]);
+exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY, ","),
+    taskLib.getDelimitedInput(constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY, ","),
+]);
 exports.BLACKDUCK_REPORTS_SARIF_CREATE = ((_69 = taskLib.getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) === null || _69 === void 0 ? void 0 : _69.trim()) ||
     ((_70 = taskLib
         .getInput(constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR)) === null || _70 === void 0 ? void 0 : _70.trim()) ||
@@ -987,10 +996,11 @@ exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = ((_72 = taskLib.getInput(constants.B
     ((_74 = taskLib
         .getInput(constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) === null || _74 === void 0 ? void 0 : _74.trim()) ||
     "";
-exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
-    taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, ",") ||
-    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, ",") ||
-    "";
+exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = (0, utility_1.getDelimitedInput)([
+    taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, ","),
+]);
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = ((_75 = taskLib
     .getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)) === null || _75 === void 0 ? void 0 : _75.trim()) ||
     ((_76 = taskLib
@@ -1702,7 +1712,7 @@ class SynopsysToolsParameter {
         return __awaiter(this, void 0, void 0, function* () {
             const failureSeverities = inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
             let command = "";
-            const blackduckData = {
+            let blackduckData = {
                 data: {
                     blackduck: {
                         url: inputs.BLACKDUCK_URL,
@@ -1777,6 +1787,8 @@ class SynopsysToolsParameter {
                     taskLib.warning("BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
                 }
             }
+            // Remove empty data from json object
+            blackduckData = (0, utility_1.filterEmptyData)(blackduckData);
             const inputJson = JSON.stringify(blackduckData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.BD_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -1797,7 +1809,7 @@ class SynopsysToolsParameter {
     getFormattedCommandForCoverity() {
         return __awaiter(this, void 0, void 0, function* () {
             let command = "";
-            const covData = {
+            let covData = {
                 data: {
                     coverity: {
                         connect: {
@@ -1869,6 +1881,8 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.ENABLE_NETWORK_AIRGAP)) {
                 covData.data.coverity.network = { airGap: true };
             }
+            // Remove empty data from json object
+            covData = (0, utility_1.filterEmptyData)(covData);
             const inputJson = JSON.stringify(covData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.COVERITY_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -1916,9 +1930,9 @@ class SynopsysToolsParameter {
                 }
             }
         }
-        blackDuckFixPrData.filter = Object.assign({}, (fixPRFilterSeverities.length > 0
-            ? { severities: fixPRFilterSeverities }
-            : {}));
+        if (fixPRFilterSeverities.length > 0) {
+            blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
+        }
         return blackDuckFixPrData;
     }
     getAzureRepoInfo() {
@@ -2122,7 +2136,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.getDelimitedInput = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -2259,6 +2273,15 @@ function filterEmptyData(data) {
         : value);
 }
 exports.filterEmptyData = filterEmptyData;
+function getDelimitedInput(data) {
+    for (const value of data) {
+        if (value.length > 0) {
+            return value;
+        }
+    }
+    return [];
+}
+exports.getDelimitedInput = getDelimitedInput;
 
 
 /***/ }),
