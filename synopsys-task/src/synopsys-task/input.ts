@@ -77,11 +77,8 @@ export const POLARIS_PROJECT_NAME =
   "";
 export const POLARIS_ASSESSMENT_TYPES =
   taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ",") ||
-  taskLib.getDelimitedInput(
-    constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
-    ","
-  ) ||
-  taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ",");
+  taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR, ",") ||
+  taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ",") || "";
 export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() ||
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR)?.trim() ||
