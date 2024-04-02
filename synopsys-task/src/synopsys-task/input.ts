@@ -77,13 +77,9 @@ export const POLARIS_PROJECT_NAME =
   taskLib.getInput(constants.BRIDGE_POLARIS_PROJECT_NAME_KEY)?.trim() ||
   "";
 export const POLARIS_ASSESSMENT_TYPES = getDelimitedInput([
-  taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ","),
-  taskLib.getDelimitedInput(
-    constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
-    ","
-  ),
-  taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ","),
-]);
+    taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR, ","),
+    taskLib.getDelimitedInput(constants.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY, ",")])
 export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY)?.trim() ||
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR)?.trim() ||
@@ -102,16 +98,15 @@ export const POLARIS_PR_COMMENT_ENABLED =
   taskLib.getInput(constants.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY)?.trim() ||
   "";
 export const POLARIS_PR_COMMENT_SEVERITIES = getDelimitedInput([
-  taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ","),
+    taskLib.getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, ","),
   taskLib.getDelimitedInput(
-    constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
+      constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR,
+      ","
   ),
   taskLib.getDelimitedInput(
-    constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY,
-    ","
-  ),
-]);
+      constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY,
+      ","
+  )]);
 export const POLARIS_TEST_SCA_TYPE =
   taskLib.getInput(constants.POLARIS_TEST_SCA_TYPE_KEY)?.trim() ||
   taskLib
@@ -138,18 +133,17 @@ export const POLARIS_REPORTS_SARIF_FILE_PATH =
   "";
 export const POLARIS_REPORTS_SARIF_SEVERITIES = getDelimitedInput([
   taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
+      constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+      ","
   ),
   taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
+      constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
+      ","
   ),
   taskLib.getDelimitedInput(
-    constants.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
-  ),
-]);
+      constants.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+      ","
+  )]);
 export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
   taskLib
     .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)
@@ -165,18 +159,17 @@ export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
   "";
 export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput([
   taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
-    ","
+      constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+      ","
   ),
   taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
-    ","
+      constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
+      ","
   ),
   taskLib.getDelimitedInput(
-    constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
-    ","
-  ),
-]);
+      constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+      ","
+  )]);
 
 // Coverity related inputs
 export const COVERITY_URL =
@@ -262,19 +255,19 @@ export const BLACKDUCK_SCAN_FULL =
   taskLib.getInput(constants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY)?.trim() ||
   "";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES = getDelimitedInput([
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
-    ","
-  ),
-]);
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
+          ","
+      )
+    ]);
 export const BLACKDUCK_FIXPR_ENABLED =
   taskLib.getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY)?.trim() ||
   taskLib
@@ -305,32 +298,32 @@ export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR =
     ?.trim() ||
   "";
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES = getDelimitedInput([
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
-    ","
-  ),
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY,
+          ","
+      )
 ]);
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = getDelimitedInput([
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
-    ","
-  ),
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR,
+          ","
+      ),
+      taskLib.getDelimitedInput(
+          constants.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
+          ","
+      )
 ]);
 
 export const BLACKDUCK_REPORTS_SARIF_CREATE =
@@ -352,20 +345,18 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH =
     ?.trim() ||
   "";
 
-export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput([
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
-  ),
-  taskLib.getDelimitedInput(
-    constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
-  ),
-]);
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput([taskLib.getDelimitedInput(
+        constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
+        ","
+    ),
+    taskLib.getDelimitedInput(
+        constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
+        ","
+    ),
+    taskLib.getDelimitedInput(
+        constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
+        ","
+    )]);
 
 export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
   taskLib
