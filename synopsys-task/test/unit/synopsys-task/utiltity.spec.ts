@@ -182,4 +182,22 @@ describe("Utilities", () => {
             expect(result).equals(false)
         });
     });
+
+    context('getDelimitedInput', () => {
+
+        it('should return an empty array', function () {
+            const result = utility.getDelimitedInput([[], [], []]);
+            expect(result).to.eql([])
+        });
+
+        it('should return an array with values', function () {
+            const result = utility.getDelimitedInput([[], ['CRITICAL', 'HIGH'], []]);
+            expect(result).to.eql(['CRITICAL', 'HIGH'])
+        });
+
+        it('should return an array with values with precedence', function () {
+            const result = utility.getDelimitedInput([['CRITICAL', 'BLOCKER'], [], ['CRITICAL', 'HIGH']]);
+            expect(result).to.eql(['CRITICAL', 'BLOCKER'])
+        });
+    });
 });
