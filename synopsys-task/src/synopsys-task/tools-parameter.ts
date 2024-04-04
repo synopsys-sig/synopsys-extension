@@ -99,29 +99,38 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-      console.info("Polaris PR comment is enabled");
-      if (!inputs.AZURE_TOKEN) {
-        throw new Error(
-          "Missing required azure token for pull request comment"
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        taskLib.warning(
+          "Polaris PR comment is enabled but it will be ignored since it is not a PR/MR scan"
         );
-      }
+      } else {
+        console.info("Polaris PR comment is enabled");
+        if (!inputs.AZURE_TOKEN) {
+          throw new Error(
+            "Missing required azure token for pull request comment"
+          );
+        }
 
-      polData.data.azure = this.setAzureData(
-        "",
-        inputs.AZURE_TOKEN,
-        "",
-        "",
-        "",
-        "",
-        ""
-      );
+        polData.data.azure = this.setAzureData(
+          "",
+          inputs.AZURE_TOKEN,
+          "",
+          "",
+          "",
+          "",
+          ""
+        );
 
-      polData.data.polaris.prcomment = { severities: [], enabled: true };
+        polData.data.polaris.prcomment = { severities: [], enabled: true };
 
-      if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
-        polData.data.polaris.prcomment.severities =
-          inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+        if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
+          polData.data.polaris.prcomment.severities =
+            inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+        }
       }
     }
 
@@ -132,9 +141,6 @@ export class SynopsysToolsParameter {
         },
       };
     }
-
-    const buildReason =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
@@ -249,27 +255,39 @@ export class SynopsysToolsParameter {
       }
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
-      console.log("Black Duck Fix PR is enabled");
-      blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
-      blackduckData.data.azure = await this.getAzureRepoInfo();
+      if (buildReason === AZURE_BUILD_REASON.PULL_REQUEST) {
+        taskLib.warning(
+          "Black Duck Fix PR is enabled but it will be ignored since it is a PR/MR scan"
+        );
+      } else {
+        console.log("Black Duck Fix PR is enabled");
+        blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
+        blackduckData.data.azure = await this.getAzureRepoInfo();
+      }
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-      console.info("BlackDuck Automation comment is enabled");
-      blackduckData.data.azure = await this.getAzureRepoInfo();
-      blackduckData.data.environment = this.setEnvironmentScanPullData();
-      blackduckData.data.blackduck.automation = { prcomment: true };
-      blackduckData.data;
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        taskLib.warning(
+          "Black Duck PR comment is enabled but it will be ignored since it is not a PR/MR scan"
+        );
+      } else {
+        console.info("BlackDuck PR comment is enabled");
+        blackduckData.data.azure = await this.getAzureRepoInfo();
+        blackduckData.data.environment = this.setEnvironmentScanPullData();
+        blackduckData.data.blackduck.automation = { prcomment: true };
+        blackduckData.data;
+      }
     }
 
     if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
       blackduckData.data.network = { airGap: true };
     }
-
-    const buildReason =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
@@ -338,12 +356,12 @@ export class SynopsysToolsParameter {
       covData.data.coverity.connect.project.name = azureRepositoryName;
     }
 
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+
     if (inputs.COVERITY_STREAM_NAME) {
       covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
     } else {
-      const buildReason =
-        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
-        "";
       if (buildReason == AZURE_BUILD_REASON.PULL_REQUEST) {
         const pullRequestTargetBranchName =
           taskLib.getVariable(
@@ -388,10 +406,16 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
-      console.info("Coverity Automation comment is enabled");
-      covData.data.azure = await this.getAzureRepoInfo();
-      covData.data.environment = this.setEnvironmentScanPullData();
-      covData.data.coverity.automation = { prcomment: true };
+      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+        taskLib.warning(
+          "Coverity PR comment is enabled but it will be ignored since it is not a PR/MR scan"
+        );
+      } else {
+        console.info("Coverity PR comment is enabled");
+        covData.data.azure = await this.getAzureRepoInfo();
+        covData.data.environment = this.setEnvironmentScanPullData();
+        covData.data.coverity.automation = { prcomment: true };
+      }
     }
 
     if (inputs.COVERITY_VERSION) {
