@@ -47,7 +47,7 @@
     {
       "name": "synopsysBridgeInstallDirectory",
       "type": "string",
-      "label": "Bridge Installation Path",
+      "label": "Synopsys Bridge Installation Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Path where synopsys bridge will be configured.",
