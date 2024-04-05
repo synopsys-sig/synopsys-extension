@@ -1,5 +1,6 @@
 import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData } from "./model/azure";
+import * as taskLib from "azure-pipelines-task-lib/task";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
@@ -14,10 +15,10 @@ export class SynopsysAzureService {
   async getPullRequestIdForClassicEditorFlow(
     azureData: AzureData
   ): Promise<number> {
-    if (
-      process.env["BUILD_REASON"] &&
-      process.env["BUILD_REASON"] !== "PullRequest"
-    ) {
+    taskLib.debug(":::getPullRequestIdForClassicEditorFlow:::");
+    const buildReason = process.env["BUILD_REASON"];
+    taskLib.debug("buildReason:::" + buildReason);
+    if (buildReason && buildReason !== "PullRequest") {
       const StringFormat = (url: string, ...args: string[]) =>
         url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
 
@@ -29,6 +30,7 @@ export class SynopsysAzureService {
         "refs/heads/".concat(azureData.repository.branch.name),
         this.apiVersion
       );
+      taskLib.debug("endpoint:::" + endpoint);
       const token: string = ":".concat(azureData.user.token);
       const encodedToken: string = Buffer.from(token, "utf8").toString(
         "base64"

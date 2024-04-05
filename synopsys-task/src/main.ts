@@ -19,7 +19,9 @@ import {
 export async function run() {
   console.log("Synopsys Task started...");
   const tempDir = getTempDir();
+  taskLib.debug("tempDir:::" + tempDir);
   const workSpaceDir = getWorkSpaceDirectory();
+  taskLib.debug("workSpaceDir:::" + tempDir);
   try {
     const sb = new SynopsysBridge();
 
