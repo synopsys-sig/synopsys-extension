@@ -163,7 +163,9 @@
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
     },
     {
       "name": "polarisTestScaType",
