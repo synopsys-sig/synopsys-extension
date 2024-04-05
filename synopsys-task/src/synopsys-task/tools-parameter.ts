@@ -600,7 +600,13 @@ export class SynopsysToolsParameter {
         azurePullRequestNumber
       );
 
+      const buildReason =
+        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+        "";
+      taskLib.debug("buildReason:::" + buildReason);
+
       if (
+        buildReason === AZURE_BUILD_REASON.PULL_REQUEST &&
         azurePullRequestNumber == "" &&
         (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
           parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))

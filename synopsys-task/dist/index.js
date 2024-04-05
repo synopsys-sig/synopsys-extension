@@ -2020,7 +2020,11 @@ class SynopsysToolsParameter {
                 azureRepo != "" &&
                 azureRepoBranchName != "") {
                 const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
-                if (azurePullRequestNumber == "" &&
+                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                    "";
+                taskLib.debug("buildReason:::" + buildReason);
+                if (buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST &&
+                    azurePullRequestNumber == "" &&
                     ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
                         (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))) {
                     const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();

@@ -148,22 +148,22 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisPRCommentSeverities",
-      "type": "string",
-      "label": "Polaris PR Comment Severities",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Applicable to pull requests only",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "polarisPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentSeverities",
+      "type": "string",
+      "label": "Polaris PR Comment Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -361,7 +361,7 @@
       "name": "blackduckScanFull",
       "type": "boolean",
       "label": "Full Scan",
-      "defaultValue": "",
+      "defaultValue": false,
       "required": false,
       "helpMarkDown": "Specifies whether full scan is required or not.",
       "visibleRule": "scanType = blackduck",
