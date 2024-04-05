@@ -361,7 +361,7 @@
       "name": "blackduckScanFull",
       "type": "boolean",
       "label": "Full Scan",
-      "defaultValue": false,
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specifies whether full scan is required or not.",
       "visibleRule": "scanType = blackduck",
