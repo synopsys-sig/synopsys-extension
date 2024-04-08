@@ -136,10 +136,7 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
@@ -181,7 +178,7 @@ export class SynopsysToolsParameter {
     const failureSeverities: string[] =
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
-    const blackduckData: InputData<Blackduck> = {
+    let blackduckData: InputData<Blackduck> = {
       data: {
         blackduck: {
           url: inputs.BLACKDUCK_URL,
@@ -274,10 +271,7 @@ export class SynopsysToolsParameter {
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
 
-    if (
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE) ||
-      parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE_CLASSIC_EDITOR)
-    ) {
+    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
       if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
         blackduckData.data.blackduck.reports =
           this.setSarifReportsInputsForBlackduck();
@@ -287,6 +281,9 @@ export class SynopsysToolsParameter {
         );
       }
     }
+
+    // Remove empty data from json object
+    blackduckData = filterEmptyData(blackduckData);
 
     const inputJson = JSON.stringify(blackduckData);
 
@@ -316,7 +313,7 @@ export class SynopsysToolsParameter {
 
   async getFormattedCommandForCoverity(): Promise<string> {
     let command = "";
-    const covData: InputData<Coverity> = {
+    let covData: InputData<Coverity> = {
       data: {
         coverity: {
           connect: {
@@ -405,6 +402,9 @@ export class SynopsysToolsParameter {
       covData.data.coverity.network = { airGap: true };
     }
 
+    // Remove empty data from json object
+    covData = filterEmptyData(covData);
+
     const inputJson = JSON.stringify(covData);
 
     let stateFilePath = path.join(
@@ -476,11 +476,9 @@ export class SynopsysToolsParameter {
         }
       }
     }
-    blackDuckFixPrData.filter = {
-      ...(fixPRFilterSeverities.length > 0
-        ? { severities: fixPRFilterSeverities }
-        : {}),
-    };
+    if (fixPRFilterSeverities.length > 0) {
+      blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
+    }
     return blackDuckFixPrData;
   }
 
