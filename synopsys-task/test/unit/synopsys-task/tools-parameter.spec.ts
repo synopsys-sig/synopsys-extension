@@ -8,6 +8,9 @@ import * as inputs from "../../../src/synopsys-task/input";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
+import {
+    AZURE_BUILD_REASON,
+} from "../../../src/synopsys-task/model/azure";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -85,6 +88,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -234,6 +238,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -324,6 +329,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
              Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
              Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
              sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
