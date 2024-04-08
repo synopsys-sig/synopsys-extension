@@ -1,5 +1,5 @@
 import { HttpClient } from "typed-rest-client/HttpClient";
-import { AzureData } from "./model/azure";
+import { AzureData, AZURE_BUILD_REASON } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
 export class SynopsysAzureService {
@@ -18,7 +18,7 @@ export class SynopsysAzureService {
     taskLib.debug(":::getPullRequestIdForClassicEditorFlow:::");
     const buildReason = process.env["BUILD_REASON"];
     taskLib.debug("buildReason:::" + buildReason);
-    if (buildReason && buildReason !== "PullRequest") {
+    if (buildReason && buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
       const StringFormat = (url: string, ...args: string[]) =>
         url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
 

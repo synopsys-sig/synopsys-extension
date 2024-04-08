@@ -474,6 +474,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysAzureService = void 0;
 const HttpClient_1 = __nccwpck_require__(5538);
+const azure_1 = __nccwpck_require__(3655);
 const taskLib = __importStar(__nccwpck_require__(347));
 class SynopsysAzureService {
     constructor() {
@@ -486,7 +487,7 @@ class SynopsysAzureService {
             taskLib.debug(":::getPullRequestIdForClassicEditorFlow:::");
             const buildReason = process.env["BUILD_REASON"];
             taskLib.debug("buildReason:::" + buildReason);
-            if (buildReason && buildReason !== "PullRequest") {
+            if (buildReason && buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
                 const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
                 const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, "refs/heads/".concat(azureData.repository.branch.name), this.apiVersion);
                 taskLib.debug("endpoint:::" + endpoint);
@@ -1651,24 +1652,19 @@ class SynopsysToolsParameter {
                 },
             },
         };
-        const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-        taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+        const azureRepositoryName = this.getAzureRepositoryName();
         if (inputs.POLARIS_APPLICATION_NAME) {
             polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
         }
         else {
-            taskLib.debug("No input is provided for POLARIS_APPLICATION_NAME");
-            taskLib.debug("POLARIS_APPLICATION_NAME will be set as azureRepositoryName:::" +
-                azureRepositoryName);
+            taskLib.debug("POLARIS_APPLICATION_NAME: " + azureRepositoryName);
             polData.data.polaris.application.name = azureRepositoryName;
         }
         if (inputs.POLARIS_PROJECT_NAME) {
             polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
         }
         else {
-            taskLib.debug("No input is provided for POLARIS_PROJECT_NAME");
-            taskLib.debug("POLARIS_PROJECT_NAME will be set as azureRepositoryName:::" +
-                azureRepositoryName);
+            taskLib.debug("POLARIS_PROJECT_NAME: " + azureRepositoryName);
             polData.data.polaris.project.name = azureRepositoryName;
         }
         if (inputs.POLARIS_BRANCH_NAME) {
@@ -1677,10 +1673,8 @@ class SynopsysToolsParameter {
         if (inputs.POLARIS_TRIAGE) {
             polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
         }
-        const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-        taskLib.debug("buildReason:::" + buildReason);
         if ((0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-            if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+            if (!(0, utility_1.isPullRequest)()) {
                 taskLib.warning("Polaris PR comment is enabled but it will be ignored since it is not a PR/MR scan");
             }
             else {
@@ -1704,7 +1698,7 @@ class SynopsysToolsParameter {
             };
         }
         if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-            if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+            if (!(0, utility_1.isPullRequest)()) {
                 polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
             }
             else {
@@ -1718,7 +1712,7 @@ class SynopsysToolsParameter {
         taskLib.writeFile(stateFilePath, inputJson);
         // Wrap the file path with double quotes, to make it work with directory path with space as well
         stateFilePath = '"'.concat(stateFilePath).concat('"');
-        taskLib.debug("Generated state json file content is - ".concat(inputJson));
+        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
         command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
             .concat(SynopsysToolsParameter.POLARIS_STAGE)
             .concat(SynopsysToolsParameter.SPACE)
@@ -1782,11 +1776,9 @@ class SynopsysToolsParameter {
                     };
                 }
             }
-            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-            taskLib.debug("buildReason:::" + buildReason);
             // Check and put environment variable for fix pull request
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED)) {
-                if (buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                if ((0, utility_1.isPullRequest)()) {
                     taskLib.warning("Black Duck Fix PR is enabled but it will be ignored since it is a PR/MR scan");
                 }
                 else {
@@ -1796,7 +1788,7 @@ class SynopsysToolsParameter {
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                if (!(0, utility_1.isPullRequest)()) {
                     taskLib.warning("Black Duck PR comment is enabled but it will be ignored since it is not a PR/MR scan");
                 }
                 else {
@@ -1811,7 +1803,7 @@ class SynopsysToolsParameter {
                 blackduckData.data.network = { airGap: true };
             }
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                if (!(0, utility_1.isPullRequest)()) {
                     blackduckData.data.blackduck.reports =
                         this.setSarifReportsInputsForBlackduck();
                 }
@@ -1827,7 +1819,6 @@ class SynopsysToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            taskLib.debug("Generated state json file content is - ".concat(inputJson));
             command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
                 .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
                 .concat(SynopsysToolsParameter.SPACE)
@@ -1857,25 +1848,19 @@ class SynopsysToolsParameter {
                     },
                 },
             };
-            const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-            taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+            const azureRepositoryName = this.getAzureRepositoryName();
             if (inputs.COVERITY_PROJECT_NAME) {
                 covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
             }
             else {
-                taskLib.debug("No input is provided for COVERITY_PROJECT_NAME");
-                taskLib.debug("COVERITY_PROJECT_NAME will be set as azureRepositoryName:::" +
-                    azureRepositoryName);
+                taskLib.debug("COVERITY_PROJECT_NAME: " + azureRepositoryName);
                 covData.data.coverity.connect.project.name = azureRepositoryName;
             }
-            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-            taskLib.debug("buildReason:::" + buildReason);
             if (inputs.COVERITY_STREAM_NAME) {
                 covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
             }
             else {
-                taskLib.debug("No input is provided for COVERITY_STREAM_NAME");
-                if (buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                if ((0, utility_1.isPullRequest)()) {
                     const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) || "";
                     taskLib.debug("pullRequestTargetBranchName:::" + pullRequestTargetBranchName);
                     covData.data.coverity.connect.stream.name =
@@ -1884,8 +1869,7 @@ class SynopsysToolsParameter {
                                 .concat("-")
                                 .concat(pullRequestTargetBranchName)
                             : "";
-                    taskLib.debug("COVERITY_STREAM_NAME is set as azureRepositoryName-pullRequestTargetBranchName:::" +
-                        covData.data.coverity.connect.stream.name);
+                    taskLib.debug("COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name);
                 }
                 else {
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
@@ -1894,8 +1878,7 @@ class SynopsysToolsParameter {
                         azureRepositoryName && sourceBranchName
                             ? azureRepositoryName.concat("-").concat(sourceBranchName)
                             : "";
-                    taskLib.debug("COVERITY_STREAM_NAME is set as azureRepositoryName-sourceBranchName:::" +
-                        covData.data.coverity.connect.stream.name);
+                    taskLib.debug("COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name);
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.COVERITY_LOCAL)) {
@@ -1914,7 +1897,7 @@ class SynopsysToolsParameter {
                 };
             }
             if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
-                if (buildReason !== azure_1.AZURE_BUILD_REASON.PULL_REQUEST) {
+                if (!(0, utility_1.isPullRequest)()) {
                     taskLib.warning("Coverity PR comment is enabled but it will be ignored since it is not a PR/MR scan");
                 }
                 else {
@@ -1938,7 +1921,6 @@ class SynopsysToolsParameter {
             // Wrap the file path with double quotes, to make it work with directory path with space as well
             stateFilePath = '"'.concat(stateFilePath).concat('"');
             taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-            taskLib.debug("Generated state json file content is - ".concat(inputJson));
             command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
                 .concat(SynopsysToolsParameter.COVERITY_STAGE)
                 .concat(SynopsysToolsParameter.SPACE)
@@ -2020,10 +2002,7 @@ class SynopsysToolsParameter {
                 azureRepo != "" &&
                 azureRepoBranchName != "") {
                 const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
-                const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
-                    "";
-                taskLib.debug("buildReason:::" + buildReason);
-                if (buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST &&
+                if ((0, utility_1.isPullRequest)() &&
                     azurePullRequestNumber == "" &&
                     ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
                         (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))) {
@@ -2146,6 +2125,11 @@ class SynopsysToolsParameter {
         }
         return reportData;
     }
+    getAzureRepositoryName() {
+        const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+        taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+        return azureRepositoryName;
+    }
 }
 SynopsysToolsParameter.STAGE_OPTION = "--stage";
 SynopsysToolsParameter.BLACKDUCK_STAGE = "blackduck";
@@ -2203,7 +2187,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.isPullRequest = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -2211,6 +2195,7 @@ const toolLibLocal = __importStar(__nccwpck_require__(9510));
 const process = __importStar(__nccwpck_require__(7282));
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
+const azure_1 = __nccwpck_require__(3655);
 function cleanUrl(url) {
     if (url && url.endsWith("/")) {
         return url.slice(0, url.length - 1);
@@ -2340,6 +2325,12 @@ function filterEmptyData(data) {
         : value);
 }
 exports.filterEmptyData = filterEmptyData;
+function isPullRequest() {
+    const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+    taskLib.debug("buildReason:::" + buildReason);
+    return buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST;
+}
+exports.isPullRequest = isPullRequest;
 
 
 /***/ }),

@@ -8,11 +8,7 @@ import {
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
-import {
-  AZURE_BUILD_REASON,
-  AZURE_ENVIRONMENT_VARIABLES,
-  AzureData,
-} from "./model/azure";
+import { AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -20,7 +16,12 @@ import {
   validateBlackduckFailureSeverities,
   validateCoverityInstallDirectoryParam,
 } from "./validator";
-import { parseToBoolean, isBoolean, filterEmptyData } from "./utility";
+import {
+  parseToBoolean,
+  isBoolean,
+  filterEmptyData,
+  isPullRequest,
+} from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
@@ -77,29 +78,19 @@ export class SynopsysToolsParameter {
       },
     };
 
-    const azureRepositoryName =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-    taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+    const azureRepositoryName = this.getAzureRepositoryName();
 
     if (inputs.POLARIS_APPLICATION_NAME) {
       polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
     } else {
-      taskLib.debug("No input is provided for POLARIS_APPLICATION_NAME");
-      taskLib.debug(
-        "POLARIS_APPLICATION_NAME will be set as azureRepositoryName:::" +
-          azureRepositoryName
-      );
+      taskLib.debug("POLARIS_APPLICATION_NAME: " + azureRepositoryName);
       polData.data.polaris.application.name = azureRepositoryName;
     }
 
     if (inputs.POLARIS_PROJECT_NAME) {
       polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
     } else {
-      taskLib.debug("No input is provided for POLARIS_PROJECT_NAME");
-      taskLib.debug(
-        "POLARIS_PROJECT_NAME will be set as azureRepositoryName:::" +
-          azureRepositoryName
-      );
+      taskLib.debug("POLARIS_PROJECT_NAME: " + azureRepositoryName);
       polData.data.polaris.project.name = azureRepositoryName;
     }
 
@@ -111,12 +102,8 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
-    const buildReason =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-    taskLib.debug("buildReason:::" + buildReason);
-
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest()) {
         taskLib.warning(
           "Polaris PR comment is enabled but it will be ignored since it is not a PR/MR scan"
         );
@@ -156,7 +143,7 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest()) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
         taskLib.warning(
@@ -179,7 +166,7 @@ export class SynopsysToolsParameter {
     // Wrap the file path with double quotes, to make it work with directory path with space as well
     stateFilePath = '"'.concat(stateFilePath).concat('"');
 
-    taskLib.debug("Generated state json file content is - ".concat(inputJson));
+    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
@@ -269,13 +256,9 @@ export class SynopsysToolsParameter {
       }
     }
 
-    const buildReason =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-    taskLib.debug("buildReason:::" + buildReason);
-
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
-      if (buildReason === AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (isPullRequest()) {
         taskLib.warning(
           "Black Duck Fix PR is enabled but it will be ignored since it is a PR/MR scan"
         );
@@ -287,7 +270,7 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest()) {
         taskLib.warning(
           "Black Duck PR comment is enabled but it will be ignored since it is not a PR/MR scan"
         );
@@ -305,7 +288,7 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest()) {
         blackduckData.data.blackduck.reports =
           this.setSarifReportsInputsForBlackduck();
       } else {
@@ -330,7 +313,6 @@ export class SynopsysToolsParameter {
     stateFilePath = '"'.concat(stateFilePath).concat('"');
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-    taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
@@ -363,30 +345,19 @@ export class SynopsysToolsParameter {
       },
     };
 
-    const azureRepositoryName =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-    taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+    const azureRepositoryName = this.getAzureRepositoryName();
 
     if (inputs.COVERITY_PROJECT_NAME) {
       covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
     } else {
-      taskLib.debug("No input is provided for COVERITY_PROJECT_NAME");
-      taskLib.debug(
-        "COVERITY_PROJECT_NAME will be set as azureRepositoryName:::" +
-          azureRepositoryName
-      );
+      taskLib.debug("COVERITY_PROJECT_NAME: " + azureRepositoryName);
       covData.data.coverity.connect.project.name = azureRepositoryName;
     }
-
-    const buildReason =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-    taskLib.debug("buildReason:::" + buildReason);
 
     if (inputs.COVERITY_STREAM_NAME) {
       covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
     } else {
-      taskLib.debug("No input is provided for COVERITY_STREAM_NAME");
-      if (buildReason == AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (isPullRequest()) {
         const pullRequestTargetBranchName =
           taskLib.getVariable(
             AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
@@ -401,8 +372,7 @@ export class SynopsysToolsParameter {
                 .concat(pullRequestTargetBranchName)
             : "";
         taskLib.debug(
-          "COVERITY_STREAM_NAME is set as azureRepositoryName-pullRequestTargetBranchName:::" +
-            covData.data.coverity.connect.stream.name
+          "COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name
         );
       } else {
         const sourceBranchName =
@@ -415,8 +385,7 @@ export class SynopsysToolsParameter {
             ? azureRepositoryName.concat("-").concat(sourceBranchName)
             : "";
         taskLib.debug(
-          "COVERITY_STREAM_NAME is set as azureRepositoryName-sourceBranchName:::" +
-            covData.data.coverity.connect.stream.name
+          "COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name
         );
       }
     }
@@ -442,7 +411,7 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest()) {
         taskLib.warning(
           "Coverity PR comment is enabled but it will be ignored since it is not a PR/MR scan"
         );
@@ -477,7 +446,6 @@ export class SynopsysToolsParameter {
     stateFilePath = '"'.concat(stateFilePath).concat('"');
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-    taskLib.debug("Generated state json file content is - ".concat(inputJson));
 
     command = SynopsysToolsParameter.STAGE_OPTION.concat(
       SynopsysToolsParameter.SPACE
@@ -600,13 +568,8 @@ export class SynopsysToolsParameter {
         azurePullRequestNumber
       );
 
-      const buildReason =
-        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
-        "";
-      taskLib.debug("buildReason:::" + buildReason);
-
       if (
-        buildReason === AZURE_BUILD_REASON.PULL_REQUEST &&
+        isPullRequest() &&
         azurePullRequestNumber == "" &&
         (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
           parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
@@ -782,5 +745,12 @@ export class SynopsysToolsParameter {
     }
 
     return reportData;
+  }
+
+  private getAzureRepositoryName(): string {
+    const azureRepositoryName =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+    taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+    return azureRepositoryName;
   }
 }
