@@ -29,8 +29,8 @@ export interface CoverityConnect {
 export interface CoverityData {
   user: { name: string; password: string };
   url: string;
-  project: { name?: string };
-  stream: { name?: string };
+  project: { name: string };
+  stream: { name: string };
   policy?: { view: string };
 }
 

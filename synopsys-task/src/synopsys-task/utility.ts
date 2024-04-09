@@ -168,9 +168,8 @@ export function filterEmptyData(data: object) {
   );
 }
 
-export function isPullRequest(): boolean {
+export function isPullRequestEvent(): boolean {
   const buildReason =
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-  taskLib.debug("buildReason:::" + buildReason);
   return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
 }

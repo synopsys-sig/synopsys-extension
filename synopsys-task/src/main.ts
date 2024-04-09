@@ -2,6 +2,7 @@ import {
   getWorkSpaceDirectory,
   getTempDir,
   parseToBoolean,
+  isPullRequestEvent,
 } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -19,9 +20,9 @@ import {
 export async function run() {
   console.log("Synopsys Task started...");
   const tempDir = getTempDir();
-  taskLib.debug("tempDir:::" + tempDir);
+  taskLib.debug(`tempDir: ${tempDir}`);
   const workSpaceDir = getWorkSpaceDirectory();
-  taskLib.debug("workSpaceDir:::" + tempDir);
+  taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   try {
     const sb = new SynopsysBridge();
 
@@ -42,11 +43,9 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
+    const isPullRequest = isPullRequestEvent();
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      const buildReason =
-        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
-        "";
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest) {
         console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
@@ -56,10 +55,7 @@ export async function run() {
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      const buildReason =
-        taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
-        "";
-      if (buildReason !== AZURE_BUILD_REASON.PULL_REQUEST) {
+      if (!isPullRequest) {
         console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
         uploadSarifResultAsArtifact(
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,

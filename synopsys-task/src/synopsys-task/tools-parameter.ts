@@ -20,7 +20,7 @@ import {
   parseToBoolean,
   isBoolean,
   filterEmptyData,
-  isPullRequest,
+  isPullRequestEvent,
 } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
@@ -45,7 +45,6 @@ export class SynopsysToolsParameter {
   }
 
   getFormattedCommandForPolaris(): string {
-    taskLib.debug(":::getFormattedCommandForPolaris:::");
     let command = "";
     const assessmentTypeArray: string[] = [];
     const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
@@ -66,33 +65,31 @@ export class SynopsysToolsParameter {
       }
     }
 
+    const azureRepositoryName = this.getAzureRepositoryName();
+
+    let polarisApplicationName = inputs.POLARIS_APPLICATION_NAME;
+    if (!polarisApplicationName) {
+      polarisApplicationName = azureRepositoryName;
+      taskLib.debug(`POLARIS_APPLICATION_NAME: ${polarisApplicationName}`);
+    }
+
+    let polarisProjectName = inputs.POLARIS_PROJECT_NAME;
+    if (!polarisProjectName) {
+      polarisProjectName = azureRepositoryName;
+      taskLib.debug(`POLARIS_PROJECT_NAME: ${polarisProjectName}`);
+    }
+
     let polData: InputData<Polaris> = {
       data: {
         polaris: {
           accesstoken: inputs.POLARIS_ACCESS_TOKEN,
           serverUrl: inputs.POLARIS_SERVER_URL,
-          application: {},
-          project: {},
+          application: { name: polarisApplicationName },
+          project: { name: polarisProjectName },
           assessment: { types: assessmentTypeArray },
         },
       },
     };
-
-    const azureRepositoryName = this.getAzureRepositoryName();
-
-    if (inputs.POLARIS_APPLICATION_NAME) {
-      polData.data.polaris.application.name = inputs.POLARIS_APPLICATION_NAME;
-    } else {
-      taskLib.debug("POLARIS_APPLICATION_NAME: " + azureRepositoryName);
-      polData.data.polaris.application.name = azureRepositoryName;
-    }
-
-    if (inputs.POLARIS_PROJECT_NAME) {
-      polData.data.polaris.project.name = inputs.POLARIS_PROJECT_NAME;
-    } else {
-      taskLib.debug("POLARIS_PROJECT_NAME: " + azureRepositoryName);
-      polData.data.polaris.project.name = azureRepositoryName;
-    }
 
     if (inputs.POLARIS_BRANCH_NAME) {
       polData.data.polaris.branch = { name: inputs.POLARIS_BRANCH_NAME };
@@ -102,11 +99,11 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
+    const isPullRequest = isPullRequestEvent();
+
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-      if (!isPullRequest()) {
-        taskLib.warning(
-          "Polaris PR comment is enabled but it will be ignored since it is not a PR/MR scan"
-        );
+      if (!isPullRequest) {
+        taskLib.warning("Polaris PR comment is ignored for non PR/MR scan");
       } else {
         console.info("Polaris PR comment is enabled");
         if (!inputs.AZURE_TOKEN) {
@@ -143,11 +140,11 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      if (!isPullRequest()) {
+      if (!isPullRequest) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
         taskLib.warning(
-          "Polaris SARIF report create/upload is ignored in case of PR/MR scan"
+          "Polaris SARIF report create/upload is ignored for PR/MR scan"
         );
       }
     }
@@ -181,7 +178,6 @@ export class SynopsysToolsParameter {
   }
 
   async getFormattedCommandForBlackduck(): Promise<string> {
-    taskLib.debug(":::getFormattedCommandForBlackduck:::");
     const failureSeverities: string[] =
       inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
     let command = "";
@@ -256,12 +252,12 @@ export class SynopsysToolsParameter {
       }
     }
 
+    const isPullRequest = isPullRequestEvent();
+
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
-      if (isPullRequest()) {
-        taskLib.warning(
-          "Black Duck Fix PR is enabled but it will be ignored since it is a PR/MR scan"
-        );
+      if (isPullRequest) {
+        taskLib.warning("Black Duck Fix PR ignored for PR/MR scan");
       } else {
         console.log("Black Duck Fix PR is enabled");
         blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
@@ -270,10 +266,8 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
-      if (!isPullRequest()) {
-        taskLib.warning(
-          "Black Duck PR comment is enabled but it will be ignored since it is not a PR/MR scan"
-        );
+      if (!isPullRequest) {
+        taskLib.warning("Black Duck PR comment is ignored for non PR/MR scan");
       } else {
         console.info("BlackDuck PR comment is enabled");
         blackduckData.data.azure = await this.getAzureRepoInfo();
@@ -288,12 +282,12 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      if (!isPullRequest()) {
+      if (!isPullRequest) {
         blackduckData.data.blackduck.reports =
           this.setSarifReportsInputsForBlackduck();
       } else {
         taskLib.warning(
-          "BlackDuck SARIF report create/upload is ignored in case of PR/MR scan"
+          "BlackDuck SARIF report create/upload is ignored for PR/MR scan"
         );
       }
     }
@@ -327,8 +321,44 @@ export class SynopsysToolsParameter {
   }
 
   async getFormattedCommandForCoverity(): Promise<string> {
-    taskLib.debug(":::getFormattedCommandForCoverity:::");
     let command = "";
+
+    const azureRepositoryName = this.getAzureRepositoryName();
+
+    let coverityProjectName = inputs.COVERITY_PROJECT_NAME;
+    if (!coverityProjectName) {
+      coverityProjectName = azureRepositoryName;
+      taskLib.debug(`COVERITY_PROJECT_NAME: ${coverityProjectName}`);
+    }
+
+    const isPullRequest = isPullRequestEvent();
+
+    let coverityStreamName = inputs.COVERITY_STREAM_NAME;
+    if (!coverityStreamName) {
+      if (isPullRequest) {
+        const pullRequestTargetBranchName =
+          taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
+          ) || "";
+        coverityStreamName =
+          azureRepositoryName && pullRequestTargetBranchName
+            ? azureRepositoryName
+                .concat("-")
+                .concat(pullRequestTargetBranchName)
+            : "";
+      } else {
+        const sourceBranchName =
+          taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+          ) || "";
+        coverityStreamName =
+          azureRepositoryName && sourceBranchName
+            ? azureRepositoryName.concat("-").concat(sourceBranchName)
+            : "";
+      }
+      taskLib.debug(`COVERITY_STREAM_NAME: ${azureRepositoryName}`);
+    }
+
     let covData: InputData<Coverity> = {
       data: {
         coverity: {
@@ -338,57 +368,12 @@ export class SynopsysToolsParameter {
               password: inputs.COVERITY_USER_PASSWORD,
             },
             url: inputs.COVERITY_URL,
-            project: {},
-            stream: {},
+            project: { name: coverityProjectName },
+            stream: { name: coverityStreamName },
           },
         },
       },
     };
-
-    const azureRepositoryName = this.getAzureRepositoryName();
-
-    if (inputs.COVERITY_PROJECT_NAME) {
-      covData.data.coverity.connect.project.name = inputs.COVERITY_PROJECT_NAME;
-    } else {
-      taskLib.debug("COVERITY_PROJECT_NAME: " + azureRepositoryName);
-      covData.data.coverity.connect.project.name = azureRepositoryName;
-    }
-
-    if (inputs.COVERITY_STREAM_NAME) {
-      covData.data.coverity.connect.stream.name = inputs.COVERITY_STREAM_NAME;
-    } else {
-      if (isPullRequest()) {
-        const pullRequestTargetBranchName =
-          taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
-          ) || "";
-        taskLib.debug(
-          "pullRequestTargetBranchName:::" + pullRequestTargetBranchName
-        );
-        covData.data.coverity.connect.stream.name =
-          azureRepositoryName && pullRequestTargetBranchName
-            ? azureRepositoryName
-                .concat("-")
-                .concat(pullRequestTargetBranchName)
-            : "";
-        taskLib.debug(
-          "COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name
-        );
-      } else {
-        const sourceBranchName =
-          taskLib.getVariable(
-            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
-          ) || "";
-        taskLib.debug("sourceBranchName:::" + sourceBranchName);
-        covData.data.coverity.connect.stream.name =
-          azureRepositoryName && sourceBranchName
-            ? azureRepositoryName.concat("-").concat(sourceBranchName)
-            : "";
-        taskLib.debug(
-          "COVERITY_STREAM_NAME: " + covData.data.coverity.connect.stream.name
-        );
-      }
-    }
 
     if (parseToBoolean(inputs.COVERITY_LOCAL)) {
       covData.data.coverity.local = true;
@@ -411,10 +396,8 @@ export class SynopsysToolsParameter {
     }
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
-      if (!isPullRequest()) {
-        taskLib.warning(
-          "Coverity PR comment is enabled but it will be ignored since it is not a PR/MR scan"
-        );
+      if (!isPullRequest) {
+        taskLib.warning("Coverity PR comment is ignored for non PR/MR scan");
       } else {
         console.info("Coverity PR comment is enabled");
         covData.data.azure = await this.getAzureRepoInfo();
@@ -511,13 +494,12 @@ export class SynopsysToolsParameter {
   }
 
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
-    taskLib.debug(":::getAzureRepoInfo:::");
     let azureOrganization = "";
     const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
-    taskLib.debug("collectionUri:::" + collectionUri);
+    taskLib.debug(`Collection Uri: ${collectionUri}`);
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
@@ -542,12 +524,12 @@ export class SynopsysToolsParameter {
       );
     }
 
-    taskLib.debug("azureInstanceUrl:::" + azureInstanceUrl);
-    taskLib.debug("azureOrganization:::" + azureOrganization);
-    taskLib.debug("azureProject:::" + azureProject);
-    taskLib.debug("azureRepo:::" + azureRepo);
-    taskLib.debug("azureRepoBranchName:::" + azureRepoBranchName);
-    taskLib.debug("azurePullRequestNumber:::" + azurePullRequestNumber);
+    taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
+    taskLib.debug(`Azure Organization: ${azureOrganization}`);
+    taskLib.debug(`Azure Project Name: ${azureProject}`);
+    taskLib.debug(`Azure Repository Name: ${azureRepo}`);
+    taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
+    taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
 
     // This condition is required as per ts-lint as these fields may have undefined as well
     if (
@@ -568,8 +550,10 @@ export class SynopsysToolsParameter {
         azurePullRequestNumber
       );
 
+      const isPullRequest = isPullRequestEvent();
+
       if (
-        isPullRequest() &&
+        isPullRequest &&
         azurePullRequestNumber == "" &&
         (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
           parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
@@ -580,8 +564,7 @@ export class SynopsysToolsParameter {
             azureData
           );
         taskLib.debug(
-          "azurePullRequestNumber from getPullRequestIdForClassicEditorFlow:::" +
-            azureData.repository.pull.number
+          `azurePullRequestNumber from getPullRequestIdForClassicEditorFlow: ${azureData.repository.pull.number}`
         );
         return azureData;
       }
@@ -629,12 +612,11 @@ export class SynopsysToolsParameter {
   }
 
   private setEnvironmentScanPullData(): Environment {
-    taskLib.debug(":::setEnvironmentScanPullData:::");
     const azurePullRequestNumber =
       taskLib.getVariable(
         AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
       ) || "";
-    taskLib.debug("azurePullRequestNumber:::" + azurePullRequestNumber);
+    taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
     if (azurePullRequestNumber == "") {
       taskLib.debug(
         "azurePullRequestNumber is empty, setting environment.scan.pull as true"
@@ -747,7 +729,7 @@ export class SynopsysToolsParameter {
   private getAzureRepositoryName(): string {
     const azureRepositoryName =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-    taskLib.debug("azureRepositoryName:::" + azureRepositoryName);
+    taskLib.debug(`Azure Repository Name: ${azureRepositoryName}`);
     return azureRepositoryName;
   }
 }
