@@ -147,7 +147,7 @@ export class SynopsysToolsParameter {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
         taskLib.warning(
-          "Polaris SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+          "Polaris SARIF report create/upload is ignored in case of PR/MR scan"
         );
       }
     }
@@ -293,7 +293,7 @@ export class SynopsysToolsParameter {
           this.setSarifReportsInputsForBlackduck();
       } else {
         taskLib.warning(
-          "BlackDuck SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans"
+          "BlackDuck SARIF report create/upload is ignored in case of PR/MR scan"
         );
       }
     }
@@ -575,9 +575,6 @@ export class SynopsysToolsParameter {
           parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
       ) {
         const synopsysAzureService = new SynopsysAzureService();
-        taskLib.debug(
-          "azurePullRequestNumber is empty, calling getPullRequestIdForClassicEditorFlow() method"
-        );
         azureData.repository.pull.number =
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
             azureData
