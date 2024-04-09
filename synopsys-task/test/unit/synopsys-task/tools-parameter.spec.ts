@@ -9,8 +9,9 @@ import * as constants from "../../../src/synopsys-task/application-constant";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
 import {
-    AZURE_BUILD_REASON,
+    AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES,
 } from "../../../src/synopsys-task/model/azure";
+import {stub} from "sinon";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -74,6 +75,36 @@ describe("Synopsys Tools Parameter test", () => {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.POLARIS_ASSESSMENT_TYPES_KEY))
             }
+        });
+
+        it('should success for polaris command formation with default values', function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('testRepo');
+            expect(jsonData.data.polaris.project.name).to.be.contains('testRepo');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.test.sca.type).to.be.contains('SCA-SIGNATURE');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
         it('should success for polaris command formation with PR comment',  async function () {
@@ -224,6 +255,55 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
+            expect(formattedCommand).contains(Promise.resolve('--stage connect'));
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
+        });
+
+        it('should success for coverity command formation with default values for non-PR context', function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH).returns("feature");
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('testRepo');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('testRepo-feature');
+            expect(formattedCommand).contains(Promise.resolve('--stage connect'));
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
+        });
+
+        it('should success for coverity command formation with default values for PR context', function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH).returns("main");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('testRepo');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('testRepo-main');
             expect(formattedCommand).contains(Promise.resolve('--stage connect'));
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
