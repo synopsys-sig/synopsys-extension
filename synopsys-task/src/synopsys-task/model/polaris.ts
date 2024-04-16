@@ -12,7 +12,7 @@ export interface PolarisData {
   accesstoken: string;
   serverUrl: string;
   application: { name: string };
-  branch?: Branch;
+  branch: Branch;
   project: { name: string };
   assessment: { types: string[] };
   prcomment?: PRComment;
@@ -22,6 +22,7 @@ export interface PolarisData {
 
 export interface Branch {
   name?: string;
+  parent: { name?: string };
 }
 
 export interface PRComment {

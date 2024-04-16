@@ -33,6 +33,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''})
@@ -112,7 +113,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
@@ -126,6 +126,25 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+        });
+
+        it('should success for polaris command formation for polaris branch parent name in PR context',  async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: 'main'})
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+            expect(jsonData.data.polaris.branch.parent.name).to.be.equals('main')
         });
 
         it('should success for polaris command formation with sarif report create', async function () {

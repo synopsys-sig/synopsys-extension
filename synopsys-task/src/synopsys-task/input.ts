@@ -105,6 +105,12 @@ export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR)?.trim() ||
   taskLib.getInput(constants.BRIDGE_POLARIS_BRANCH_NAME_KEY)?.trim() ||
   "";
+export const POLARIS_BRANCH_PARENT_NAME =
+  taskLib.getInput(constants.POLARIS_BRANCH_PARENT_NAME_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
 export const POLARIS_PR_COMMENT_ENABLED =
   taskLib.getInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY)?.trim() ||
   taskLib

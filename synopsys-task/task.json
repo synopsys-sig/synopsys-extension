@@ -148,6 +148,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisBranchParentName",
+      "type": "string",
+      "label": "Polaris Parent Branch Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Parent Branch name in Polaris.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",

@@ -65,6 +65,9 @@ export const POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "polarisTriage";
 export const BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 export const POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
 export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "polarisBranchName";
+export const POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
+export const POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR =
+  "polarisBranchParentName";
 /**
  * @deprecated Use polaris_prComment_enabled instead. This can be removed in future release.
  */

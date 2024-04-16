@@ -87,12 +87,13 @@ export class SynopsysToolsParameter {
           application: { name: polarisApplicationName },
           project: { name: polarisProjectName },
           assessment: { types: assessmentTypeArray },
+          branch: { parent: {} },
         },
       },
     };
 
     if (inputs.POLARIS_BRANCH_NAME) {
-      polData.data.polaris.branch = { name: inputs.POLARIS_BRANCH_NAME };
+      polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
     }
 
     if (inputs.POLARIS_TRIAGE) {
@@ -106,6 +107,11 @@ export class SynopsysToolsParameter {
         console.info("Polaris PR comment is ignored for non PR/MR scan");
       } else {
         console.info("Polaris PR comment is enabled");
+        if (inputs.POLARIS_BRANCH_PARENT_NAME) {
+          polData.data.polaris.branch.parent.name =
+            inputs.POLARIS_BRANCH_PARENT_NAME;
+        }
+
         if (!inputs.AZURE_TOKEN) {
           throw new Error(
             "Missing required azure token for pull request comment"
