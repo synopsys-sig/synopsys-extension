@@ -1666,7 +1666,7 @@ class SynopsysToolsParameter {
         const isPullRequest = (0, utility_1.isPullRequestEvent)();
         if ((0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED)) {
             if (!isPullRequest) {
-                console.info("Polaris PR comment is ignored for non PR/MR scan");
+                console.info("Polaris PR comment is ignored for non pull request scan");
             }
             else {
                 console.info("Polaris PR comment is enabled");
@@ -1697,7 +1697,7 @@ class SynopsysToolsParameter {
                 polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
             }
             else {
-                console.info("Polaris SARIF report create/upload is ignored for PR/MR scan");
+                console.info("Polaris SARIF report create/upload is ignored for pull request scan");
             }
         }
         // Remove empty data from json object
@@ -1774,7 +1774,7 @@ class SynopsysToolsParameter {
             // Check and put environment variable for fix pull request
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED)) {
                 if (isPullRequest) {
-                    console.info("Black Duck Fix PR ignored for PR/MR scan");
+                    console.info("Black Duck Fix PR ignored for pull request scan");
                 }
                 else {
                     console.log("Black Duck Fix PR is enabled");
@@ -1784,7 +1784,7 @@ class SynopsysToolsParameter {
             }
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
                 if (!isPullRequest) {
-                    console.info("Black Duck PR comment is ignored for non PR/MR scan");
+                    console.info("Black Duck PR comment is ignored for non pull request scan");
                 }
                 else {
                     console.info("BlackDuck PR comment is enabled");
@@ -1803,7 +1803,7 @@ class SynopsysToolsParameter {
                         this.setSarifReportsInputsForBlackduck();
                 }
                 else {
-                    console.info("BlackDuck SARIF report create/upload is ignored for PR/MR scan");
+                    console.info("Black Duck SARIF report create/upload is ignored for pull request scan");
                 }
             }
             // Remove empty data from json object
@@ -1886,7 +1886,7 @@ class SynopsysToolsParameter {
             }
             if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
                 if (!isPullRequest) {
-                    console.info("Coverity PR comment is ignored for non PR/MR scan");
+                    console.info("Coverity PR comment is ignored for non pull request scan");
                 }
                 else {
                     console.info("Coverity PR comment is enabled");

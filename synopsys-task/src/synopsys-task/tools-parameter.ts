@@ -104,7 +104,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
       if (!isPullRequest) {
-        console.info("Polaris PR comment is ignored for non PR/MR scan");
+        console.info("Polaris PR comment is ignored for non pull request scan");
       } else {
         console.info("Polaris PR comment is enabled");
         if (inputs.POLARIS_BRANCH_PARENT_NAME) {
@@ -150,7 +150,7 @@ export class SynopsysToolsParameter {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
       } else {
         console.info(
-          "Polaris SARIF report create/upload is ignored for PR/MR scan"
+          "Polaris SARIF report create/upload is ignored for pull request scan"
         );
       }
     }
@@ -263,7 +263,7 @@ export class SynopsysToolsParameter {
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
       if (isPullRequest) {
-        console.info("Black Duck Fix PR ignored for PR/MR scan");
+        console.info("Black Duck Fix PR ignored for pull request scan");
       } else {
         console.log("Black Duck Fix PR is enabled");
         blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
@@ -273,7 +273,9 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
       if (!isPullRequest) {
-        console.info("Black Duck PR comment is ignored for non PR/MR scan");
+        console.info(
+          "Black Duck PR comment is ignored for non pull request scan"
+        );
       } else {
         console.info("BlackDuck PR comment is enabled");
         blackduckData.data.azure = await this.getAzureRepoInfo();
@@ -293,7 +295,7 @@ export class SynopsysToolsParameter {
           this.setSarifReportsInputsForBlackduck();
       } else {
         console.info(
-          "BlackDuck SARIF report create/upload is ignored for PR/MR scan"
+          "Black Duck SARIF report create/upload is ignored for pull request scan"
         );
       }
     }
@@ -403,7 +405,9 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
       if (!isPullRequest) {
-        console.info("Coverity PR comment is ignored for non PR/MR scan");
+        console.info(
+          "Coverity PR comment is ignored for non pull request scan"
+        );
       } else {
         console.info("Coverity PR comment is enabled");
         covData.data.azure = await this.getAzureRepoInfo();
