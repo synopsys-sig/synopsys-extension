@@ -163,15 +163,7 @@
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token."
-    },
-    {
-      "name": "polarisTestScaType",
-      "type": "string",
-      "label": "Polaris Test SCA Type",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan.",
+      "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
