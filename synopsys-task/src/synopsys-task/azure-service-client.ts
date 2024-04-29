@@ -19,14 +19,17 @@ export class SynopsysAzureService {
       process.env["BUILD_REASON"] !== "PullRequest"
     ) {
       const StringFormat = (url: string, ...args: string[]) =>
-        url.replace(/{(\d+)}/g, (match, index) => args[index] || "");
+        url.replace(
+          /{(\d+)}/g,
+          (match, index) => encodeURIComponent(args[index]) || ""
+        );
 
       const endpoint = StringFormat(
         azureData.api.url.concat(this.azureGetMergeRequestsAPI),
         azureData.organization.name,
         azureData.project.name,
         azureData.repository.name,
-        "refs/heads/".concat(azureData.repository.branch.name),
+        azureData.repository.branch.name,
         this.apiVersion
       );
       const token: string = ":".concat(azureData.user.token);

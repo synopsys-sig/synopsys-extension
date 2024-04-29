@@ -452,6 +452,7 @@ export class SynopsysToolsParameter {
       ) {
         if (parsedUrl.host.split(".")[0]) {
           azureOrganization = parsedUrl.host.split(".")[0];
+          azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
         }
       }
     }
@@ -459,9 +460,16 @@ export class SynopsysToolsParameter {
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
     const azureRepo =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
     const azureRepoBranchName =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
-      "";
+      buildReason == AZURE_BUILD_REASON.PULL_REQUEST
+        ? taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH
+          ) || ""
+        : taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+          ) || "";
 
     const azurePullRequestNumber =
       taskLib.getVariable(
