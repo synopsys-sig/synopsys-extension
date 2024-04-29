@@ -39,7 +39,15 @@ export async function run() {
     }
 
     // Execute prepared commands
-    await sb.executeBridgeCommand(bridgePath, getWorkSpaceDirectory(), command);
+    const result: number = await sb.executeBridgeCommand(
+      bridgePath,
+      getWorkSpaceDirectory(),
+      command
+    );
+    console.log("============> Bridge returned:", result);
+    // console.log(
+    //   "##vso[task.setvariable variable=exitStatus;isoutput=true]" + result
+    // );
   } catch (error: any) {
     throw error;
   } finally {
@@ -73,7 +81,8 @@ export async function run() {
 }
 
 export function logBridgeExitCodes(message: string): string {
-  const exitCode = message.trim().slice(-1);
+  // const exitCode = message.trim().slice(-1);
+  const exitCode = message.trim().split(" ").pop() || "";
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
     : message;

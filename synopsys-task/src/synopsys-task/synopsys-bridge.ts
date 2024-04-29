@@ -106,6 +106,8 @@ export class SynopsysBridge {
               .concat(",")
               .concat(constants.BLACKDUCK_URL_KEY)
               .concat(")")
+              .concat(SynopsysToolsParameter.SPACE)
+              .concat("101")
           )
         );
       }
