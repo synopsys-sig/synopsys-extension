@@ -31,7 +31,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''})
             sandbox.restore();
         });
 
@@ -43,7 +42,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
 
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -54,7 +52,6 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
-            expect(jsonData.data.polaris.test.sca.type).to.be.contains('SCA-SIGNATURE');
 
             expect(formattedCommand).contains('--stage polaris');
 
