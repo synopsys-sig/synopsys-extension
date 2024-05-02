@@ -66,7 +66,9 @@ function run() {
                 bridgePath = yield sb.getSynopsysBridgePath();
             }
             // Execute prepared commands
-            yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            const result = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            console.log("Bridge returned:", result);
+            console.log("##vso[task.setvariable variable=exitStatus;isoutput=true]" + result);
         }
         catch (error) {
             throw error;
@@ -94,7 +96,8 @@ function run() {
 }
 exports.run = run;
 function logBridgeExitCodes(message) {
-    const exitCode = message.trim().slice(-1);
+    // const exitCode = message.trim().slice(-1);
+    const exitCode = message.trim().split(" ").pop() || "";
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
         : message;
@@ -117,9 +120,9 @@ run().catch((error) => {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY = exports.BRIDGE_POLARIS_TEST_SCA_TYPE_KEY = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_ENABLED_KEY = exports.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY = exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_PARENT_NAME_KEY = exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_NAME_KEY = exports.BRIDGE_POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = exports.POLARIS_TRIAGE_KEY = exports.BRIDGE_POLARIS_TRIAGE_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_PROJECT_NAME_KEY = exports.BRIDGE_POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_APPLICATION_NAME_KEY = exports.BRIDGE_POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_ACCESS_TOKEN_KEY = exports.BRIDGE_POLARIS_ACCESS_TOKEN_KEY = exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = exports.POLARIS_SERVER_URL_KEY = exports.BRIDGE_POLARIS_SERVER_URL_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.AZURE_TOKEN_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.SYNOPSYS_BRIDGE_ZIP_FILE_NAME = exports.SYNOPSYS_BRIDGE_EXECUTABLE_MAC_LINUX = exports.SYNOPSYS_BRIDGE_EXECUTABLE_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = void 0;
-exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_TOKEN_KEY = exports.BRIDGE_BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_URL_KEY = exports.BRIDGE_BLACKDUCK_URL_KEY = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.BRIDGE_COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.BRIDGE_COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.BRIDGE_COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.BRIDGE_COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.BRIDGE_COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.BRIDGE_COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.BRIDGE_COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.BRIDGE_COVERITY_URL_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = void 0;
-exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGE_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BRIDGE_BLACKDUCK_SCAN_FULL_KEY = void 0;
-exports.MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = void 0;
+exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_TOKEN_KEY = exports.BRIDGE_BLACKDUCK_API_TOKEN_KEY = exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_URL_KEY = exports.BRIDGE_BLACKDUCK_URL_KEY = exports.SPACE = exports.EXIT_CODE_MAP = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.BRIDGE_COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.BRIDGE_COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.BRIDGE_COVERITY_POLICY_VIEW_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.BRIDGE_COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.BRIDGE_COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.BRIDGE_COVERITY_USER_PASSWORD_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.BRIDGE_COVERITY_USER_NAME_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.BRIDGE_COVERITY_URL_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = void 0;
+exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGE_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY = exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_FIXPR_ENABLED_KEY = exports.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY = exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCAN_FULL_KEY = exports.BRIDGE_BLACKDUCK_SCAN_FULL_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
+exports.MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 exports.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -296,7 +299,63 @@ exports.EXIT_CODE_MAP = new Map([
     ["3", "Failed to shutdown the bridge"],
     ["8", "The config option bridge.break has been set to true"],
     ["9", "Bridge initialization failed"],
+    ["101", "Requires at least one scan type"],
+    [
+        "102",
+        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) is missing",
+    ],
+    ["103", "Bridge initialization failed"],
+    [
+        "104",
+        "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
+    ],
+    ["105", "Invalid value for polaris_assessment_types"],
+    ["106", "Invalid value for blackduck_scan_failure_severities"],
+    ["107", "Invalid value for blackduck_fixpr_maxCount"],
+    ["108", "Missing boolean value for blackduck_scan_full"],
+    ["109", "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"],
+    [
+        "110",
+        "Provided Synopsys Bridge URL is not valid for the configured platform runner",
+    ],
+    ["111", "Provided Synopsys Bridge URL cannot be empty"],
+    ["112", "Invalid URL (Invalid Synopysys Bridge Download URL)"],
+    ["113", "Provided Synopsys Bridge version not found in artifactory"],
+    ["114", "Synopsys bridge download has been failed"],
+    ["115", "Synopsys Bridge Install Directory does not exist"],
+    ["116", "Synopsys Bridge default directory does not exist"],
+    [
+        "117",
+        "Synopsys Bridge executable file could not be found at executable Bridge path",
+    ],
+    ["118", "Workspace directory could not be located"],
+    ["119", "File (Synopsys Bridge zip) does not exist"],
+    ["120", "No destination directory found for unzipping Synopsys  Bridge"],
+    [
+        "121",
+        "Unable to find a Pull request Id from current source build with branch",
+    ],
+    [
+        "122",
+        "Failed to get pull request Id for current build from source branch ",
+    ],
+    [
+        "123",
+        "Missing required azure token for fix pull request/automation comment",
+    ],
+    ["124", "coverity_install_directory parameter for Coverity is invalid"],
+    [
+        "125",
+        "Failed to download synopsys-bridge zip from specified URL. HTTP status code: ",
+    ],
+    [
+        "126",
+        "Content-Length of synopsys-bridge in the artifactory did not match downloaded file size",
+    ],
+    ["127", "Agent.TempDirectory is not set"],
+    ["999", "Undefined error from extension"],
 ]);
+exports.SPACE = " ";
 // Blackduck
 /**
  * @deprecated Use blackduck_url instead. This can be removed in future release.
@@ -473,6 +532,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysAzureService = void 0;
 const HttpClient_1 = __nccwpck_require__(5538);
 const taskLib = __importStar(__nccwpck_require__(347));
+const constants = __importStar(__nccwpck_require__(3051));
 class SynopsysAzureService {
     constructor() {
         this.azureGetMergeRequestsAPI =
@@ -497,14 +557,19 @@ class SynopsysAzureService {
                     return azurePrResponse.value[0].pullRequestId;
                 }
                 else {
-                    throw new Error("Unable to find an Pull request Id from current source build with branch: ".concat(azureData.repository.branch.name));
+                    throw new Error("Unable to find a Pull request Id from current source build with branch: "
+                        .concat(azureData.repository.branch.name)
+                        .concat(constants.SPACE)
+                        .concat("121"));
                 }
             }
             else {
                 throw new Error("Failed to get pull request Id for current build from source branch: "
                     .concat(azureData.repository.branch.name)
                     .concat(" With error: ")
-                    .concat(yield httpResponse.readBody()));
+                    .concat(yield httpResponse.readBody())
+                    .concat(constants.SPACE)
+                    .concat("122"));
             }
         });
     }
@@ -620,6 +685,7 @@ const httpm = __importStar(__nccwpck_require__(5538));
 const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
 const tl = __importStar(__nccwpck_require__(347));
+const constants = __importStar(__nccwpck_require__(3051));
 const userAgent = "SynopsysSecurityScan";
 const requestOptions = {
     // ignoreSslError: true,
@@ -643,7 +709,6 @@ exports.debug = debug;
 function downloadTool(url, fileName, handlers, additionalHeaders) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             // check if it's an absolute path already
             let destPath;
             if (path.isAbsolute(fileName)) {
@@ -666,7 +731,10 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                 const response = yield http.get(url, additionalHeaders);
                 if (response.message.statusCode != 200) {
                     tl.debug(`Failed to download "${fileName}" from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
-                    reject(new Error((_a = response.message.statusCode) === null || _a === void 0 ? void 0 : _a.toString()));
+                    reject(new Error("Failed to download synopsys-bridge zip from specified URL. HTTP status code: "
+                        .concat(String(response.message.statusCode))
+                        .concat(constants.SPACE)
+                        .concat("125")));
                 }
                 const downloadedContentLength = _getContentLengthOfDownloadedFile(response);
                 if (!isNaN(downloadedContentLength)) {
@@ -716,7 +784,7 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                         fileSizeInBytes !== downloadedContentLength) {
                         const errMsg = `Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
                         tl.warning(errMsg);
-                        reject(errMsg);
+                        reject(errMsg.concat(constants.SPACE).concat("126"));
                     }
                     resolve(destPath);
                 });
@@ -753,7 +821,7 @@ function _getAgentTemp() {
     tl.assertAgent("2.115.0");
     const tempDirectory = tl.getVariable("Agent.TempDirectory");
     if (!tempDirectory) {
-        throw new Error("Agent.TempDirectory is not set");
+        throw new Error("Agent.TempDirectory is not set".concat(constants.SPACE).concat("127"));
     }
     return tempDirectory;
 }
@@ -1142,7 +1210,10 @@ class SynopsysBridge {
             taskLib.debug("extractedPath: ".concat(executablePath));
             const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
             if (!taskLib.exist(executableBridgePath)) {
-                throw new Error("Synopsys Bridge executable file could not be found at ".concat(executableBridgePath));
+                throw new Error("Synopsys Bridge executable file could not be found at "
+                    .concat(executableBridgePath)
+                    .concat(constants.SPACE)
+                    .concat("117"));
             }
             try {
                 return yield taskLib.exec(executableBridgePath, command, {
@@ -1167,7 +1238,9 @@ class SynopsysBridge {
                         .concat(constants.COVERITY_URL_KEY)
                         .concat(",")
                         .concat(constants.BLACKDUCK_URL_KEY)
-                        .concat(")")));
+                        .concat(")")
+                        .concat(constants.SPACE)
+                        .concat("101")));
                 }
                 let classicEditorErrors = [];
                 let polarisErrors = [];
@@ -1278,10 +1351,15 @@ class SynopsysBridge {
                 const errorObject = e.message;
                 if (errorObject.includes("404") ||
                     errorObject.toLowerCase().includes("invalid url")) {
-                    return Promise.reject(new Error("Provided Synopsys Bridge url is not valid for the configured ".concat(process.platform, " runner")));
+                    return Promise.reject(new Error("Provided Synopsys Bridge url is not valid for the configured "
+                        .concat(process.platform, " runner")
+                        .concat(constants.SPACE)
+                        .concat("110")));
                 }
                 else if (errorObject.toLowerCase().includes("empty")) {
-                    return Promise.reject(new Error("Provided Synopsys Bridge URL cannot be empty"));
+                    return Promise.reject(new Error("Provided Synopsys Bridge URL cannot be empty"
+                        .concat(constants.SPACE)
+                        .concat("111")));
                 }
                 else {
                     return Promise.reject(new Error(errorObject));
@@ -1297,7 +1375,7 @@ class SynopsysBridge {
             if (inputs.BRIDGE_DOWNLOAD_URL) {
                 bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
                 if (!(0, validator_1.validateBridgeUrl)(inputs.BRIDGE_DOWNLOAD_URL)) {
-                    return Promise.reject(new Error("Invalid URL"));
+                    return Promise.reject(new Error("Invalid URL".concat(constants.SPACE).concat("112")));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
                 const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
@@ -1315,7 +1393,9 @@ class SynopsysBridge {
                     version = inputs.BRIDGE_DOWNLOAD_VERSION;
                 }
                 else {
-                    return Promise.reject(new Error("Provided Synopsys Bridge version not found in artifactory"));
+                    return Promise.reject(new Error("Provided Synopsys Bridge version not found in artifactory"
+                        .concat(constants.SPACE)
+                        .concat("113")));
                 }
             }
             else {
@@ -1527,14 +1607,18 @@ class SynopsysBridge {
                 synopsysBridgeDirectoryPath = input_1.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY;
                 console.info("Looking for synopsys bridge in Synopsys Bridge Install Directory");
                 if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
-                    throw new Error("Synopsys Bridge Install Directory does not exist");
+                    throw new Error("Synopsys Bridge Install Directory does not exist"
+                        .concat(constants.SPACE)
+                        .concat("115"));
                 }
             }
             else {
                 console.info("Looking for synopsys bridge in default path");
                 if (input_1.ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
                     if (!taskLib.exist(this.getBridgeDefaultPath())) {
-                        throw new Error("Synopsys Bridge default directory does not exist");
+                        throw new Error("Synopsys Bridge default directory does not exist"
+                            .concat(constants.SPACE)
+                            .concat("115"));
                     }
                 }
             }
@@ -1630,7 +1714,10 @@ class SynopsysToolsParameter {
                     assessmentTypeArray.push(assessmentType.trim());
                 }
                 else {
-                    throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
+                    throw new Error("Invalid value for "
+                        .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+                        .concat(constants.SPACE)
+                        .concat("105"));
                 }
             }
         }
@@ -1675,7 +1762,9 @@ class SynopsysToolsParameter {
                         inputs.POLARIS_BRANCH_PARENT_NAME;
                 }
                 if (!inputs.AZURE_TOKEN) {
-                    throw new Error("Missing required azure token for pull request comment");
+                    throw new Error("Missing required azure token for pull request comment"
+                        .concat(constants.SPACE)
+                        .concat("123"));
                 }
                 polData.data.azure = this.setAzureData("", inputs.AZURE_TOKEN, "", "", "", "", "");
                 polData.data.polaris.prcomment = { severities: [], enabled: true };
@@ -1741,7 +1830,10 @@ class SynopsysToolsParameter {
                     blackduckData.data.blackduck.scan = { full: scanFullValue };
                 }
                 else {
-                    throw new Error("Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY));
+                    throw new Error("Missing boolean value for "
+                        .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+                        .concat(constants.SPACE)
+                        .concat("108"));
                 }
             }
             if (failureSeverities && failureSeverities.length > 0) {
@@ -1753,7 +1845,10 @@ class SynopsysToolsParameter {
                 });
                 for (const failureSeverity of failureSeverities) {
                     if (values.indexOf(failureSeverity) == -1) {
-                        throw new Error("Invalid value for ".concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
+                        throw new Error("Invalid value for "
+                            .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+                            .concat(constants.SPACE)
+                            .concat("105"));
                     }
                     else {
                         failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
@@ -1922,11 +2017,17 @@ class SynopsysToolsParameter {
     setBlackDuckFixPrInputs() {
         if (inputs.BLACKDUCK_FIXPR_MAXCOUNT &&
             isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))) {
-            throw new Error("Invalid value for ".concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY));
+            throw new Error("Invalid value for "
+                .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+                .concat(constants.SPACE)
+                .concat("107"));
         }
         const createSinglePr = (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_CREATE_SINGLE_PR);
         if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
-            throw new Error(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ").concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY));
+            throw new Error(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(" is not applicable with ")
+                .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+                .concat(constants.SPACE)
+                .concat("104"));
         }
         const blackDuckFixPrData = {};
         blackDuckFixPrData.enabled = true;
@@ -1973,7 +2074,9 @@ class SynopsysToolsParameter {
                 "";
             const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
             if (azureToken == "") {
-                throw new Error("Missing required azure token for fix pull request/automation comment");
+                throw new Error("Missing required azure token for fix pull request/automation comment"
+                    .concat(constants.SPACE)
+                    .concat("123"));
             }
             taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
             taskLib.debug(`Azure Organization: ${azureOrganization}`);
@@ -2195,11 +2298,11 @@ exports.getTempDir = getTempDir;
 function extractZipped(file, destinationPath) {
     return __awaiter(this, void 0, void 0, function* () {
         if (file == null || file.length === 0) {
-            return Promise.reject(new Error("File does not exist"));
+            return Promise.reject(new Error("File does not exist".concat(constants.SPACE).concat("119")));
         }
         // Extract file name from file with full path
         if (destinationPath == null || destinationPath.length === 0) {
-            return Promise.reject(new Error("No destination directory found"));
+            return Promise.reject(new Error("No destination directory found".concat(constants.SPACE).concat("120")));
         }
         try {
             yield toolLib.extractZip(file, destinationPath);
@@ -2214,7 +2317,7 @@ exports.extractZipped = extractZipped;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {
-            return Promise.reject(new Error("URL cannot be empty"));
+            return Promise.reject(new Error("URL cannot be empty".concat(constants.SPACE).concat("111")));
         }
         let fileNameFromUrl = "";
         if (taskLib.stats(destFilePath).isDirectory()) {
@@ -2252,7 +2355,9 @@ function getRemoteFile(destFilePath, url) {
                 }
             }
         } while (retryCountLocal >= 0);
-        return Promise.reject("Synopsys bridge download has been failed");
+        return Promise.reject("Synopsys bridge download has been failed"
+            .concat(constants.SPACE)
+            .concat("114"));
     });
 }
 exports.getRemoteFile = getRemoteFile;
@@ -2283,7 +2388,9 @@ function getWorkSpaceDirectory() {
         return repoLocalPath;
     }
     else {
-        throw new Error("Workspace directory could not be located");
+        throw new Error("Workspace directory could not be located"
+            .concat(constants.SPACE)
+            .concat("118"));
     }
 }
 exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
@@ -2376,7 +2483,9 @@ function validateParameters(params, toolName) {
     const invalidParams = isNullOrEmpty(params);
     const errors = [];
     if (invalidParams.length > 0) {
-        errors.push(`[${invalidParams.join()}] - required parameters for ${toolName} is missing`);
+        errors.push(`[${invalidParams.join()}] - required parameters for ${toolName} is missing`
+            .concat(constants.SPACE)
+            .concat("102"));
     }
     return errors;
 }
@@ -2428,7 +2537,9 @@ function validateCoverityInstallDirectoryParam(installDir) {
     if (installDir != null &&
         installDir.length > 0 &&
         !taskLib.exist(installDir)) {
-        taskLib.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`);
+        taskLib.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
+            .concat(constants.SPACE)
+            .concat("124"));
         return false;
     }
     return true;
@@ -2436,7 +2547,9 @@ function validateCoverityInstallDirectoryParam(installDir) {
 exports.validateCoverityInstallDirectoryParam = validateCoverityInstallDirectoryParam;
 function validateBlackduckFailureSeverities(severities) {
     if (severities == null || severities.length === 0) {
-        taskLib.error("Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES");
+        taskLib.error("Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
+            .concat(constants.SPACE)
+            .concat("109"));
         return false;
     }
     return true;
@@ -27522,7 +27635,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.7","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
+module.exports = JSON.parse('{"_args":[["azure-pipelines-tool-lib@2.0.7","/home/jahid/synopsys-extension/synopsys-task"]],"_from":"azure-pipelines-tool-lib@2.0.7","_id":"azure-pipelines-tool-lib@2.0.7","_inBundle":false,"_integrity":"sha512-1FN67ypNwNhgZllYSm4/pAQdffSfEZJhwW8YeNvm/cKDTS6t6bukTBIkt04c1CsaQe7Ot+eDOVMn41wX1ketXw==","_location":"/azure-pipelines-tool-lib","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"azure-pipelines-tool-lib@2.0.7","name":"azure-pipelines-tool-lib","escapedName":"azure-pipelines-tool-lib","rawSpec":"2.0.7","saveSpec":null,"fetchSpec":"2.0.7"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/azure-pipelines-tool-lib/-/azure-pipelines-tool-lib-2.0.7.tgz","_spec":"2.0.7","_where":"/home/jahid/synopsys-extension/synopsys-task","author":{"name":"Microsoft"},"bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","keywords":["VSTS"],"license":"MIT","main":"tool.js","name":"azure-pipelines-tool-lib","repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"scripts":{"build":"node make.js build","sample":"node make.js sample","test":"node make.js test","units":"node make.js units"},"version":"2.0.7"}');
 
 /***/ })
 

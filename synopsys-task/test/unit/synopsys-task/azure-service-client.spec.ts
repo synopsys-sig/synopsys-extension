@@ -1,12 +1,12 @@
 import * as sinon from "sinon";
-import {SynopsysAzureService} from "../../../src/synopsys-task/azure-service-client";
-import {SinonStub} from "sinon";
+import { SynopsysAzureService } from "../../../src/synopsys-task/azure-service-client";
+import { SinonStub } from "sinon";
 import * as httpc from "typed-rest-client/HttpClient";
-import {IncomingMessage} from "http";
-import {Socket} from "net";
+import { IncomingMessage } from "http";
+import { Socket } from "net";
 import * as ifm from "typed-rest-client/Interfaces";
-import {AzureData} from "../../../src/synopsys-task/model/azure";
-import {expect} from "chai";
+import { AzureData } from "../../../src/synopsys-task/model/azure";
+import { expect } from "chai";
 
 
 describe("getPullRequestIdForClassicEditorFlow", () => {
@@ -91,7 +91,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: test1')
+                expect(errorObj.message).contains('Unable to find a Pull request Id from current source build with branch: test1')
             })
 
         })
@@ -120,7 +120,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
         })
     })
 })
-;
+    ;
 
 function getPullRequestsMockResponse() {
     return "{\n" +

@@ -44,10 +44,10 @@ export async function run() {
       getWorkSpaceDirectory(),
       command
     );
-    console.log("============> Bridge returned:", result);
-    // console.log(
-    //   "##vso[task.setvariable variable=exitStatus;isoutput=true]" + result
-    // );
+    console.log("Bridge returned:", result);
+    console.log(
+      "##vso[task.setvariable variable=exitStatus;isoutput=true]" + result
+    );
   } catch (error: any) {
     throw error;
   } finally {

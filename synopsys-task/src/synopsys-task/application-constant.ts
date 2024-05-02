@@ -215,31 +215,63 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ["8", "The config option bridge.break has been set to true"],
   ["9", "Bridge initialization failed"],
   ["101", "Requires at least one scan type"],
-  ["102", "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity)  is missing"],
+  [
+    "102",
+    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) is missing",
+  ],
   ["103", "Bridge initialization failed"],
-  ["104", "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR"],
+  [
+    "104",
+    "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
+  ],
   ["105", "Invalid value for polaris_assessment_types"],
-  ["106", "Invalid value for blackduck_scan_failure_severities"],
+  ["106", "Invalid value for blackduck_scan_failure_severities"], // two times
   ["107", "Invalid value for blackduck_fixpr_maxCount"],
   ["108", "Missing boolean value for blackduck_scan_full"],
-  ["109", "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"],
-  ["110", "Provided Synopsys Bridge URL is not valid for the configured for the platform runner"],
+  ["109", "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"], // two times??
+  [
+    "110",
+    "Provided Synopsys Bridge URL is not valid for the configured platform runner",
+  ],
   ["111", "Provided Synopsys Bridge URL cannot be empty"],
   ["112", "Invalid URL (Invalid Synopysys Bridge Download URL)"],
   ["113", "Provided Synopsys Bridge version not found in artifactory"],
   ["114", "Synopsys bridge download has been failed"],
   ["115", "Synopsys Bridge Install Directory does not exist"],
   ["116", "Synopsys Bridge default directory does not exist"],
-  ["117", "Synopsys Bridge executable file could not be found at executable Bridge path"],
+  [
+    "117",
+    "Synopsys Bridge executable file could not be found at executable Bridge path",
+  ],
   ["118", "Workspace directory could not be located"],
-  ["119", "File does not exist (Synopsys Bridge zip file doesn't exist)"],
-  ["120", "No destination directory found (for unzipping Synopsys  Bridge)"],
-  ["121", "Unable to find an Pull request Id from current source build"],
-  ["122", "Failed to get pull request Id for current build from source branch "],
-  ["123", "Missing required azure token for fix pull request/automation comment"], // need to confirm
+  ["119", "File (Synopsys Bridge zip) does not exist"],
+  ["120", "No destination directory found for unzipping Synopsys  Bridge"],
+  [
+    "121",
+    "Unable to find a Pull request Id from current source build with branch",
+  ],
+  [
+    "122",
+    "Failed to get pull request Id for current build from source branch ",
+  ],
+  [
+    "123",
+    "Missing required azure token for fix pull request/automation comment",
+  ], // need to confirm
   ["124", "coverity_install_directory parameter for Coverity is invalid"],
+  [
+    "125",
+    "Failed to download synopsys-bridge zip from specified URL. HTTP status code: ",
+  ],
+  [
+    "126",
+    "Content-Length of synopsys-bridge in the artifactory did not match downloaded file size",
+  ],
+  ["127", "Agent.TempDirectory is not set"],
   ["999", "Undefined error from extension"],
 ]);
+
+export const SPACE = " ";
 
 // Blackduck
 /**

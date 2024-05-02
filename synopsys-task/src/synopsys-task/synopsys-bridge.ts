@@ -76,9 +76,10 @@ export class SynopsysBridge {
     );
     if (!taskLib.exist(executableBridgePath)) {
       throw new Error(
-        "Synopsys Bridge executable file could not be found at ".concat(
-          executableBridgePath
-        )
+        "Synopsys Bridge executable file could not be found at "
+          .concat(executableBridgePath)
+          .concat(constants.SPACE)
+          .concat("117")
       );
     }
     try {
@@ -106,7 +107,7 @@ export class SynopsysBridge {
               .concat(",")
               .concat(constants.BLACKDUCK_URL_KEY)
               .concat(")")
-              .concat(SynopsysToolsParameter.SPACE)
+              .concat(constants.SPACE)
               .concat("101")
           )
         );
@@ -273,15 +274,19 @@ export class SynopsysBridge {
       ) {
         return Promise.reject(
           new Error(
-            "Provided Synopsys Bridge url is not valid for the configured ".concat(
-              process.platform,
-              " runner"
-            )
+            "Provided Synopsys Bridge url is not valid for the configured "
+              .concat(process.platform, " runner")
+              .concat(constants.SPACE)
+              .concat("110")
           )
         );
       } else if (errorObject.toLowerCase().includes("empty")) {
         return Promise.reject(
-          new Error("Provided Synopsys Bridge URL cannot be empty")
+          new Error(
+            "Provided Synopsys Bridge URL cannot be empty"
+              .concat(constants.SPACE)
+              .concat("111")
+          )
         );
       } else {
         return Promise.reject(new Error(errorObject));
@@ -297,7 +302,9 @@ export class SynopsysBridge {
       bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
 
       if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
-        return Promise.reject(new Error("Invalid URL"));
+        return Promise.reject(
+          new Error("Invalid URL".concat(constants.SPACE).concat("112"))
+        );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
       const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
@@ -319,7 +326,11 @@ export class SynopsysBridge {
         version = inputs.BRIDGE_DOWNLOAD_VERSION;
       } else {
         return Promise.reject(
-          new Error("Provided Synopsys Bridge version not found in artifactory")
+          new Error(
+            "Provided Synopsys Bridge version not found in artifactory"
+              .concat(constants.SPACE)
+              .concat("113")
+          )
         );
       }
     } else {
@@ -598,13 +609,21 @@ export class SynopsysBridge {
         "Looking for synopsys bridge in Synopsys Bridge Install Directory"
       );
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
-        throw new Error("Synopsys Bridge Install Directory does not exist");
+        throw new Error(
+          "Synopsys Bridge Install Directory does not exist"
+            .concat(constants.SPACE)
+            .concat("115")
+        );
       }
     } else {
       console.info("Looking for synopsys bridge in default path");
       if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
         if (!taskLib.exist(this.getBridgeDefaultPath())) {
-          throw new Error("Synopsys Bridge default directory does not exist");
+          throw new Error(
+            "Synopsys Bridge default directory does not exist"
+              .concat(constants.SPACE)
+              .concat("115")
+          );
         }
       }
     }

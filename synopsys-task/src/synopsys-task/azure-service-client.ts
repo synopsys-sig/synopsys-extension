@@ -1,6 +1,7 @@
 import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as constants from "./application-constant";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
@@ -41,9 +42,10 @@ export class SynopsysAzureService {
         return azurePrResponse.value[0].pullRequestId;
       } else {
         throw new Error(
-          "Unable to find an Pull request Id from current source build with branch: ".concat(
-            azureData.repository.branch.name
-          )
+          "Unable to find a Pull request Id from current source build with branch: "
+            .concat(azureData.repository.branch.name)
+            .concat(constants.SPACE)
+            .concat("121")
         );
       }
     } else {
@@ -52,6 +54,8 @@ export class SynopsysAzureService {
           .concat(azureData.repository.branch.name)
           .concat(" With error: ")
           .concat(await httpResponse.readBody())
+          .concat(constants.SPACE)
+          .concat("122")
       );
     }
   }

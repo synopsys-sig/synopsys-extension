@@ -5,8 +5,8 @@ import * as toolLib from '../../../src/synopsys-task/download-tool';
 import * as tl from "azure-pipelines-task-lib/task";
 import * as sinon from "sinon";
 import process from "process";
-import {afterEach} from "mocha";
-import nock = require ('nock');
+import { afterEach } from "mocha";
+import nock = require('nock');
 
 let tempPath = path.join(process.cwd(), 'TEMP');
 
@@ -34,13 +34,13 @@ describe('Tool Tests', function () {
 
     beforeEach(function () {
 
-        if(fs.existsSync(__dirname.concat(fileName))) {
+        if (fs.existsSync(__dirname.concat(fileName))) {
             fs.rmSync(__dirname.concat(fileName))
         }
     })
 
     afterEach(function () {
-        if(fs.existsSync(__dirname.concat(fileName))) {
+        if (fs.existsSync(__dirname.concat(fileName))) {
             fs.rmSync(__dirname.concat(fileName))
         }
     })
@@ -67,13 +67,13 @@ describe('Tool Tests', function () {
         nock('https://microsoft.com')
             .get('/redirect-to')
             .reply(303, undefined, {
-                location:'https://microsoft.com/bytes/35'
+                location: 'https://microsoft.com/bytes/35'
             });
 
         return new Promise<void>(async (resolve, reject) => {
             try {
 
-                let downPath: string = await toolLib.downloadTool("https://microsoft.com/redirect-to" ,fileName);
+                let downPath: string = await toolLib.downloadTool("https://microsoft.com/redirect-to", fileName);
                 toolLib.debug('downloaded path: ' + downPath);
 
                 assert(tl.exist(downPath), 'downloaded file exists');
@@ -88,7 +88,7 @@ describe('Tool Tests', function () {
     });
 
     it('downloads to an aboslute path', function () {
-        return new Promise<void>(async(resolve, reject)=> {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 let tempDownloadFolder: string = 'temp_' + Math.floor(Math.random() * 2000000000);
                 let aboslutePath: string = path.join(tempPath, tempDownloadFolder);
@@ -100,13 +100,13 @@ describe('Tool Tests', function () {
 
                 resolve();
             }
-            catch(err) {
+            catch (err) {
                 reject(err);
             }
         });
     });
 
-    it('has status code in exception dictionary for HTTP error code responses', async function() {
+    it('has status code in exception dictionary for HTTP error code responses', async function () {
         nock('https://microsoft.com')
             .get('/bytes/bad')
             .reply(400, {
@@ -114,15 +114,15 @@ describe('Tool Tests', function () {
                 password: 'file'
             });
 
-        return new Promise<void>(async(resolve, reject)=> {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 let errorCodeUrl: string = "https://microsoft.com/bytes/bad";
-                let downPath: string = await toolLib.downloadTool(errorCodeUrl ,fileName);
+                let downPath: string = await toolLib.downloadTool(errorCodeUrl, fileName);
 
                 reject('a file was downloaded but it shouldnt have been');
             }
-            catch (err){
-                assert.equal((err as Error).message, 400, 'status code exists');
+            catch (err) {
+                assert.equal((err as Error).message, "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 400 125", 'status code exists');
 
                 resolve();
             }
@@ -133,22 +133,22 @@ describe('Tool Tests', function () {
         nock('https://microsoft.com')
             .get('/redirect-to')
             .reply(302, undefined, {
-                location:'https://microsoft.com/bytes/35'
+                location: 'https://microsoft.com/bytes/35'
             });
-        return new Promise<void>(async(resolve, reject)=> {
+        return new Promise<void>(async (resolve, reject) => {
             try {
                 let statusCodeUrl: string = "https://microsoft.com/redirect-to";
                 let downPath: string = await toolLib.downloadTool(statusCodeUrl, fileName);
 
                 resolve();
             }
-            catch (err){
+            catch (err) {
                 reject(err);
             }
         });
     });
 
-    it("doesn't retry 502s more than 3 times", async function() {
+    it("doesn't retry 502s more than 3 times", async function () {
         this.timeout(5000);
         nock('https://microsoft.com')
             .get('/perm502')
@@ -163,7 +163,7 @@ describe('Tool Tests', function () {
                 reject('Shouldnt have succeeded');
             } catch (err: any) {
                 err = err as Error
-                if (err.message == 502) {
+                if (err.message.includes("502")) {
                     resolve();
                 }
                 reject(err);

@@ -3,6 +3,7 @@ import * as ifm from "typed-rest-client/Interfaces";
 import * as path from "path";
 import * as fs from "fs";
 import * as tl from "azure-pipelines-task-lib/task";
+import * as constants from "./application-constant";
 
 const userAgent = "SynopsysSecurityScan";
 const requestOptions = {
@@ -67,7 +68,14 @@ export async function downloadTool(
         tl.debug(
           `Failed to download "${fileName}" from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`
         );
-        reject(new Error(response.message.statusCode?.toString()));
+        reject(
+          new Error(
+            "Failed to download synopsys-bridge zip from specified URL. HTTP status code: "
+              .concat(String(response.message.statusCode))
+              .concat(constants.SPACE)
+              .concat("125")
+          )
+        );
       }
 
       const downloadedContentLength =
@@ -124,7 +132,7 @@ export async function downloadTool(
           ) {
             const errMsg = `Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
             tl.warning(errMsg);
-            reject(errMsg);
+            reject(errMsg.concat(constants.SPACE).concat("126"));
           }
           resolve(destPath);
         });
@@ -162,7 +170,9 @@ function _getAgentTemp(): string {
   tl.assertAgent("2.115.0");
   const tempDirectory = tl.getVariable("Agent.TempDirectory");
   if (!tempDirectory) {
-    throw new Error("Agent.TempDirectory is not set");
+    throw new Error(
+      "Agent.TempDirectory is not set".concat(constants.SPACE).concat("127")
+    );
   }
   return tempDirectory;
 }
