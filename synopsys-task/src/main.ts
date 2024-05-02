@@ -85,7 +85,7 @@ export function logBridgeExitCodes(message: string): string {
   const exitCode = message.trim().split(" ").pop() || "";
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
-    : message;
+    : "Undefined error from extension: " + message + constants.SPACE + "999";
 }
 
 run().catch((error) => {
