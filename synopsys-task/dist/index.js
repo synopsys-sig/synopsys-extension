@@ -67,8 +67,7 @@ function run() {
             }
             // Execute prepared commands
             const result = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
-            console.log("Bridge returned:", result);
-            console.log("##vso[task.setvariable variable=exitStatus;isoutput=true]" + result);
+            console.log(`##vso[task.setvariable variable=status;isoutput=true]${result}`);
         }
         catch (error) {
             throw error;
@@ -95,9 +94,7 @@ function run() {
     });
 }
 exports.run = run;
-function logBridgeExitCodes(message) {
-    // const exitCode = message.trim().slice(-1);
-    const exitCode = message.trim().split(" ").pop() || "";
+function logBridgeExitCodes(message, exitCode) {
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
         : "Undefined error from extension: " + message + constants.SPACE + "999";
@@ -106,7 +103,9 @@ exports.logBridgeExitCodes = logBridgeExitCodes;
 run().catch((error) => {
     if (error.message != undefined) {
         taskLib.error(error.message);
-        taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(logBridgeExitCodes(error.message)));
+        const status = error.message.trim().split(" ").pop() || "";
+        console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
+        taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(logBridgeExitCodes(error.message, status)));
     }
 });
 
