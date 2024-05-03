@@ -99,9 +99,9 @@ export async function getRemoteFile(
   return Promise.reject("Synopsys bridge download has been failed");
 }
 
-export function parseToBoolean(value: string | boolean): boolean {
+export function parseToBoolean(value: string | boolean | undefined): boolean {
   if (
-    value !== null &&
+    value &&
     value !== "" &&
     (value.toString().toLowerCase() === "true" || value === true)
   ) {
