@@ -30,7 +30,7 @@ export async function extractZipped(
 ): Promise<boolean> {
   if (file == null || file.length === 0) {
     return Promise.reject(
-      new Error("File does not exist".concat(constants.SPACE).concat("119"))
+      new Error("File does not exist".concat(constants.SPACE).concat("118"))
     );
   }
 
@@ -38,7 +38,7 @@ export async function extractZipped(
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(
       new Error(
-        "No destination directory found".concat(constants.SPACE).concat("120")
+        "No destination directory found".concat(constants.SPACE).concat("119")
       )
     );
   }
@@ -57,7 +57,7 @@ export async function getRemoteFile(
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
     return Promise.reject(
-      new Error("URL cannot be empty".concat(constants.SPACE).concat("111"))
+      new Error("URL cannot be empty".concat(constants.SPACE).concat("110"))
     );
   }
 
@@ -107,7 +107,7 @@ export async function getRemoteFile(
   return Promise.reject(
     "Synopsys bridge download has been failed"
       .concat(constants.SPACE)
-      .concat("114")
+      .concat("113")
   );
 }
 
@@ -146,7 +146,7 @@ export function getWorkSpaceDirectory(): string {
     throw new Error(
       "Workspace directory could not be located"
         .concat(constants.SPACE)
-        .concat("118")
+        .concat("117")
     );
   }
 }

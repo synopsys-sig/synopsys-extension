@@ -119,7 +119,7 @@ export class SynopsysToolsParameter {
           throw new Error(
             "Missing required azure token for pull request comment"
               .concat(constants.SPACE)
-              .concat("123")
+              .concat("122")
           );
         }
 
@@ -245,7 +245,7 @@ export class SynopsysToolsParameter {
             "Invalid value for "
               .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
-              .concat("105")
+              .concat("106")
           );
         } else {
           failureSeverityEnums.push(
@@ -547,7 +547,7 @@ export class SynopsysToolsParameter {
       throw new Error(
         "Missing required azure token for fix pull request/automation comment"
           .concat(constants.SPACE)
-          .concat("123")
+          .concat("122")
       );
     }
 

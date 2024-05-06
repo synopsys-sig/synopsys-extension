@@ -67,6 +67,7 @@ function run() {
             }
             // Execute prepared commands
             const result = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
+            console.log(constants.EXIT_CODE_MAP.get(result.toString()));
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${result}`);
         }
         catch (error) {
@@ -301,9 +302,9 @@ exports.EXIT_CODE_MAP = new Map([
     ["101", "Requires at least one scan type"],
     [
         "102",
-        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) is missing",
+        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) are missing",
     ],
-    ["103", "Bridge initialization failed"],
+    ["103", "Agent.TempDirectory is not set"],
     [
         "104",
         "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
@@ -312,46 +313,44 @@ exports.EXIT_CODE_MAP = new Map([
     ["106", "Invalid value for blackduck_scan_failure_severities"],
     ["107", "Invalid value for blackduck_fixpr_maxCount"],
     ["108", "Missing boolean value for blackduck_scan_full"],
-    ["109", "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"],
     [
-        "110",
+        "109",
         "Provided Synopsys Bridge URL is not valid for the configured platform runner",
     ],
-    ["111", "Provided Synopsys Bridge URL cannot be empty"],
-    ["112", "Invalid URL (Invalid Synopysys Bridge Download URL)"],
-    ["113", "Provided Synopsys Bridge version not found in artifactory"],
-    ["114", "Synopsys bridge download has been failed"],
-    ["115", "Synopsys Bridge Install Directory does not exist"],
-    ["116", "Synopsys Bridge default directory does not exist"],
+    ["110", "Provided Synopsys Bridge URL cannot be empty"],
+    ["111", "Invalid URL (Invalid Synopysys Bridge Download URL)"],
+    ["112", "Provided Synopsys Bridge version not found in artifactory"],
+    ["113", "Synopsys bridge download has been failed"],
+    ["114", "Synopsys Bridge Install Directory does not exist"],
+    ["115", "Synopsys Bridge default directory does not exist"],
     [
-        "117",
+        "116",
         "Synopsys Bridge executable file could not be found at executable Bridge path",
     ],
-    ["118", "Workspace directory could not be located"],
-    ["119", "File (Synopsys Bridge zip) does not exist"],
-    ["120", "No destination directory found for unzipping Synopsys  Bridge"],
+    ["117", "Workspace directory could not be located"],
+    ["118", "File (Synopsys Bridge zip) does not exist"],
+    ["119", "No destination directory found for unzipping Synopsys  Bridge"],
     [
-        "121",
+        "120",
         "Unable to find a Pull request Id from current source build with branch",
     ],
     [
-        "122",
+        "121",
         "Failed to get pull request Id for current build from source branch ",
     ],
     [
-        "123",
+        "122",
         "Missing required azure token for fix pull request/automation comment",
     ],
-    ["124", "coverity_install_directory parameter for Coverity is invalid"],
+    ["123", "coverity_install_directory parameter for Coverity is invalid"],
     [
-        "125",
+        "124",
         "Failed to download synopsys-bridge zip from specified URL. HTTP status code: ",
     ],
     [
-        "126",
+        "125",
         "Content-Length of synopsys-bridge in the artifactory did not match downloaded file size",
     ],
-    ["127", "Agent.TempDirectory is not set"],
     ["999", "Undefined error from extension"],
 ]);
 exports.SPACE = " ";
@@ -559,7 +558,7 @@ class SynopsysAzureService {
                     throw new Error("Unable to find a Pull request Id from current source build with branch: "
                         .concat(azureData.repository.branch.name)
                         .concat(constants.SPACE)
-                        .concat("121"));
+                        .concat("120"));
                 }
             }
             else {
@@ -568,7 +567,7 @@ class SynopsysAzureService {
                     .concat(" With error: ")
                     .concat(yield httpResponse.readBody())
                     .concat(constants.SPACE)
-                    .concat("122"));
+                    .concat("121"));
             }
         });
     }
@@ -733,7 +732,7 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                     reject(new Error("Failed to download synopsys-bridge zip from specified URL. HTTP status code: "
                         .concat(String(response.message.statusCode))
                         .concat(constants.SPACE)
-                        .concat("125")));
+                        .concat("124")));
                 }
                 const downloadedContentLength = _getContentLengthOfDownloadedFile(response);
                 if (!isNaN(downloadedContentLength)) {
@@ -783,7 +782,7 @@ function downloadTool(url, fileName, handlers, additionalHeaders) {
                         fileSizeInBytes !== downloadedContentLength) {
                         const errMsg = `Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
                         tl.warning(errMsg);
-                        reject(errMsg.concat(constants.SPACE).concat("126"));
+                        reject(errMsg.concat(constants.SPACE).concat("125"));
                     }
                     resolve(destPath);
                 });
@@ -820,7 +819,7 @@ function _getAgentTemp() {
     tl.assertAgent("2.115.0");
     const tempDirectory = tl.getVariable("Agent.TempDirectory");
     if (!tempDirectory) {
-        throw new Error("Agent.TempDirectory is not set".concat(constants.SPACE).concat("127"));
+        throw new Error("Agent.TempDirectory is not set".concat(constants.SPACE).concat("103"));
     }
     return tempDirectory;
 }
@@ -1212,7 +1211,7 @@ class SynopsysBridge {
                 throw new Error("Synopsys Bridge executable file could not be found at "
                     .concat(executableBridgePath)
                     .concat(constants.SPACE)
-                    .concat("117"));
+                    .concat("116"));
             }
             try {
                 return yield taskLib.exec(executableBridgePath, command, {
@@ -1353,12 +1352,12 @@ class SynopsysBridge {
                     return Promise.reject(new Error("Provided Synopsys Bridge url is not valid for the configured "
                         .concat(process.platform, " runner")
                         .concat(constants.SPACE)
-                        .concat("110")));
+                        .concat("109")));
                 }
                 else if (errorObject.toLowerCase().includes("empty")) {
                     return Promise.reject(new Error("Provided Synopsys Bridge URL cannot be empty"
                         .concat(constants.SPACE)
-                        .concat("111")));
+                        .concat("110")));
                 }
                 else {
                     return Promise.reject(new Error(errorObject));
@@ -1374,7 +1373,7 @@ class SynopsysBridge {
             if (inputs.BRIDGE_DOWNLOAD_URL) {
                 bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
                 if (!(0, validator_1.validateBridgeUrl)(inputs.BRIDGE_DOWNLOAD_URL)) {
-                    return Promise.reject(new Error("Invalid URL".concat(constants.SPACE).concat("112")));
+                    return Promise.reject(new Error("Invalid URL".concat(constants.SPACE).concat("111")));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
                 const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
@@ -1394,7 +1393,7 @@ class SynopsysBridge {
                 else {
                     return Promise.reject(new Error("Provided Synopsys Bridge version not found in artifactory"
                         .concat(constants.SPACE)
-                        .concat("113")));
+                        .concat("112")));
                 }
             }
             else {
@@ -1608,7 +1607,7 @@ class SynopsysBridge {
                 if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
                     throw new Error("Synopsys Bridge Install Directory does not exist"
                         .concat(constants.SPACE)
-                        .concat("115"));
+                        .concat("114"));
                 }
             }
             else {
@@ -1763,7 +1762,7 @@ class SynopsysToolsParameter {
                 if (!inputs.AZURE_TOKEN) {
                     throw new Error("Missing required azure token for pull request comment"
                         .concat(constants.SPACE)
-                        .concat("123"));
+                        .concat("122"));
                 }
                 polData.data.azure = this.setAzureData("", inputs.AZURE_TOKEN, "", "", "", "", "");
                 polData.data.polaris.prcomment = { severities: [], enabled: true };
@@ -1847,7 +1846,7 @@ class SynopsysToolsParameter {
                         throw new Error("Invalid value for "
                             .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
                             .concat(constants.SPACE)
-                            .concat("105"));
+                            .concat("106"));
                     }
                     else {
                         failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
@@ -2075,7 +2074,7 @@ class SynopsysToolsParameter {
             if (azureToken == "") {
                 throw new Error("Missing required azure token for fix pull request/automation comment"
                     .concat(constants.SPACE)
-                    .concat("123"));
+                    .concat("122"));
             }
             taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
             taskLib.debug(`Azure Organization: ${azureOrganization}`);
@@ -2297,11 +2296,11 @@ exports.getTempDir = getTempDir;
 function extractZipped(file, destinationPath) {
     return __awaiter(this, void 0, void 0, function* () {
         if (file == null || file.length === 0) {
-            return Promise.reject(new Error("File does not exist".concat(constants.SPACE).concat("119")));
+            return Promise.reject(new Error("File does not exist".concat(constants.SPACE).concat("118")));
         }
         // Extract file name from file with full path
         if (destinationPath == null || destinationPath.length === 0) {
-            return Promise.reject(new Error("No destination directory found".concat(constants.SPACE).concat("120")));
+            return Promise.reject(new Error("No destination directory found".concat(constants.SPACE).concat("119")));
         }
         try {
             yield toolLib.extractZip(file, destinationPath);
@@ -2316,7 +2315,7 @@ exports.extractZipped = extractZipped;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {
-            return Promise.reject(new Error("URL cannot be empty".concat(constants.SPACE).concat("111")));
+            return Promise.reject(new Error("URL cannot be empty".concat(constants.SPACE).concat("110")));
         }
         let fileNameFromUrl = "";
         if (taskLib.stats(destFilePath).isDirectory()) {
@@ -2356,7 +2355,7 @@ function getRemoteFile(destFilePath, url) {
         } while (retryCountLocal >= 0);
         return Promise.reject("Synopsys bridge download has been failed"
             .concat(constants.SPACE)
-            .concat("114"));
+            .concat("113"));
     });
 }
 exports.getRemoteFile = getRemoteFile;
@@ -2389,7 +2388,7 @@ function getWorkSpaceDirectory() {
     else {
         throw new Error("Workspace directory could not be located"
             .concat(constants.SPACE)
-            .concat("118"));
+            .concat("117"));
     }
 }
 exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
@@ -2538,7 +2537,7 @@ function validateCoverityInstallDirectoryParam(installDir) {
         !taskLib.exist(installDir)) {
         taskLib.error(`[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
             .concat(constants.SPACE)
-            .concat("124"));
+            .concat("123"));
         return false;
     }
     return true;
@@ -2548,7 +2547,7 @@ function validateBlackduckFailureSeverities(severities) {
     if (severities == null || severities.length === 0) {
         taskLib.error("Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
             .concat(constants.SPACE)
-            .concat("109"));
+            .concat("106"));
         return false;
     }
     return true;

@@ -122,7 +122,7 @@ describe('Tool Tests', function () {
                 reject('a file was downloaded but it shouldnt have been');
             }
             catch (err) {
-                assert.equal((err as Error).message, "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 400 125", 'status code exists');
+                assert.equal((err as Error).message, "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 400 124", 'status code exists');
 
                 resolve();
             }

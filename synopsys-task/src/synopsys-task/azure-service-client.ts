@@ -45,7 +45,7 @@ export class SynopsysAzureService {
           "Unable to find a Pull request Id from current source build with branch: "
             .concat(azureData.repository.branch.name)
             .concat(constants.SPACE)
-            .concat("121")
+            .concat("120")
         );
       }
     } else {
@@ -55,7 +55,7 @@ export class SynopsysAzureService {
           .concat(" With error: ")
           .concat(await httpResponse.readBody())
           .concat(constants.SPACE)
-          .concat("122")
+          .concat("121")
       );
     }
   }

@@ -98,7 +98,7 @@ export function validateCoverityInstallDirectoryParam(
     taskLib.error(
       `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
         .concat(constants.SPACE)
-        .concat("124")
+        .concat("123")
     );
     return false;
   }
@@ -112,7 +112,7 @@ export function validateBlackduckFailureSeverities(
     taskLib.error(
       "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
         .concat(constants.SPACE)
-        .concat("109")
+        .concat("106")
     );
     return false;
   }

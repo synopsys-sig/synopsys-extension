@@ -45,6 +45,8 @@ export async function run() {
       command
     );
 
+    console.log(constants.EXIT_CODE_MAP.get(result.toString()));
+
     console.log(
       `##vso[task.setvariable variable=status;isoutput=true]${result}`
     );

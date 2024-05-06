@@ -73,7 +73,7 @@ export async function downloadTool(
             "Failed to download synopsys-bridge zip from specified URL. HTTP status code: "
               .concat(String(response.message.statusCode))
               .concat(constants.SPACE)
-              .concat("125")
+              .concat("124")
           )
         );
       }
@@ -132,7 +132,7 @@ export async function downloadTool(
           ) {
             const errMsg = `Content-Length (${downloadedContentLength} bytes) did not match downloaded file size (${fileSizeInBytes} bytes).`;
             tl.warning(errMsg);
-            reject(errMsg.concat(constants.SPACE).concat("126"));
+            reject(errMsg.concat(constants.SPACE).concat("125"));
           }
           resolve(destPath);
         });
@@ -171,7 +171,7 @@ function _getAgentTemp(): string {
   const tempDirectory = tl.getVariable("Agent.TempDirectory");
   if (!tempDirectory) {
     throw new Error(
-      "Agent.TempDirectory is not set".concat(constants.SPACE).concat("127")
+      "Agent.TempDirectory is not set".concat(constants.SPACE).concat("103")
     );
   }
   return tempDirectory;

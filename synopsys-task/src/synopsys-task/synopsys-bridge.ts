@@ -79,7 +79,7 @@ export class SynopsysBridge {
         "Synopsys Bridge executable file could not be found at "
           .concat(executableBridgePath)
           .concat(constants.SPACE)
-          .concat("117")
+          .concat("116")
       );
     }
     try {
@@ -277,7 +277,7 @@ export class SynopsysBridge {
             "Provided Synopsys Bridge url is not valid for the configured "
               .concat(process.platform, " runner")
               .concat(constants.SPACE)
-              .concat("110")
+              .concat("109")
           )
         );
       } else if (errorObject.toLowerCase().includes("empty")) {
@@ -285,7 +285,7 @@ export class SynopsysBridge {
           new Error(
             "Provided Synopsys Bridge URL cannot be empty"
               .concat(constants.SPACE)
-              .concat("111")
+              .concat("110")
           )
         );
       } else {
@@ -303,7 +303,7 @@ export class SynopsysBridge {
 
       if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
         return Promise.reject(
-          new Error("Invalid URL".concat(constants.SPACE).concat("112"))
+          new Error("Invalid URL".concat(constants.SPACE).concat("111"))
         );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
@@ -329,7 +329,7 @@ export class SynopsysBridge {
           new Error(
             "Provided Synopsys Bridge version not found in artifactory"
               .concat(constants.SPACE)
-              .concat("113")
+              .concat("112")
           )
         );
       }
@@ -612,7 +612,7 @@ export class SynopsysBridge {
         throw new Error(
           "Synopsys Bridge Install Directory does not exist"
             .concat(constants.SPACE)
-            .concat("115")
+            .concat("114")
         );
       }
     } else {
