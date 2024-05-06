@@ -335,15 +335,12 @@ exports.EXIT_CODE_MAP = new Map([
     ],
     ["117", "Workspace directory could not be located"],
     ["118", "File (Synopsys Bridge zip) does not exist"],
-    ["119", "No destination directory found for unzipping Synopsys  Bridge"],
+    ["119", "No destination directory found for unzipping Synopsys Bridge"],
     [
         "120",
         "Unable to find a Pull request Id from current source build with branch",
     ],
-    [
-        "121",
-        "Failed to get pull request Id for current build from source branch ",
-    ],
+    ["121", "Failed to get pull request Id for current build from source branch"],
     [
         "122",
         "Missing required azure token for fix pull request/automation comment",

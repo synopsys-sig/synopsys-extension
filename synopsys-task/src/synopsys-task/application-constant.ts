@@ -225,7 +225,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
     "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
   ],
   ["105", "Invalid value for polaris_assessment_types"],
-  ["106", "Invalid value for blackduck_scan_failure_severities"], // two times
+  ["106", "Invalid value for blackduck_scan_failure_severities"],
   ["107", "Invalid value for blackduck_fixpr_maxCount"],
   ["108", "Missing boolean value for blackduck_scan_full"],
   [
@@ -244,19 +244,16 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ],
   ["117", "Workspace directory could not be located"],
   ["118", "File (Synopsys Bridge zip) does not exist"],
-  ["119", "No destination directory found for unzipping Synopsys  Bridge"],
+  ["119", "No destination directory found for unzipping Synopsys Bridge"],
   [
     "120",
     "Unable to find a Pull request Id from current source build with branch",
   ],
-  [
-    "121",
-    "Failed to get pull request Id for current build from source branch ",
-  ],
+  ["121", "Failed to get pull request Id for current build from source branch"],
   [
     "122",
     "Missing required azure token for fix pull request/automation comment",
-  ], // need to confirm
+  ],
   ["123", "coverity_install_directory parameter for Coverity is invalid"],
   [
     "124",
