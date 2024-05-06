@@ -337,3 +337,8 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
     .getInput(constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
     ?.trim() ||
   "";
+
+export const RETURN_STATUS =
+  taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() ||
+  taskLib.getInput(constants.RETURN_STATUS_KEY_CLASSIC_EDITOR)?.trim() ||
+  "";

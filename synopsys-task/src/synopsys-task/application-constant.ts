@@ -430,6 +430,9 @@ export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "synopsysBridgeInstallDirectory";
 
+export const RETURN_STATUS_KEY = "return_status";
+export const RETURN_STATUS_KEY_CLASSIC_EDITOR = "returnStatus";
+
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";

@@ -16,6 +16,7 @@ import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
 } from "./synopsys-task/model/azure";
+import { RETURN_STATUS } from "./synopsys-task/input";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -45,11 +46,11 @@ export async function run() {
       command
     );
 
-    console.log(constants.EXIT_CODE_MAP.get(result.toString()));
-
-    console.log(
-      `##vso[task.setvariable variable=status;isoutput=true]${result}`
-    );
+    if (parseToBoolean(inputs.RETURN_STATUS)) {
+      console.log(
+        `##vso[task.setvariable variable=status;isoutput=true]${result}`
+      );
+    }
   } catch (error: any) {
     throw error;
   } finally {
@@ -91,13 +92,18 @@ export function logBridgeExitCodes(message: string, exitCode: string): string {
 run().catch((error) => {
   if (error.message != undefined) {
     taskLib.error(error.message);
+    const isReturnStatus = parseToBoolean(inputs.RETURN_STATUS);
     const status = error.message.trim().split(" ").pop() || "";
-    console.log(
-      `##vso[task.setvariable variable=status;isoutput=true]${status}`
-    );
+    if (isReturnStatus) {
+      console.log(
+        `##vso[task.setvariable variable=status;isoutput=true]${status}`
+      );
+    }
     taskLib.setResult(
       taskLib.TaskResult.Failed,
-      "Workflow failed! ".concat(logBridgeExitCodes(error.message, status))
+      isReturnStatus
+        ? "Workflow failed! ".concat(logBridgeExitCodes(error.message, status))
+        : "Workflow failed!"
     );
   }
 });
