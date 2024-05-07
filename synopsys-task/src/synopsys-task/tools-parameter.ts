@@ -433,6 +433,9 @@ export class SynopsysToolsParameter {
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+    taskLib.debug(
+      `Azure API URL, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`
+    );
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
@@ -448,12 +451,20 @@ export class SynopsysToolsParameter {
         }
       }
     }
+    taskLib.debug("Azure organization name:".concat(azureOrganization));
     const azureProject =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+    taskLib.debug(
+      `Azure project, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`
+    );
     const azureRepo =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+    taskLib.debug(
+      `Azure repo, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`
+    );
     const buildReason =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+    taskLib.debug(`Build Reason: ${buildReason}`);
     const azureRepoBranchName =
       buildReason == AZURE_BUILD_REASON.PULL_REQUEST
         ? taskLib.getVariable(
@@ -462,22 +473,21 @@ export class SynopsysToolsParameter {
         : taskLib.getVariable(
             AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
           ) || "";
+    taskLib.debug(`Azure repo branch name: ${azureProject}`);
 
     const azurePullRequestNumber =
       taskLib.getVariable(
         AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
       ) || "";
+    taskLib.debug(
+      `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`
+    );
 
     if (azureToken == "") {
       throw new Error(
         "Missing required azure token for fix pull request/automation comment"
       );
     }
-    taskLib.debug("Azure Instance URL:".concat(azureInstanceUrl));
-    taskLib.debug("Azure Organization:".concat(azureOrganization));
-    taskLib.debug("Azure Project:".concat(azureProject));
-    taskLib.debug("Azure Repo:".concat(azureRepo));
-    taskLib.debug("Azure Repo Branch Name:".concat(azureRepoBranchName));
 
     // This condition is required as per ts-lint as these fields may have undefined as well
     if (
@@ -508,6 +518,9 @@ export class SynopsysToolsParameter {
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
             azureData
           );
+        taskLib.debug(
+          `Azure pull request number for classic editor flow: ${azureData.repository.pull.number}`
+        );
         return azureData;
       }
       return azureData;
