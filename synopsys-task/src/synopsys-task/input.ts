@@ -1,6 +1,8 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 
+const deprecatedInputs: string[] = [];
+
 export function getDelimitedInput(
   newKey: string,
   classicEditorKey: string,
@@ -11,7 +13,7 @@ export function getDelimitedInput(
   const deprecatedInput = taskLib.getDelimitedInput(deprecatedKey, ",");
 
   if (deprecatedInput.length > 0) {
-    showLogForDeprecatedInput(deprecatedKey, newKey);
+    deprecatedInputs.push(deprecatedKey);
   }
 
   return (
@@ -22,23 +24,24 @@ export function getDelimitedInput(
   );
 }
 
-export function showLogForDeprecatedInput(
-  deprecatedKey: string,
-  newKey: string
-) {
-  console.info(
-    `This ${deprecatedKey} will be deprecated soon. Please use ${newKey} instead`
-  );
+export function showLogForDeprecatedInputs() {
+  if (deprecatedInputs.length > 0) {
+    console.info(
+      `[${deprecatedInputs.join(",")}] will be deprecated soon. 
+    Check the documentation for the new parameters: ${
+      constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
+    }`
+    );
+  }
 }
 
 export function getDeprecatedInput<T>(
   deprecatedKey: string,
-  newKey: string,
   getInputMethod: (key: string) => T | undefined
 ): T | undefined {
   const deprecatedInput = getInputMethod(deprecatedKey);
   if (deprecatedInput) {
-    showLogForDeprecatedInput(deprecatedKey, newKey);
+    deprecatedInputs.push(deprecatedKey);
   }
   return deprecatedInput;
 }
@@ -51,7 +54,6 @@ export const BRIDGE_DOWNLOAD_URL =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_DOWNLOAD_URL_KEY,
-    constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -59,11 +61,7 @@ export const BRIDGE_DOWNLOAD_URL =
 export const ENABLE_NETWORK_AIRGAP =
   taskLib.getBoolInput(constants.NETWORK_AIRGAP_KEY) ||
   taskLib.getBoolInput(constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR) ||
-  getDeprecatedInput(
-    constants.BRIDGE_NETWORK_AIRGAP_KEY,
-    constants.NETWORK_AIRGAP_KEY,
-    taskLib.getBoolInput
-  );
+  getDeprecatedInput(constants.BRIDGE_NETWORK_AIRGAP_KEY, taskLib.getBoolInput);
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
   taskLib.getPathInput(
@@ -85,7 +83,6 @@ export const BRIDGE_DOWNLOAD_VERSION =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_DOWNLOAD_VERSION_KEY,
-    constants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -109,7 +106,6 @@ export const POLARIS_SERVER_URL =
   taskLib.getInput(constants.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_SERVER_URL_KEY,
-    constants.POLARIS_SERVER_URL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -118,7 +114,6 @@ export const POLARIS_ACCESS_TOKEN =
   taskLib.getInput(constants.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_ACCESS_TOKEN_KEY,
-    constants.POLARIS_ACCESS_TOKEN_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -129,7 +124,6 @@ export const POLARIS_APPLICATION_NAME =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_APPLICATION_NAME_KEY,
-    constants.POLARIS_APPLICATION_NAME_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -138,7 +132,6 @@ export const POLARIS_PROJECT_NAME =
   taskLib.getInput(constants.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_PROJECT_NAME_KEY,
-    constants.POLARIS_PROJECT_NAME_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -152,7 +145,6 @@ export const POLARIS_TRIAGE =
   taskLib.getInput(constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_TRIAGE_KEY,
-    constants.POLARIS_TRIAGE_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -161,7 +153,6 @@ export const POLARIS_BRANCH_NAME =
   taskLib.getInput(constants.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_BRANCH_NAME_KEY,
-    constants.POLARIS_BRANCH_NAME_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -178,7 +169,6 @@ export const POLARIS_PR_COMMENT_ENABLED =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY,
-    constants.POLARIS_PR_COMMENT_ENABLED_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -195,7 +185,6 @@ export const POLARIS_TEST_SCA_TYPE =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_TEST_SCA_TYPE_KEY,
-    constants.POLARIS_TEST_SCA_TYPE_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -207,7 +196,6 @@ export const POLARIS_REPORTS_SARIF_CREATE =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY,
-    constants.POLARIS_REPORTS_SARIF_CREATE_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -218,7 +206,6 @@ export const POLARIS_REPORTS_SARIF_FILE_PATH =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
-    constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -238,7 +225,6 @@ export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
-    constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -254,7 +240,6 @@ export const COVERITY_URL =
   taskLib.getInput(constants.COVERITY_URL_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_URL_KEY,
-    constants.COVERITY_URL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -263,7 +248,6 @@ export const COVERITY_USER =
   taskLib.getInput(constants.COVERITY_USER_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_USER_NAME_KEY,
-    constants.COVERITY_USER_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -272,7 +256,6 @@ export const COVERITY_USER_PASSWORD =
   taskLib.getInput(constants.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_USER_PASSWORD_KEY,
-    constants.COVERITY_PASSPHRASE_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -283,7 +266,6 @@ export const COVERITY_PROJECT_NAME =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_PROJECT_NAME_KEY,
-    constants.COVERITY_PROJECT_NAME_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -292,7 +274,6 @@ export const COVERITY_STREAM_NAME =
   taskLib.getInput(constants.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_STREAM_NAME_KEY,
-    constants.COVERITY_STREAM_NAME_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -303,7 +284,6 @@ export const COVERITY_INSTALL_DIRECTORY =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY,
-    constants.COVERITY_INSTALL_DIRECTORY_KEY,
     taskLib.getPathInput
   )?.trim() ||
   "";
@@ -312,7 +292,6 @@ export const COVERITY_POLICY_VIEW =
   taskLib.getInput(constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_POLICY_VIEW_KEY,
-    constants.COVERITY_POLICY_VIEW_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -321,7 +300,6 @@ export const COVERITY_LOCAL =
   taskLib.getInput(constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_LOCAL_KEY,
-    constants.COVERITY_LOCAL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -330,7 +308,6 @@ export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR) ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY,
-    constants.COVERITY_PRCOMMENT_ENABLED_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -339,7 +316,6 @@ export const COVERITY_VERSION =
   taskLib.getInput(constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_COVERITY_VERSION_KEY,
-    constants.COVERITY_VERSION_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -350,7 +326,6 @@ export const BLACKDUCK_URL =
   taskLib.getInput(constants.BLACKDUCK_URL_KEY)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_URL_KEY,
-    constants.BLACKDUCK_URL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -359,7 +334,6 @@ export const BLACKDUCK_API_TOKEN =
   taskLib.getInput(constants.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_API_TOKEN_KEY,
-    constants.BLACKDUCK_TOKEN_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -370,7 +344,6 @@ export const BLACKDUCK_INSTALL_DIRECTORY =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY,
-    constants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
     taskLib.getPathInput
   )?.trim() ||
   "";
@@ -379,7 +352,6 @@ export const BLACKDUCK_SCAN_FULL =
   taskLib.getInput(constants.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY,
-    constants.BLACKDUCK_SCAN_FULL_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -396,7 +368,6 @@ export const BLACKDUCK_FIXPR_ENABLED =
   taskLib.getInput(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY)?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY,
-    constants.BLACKDUCK_FIXPR_ENABLED_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -405,7 +376,6 @@ export const BLACKDUCK_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR) ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-    constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -416,7 +386,6 @@ export const BLACKDUCK_FIXPR_MAXCOUNT =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY,
-    constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -427,7 +396,6 @@ export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY,
-    constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -448,7 +416,6 @@ export const BLACKDUCK_REPORTS_SARIF_CREATE =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
-    constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -459,7 +426,6 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
-    constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
     taskLib.getInput
   )?.trim() ||
   "";
@@ -481,7 +447,6 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
     ?.trim() ||
   getDeprecatedInput(
     constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES,
-    constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
     taskLib.getInput
   )?.trim() ||
   "";

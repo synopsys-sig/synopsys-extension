@@ -12,10 +12,7 @@ import {
   uploadDiagnostics,
   uploadSarifResultAsArtifact,
 } from "./synopsys-task/diagnostics";
-import {
-  AZURE_BUILD_REASON,
-  AZURE_ENVIRONMENT_VARIABLES,
-} from "./synopsys-task/model/azure";
+import { showLogForDeprecatedInputs } from "./synopsys-task/input";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -26,6 +23,7 @@ export async function run() {
   try {
     const sb = new SynopsysBridge();
 
+    showLogForDeprecatedInputs();
     // Prepare tool commands
     const command: string = await sb.prepareCommand(tempDir);
     let bridgePath = "";
