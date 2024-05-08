@@ -13,6 +13,8 @@ import {
     AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES,
 } from "../../../src/synopsys-task/model/azure";
 import {stub} from "sinon";
+import * as utility from "../../../src/synopsys-task/utility";
+import {isPullRequestEvent} from "../../../src/synopsys-task/utility";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -115,7 +117,8 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -150,7 +153,8 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: 'main'})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -208,7 +212,8 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
-            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -558,6 +563,8 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
             getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
 
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
+
             const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
             getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
@@ -601,6 +608,8 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
             getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
             getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
             const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
             getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
@@ -812,6 +821,8 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
             getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
 
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
+
             const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
             getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
@@ -849,6 +860,8 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
             getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
             getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
             const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
             getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
