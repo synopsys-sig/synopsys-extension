@@ -1,5 +1,0 @@
-cd synopsys-task/
-npm install
-npm run all
-cd ..
-tfx extension publish --publisher dsi-org --manifest-globs vss-extension.json --share-with dsi-org
