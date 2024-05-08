@@ -81,7 +81,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
 
@@ -97,7 +96,6 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('testRepo');
             expect(jsonData.data.polaris.project.name).to.be.contains('testRepo');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
-            expect(jsonData.data.polaris.test.sca.type).to.be.contains('SCA-SIGNATURE');
 
             expect(formattedCommand).contains('--stage polaris');
 

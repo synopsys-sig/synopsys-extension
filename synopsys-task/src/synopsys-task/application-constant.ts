@@ -85,12 +85,6 @@ export const POLARIS_PR_COMMENT_SEVERITIES_KEY = "polaris_prComment_severities";
 export const POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR =
   "polarisPRCommentSeverities";
 /**
- * @deprecated Use polaris_test_sca_type instead. This can be removed in future release.
- */
-export const BRIDGE_POLARIS_TEST_SCA_TYPE_KEY = "bridge_polaris_test_sca_type";
-export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
-export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
-/**
  * @deprecated Use polaris_reports_sarif_create instead. This can be removed in future release.
  */
 export const BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY =

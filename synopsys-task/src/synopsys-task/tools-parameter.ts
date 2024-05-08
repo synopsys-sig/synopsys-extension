@@ -137,14 +137,6 @@ export class SynopsysToolsParameter {
       }
     }
 
-    if (inputs.POLARIS_TEST_SCA_TYPE) {
-      polData.data.polaris.test = {
-        sca: {
-          type: inputs.POLARIS_TEST_SCA_TYPE,
-        },
-      };
-    }
-
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
         polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();

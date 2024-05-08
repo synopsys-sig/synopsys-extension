@@ -179,17 +179,6 @@ export const POLARIS_PR_COMMENT_SEVERITIES = getDelimitedInput(
   constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY
 );
 
-export const POLARIS_TEST_SCA_TYPE =
-  taskLib.getInput(constants.POLARIS_TEST_SCA_TYPE_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  getDeprecatedInput(
-    constants.BRIDGE_POLARIS_TEST_SCA_TYPE_KEY,
-    taskLib.getInput
-  )?.trim() ||
-  "";
-
 export const POLARIS_REPORTS_SARIF_CREATE =
   taskLib.getInput(constants.POLARIS_REPORTS_SARIF_CREATE_KEY)?.trim() ||
   taskLib
