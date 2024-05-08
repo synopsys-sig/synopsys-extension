@@ -30,6 +30,7 @@ import {
 } from "./application-constant";
 import os from "os";
 import semver from "semver";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -79,7 +80,7 @@ export class SynopsysBridge {
         "Synopsys Bridge executable file could not be found at "
           .concat(executableBridgePath)
           .concat(constants.SPACE)
-          .concat("116")
+          .concat(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
       );
     }
     try {
@@ -108,7 +109,7 @@ export class SynopsysBridge {
               .concat(constants.BLACKDUCK_URL_KEY)
               .concat(")")
               .concat(constants.SPACE)
-              .concat("101")
+              .concat(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString())
           )
         );
       }
@@ -277,7 +278,7 @@ export class SynopsysBridge {
             "Provided Synopsys Bridge url is not valid for the configured "
               .concat(process.platform, " runner")
               .concat(constants.SPACE)
-              .concat("109")
+              .concat(ErrorCode.INVALID_SYNOPSYS_BRIDGE_URL.toString())
           )
         );
       } else if (errorObject.toLowerCase().includes("empty")) {
@@ -285,7 +286,7 @@ export class SynopsysBridge {
           new Error(
             "Provided Synopsys Bridge URL cannot be empty"
               .concat(constants.SPACE)
-              .concat("110")
+              .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
           )
         );
       } else {
@@ -303,7 +304,11 @@ export class SynopsysBridge {
 
       if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
         return Promise.reject(
-          new Error("Invalid URL".concat(constants.SPACE).concat("111"))
+          new Error(
+            "Invalid URL"
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_URL.toString())
+          )
         );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
@@ -329,7 +334,7 @@ export class SynopsysBridge {
           new Error(
             "Provided Synopsys Bridge version not found in artifactory"
               .concat(constants.SPACE)
-              .concat("112")
+              .concat(ErrorCode.SYNOPSYS_BRIDGE_VERSION_NOT_FOUND.toString())
           )
         );
       }
@@ -612,7 +617,7 @@ export class SynopsysBridge {
         throw new Error(
           "Synopsys Bridge Install Directory does not exist"
             .concat(constants.SPACE)
-            .concat("114")
+            .concat(ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString())
         );
       }
     } else {
@@ -622,7 +627,7 @@ export class SynopsysBridge {
           throw new Error(
             "Synopsys Bridge default directory does not exist"
               .concat(constants.SPACE)
-              .concat("115")
+              .concat(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
           );
         }
       }

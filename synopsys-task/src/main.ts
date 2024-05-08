@@ -16,7 +16,7 @@ import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
 } from "./synopsys-task/model/azure";
-import { RETURN_STATUS } from "./synopsys-task/input";
+import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -45,7 +45,7 @@ export async function run() {
       getWorkSpaceDirectory(),
       command
     );
-
+    // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       console.log(
         `##vso[task.setvariable variable=status;isoutput=true]${result}`
@@ -86,7 +86,10 @@ export async function run() {
 export function logBridgeExitCodes(message: string, exitCode: string): string {
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
-    : "Undefined error from extension: " + message + constants.SPACE + "999";
+    : "Undefined error from extension: "
+        .concat(message)
+        .concat(constants.SPACE)
+        .concat(ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
 
 run().catch((error) => {
@@ -94,11 +97,14 @@ run().catch((error) => {
     taskLib.error(error.message);
     const isReturnStatusEnabled = parseToBoolean(inputs.RETURN_STATUS);
     const status = error.message.trim().split(" ").pop() || "";
+
+    // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {
       console.log(
         `##vso[task.setvariable variable=status;isoutput=true]${status}`
       );
     }
+
     taskLib.setResult(
       taskLib.TaskResult.Failed,
       isReturnStatusEnabled

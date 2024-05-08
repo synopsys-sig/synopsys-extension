@@ -2,6 +2,7 @@ import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
@@ -45,7 +46,9 @@ export class SynopsysAzureService {
           "Unable to find a Pull request Id from current source build with branch: "
             .concat(azureData.repository.branch.name)
             .concat(constants.SPACE)
-            .concat("120")
+            .concat(
+              ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
+            )
         );
       }
     } else {
@@ -55,7 +58,9 @@ export class SynopsysAzureService {
           .concat(" With error: ")
           .concat(await httpResponse.readBody())
           .concat(constants.SPACE)
-          .concat("121")
+          .concat(
+            ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
+          )
       );
     }
   }

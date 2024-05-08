@@ -1,3 +1,5 @@
+import { ErrorCode } from "./enum/ErrorCodes";
+
 export const SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC = "/synopsys-bridge"; //Path will be in home
 export const SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS = "\\synopsys-bridge";
 export const SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX = "/synopsys-bridge";
@@ -208,62 +210,131 @@ export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
-  ["0", "Bridge execution successfully completed"],
-  ["1", "Undefined error, check error logs"],
-  ["2", "Error from adapter end"],
-  ["3", "Failed to shutdown the bridge"],
-  ["8", "The config option bridge.break has been set to true"],
-  ["9", "Bridge initialization failed"],
-  ["101", "Requires at least one scan type"],
   [
-    "102",
+    ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
+    "Bridge execution successfully completed",
+  ],
+  [
+    ErrorCode.UNDEFINED_ERROR_FROM_BRIDGE.toString(),
+    "Undefined error, check error logs",
+  ],
+  [ErrorCode.ADAPTER_ERROR.toString(), "Error from adapter end"],
+  [
+    ErrorCode.BRIDGE_SHUTDOWN_FAILURE.toString(),
+    "Failed to shutdown the bridge",
+  ],
+  [
+    ErrorCode.BRIDGE_BREAK_ENABLED.toString(),
+    "The config option bridge.break has been set to true",
+  ],
+  [
+    ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
+    "Bridge initialization failed",
+  ],
+  [
+    ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
+    "Requires at least one scan type",
+  ],
+  [
+    ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
     "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) are missing",
   ],
-  ["103", "Agent.TempDirectory is not set"],
   [
-    "104",
+    ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
+    "Agent.TempDirectory is not set",
+  ],
+  [
+    ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
     "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
   ],
-  ["105", "Invalid value for polaris_assessment_types"],
-  ["106", "Invalid value for blackduck_scan_failure_severities"],
-  ["107", "Invalid value for blackduck_fixpr_maxCount"],
-  ["108", "Missing boolean value for blackduck_scan_full"],
   [
-    "109",
+    ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
+    "Invalid value for polaris_assessment_types",
+  ],
+  [
+    ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString(),
+    "Invalid value for blackduck_scan_failure_severities",
+  ],
+  [
+    ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
+    "Invalid value for blackduck_fixpr_maxCount",
+  ],
+  [
+    ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
+    "Missing boolean value for blackduck_scan_full",
+  ],
+  [
+    ErrorCode.INVALID_SYNOPSYS_BRIDGE_URL.toString(),
     "Provided Synopsys Bridge URL is not valid for the configured platform runner",
   ],
-  ["110", "Provided Synopsys Bridge URL cannot be empty"],
-  ["111", "Invalid URL (Invalid Synopysys Bridge Download URL)"],
-  ["112", "Provided Synopsys Bridge version not found in artifactory"],
-  ["113", "Synopsys bridge download has been failed"],
-  ["114", "Synopsys Bridge Install Directory does not exist"],
-  ["115", "Synopsys Bridge default directory does not exist"],
   [
-    "116",
+    ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString(),
+    "Provided Synopsys Bridge URL cannot be empty",
+  ],
+  [
+    ErrorCode.INVALID_URL.toString(),
+    "Invalid URL (Invalid Synopysys Bridge Download URL)",
+  ],
+  [
+    ErrorCode.SYNOPSYS_BRIDGE_VERSION_NOT_FOUND.toString(),
+    "Provided Synopsys Bridge version not found in artifactory",
+  ],
+  [
+    ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString(),
+    "Synopsys bridge download has been failed",
+  ],
+  [
+    ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString(),
+    "Synopsys Bridge Install Directory does not exist",
+  ],
+  [
+    ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString(),
+    "Synopsys Bridge default directory does not exist",
+  ],
+  [
+    ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString(),
     "Synopsys Bridge executable file could not be found at executable Bridge path",
   ],
-  ["117", "Workspace directory could not be located"],
-  ["118", "File (Synopsys Bridge zip) does not exist"],
-  ["119", "No destination directory found for unzipping Synopsys Bridge"],
   [
-    "120",
+    ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
+    "Workspace directory could not be located",
+  ],
+  [
+    ErrorCode.FILE_DOES_NOT_EXIST.toString(),
+    "File (Synopsys Bridge zip) does not exist",
+  ],
+  [
+    ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
+    "No destination directory found for unzipping Synopsys Bridge",
+  ],
+  [
+    ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString(),
     "Unable to find a Pull request Id from current source build with branch",
   ],
-  ["121", "Failed to get pull request Id for current build from source branch"],
   [
-    "122",
+    ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FROM_SOURCE_BRANCH.toString(),
+    "Failed to get pull request Id for current build from source branch",
+  ],
+  [
+    ErrorCode.MISSING_AZURE_TOKEN.toString(),
     "Missing required azure token for fix pull request/automation comment",
   ],
-  ["123", "coverity_install_directory parameter for Coverity is invalid"],
   [
-    "124",
+    ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
+    "coverity_install_directory parameter for Coverity is invalid",
+  ],
+  [
+    ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
     "Failed to download synopsys-bridge zip from specified URL. HTTP status code: ",
   ],
   [
-    "125",
+    ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
     "Content-Length of synopsys-bridge in the artifactory did not match downloaded file size",
   ],
-  ["999", "Undefined error from extension"],
+  [
+    ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString(),
+    "Undefined error from extension",
+  ],
 ]);
 
 export const SPACE = " ";

@@ -26,6 +26,7 @@ import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -62,7 +63,7 @@ export class SynopsysToolsParameter {
             "Invalid value for "
               .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
               .concat(constants.SPACE)
-              .concat("105")
+              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
           );
         }
       }
@@ -119,7 +120,7 @@ export class SynopsysToolsParameter {
           throw new Error(
             "Missing required azure token for pull request comment"
               .concat(constants.SPACE)
-              .concat("122")
+              .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
           );
         }
 
@@ -220,7 +221,7 @@ export class SynopsysToolsParameter {
           "Missing boolean value for "
             .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
             .concat(constants.SPACE)
-            .concat("108")
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
         );
       }
     }
@@ -245,7 +246,7 @@ export class SynopsysToolsParameter {
             "Invalid value for "
               .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
-              .concat("106")
+              .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
           );
         } else {
           failureSeverityEnums.push(
@@ -470,7 +471,7 @@ export class SynopsysToolsParameter {
         "Invalid value for "
           .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
           .concat(constants.SPACE)
-          .concat("107")
+          .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
       );
     }
     const createSinglePr = parseToBoolean(
@@ -483,7 +484,7 @@ export class SynopsysToolsParameter {
         )
           .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
-          .concat("104")
+          .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
       );
     }
     const blackDuckFixPrData: BlackDuckFixPrData = {};
@@ -547,7 +548,7 @@ export class SynopsysToolsParameter {
       throw new Error(
         "Missing required azure token for fix pull request/automation comment"
           .concat(constants.SPACE)
-          .concat("122")
+          .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
       );
     }
 

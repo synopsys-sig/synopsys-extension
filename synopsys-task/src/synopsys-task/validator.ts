@@ -1,6 +1,7 @@
 import * as constants from "./application-constant";
 import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
@@ -38,7 +39,7 @@ export function validateParameters(
     errors.push(
       `[${invalidParams.join()}] - required parameters for ${toolName} is missing`
         .concat(constants.SPACE)
-        .concat("102")
+        .concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString())
     );
   }
   return errors;
@@ -98,7 +99,7 @@ export function validateCoverityInstallDirectoryParam(
     taskLib.error(
       `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
         .concat(constants.SPACE)
-        .concat("123")
+        .concat(ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString())
     );
     return false;
   }
@@ -112,7 +113,7 @@ export function validateBlackduckFailureSeverities(
     taskLib.error(
       "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
         .concat(constants.SPACE)
-        .concat("106")
+        .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
     );
     return false;
   }

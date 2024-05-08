@@ -12,6 +12,7 @@ import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES } from "./model/azure";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -30,7 +31,11 @@ export async function extractZipped(
 ): Promise<boolean> {
   if (file == null || file.length === 0) {
     return Promise.reject(
-      new Error("File does not exist".concat(constants.SPACE).concat("118"))
+      new Error(
+        "File does not exist"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.FILE_DOES_NOT_EXIST.toString())
+      )
     );
   }
 
@@ -38,7 +43,9 @@ export async function extractZipped(
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(
       new Error(
-        "No destination directory found".concat(constants.SPACE).concat("119")
+        "No destination directory found"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.NO_DESTINATION_DIRECTORY.toString())
       )
     );
   }
@@ -57,7 +64,11 @@ export async function getRemoteFile(
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
     return Promise.reject(
-      new Error("URL cannot be empty".concat(constants.SPACE).concat("110"))
+      new Error(
+        "URL cannot be empty"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+      )
     );
   }
 
@@ -107,7 +118,7 @@ export async function getRemoteFile(
   return Promise.reject(
     "Synopsys bridge download has been failed"
       .concat(constants.SPACE)
-      .concat("113")
+      .concat(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString())
   );
 }
 
@@ -146,7 +157,7 @@ export function getWorkSpaceDirectory(): string {
     throw new Error(
       "Workspace directory could not be located"
         .concat(constants.SPACE)
-        .concat("117")
+        .concat(ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString())
     );
   }
 }
