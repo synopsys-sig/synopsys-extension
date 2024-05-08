@@ -15,11 +15,11 @@ export class SynopsysAzureService {
   async getPullRequestIdForClassicEditorFlow(
     azureData: AzureData
   ): Promise<number> {
-      const StringFormat = (url: string, ...args: string[]) =>
-          url.replace(
-              /{(\d+)}/g,
-              (match, index) => encodeURIComponent(args[index]) || ""
-          );
+    const StringFormat = (url: string, ...args: string[]) =>
+      url.replace(
+        /{(\d+)}/g,
+        (match, index) => encodeURIComponent(args[index]) || ""
+      );
 
     const endpoint = StringFormat(
       azureData.api.url.concat(this.azureGetMergeRequestsAPI),

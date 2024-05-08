@@ -8,7 +8,11 @@ import {
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
-import { AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES, AzureData } from "./model/azure";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+  AzureData,
+} from "./model/azure";
 import { InputData } from "./model/input-data";
 import * as constants from "./application-constant";
 import * as taskLib from "azure-pipelines-task-lib/task";
