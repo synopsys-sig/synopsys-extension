@@ -433,23 +433,55 @@ export class SynopsysToolsParameter {
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+    taskLib.debug(
+      `Azure API URL, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`
+    );
     if (collectionUri != "") {
       const parsedUrl = url.parse(collectionUri);
       azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
       azureOrganization = parsedUrl.pathname?.split("/")[1] || "";
+      if (
+        parsedUrl.host &&
+        !azureOrganization &&
+        parsedUrl.host.indexOf(".visualstudio.com") !== -1
+      ) {
+        if (parsedUrl.host.split(".")[0]) {
+          azureOrganization = parsedUrl.host.split(".")[0];
+          azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+        }
+      }
     }
+    taskLib.debug("Azure organization name:".concat(azureOrganization));
     const azureProject =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+    taskLib.debug(
+      `Azure project, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`
+    );
     const azureRepo =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+    taskLib.debug(
+      `Azure repo, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`
+    );
+    const buildReason =
+      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+    taskLib.debug(`Build Reason: ${buildReason}`);
     const azureRepoBranchName =
-      taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) ||
-      "";
+      buildReason == AZURE_BUILD_REASON.PULL_REQUEST
+        ? taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH
+          ) || ""
+        : taskLib.getVariable(
+            AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
+          ) || "";
+    taskLib.debug(`Azure repo branch name: ${azureProject}`);
 
     const azurePullRequestNumber =
       taskLib.getVariable(
         AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER
       ) || "";
+    taskLib.debug(
+      `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`
+    );
 
     if (azureToken == "") {
       throw new Error(
@@ -486,11 +518,14 @@ export class SynopsysToolsParameter {
           await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
             azureData
           );
+        taskLib.debug(
+          `Azure pull request number for classic editor flow: ${azureData.repository.pull.number}`
+        );
         return azureData;
       }
       return azureData;
     }
-
+    taskLib.debug("Azure data is undefined.");
     return undefined;
   }
 
