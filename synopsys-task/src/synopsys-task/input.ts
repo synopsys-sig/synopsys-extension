@@ -26,11 +26,12 @@ export function getDelimitedInput(
 
 export function showLogForDeprecatedInputs() {
   if (deprecatedInputs.length > 0) {
-    console.info(
-      `[${deprecatedInputs.join(",")}] will be deprecated soon. 
-    Check the documentation for the new parameters: ${
-      constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
-    }`
+    taskLib.warning(
+      `[${deprecatedInputs.join(
+        ","
+      )}] is/are deprecated. Check documentation for new parameters: ${
+        constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
+      }`
     );
   }
 }
