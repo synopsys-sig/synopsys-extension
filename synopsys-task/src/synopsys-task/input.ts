@@ -92,6 +92,38 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES =
     ","
   ) ||
   "";
+export const POLARIS_ASSESSMENT_MODE =
+  taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+
+export const PROJECT_DIRECTORY =
+  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
+  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)?.trim() ||
+  "";
+
+export const PROJECT_SOURCE_ARCHIVE =
+  taskLib.getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+
+export const PROJECT_SOURCE_PRESERVE_SYM_LINKS =
+  taskLib.getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+
+export const PROJECT_SOURCE_EXCLUDES =
+  taskLib.getInput(constants.PROJECT_SOURCE_EXCLUDES_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
 
 // Coverity related inputs
 export const COVERITY_URL =

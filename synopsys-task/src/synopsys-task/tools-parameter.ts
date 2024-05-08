@@ -71,7 +71,12 @@ export class SynopsysToolsParameter {
           serverUrl: inputs.POLARIS_SERVER_URL,
           application: { name: inputs.POLARIS_APPLICATION_NAME },
           project: { name: inputs.POLARIS_PROJECT_NAME },
-          assessment: { types: assessmentTypeArray },
+          assessment: {
+            types: assessmentTypeArray,
+            ...(inputs.POLARIS_ASSESSMENT_MODE && {
+              mode: inputs.POLARIS_ASSESSMENT_MODE,
+            }),
+          },
           branch: {},
         },
       },
@@ -82,6 +87,42 @@ export class SynopsysToolsParameter {
 
     if (inputs.POLARIS_TRIAGE) {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
+
+    if (
+      inputs.PROJECT_DIRECTORY ||
+      inputs.PROJECT_SOURCE_ARCHIVE ||
+      inputs.PROJECT_SOURCE_EXCLUDES ||
+      inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
+    ) {
+      polData.data.project = {};
+
+      if (inputs.PROJECT_DIRECTORY) {
+        polData.data.project.directory = inputs.PROJECT_DIRECTORY;
+      }
+
+      if (
+        inputs.PROJECT_SOURCE_ARCHIVE ||
+        inputs.PROJECT_SOURCE_EXCLUDES ||
+        inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
+      ) {
+        polData.data.project.source = {};
+
+        if (inputs.PROJECT_SOURCE_ARCHIVE) {
+          polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;
+        }
+
+        if (inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS) {
+          polData.data.project.source.preserveSymLinks = parseToBoolean(
+            inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
+          );
+        }
+
+        if (inputs.PROJECT_SOURCE_EXCLUDES) {
+          polData.data.project.source.execludes =
+            inputs.PROJECT_SOURCE_EXCLUDES;
+        }
+      }
     }
 
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
@@ -174,6 +215,12 @@ export class SynopsysToolsParameter {
     if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
       blackduckData.data.blackduck.install = {
         directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
+      };
+    }
+
+    if (inputs.PROJECT_DIRECTORY) {
+      blackduckData.data.project = {
+        directory: inputs.PROJECT_DIRECTORY,
       };
     }
 
@@ -313,7 +360,6 @@ export class SynopsysToolsParameter {
             airGap: inputs.ENABLE_NETWORK_AIRGAP,
           },
         },
-        project: {},
       },
     };
 
@@ -334,6 +380,12 @@ export class SynopsysToolsParameter {
     if (inputs.COVERITY_POLICY_VIEW) {
       covData.data.coverity.connect.policy = {
         view: inputs.COVERITY_POLICY_VIEW,
+      };
+    }
+
+    if (inputs.PROJECT_DIRECTORY) {
+      covData.data.project = {
+        directory: inputs.PROJECT_DIRECTORY,
       };
     }
 
