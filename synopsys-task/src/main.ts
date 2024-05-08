@@ -92,16 +92,16 @@ export function logBridgeExitCodes(message: string, exitCode: string): string {
 run().catch((error) => {
   if (error.message != undefined) {
     taskLib.error(error.message);
-    const isReturnStatus = parseToBoolean(inputs.RETURN_STATUS);
+    const isReturnStatusEnabled = parseToBoolean(inputs.RETURN_STATUS);
     const status = error.message.trim().split(" ").pop() || "";
-    if (isReturnStatus) {
+    if (isReturnStatusEnabled) {
       console.log(
         `##vso[task.setvariable variable=status;isoutput=true]${status}`
       );
     }
     taskLib.setResult(
       taskLib.TaskResult.Failed,
-      isReturnStatus
+      isReturnStatusEnabled
         ? "Workflow failed! ".concat(logBridgeExitCodes(error.message, status))
         : "Workflow failed!"
     );
