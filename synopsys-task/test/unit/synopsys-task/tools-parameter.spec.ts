@@ -8,6 +8,7 @@ import * as inputs from "../../../src/synopsys-task/input";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import * as fs from 'fs';
 import * as validator from "../../../src/synopsys-task/validator";
+import {SynopsysAzureService} from "../../../src/synopsys-task/azure-service-client";
 import {
     AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES,
 } from "../../../src/synopsys-task/model/azure";
@@ -447,7 +448,179 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
-            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('PR Context(yml): Coverity command formation with pr comment and azure legacy visual studio url', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://synopsysorg.visualstudio.com/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("PullRequest")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/pull/95/merge")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("95")
+            getStubVariable.withArgs("System.PullRequest.SourceBranch").returns("refs/heads/feature/test-branch")
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('PR Context(yml): Coverity command formation with pr comment', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/synopsysorg")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("PullRequest")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/pull/95/merge")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("95")
+            getStubVariable.withArgs("System.PullRequest.SourceBranch").returns("refs/heads/feature/test-branch")
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('PR Context(Classic editor): Coverity command formation with pr comment', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/synopsysorg")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('PR Context(Classic editor): Coverity command formation with pr comment and azure legacy visual studio url', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://synopsysorg.visualstudio.com/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.automation.prcomment).to.be.equals(true);
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -551,21 +724,200 @@ describe("Synopsys Tools Parameter test", () => {
                     expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))})
         });
 
-        it('should success for blackduck command formation with fix pr true in non-PR context', async function () {
+        it('PR Context(yml): Black Duck command formation with pr comment and azure legacy visual studio url', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://synopsysorg.visualstudio.com/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("PullRequest")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/pull/95/merge")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("95")
+            getStubVariable.withArgs("System.PullRequest.SourceBranch").returns("refs/heads/feature/test-branch")
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('PR Context(yml): Black Duck command formation with pr comment', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/synopsysorg")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("PullRequest")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/pull/95/merge")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("95")
+            getStubVariable.withArgs("System.PullRequest.SourceBranch").returns("refs/heads/feature/test-branch")
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('PR Context(Classic editor): Black Duck command formation with pr comment', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/synopsysorg")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('PR Context(Classic editor): Black Duck command formation with pr comment and azure legacy visual studio url', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://synopsysorg.visualstudio.com/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("IndividualCI")
+            getStubVariable.withArgs("Build.SourceBranch").returns("refs/heads/feature/test-branch")
+            getStubVariable.withArgs("System.PullRequest.PullRequestId").returns("")
+
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true)
+            expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+            expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+            expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+            expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+            expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
+            expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('Black Duck command formation with fix pr and azure legacy visual studio url', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-            
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const getStubVariable = sandbox.stub(taskLib, "getVariable")
+
+            getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://synopsysorg.visualstudio.com/")
+            getStubVariable.withArgs("System.TeamProject").returns("test-project")
+            getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
+            getStubVariable.withArgs("Build.Reason").returns("Manual")
+            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
+
+             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+             const jsonData = JSON.parse(jsonString);
+
+             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+             expect(jsonData.data.blackduck.token).to.be.equals('token');
+             expect(jsonData.data.azure.api.url).to.be.equals('https://dev.azure.com');
+             expect(jsonData.data.azure.organization.name).to.be.equals('synopsysorg');
+             expect(jsonData.data.azure.project.name).to.be.equals('test-project');
+             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
+             expect(jsonData.data.azure.repository.branch.name).to.be.equals('test-branch');
+             expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+         });
+
+        it('should success for blackduck command formation with fix pr true', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
             getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
-            getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
+            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
 
-            sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -575,8 +927,8 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
 
         it('should success for blackduck command formation with fix pr true in PR context', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
@@ -623,7 +975,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("System.TeamFoundationCollectionUri").returns("https://dev.azure.com/test-org/")
             getStubVariable.withArgs("System.TeamProject").returns("test-project")
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
-            getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
+            getStubVariable.withArgs("Build.SourceBranch").returns("test-branch")
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
@@ -694,7 +1046,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
-            getStubVariable.withArgs("Build.SourceBranchName").returns("")
+            getStubVariable.withArgs("Build.SourceBranch").returns("")
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
              const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');

@@ -385,5 +385,6 @@ export const LINUX_PLATFORM = "linux64";
 export const MAC_ARM_PLATFORM = "macos_arm";
 export const MAC_INTEL_PLATFORM = "macosx";
 export const MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION = "2.1.0";
+export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";

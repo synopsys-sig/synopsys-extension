@@ -47,7 +47,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             repository: {
                 name: "repo3",
                 branch: {
-                    name: "test1",
+                    name: "feature/xyz",
                 },
                 pull: {},
             },
@@ -91,7 +91,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: test1')
+                expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: feature/xyz')
             })
 
         })
@@ -113,7 +113,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             } as any);
 
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Failed to get pull request Id for current build from source branch: test1')
+                expect(errorObj.message).contains('Failed to get pull request Id for current build from source branch: feature/xyz')
             })
 
 
@@ -131,7 +131,7 @@ function getPullRequestsMockResponse() {
         "            \"status\": \"active\",\n" +
         "            \"creationDate\": \"2023-06-15T06:57:49.3811202Z\",\n" +
         "            \"title\": \"pr comment\",\n" +
-        "            \"sourceRefName\": \"refs/heads/test1\",\n" +
+        "            \"sourceRefName\": \"refs/heads/feature/xyz\",\n" +
         "            \"targetRefName\": \"refs/heads/main\",\n" +
         "            \"mergeStatus\": \"succeeded\",\n" +
         "            \"isDraft\": false,\n" +

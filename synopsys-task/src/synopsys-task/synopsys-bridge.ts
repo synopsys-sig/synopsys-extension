@@ -288,7 +288,6 @@ export class SynopsysBridge {
   }
 
   async getBridgeUrl(): Promise<string | undefined> {
-    console.log("getBridgeUrl method");
     let bridgeUrl: string;
     let version = "";
     if (inputs.BRIDGE_DOWNLOAD_URL) {
