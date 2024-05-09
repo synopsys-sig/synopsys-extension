@@ -119,8 +119,7 @@ export class SynopsysToolsParameter {
         }
 
         if (inputs.PROJECT_SOURCE_EXCLUDES) {
-          polData.data.project.source.execludes =
-            inputs.PROJECT_SOURCE_EXCLUDES;
+          polData.data.project.source.excludes = inputs.PROJECT_SOURCE_EXCLUDES;
         }
       }
     }

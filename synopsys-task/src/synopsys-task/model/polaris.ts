@@ -34,6 +34,6 @@ export interface ProjectData {
   source?: {
     archive?: string;
     preserveSymLinks?: boolean;
-    execludes?: string;
+    excludes?: string[];
   };
 }

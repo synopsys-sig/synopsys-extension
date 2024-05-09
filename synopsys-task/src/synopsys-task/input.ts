@@ -119,10 +119,11 @@ export const PROJECT_SOURCE_PRESERVE_SYM_LINKS =
   "";
 
 export const PROJECT_SOURCE_EXCLUDES =
-  taskLib.getInput(constants.PROJECT_SOURCE_EXCLUDES_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
+  taskLib.getDelimitedInput(constants.PROJECT_SOURCE_EXCLUDES_KEY, ",") ||
+  taskLib.getDelimitedInput(
+    constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR,
+    ","
+  ) ||
   "";
 
 // Coverity related inputs
