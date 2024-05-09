@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "QAExt",
   "name": "Synopsys Security Scan",
-  "version": "1.7.0",
+  "version": "1.6.1",
   "publisher": "QAExt",
   "targets": [
     {
