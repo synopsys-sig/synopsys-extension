@@ -148,6 +148,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisPRCommentSeverities",
       "type": "string",
       "label": "Polaris PR Comment Severities",
@@ -238,16 +248,6 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "projectSourcePreserveSymLinks",
-      "type": "boolean",
-      "label": "Project Source Preserve SymLinks",
-      "defaultValue": false,
-      "required": false,
-      "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "projectSourceExcludes",
       "type": "string",
       "label": "Project Source Excludes",
@@ -258,13 +258,13 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisProjectDirectory",
-      "type": "string",
-      "label": "Project Directory",
-      "defaultValue": "",
+      "name": "projectSourcePreserveSymLinks",
+      "type": "boolean",
+      "label": "Project Source Preserve SymLinks",
+      "defaultValue": false,
       "required": false,
-      "helpMarkDown": "The project source directory.",
-      "visibleRule": "scanType = polaris",
+      "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
+      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
       "groupName": "scanOptions"
     },
     {
