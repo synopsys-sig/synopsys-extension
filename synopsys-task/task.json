@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
-  "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
+  "id": "8258f299-15b6-6adc-b3fc-67bff98a0e54",
   "name": "SynopsysSecurityScan",
   "friendlyName": "Synopsys Security Scan",
   "description": "Run security scans on Polaris, Black Duck or Coverity platforms",
@@ -9,8 +9,8 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 7,
-    "Patch": 0
+    "Minor": 8,
+    "Patch": 4
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -218,6 +218,56 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "sourceUploadPolarisAssessmentMode",
+      "type": "boolean",
+      "label": "Source Upload For Polaris",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "The test mode type of this scan. Default test mode type is CI.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "projectSourceArchive",
+      "type": "string",
+      "label": "Project Source Archive",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The zipped source file path.",
+      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "projectSourcePreserveSymLinks",
+      "type": "boolean",
+      "label": "Project Source Preserve SymLinks",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
+      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "projectSourceExcludes",
+      "type": "string",
+      "label": "Project Source Excludes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
+      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_coverity_connect_url",
       "type": "string",
       "label": "Coverity Platform URL",
@@ -318,6 +368,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "coverityProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -414,6 +474,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Maximum number of pull requests to be created that violate policies. PR is created for each vulnerable component",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
