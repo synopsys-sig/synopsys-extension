@@ -94,10 +94,10 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES =
   "";
 export const POLARIS_ASSESSMENT_MODE =
   taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
+  taskLib.getBoolInput(constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE_KEY) ===
+    true
+    ? "SOURCE_UPLOAD"
+    : "";
 
 export const PROJECT_DIRECTORY =
   taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||

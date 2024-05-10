@@ -53,19 +53,21 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY =
   "bridge_polaris_reports_sarif_issue_types";
 export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
   "polarisReportsSarifIssueTypes";
-export const POLARIS_ASSESSMENT_MODE_KEY = "bridge_polaris_assessment_mode";
+export const POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
 export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
+export const POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE_KEY =
+  "polarisSourceUploadAssessmentMode";
 
-export const PROJECT_DIRECTORY_KEY = "bridge_project_directory";
-export const PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "bridgeProjectDirectory";
-export const PROJECT_SOURCE_ARCHIVE_KEY = "bridge_project_source_archive";
+export const PROJECT_DIRECTORY_KEY = "project_directory";
+export const PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "projectDirectory";
+export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
-  "bridge_project_source_preserveSymLinks";
+  "project_source_preserveSymLinks";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR =
   "projectSourcePreserveSymLinks";
-export const PROJECT_SOURCE_EXCLUDES_KEY = "bridge_project_source_excludes";
+export const PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";
 export const PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR =
   "projectSourceExcludes";
 

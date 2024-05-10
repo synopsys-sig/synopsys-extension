@@ -9,8 +9,8 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 8,
-    "Patch": 4
+    "Minor": 7,
+    "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -147,16 +147,7 @@
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
-    {
-      "name": "polarisProjectDirectory",
-      "type": "string",
-      "label": "Project Directory",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "The project source directory.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
-    },
+   
     {
       "name": "polarisPRCommentSeverities",
       "type": "string",
@@ -228,7 +219,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "sourceUploadPolarisAssessmentMode",
+      "name": "polarisSourceUploadAssessmentMode",
       "type": "boolean",
       "label": "Source Upload For Polaris",
       "defaultValue": false,
@@ -244,7 +235,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The zipped source file path.",
-      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "visibleRule": "polarisSourceUploadAssessmentMode = true",
       "groupName": "scanOptions"
     },
     {
@@ -254,7 +245,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
-      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "visibleRule": "polarisSourceUploadAssessmentMode = true",
       "groupName": "scanOptions"
     },
     {
@@ -264,7 +255,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "sourceUploadPolarisAssessmentMode = true",
+      "visibleRule": "polarisSourceUploadAssessmentMode = true",
       "groupName": "scanOptions"
     },
     {
@@ -364,16 +355,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "coverityProjectDirectory",
-      "type": "string",
-      "label": "Project Directory",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "The project source directory.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -478,13 +459,13 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckProjectDirectory",
+      "name": "projectDirectory",
       "type": "string",
       "label": "Project Directory",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The project source directory.",
-      "visibleRule": "scanType = blackduck",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
       "groupName": "scanOptions"
     },
     {
