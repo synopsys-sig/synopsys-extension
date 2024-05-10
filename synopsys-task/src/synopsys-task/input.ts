@@ -1,6 +1,17 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 
+export function getDelimitedInput(ymlKey: string, classicEditorKey: string) {
+  const ymlKeyInput = taskLib.getDelimitedInput(ymlKey, ",");
+  const classicEditorInput = taskLib.getDelimitedInput(classicEditorKey, ",");
+
+  return (
+    (ymlKeyInput.length > 0 && ymlKeyInput) ||
+    (classicEditorInput.length > 0 && classicEditorInput) ||
+    []
+  );
+}
+
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL =
   taskLib.getInput("bridge_download_url")?.trim() || "";
@@ -62,16 +73,11 @@ export const POLARIS_REPORTS_SARIF_FILE_PATH =
     .getInput(constants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR)
     ?.trim() ||
   "";
-export const POLARIS_REPORTS_SARIF_SEVERITIES =
-  taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
-  ) ||
-  taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
-    ","
-  ) ||
-  "";
+export const POLARIS_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
+  constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+  constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR
+);
+
 export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
   taskLib
     .getInput(constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY)
@@ -82,16 +88,10 @@ export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES =
     )
     ?.trim() ||
   "";
-export const POLARIS_REPORTS_SARIF_ISSUE_TYPES =
-  taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
-    ","
-  ) ||
-  taskLib.getDelimitedInput(
-    constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
-    ","
-  ) ||
-  "";
+export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput(
+  constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+  constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR
+);
 export const POLARIS_ASSESSMENT_MODE =
   taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
   taskLib.getBoolInput(constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE_KEY) ===
@@ -118,13 +118,10 @@ export const PROJECT_SOURCE_PRESERVE_SYM_LINKS =
     ?.trim() ||
   "";
 
-export const PROJECT_SOURCE_EXCLUDES =
-  taskLib.getDelimitedInput(constants.PROJECT_SOURCE_EXCLUDES_KEY, ",") ||
-  taskLib.getDelimitedInput(
-    constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR,
-    ","
-  ) ||
-  "";
+export const PROJECT_SOURCE_EXCLUDES = getDelimitedInput(
+  constants.PROJECT_SOURCE_EXCLUDES_KEY,
+  constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR
+);
 
 // Coverity related inputs
 export const COVERITY_URL =
@@ -201,17 +198,10 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH =
     .getInput(constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_CLASSIC_EDITOR)
     ?.trim() ||
   "";
-
-export const BLACKDUCK_REPORTS_SARIF_SEVERITIES =
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
-    ","
-  ) ||
-  taskLib.getDelimitedInput(
-    constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR,
-    ","
-  ) ||
-  "";
+export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
+  constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
+  constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_CLASSIC_EDITOR
+);
 
 export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES =
   taskLib

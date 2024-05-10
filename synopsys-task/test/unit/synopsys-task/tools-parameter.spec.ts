@@ -142,6 +142,37 @@ describe("Synopsys Tools Parameter test", () => {
             polarisStateFile = '"'.concat(polarisStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(polarisStateFile))
         });
+
+        it('should success for polaris command formation with assessment mode and project directory parameters', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_MODE', {value: 'assessment_mode'})
+            Object.defineProperty(inputs, 'PROJECT_DIRECTORY', {value: 'project_directory'})
+            Object.defineProperty(inputs, 'PROJECT_SOURCE_ARCHIVE', {value: 'source_archive'})
+            Object.defineProperty(inputs, 'PROJECT_SOURCE_PRESERVE_SYM_LINKS', {value: true})
+            Object.defineProperty(inputs, 'PROJECT_SOURCE_EXCLUDES', {value: ['source_exclude1','source_exclude2']})
+
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.assessment.mode).to.be.contains('assessment_mode');
+            expect(jsonData.data.project.directory).to.be.contains('project_directory');
+            expect(jsonData.data.project.source.archive).to.be.contains('source_archive');
+            expect(jsonData.data.project.source.preserveSymLinks).to.be.equals(true);
+            expect(jsonData.data.project.source.excludes).to.be.contains('source_exclude1');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
+        });
     });
 
     context('Coverity command preparation', () => {
