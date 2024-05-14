@@ -9,8 +9,8 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 6,
-    "Patch": 1
+    "Minor": 7,
+    "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -27,7 +27,7 @@
   ],
   "inputs": [
     {
-      "name": "bridge_download_url",
+      "name": "synopsysBridgeDownloadUrl",
       "type": "string",
       "label": "Synopsys Bridge Download URL",
       "defaultValue": "",
@@ -36,7 +36,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "bridge_download_version",
+      "name": "synopsysBridgeDownloadVersion",
       "type": "string",
       "label": "Synopsys Bridge Version",
       "defaultValue": "",
@@ -45,16 +45,16 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "synopsys_bridge_path",
+      "name": "synopsysBridgeInstallDirectory",
       "type": "string",
-      "label": "Bridge Installation Path",
+      "label": "Synopsys Bridge Installation Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Path where synopsys bridge will be configured.",
       "groupName": "optionalSettings"
     },
     {
-      "name": "include_diagnostics",
+      "name": "includeDiagnostics",
       "type": "boolean",
       "label": "Include Diagnostics",
       "defaultValue": false,
@@ -78,7 +78,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_serverUrl",
+      "name": "polarisServerUrl",
       "type": "string",
       "label": "Polaris URL",
       "defaultValue": "",
@@ -88,7 +88,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_accessToken",
+      "name": "polarisAccessToken",
       "type": "string",
       "label": "Polaris Access Token",
       "defaultValue": "",
@@ -98,27 +98,27 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_application_name",
+      "name": "polarisApplicationName",
       "type": "string",
       "label": "Polaris Application",
       "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Application name in Polaris.",
+      "required": false,
+      "helpMarkDown": "Application name in Polaris. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_project_name",
+      "name": "polarisProjectName",
       "type": "string",
       "label": "Polaris Project",
       "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Project name in Polaris.",
+      "required": false,
+      "helpMarkDown": "Project name in Polaris. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_assessment_types",
+      "name": "polarisAssessmentTypes",
       "type": "string",
       "label": "Assessment Type",
       "defaultValue": "",
@@ -128,7 +128,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_triage",
+      "name": "polarisTriage",
       "type": "string",
       "label": "Polaris Triage",
       "defaultValue": "",
@@ -138,7 +138,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_polaris_branch_name",
+      "name": "polarisBranchName",
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
@@ -148,12 +148,12 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisPRCommentSeverities",
+      "name": "polarisBranchParentName",
       "type": "string",
-      "label": "Polaris PR Comment Severities",
+      "label": "Polaris Parent Branch Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Applicable to pull requests only",
+      "helpMarkDown": "Parent Branch name in Polaris.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -164,6 +164,16 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Applicable to pull requests only, Requires Azure Token.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisPRCommentSeverities",
+      "type": "string",
+      "label": "Polaris PR Comment Severities",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Applicable to pull requests only",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -218,7 +228,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_url",
+      "name": "coverityUrl",
       "type": "string",
       "label": "Coverity Platform URL",
       "defaultValue": "",
@@ -228,7 +238,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_user_name",
+      "name": "coverityUser",
       "type": "string",
       "label": "Coverity Username",
       "defaultValue": "",
@@ -238,7 +248,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_user_password",
+      "name": "coverityPassphrase",
       "type": "string",
       "label": "Coverity Password",
       "defaultValue": "",
@@ -248,27 +258,27 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_project_name",
+      "name": "coverityProjectName",
       "type": "string",
       "label": "Coverity Project",
       "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Project name in Coverity",
+      "required": false,
+      "helpMarkDown": "Project name in Coverity. If not provided, azure repository name will be set as default value.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_stream_name",
+      "name": "coverityStreamName",
       "type": "string",
       "label": "Coverity Stream",
       "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "Stream name in Coverity.",
+      "required": false,
+      "helpMarkDown": "Stream name in Coverity. If not provided, for non-PR context azure repository name concatenated with source branch name (i.e. testRepo-feature1) and for PR context azure repository name concatenated with target branch name (i.e. testRepo-main) will be set as default value.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_install_directory",
+      "name": "coverityInstallDirectory",
       "type": "string",
       "label": "Coverity Installation Path",
       "defaultValue": "",
@@ -278,7 +288,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_connect_policy_view",
+      "name": "coverityPolicyView",
       "type": "string",
       "label": "Coverity Policy View",
       "defaultValue": "",
@@ -288,7 +298,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_version",
+      "name": "coverityVersion",
       "type": "string",
       "label": "Coverity Version",
       "defaultValue": "",
@@ -298,7 +308,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_automation_prcomment",
+      "name": "coverityPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -308,7 +318,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_coverity_local",
+      "name": "coverityLocal",
       "type": "boolean",
       "label": "Local Scan",
       "defaultValue": "",
@@ -318,7 +328,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_url",
+      "name": "blackduckUrl",
       "type": "string",
       "label": "Black Duck URL",
       "defaultValue": "",
@@ -328,7 +338,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_token",
+      "name": "blackduckToken",
       "type": "string",
       "label": "Black Duck Access Token",
       "defaultValue": "",
@@ -338,7 +348,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_install_directory",
+      "name": "blackduckInstallDirectory",
       "type": "string",
       "label": "Black Duck Installation Path",
       "defaultValue": "",
@@ -348,7 +358,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_scan_full",
+      "name": "blackduckScanFull",
       "type": "boolean",
       "label": "Full Scan",
       "defaultValue": "",
@@ -358,7 +368,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_scan_failure_severities",
+      "name": "blackduckScanFailureSeverities",
       "type": "string",
       "label": "Scan Failure Severities",
       "defaultValue": "",
@@ -368,7 +378,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_automation_prcomment",
+      "name": "blackduckPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -378,7 +388,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_fixpr_enabled",
+      "name": "blackduckFixPREnabled",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
@@ -388,7 +398,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_fixpr_useUpgradeGuidance",
+      "name": "blackduckFixPRUseUpgradeGuidance",
       "type": "string",
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
@@ -398,7 +408,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_fixpr_filter_severities",
+      "name": "blackduckFixPRFilterSeverities",
       "type": "string",
       "label": "List of SEVERITIES to be filtered",
       "defaultValue": "",
@@ -408,7 +418,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_blackduck_fixpr_maxCount",
+      "name": "blackduckFixPRMaxCount",
       "type": "string",
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
@@ -418,7 +428,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "azure_token",
+      "name": "azureToken",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
@@ -468,7 +478,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridge_network_airgap",
+      "name": "networkAirGap",
       "type": "boolean",
       "label": "Network Airgap",
       "defaultValue": false,

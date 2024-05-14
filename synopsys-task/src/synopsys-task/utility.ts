@@ -11,6 +11,7 @@ import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
+import { AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES } from "./model/azure";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -98,9 +99,9 @@ export async function getRemoteFile(
   return Promise.reject("Synopsys bridge download has been failed");
 }
 
-export function parseToBoolean(value: string | boolean): boolean {
+export function parseToBoolean(value: string | boolean | undefined): boolean {
   if (
-    value !== null &&
+    value &&
     value !== "" &&
     (value.toString().toLowerCase() === "true" || value === true)
   ) {
@@ -165,4 +166,10 @@ export function filterEmptyData(data: object) {
       ? undefined
       : value
   );
+}
+
+export function isPullRequestEvent(): boolean {
+  const buildReason =
+    taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+  return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
 }

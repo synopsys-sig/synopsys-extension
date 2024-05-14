@@ -21,6 +21,7 @@ export interface PolarisData {
 
 export interface Branch {
   name?: string;
+  parent: { name?: string };
 }
 
 export interface PRComment {
