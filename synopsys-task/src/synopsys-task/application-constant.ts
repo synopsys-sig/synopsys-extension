@@ -208,7 +208,7 @@ export const BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 export const COVERITY_VERSION_KEY = "coverity_version";
 export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
 
-// Bridge Exit Codes
+// Bridge and ADO Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
   [
     ErrorCode.SUCCESSFULLY_COMPLETED.toString(),

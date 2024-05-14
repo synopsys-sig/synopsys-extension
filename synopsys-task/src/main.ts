@@ -83,7 +83,7 @@ export async function run() {
   console.log("Synopsys Task workflow execution completed");
 }
 
-export function logBridgeExitCodes(message: string, exitCode: string): string {
+export function logExitCodes(message: string, exitCode: string): string {
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
     : "Undefined error from extension: "
@@ -108,7 +108,7 @@ run().catch((error) => {
     taskLib.setResult(
       taskLib.TaskResult.Failed,
       isReturnStatusEnabled
-        ? "Workflow failed! ".concat(logBridgeExitCodes(error.message, status))
+        ? "Workflow failed! ".concat(logExitCodes(error.message, status))
         : "Workflow failed!"
     );
   }

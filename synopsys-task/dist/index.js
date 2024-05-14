@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.logBridgeExitCodes = exports.run = void 0;
+exports.logExitCodes = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -98,7 +98,7 @@ function run() {
     });
 }
 exports.run = run;
-function logBridgeExitCodes(message, exitCode) {
+function logExitCodes(message, exitCode) {
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
         : "Undefined error from extension: "
@@ -106,7 +106,7 @@ function logBridgeExitCodes(message, exitCode) {
             .concat(constants.SPACE)
             .concat(ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
-exports.logBridgeExitCodes = logBridgeExitCodes;
+exports.logExitCodes = logExitCodes;
 run().catch((error) => {
     if (error.message != undefined) {
         taskLib.error(error.message);
@@ -117,7 +117,7 @@ run().catch((error) => {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
         }
         taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
-            ? "Workflow failed! ".concat(logBridgeExitCodes(error.message, status))
+            ? "Workflow failed! ".concat(logExitCodes(error.message, status))
             : "Workflow failed!");
     }
 });
@@ -304,7 +304,7 @@ exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
 exports.BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 exports.COVERITY_VERSION_KEY = "coverity_version";
 exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
-// Bridge Exit Codes
+// Bridge and ADO Exit Codes
 exports.EXIT_CODE_MAP = new Map([
     [
         ErrorCodes_1.ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
