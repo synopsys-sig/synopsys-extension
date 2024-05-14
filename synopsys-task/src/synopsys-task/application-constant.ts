@@ -56,11 +56,12 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
 export const POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
 export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
-export const POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE_KEY =
-  "polarisSourceUploadAssessmentMode";
+export const POLARIS_CI_ASSESSMENT_MODE = "CI";
+export const POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE = "SOURCE_UPLOAD";
+export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "polarisProjectDirectory";
 
 export const PROJECT_DIRECTORY_KEY = "project_directory";
-export const PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "projectDirectory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
@@ -85,6 +86,8 @@ export const COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
 export const COVERITY_LOCAL_KEY = "bridge_coverity_local";
 export const COVERITY_VERSION_KEY = "bridge_coverity_version";
+export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "coverityProjectDirectory";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -116,6 +119,8 @@ export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
   "bridge_blackduck_fixpr_filter_severities";
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
+export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "blackduckProjectDirectory";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 

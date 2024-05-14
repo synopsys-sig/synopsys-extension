@@ -219,23 +219,47 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisSourceUploadAssessmentMode",
-      "type": "boolean",
-      "label": "Source Upload For Polaris",
-      "defaultValue": false,
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
       "required": false,
-      "helpMarkDown": "The test mode type of this scan. Default test mode type is CI.",
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
       "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisAssessmentMode",
+      "type": "pickList",
+      "label": "Polaris Assessment Mode",
+      "defaultValue": "CI",
+      "required": false,
+      "helpMarkDown": "The test mode type of this scan",
+      "visibleRule": "scanType = polaris",
+      "options": {
+        "CI": "CI",
+        "sourceUpload": "Source Code Upload"
+      },
       "groupName": "scanOptions"
     },
     {
       "name": "projectSourceArchive",
       "type": "string",
-      "label": "Project Source Archive",
+      "label": "Upload Archive Instead Of Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "The zipped source file path.",
-      "visibleRule": "polarisSourceUploadAssessmentMode = true",
+      "helpMarkDown": "The zipped source file path. It overrides the project directory setting above",
+      "visibleRule": "polarisAssessmentMode = sourceUpload",
       "groupName": "scanOptions"
     },
     {
@@ -245,7 +269,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
-      "visibleRule": "polarisSourceUploadAssessmentMode = true",
+      "visibleRule": "polarisAssessmentMode = sourceUpload",
       "groupName": "scanOptions"
     },
     {
@@ -255,7 +279,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "polarisSourceUploadAssessmentMode = true",
+      "visibleRule": "polarisAssessmentMode = sourceUpload",
       "groupName": "scanOptions"
     },
     {
@@ -459,23 +483,23 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "projectDirectory",
+      "name": "blackduckProjectDirectory",
       "type": "string",
       "label": "Project Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "The project source directory.",
-      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
     {
-      "name": "azure_token",
+      "name": "coverityProjectDirectory",
       "type": "string",
-      "label": "Azure Token",
+      "label": "Project Directory",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
     {

@@ -90,15 +90,15 @@ export class SynopsysToolsParameter {
     }
 
     if (
-      inputs.PROJECT_DIRECTORY ||
+      inputs.POLARIS_PROJECT_DIRECTORY ||
       inputs.PROJECT_SOURCE_ARCHIVE ||
       inputs.PROJECT_SOURCE_EXCLUDES ||
       inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
     ) {
       polData.data.project = {};
 
-      if (inputs.PROJECT_DIRECTORY) {
-        polData.data.project.directory = inputs.PROJECT_DIRECTORY;
+      if (inputs.POLARIS_PROJECT_DIRECTORY) {
+        polData.data.project.directory = inputs.POLARIS_PROJECT_DIRECTORY;
       }
 
       if (
@@ -217,9 +217,9 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (inputs.PROJECT_DIRECTORY) {
+    if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
       blackduckData.data.project = {
-        directory: inputs.PROJECT_DIRECTORY,
+        directory: inputs.BLACKDUCK_PROJECT_DIRECTORY,
       };
     }
 
@@ -382,9 +382,9 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (inputs.PROJECT_DIRECTORY) {
+    if (inputs.COVERITY_PROJECT_DIRECTORY) {
       covData.data.project = {
-        directory: inputs.PROJECT_DIRECTORY,
+        directory: inputs.COVERITY_PROJECT_DIRECTORY,
       };
     }
 

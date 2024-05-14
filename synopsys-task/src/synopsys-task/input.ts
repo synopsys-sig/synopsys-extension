@@ -94,14 +94,16 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput(
 );
 export const POLARIS_ASSESSMENT_MODE =
   taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
-  taskLib.getBoolInput(constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE_KEY) ===
-    true
-    ? "SOURCE_UPLOAD"
-    : "";
+  taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR) ===
+    constants.POLARIS_CI_ASSESSMENT_MODE
+    ? constants.POLARIS_CI_ASSESSMENT_MODE
+    : constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE;
 
-export const PROJECT_DIRECTORY =
+export const POLARIS_PROJECT_DIRECTORY =
   taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
-  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)?.trim() ||
+  taskLib
+    .getInput(constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
   "";
 
 export const PROJECT_SOURCE_ARCHIVE =
@@ -144,6 +146,12 @@ export const COVERITY_AUTOMATION_PRCOMMENT =
   taskLib.getInput(constants.COVERITY_AUTOMATION_PRCOMMENT_KEY) || "";
 export const COVERITY_VERSION =
   taskLib.getInput(constants.COVERITY_VERSION_KEY)?.trim() || "";
+export const COVERITY_PROJECT_DIRECTORY =
+  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
 
 // Blackduck related inputs
 export const BLACKDUCK_URL =
@@ -180,6 +188,13 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE =
     constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY,
     ","
   ) || "";
+
+export const BLACKDUCK_PROJECT_DIRECTORY =
+  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
 
 export const INCLUDE_DIAGNOSTICS =
   taskLib.getInput(constants.INCLUDE_DIAGNOSTICS_KEY)?.trim() || "";

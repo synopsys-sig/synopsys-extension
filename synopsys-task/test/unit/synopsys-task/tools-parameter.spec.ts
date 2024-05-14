@@ -149,7 +149,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_MODE', {value: 'assessment_mode'})
-            Object.defineProperty(inputs, 'PROJECT_DIRECTORY', {value: 'project_directory'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_DIRECTORY', {value: 'project_directory'})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_ARCHIVE', {value: 'source_archive'})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_PRESERVE_SYM_LINKS', {value: true})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_EXCLUDES', {value: ['source_exclude1','source_exclude2']})
