@@ -125,6 +125,9 @@ export const BRIDGE_DOWNLOAD_VERSION = getInput(
   constants.BRIDGE_DOWNLOAD_VERSION_KEY
 );
 
+export const SCAN_TYPE =
+  taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
+
 export const INCLUDE_DIAGNOSTICS = getInput(
   constants.INCLUDE_DIAGNOSTICS_KEY,
   constants.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
@@ -132,24 +135,6 @@ export const INCLUDE_DIAGNOSTICS = getInput(
 );
 
 // Polaris related inputs
-export const POLARIS_AZURE_TOKEN =
-  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
-  taskLib.getInput(constants.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
-  "";
-export const BLACKDUCK_AZURE_TOKEN =
-  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
-export const COVERITY_AZURE_TOKEN =
-  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
-  taskLib.getInput(constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
-  "";
-
-export const SCAN_TYPE =
-  taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
-
 export const POLARIS_SERVER_URL = getInput(
   constants.POLARIS_SERVER_URL_KEY,
   constants.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR,
@@ -190,34 +175,29 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
   constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR,
   null
 );
-export const POLARIS_ASSESSMENT_MODE =
-  taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
+export const POLARIS_ASSESSMENT_MODE = getInput(
+  constants.POLARIS_ASSESSMENT_MODE_KEY,
   taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR) ===
     constants.POLARIS_CI_ASSESSMENT_MODE
     ? constants.POLARIS_CI_ASSESSMENT_MODE
-    : constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE;
-
-export const POLARIS_PROJECT_DIRECTORY =
-  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
-
-export const PROJECT_SOURCE_ARCHIVE =
-  taskLib.getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
-
-export const PROJECT_SOURCE_PRESERVE_SYM_LINKS =
-  taskLib.getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
-
+    : constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE,
+  null
+);
+export const POLARIS_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
+);
+export const PROJECT_SOURCE_ARCHIVE = getInput(
+  constants.PROJECT_SOURCE_ARCHIVE_KEY,
+  constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR,
+  null
+);
+export const PROJECT_SOURCE_PRESERVE_SYM_LINKS = getInput(
+  constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
+  constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR,
+  null
+);
 export const PROJECT_SOURCE_EXCLUDES = getDelimitedInput(
   constants.PROJECT_SOURCE_EXCLUDES_KEY,
   constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR,
@@ -258,6 +238,11 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput(
   constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
   constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY
+);
+export const POLARIS_AZURE_TOKEN = getInput(
+  constants.AZURE_TOKEN_KEY,
+  constants.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  null
 );
 
 // Coverity related inputs
@@ -311,12 +296,16 @@ export const COVERITY_VERSION = getInput(
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_VERSION_KEY
 );
-export const COVERITY_PROJECT_DIRECTORY =
-  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
+export const COVERITY_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
+);
+export const COVERITY_AZURE_TOKEN = getInput(
+  constants.AZURE_TOKEN_KEY,
+  constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  null
+);
 
 // Blackduck related inputs
 export const BLACKDUCK_URL = getInput(
@@ -396,12 +385,11 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY
 );
-export const BLACKDUCK_PROJECT_DIRECTORY =
-  taskLib.getInput(constants.PROJECT_DIRECTORY_KEY)?.trim() ||
-  taskLib
-    .getInput(constants.BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR)
-    ?.trim() ||
-  "";
+export const BLACKDUCK_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
+);
 
 export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
@@ -413,4 +401,10 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
+);
+
+export const BLACKDUCK_AZURE_TOKEN = getInput(
+  constants.AZURE_TOKEN_KEY,
+  constants.BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  null
 );

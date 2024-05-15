@@ -135,8 +135,6 @@ export const POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE = "SOURCE_UPLOAD";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 export const POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
-
-export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
@@ -395,6 +393,7 @@ export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "synopsysBridgeInstallDirectory";
 
+export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
