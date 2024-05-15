@@ -1627,9 +1627,9 @@ class SynopsysToolsParameter {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let azureOrganization = "";
-            const azureToken = input_1.SCAN_TYPE === "blackduck"
+            const azureToken = input_1.SCAN_TYPE === constants.BLACKDUCK_KEY
                 ? inputs.BLACKDUCK_AZURE_TOKEN
-                : input_1.SCAN_TYPE === "coverity"
+                : input_1.SCAN_TYPE === constants.COVERITY_KEY
                     ? inputs.COVERITY_AZURE_TOKEN
                     : inputs.POLARIS_AZURE_TOKEN;
             let azureInstanceUrl = "";

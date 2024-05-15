@@ -481,9 +481,9 @@ export class SynopsysToolsParameter {
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
     const azureToken =
-      SCAN_TYPE === "blackduck"
+      SCAN_TYPE === constants.BLACKDUCK_KEY
         ? inputs.BLACKDUCK_AZURE_TOKEN
-        : SCAN_TYPE === "coverity"
+        : SCAN_TYPE === constants.COVERITY_KEY
         ? inputs.COVERITY_AZURE_TOKEN
         : inputs.POLARIS_AZURE_TOKEN;
     let azureInstanceUrl = "";
