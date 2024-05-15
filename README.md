@@ -13,4 +13,4 @@ To use Synopsys Security Scan, please follow the steps below:
 3. For additional configuration options, visit the [Additional Azure Configuration](https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_additional-azure-parameters.html) page.
 
 As an alternative to Synopsys Action, you also have the option to use Synopsys Bridge CLI. <br/>
-Detailed documentation for Synopsys Bridge CLI can be found [here](https://sig-product-docs.synopsys.com/bundle/bridge/page/bridge_1.html).
+Detailed documentation for Synopsys Bridge CLI can be found [here](https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html).

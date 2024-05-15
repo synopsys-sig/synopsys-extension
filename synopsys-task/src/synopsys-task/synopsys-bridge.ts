@@ -24,7 +24,6 @@ import {
   SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY,
 } from "./input";
 import {
-  MIN_SUPPORTED_SYNOPSYS_BRIDGE_MAC_ARM_VERSION,
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
@@ -289,7 +288,6 @@ export class SynopsysBridge {
   }
 
   async getBridgeUrl(): Promise<string | undefined> {
-    console.log("getBridgeUrl method");
     let bridgeUrl: string;
     let version = "";
     if (inputs.BRIDGE_DOWNLOAD_URL) {

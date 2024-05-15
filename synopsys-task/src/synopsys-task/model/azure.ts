@@ -36,9 +36,11 @@ export const AZURE_ENVIRONMENT_VARIABLES = {
   AZURE_ORGANIZATION: "System.TeamFoundationCollectionUri",
   AZURE_PROJECT: "System.TeamProject",
   AZURE_REPOSITORY: "Build.Repository.Name",
-  AZURE_SOURCE_BRANCH: "Build.SourceBranchName",
+  AZURE_SOURCE_BRANCH: "Build.SourceBranch",
   AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
+  AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
   AZURE_BUILD_REASON: "Build.Reason",
+  AZURE_PULL_REQUEST_SOURCE_BRANCH: "System.PullRequest.SourceBranch",
 };
 
 export enum AZURE_BUILD_REASON {

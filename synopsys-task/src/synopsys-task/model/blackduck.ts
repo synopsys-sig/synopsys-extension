@@ -16,7 +16,7 @@ export interface Blackduck {
   blackduck: BlackduckData;
   project?: ProjectData;
   azure?: AzureData;
-  network: NetworkAirGap;
+  network?: NetworkAirGap;
   environment?: Environment;
 }
 
@@ -28,7 +28,7 @@ export interface BlackduckData {
     full?: boolean;
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
   };
-  automation: AutomationData;
+  automation?: AutomationData;
   fixpr?: BlackDuckFixPrData;
   reports?: Reports;
 }

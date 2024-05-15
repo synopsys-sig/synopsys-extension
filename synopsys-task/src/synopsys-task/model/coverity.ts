@@ -21,8 +21,8 @@ export interface AutomationData {
 export interface CoverityConnect {
   connect: CoverityData;
   install?: { directory: string };
-  automation: AutomationData;
-  network: NetworkAirGap;
+  automation?: AutomationData;
+  network?: NetworkAirGap;
   local?: boolean;
   version?: string;
 }
