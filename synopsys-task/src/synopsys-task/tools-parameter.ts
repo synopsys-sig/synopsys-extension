@@ -21,7 +21,7 @@ import {
   validateCoverityInstallDirectoryParam,
 } from "./validator";
 import { parseToBoolean, isBoolean, filterEmptyData } from "./utility";
-import { AZURE_TOKEN } from "./input";
+import { SCAN_TYPE } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
@@ -126,7 +126,7 @@ export class SynopsysToolsParameter {
 
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
       console.info("Polaris PR comment is enabled");
-      if (!inputs.AZURE_TOKEN) {
+      if (!inputs.POLARIS_AZURE_TOKEN) {
         throw new Error(
           "Missing required azure token for pull request comment"
         );
@@ -134,7 +134,7 @@ export class SynopsysToolsParameter {
 
       polData.data.azure = this.setAzureData(
         "",
-        inputs.AZURE_TOKEN,
+        inputs.POLARIS_AZURE_TOKEN,
         "",
         "",
         "",
@@ -480,7 +480,12 @@ export class SynopsysToolsParameter {
 
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
-    const azureToken = AZURE_TOKEN;
+    const azureToken =
+      SCAN_TYPE === "blackduck"
+        ? inputs.BLACKDUCK_AZURE_TOKEN
+        : SCAN_TYPE === "coverity"
+        ? inputs.COVERITY_AZURE_TOKEN
+        : inputs.POLARIS_AZURE_TOKEN;
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";

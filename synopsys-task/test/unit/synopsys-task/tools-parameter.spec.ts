@@ -80,7 +80,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'POLARIS_AZURE_TOKEN', {value: 'token'})
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -259,7 +259,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'COVERITY_AZURE_TOKEN', {value: 'token'})
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -350,7 +350,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
              Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
-             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+             Object.defineProperty(inputs, 'BLACKDUCK_AZURE_TOKEN', {value: 'token'})
 
              sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
@@ -378,7 +378,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AZURE_TOKEN', {value: 'token'})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
@@ -407,7 +407,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_UPGRADE_GUIDANCE', {value: ['LONG_TERM']})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AZURE_TOKEN', {value: 'token'})
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
@@ -438,7 +438,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 1})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AZURE_TOKEN', {value: 'token'})
 
             try {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
@@ -481,7 +481,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_AZURE_TOKEN', {value: 'token'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 

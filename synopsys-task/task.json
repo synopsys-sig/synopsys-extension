@@ -219,13 +219,13 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "azure_token",
+      "name": "polarisAzureToken",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck/Polaris PR comment and BlackDuck FIX PR is enabled.",
+      "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
     {
@@ -248,7 +248,7 @@
       "visibleRule": "scanType = polaris",
       "options": {
         "CI": "CI",
-        "sourceUpload": "Source Code Upload"
+        "sourceUpload": "SOURCE_UPLOAD"
       },
       "groupName": "scanOptions"
     },
@@ -383,6 +383,26 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "coverityAzureToken",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck/Polaris PR comment and BlackDuck FIX PR is enabled.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -483,26 +503,6 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckProjectDirectory",
-      "type": "string",
-      "label": "Project Directory",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "coverityProjectDirectory",
-      "type": "string",
-      "label": "Project Directory",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "blackduckReportsSarifCreate",
       "type": "boolean",
       "label": "Generate SARIF Report for Black Duck Issues",
@@ -540,6 +540,26 @@
       "required": false,
       "helpMarkDown": "Comma separated list of issue severities to include in SARIF report. Supported values: CRITICAL,HIGH,MEDIUM,LOW",
       "visibleRule": "blackduckReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckAzureToken",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck/Polaris PR comment and BlackDuck FIX PR is enabled.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
     {

@@ -60,6 +60,7 @@ export const POLARIS_CI_ASSESSMENT_MODE = "CI";
 export const POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE = "SOURCE_UPLOAD";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
+export const POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
 
 export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
@@ -88,6 +89,7 @@ export const COVERITY_LOCAL_KEY = "bridge_coverity_local";
 export const COVERITY_VERSION_KEY = "bridge_coverity_version";
 export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "coverityProjectDirectory";
+export const COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "coverityAzureToken";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -121,6 +123,7 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
 export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckProjectDirectory";
+export const BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "blackduckAzureToken";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 

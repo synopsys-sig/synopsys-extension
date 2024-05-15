@@ -26,8 +26,20 @@ export const BRIDGE_DOWNLOAD_VERSION =
   taskLib.getPathInput("bridge_download_version")?.trim() || "";
 
 // Polaris related inputs
-export const AZURE_TOKEN =
-  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() || "";
+export const POLARIS_AZURE_TOKEN =
+  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
+  taskLib.getInput(constants.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
+  "";
+export const BLACKDUCK_AZURE_TOKEN =
+  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
+  taskLib
+    .getInput(constants.BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR)
+    ?.trim() ||
+  "";
+export const COVERITY_AZURE_TOKEN =
+  taskLib.getInput(constants.AZURE_TOKEN_KEY)?.trim() ||
+  taskLib.getInput(constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR)?.trim() ||
+  "";
 
 export const SCAN_TYPE =
   taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
