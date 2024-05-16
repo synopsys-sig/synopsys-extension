@@ -696,13 +696,11 @@ export class SynopsysToolsParameter {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
 
-    if (
-      inputs.BLACKDUCK_URL &&
-      isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
-    ) {
-      reportData.sarif.groupSCAIssues = JSON.parse(
-        inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
-      );
+    const groupSCAIssues = inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES;
+    if (inputs.BLACKDUCK_URL && isBoolean(groupSCAIssues)) {
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
+      }
     }
 
     return reportData;
@@ -736,13 +734,11 @@ export class SynopsysToolsParameter {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
 
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
-    ) {
-      reportData.sarif.groupSCAIssues = JSON.parse(
-        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
-      );
+    const groupSCAIssues = inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES;
+    if (inputs.POLARIS_SERVER_URL && isBoolean(groupSCAIssues)) {
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
+      }
     }
 
     const sarifReportIssueTypes: string[] = [];
