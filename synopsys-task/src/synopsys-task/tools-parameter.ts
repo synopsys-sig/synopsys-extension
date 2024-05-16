@@ -698,13 +698,8 @@ export class SynopsysToolsParameter {
 
     const groupSCAIssues = inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES;
     if (inputs.BLACKDUCK_URL && isBoolean(groupSCAIssues)) {
-      if (
-        groupSCAIssues !== undefined &&
-        (groupSCAIssues.toString().toLowerCase() === "true" ||
-          groupSCAIssues.toString().toLowerCase() === "false")
-      ) {
-        reportData.sarif.groupSCAIssues =
-          groupSCAIssues.toString().toLowerCase() === "true";
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
       }
     }
 
@@ -741,13 +736,8 @@ export class SynopsysToolsParameter {
 
     const groupSCAIssues = inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES;
     if (inputs.POLARIS_SERVER_URL && isBoolean(groupSCAIssues)) {
-      if (
-        groupSCAIssues !== undefined &&
-        (groupSCAIssues.toString().toLowerCase() === "true" ||
-          groupSCAIssues.toString().toLowerCase() === "false")
-      ) {
-        reportData.sarif.groupSCAIssues =
-          groupSCAIssues.toString().toLowerCase() === "true";
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
       }
     }
 

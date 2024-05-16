@@ -2018,11 +2018,8 @@ class SynopsysToolsParameter {
         }
         const groupSCAIssues = inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES;
         if (inputs.BLACKDUCK_URL && (0, utility_1.isBoolean)(groupSCAIssues)) {
-            if (groupSCAIssues !== undefined &&
-                (groupSCAIssues.toString().toLowerCase() === "true" ||
-                    groupSCAIssues.toString().toLowerCase() === "false")) {
-                reportData.sarif.groupSCAIssues =
-                    groupSCAIssues.toString().toLowerCase() === "true";
+            if (groupSCAIssues !== undefined) {
+                reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
             }
         }
         return reportData;
@@ -2050,11 +2047,8 @@ class SynopsysToolsParameter {
         }
         const groupSCAIssues = inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES;
         if (inputs.POLARIS_SERVER_URL && (0, utility_1.isBoolean)(groupSCAIssues)) {
-            if (groupSCAIssues !== undefined &&
-                (groupSCAIssues.toString().toLowerCase() === "true" ||
-                    groupSCAIssues.toString().toLowerCase() === "false")) {
-                reportData.sarif.groupSCAIssues =
-                    groupSCAIssues.toString().toLowerCase() === "true";
+            if (groupSCAIssues !== undefined) {
+                reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
             }
         }
         const sarifReportIssueTypes = [];
