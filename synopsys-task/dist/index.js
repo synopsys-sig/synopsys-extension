@@ -327,6 +327,7 @@ exports.EXIT_CODE_MAP = new Map([
         ErrorCodes_1.ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
         "Bridge initialization failed",
     ],
+    // The list of ADO extension related error codes begins below
     [
         ErrorCodes_1.ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
         "Requires at least one scan type",
@@ -940,6 +941,7 @@ var ErrorCode;
     ErrorCode[ErrorCode["BRIDGE_SHUTDOWN_FAILURE"] = 3] = "BRIDGE_SHUTDOWN_FAILURE";
     ErrorCode[ErrorCode["BRIDGE_BREAK_ENABLED"] = 8] = "BRIDGE_BREAK_ENABLED";
     ErrorCode[ErrorCode["BRIDGE_INITIALIZATION_FAILED"] = 9] = "BRIDGE_INITIALIZATION_FAILED";
+    // The list of ADO extension related error codes begins below
     ErrorCode[ErrorCode["MISSING_AT_LEAST_ONE_SCAN_TYPE"] = 101] = "MISSING_AT_LEAST_ONE_SCAN_TYPE";
     ErrorCode[ErrorCode["MISSING_REQUIRED_PARAMETERS"] = 102] = "MISSING_REQUIRED_PARAMETERS";
     ErrorCode[ErrorCode["AGENT_TEMP_DIRECTORY_NOT_SET"] = 103] = "AGENT_TEMP_DIRECTORY_NOT_SET";

@@ -231,6 +231,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
     ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
     "Bridge initialization failed",
   ],
+  // The list of ADO extension related error codes begins below
   [
     ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
     "Requires at least one scan type",
