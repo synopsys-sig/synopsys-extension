@@ -252,13 +252,14 @@
       "name": "polarisAssessmentMode",
       "type": "pickList",
       "label": "Polaris Assessment Mode",
-      "defaultValue": "CI",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "The test mode type of this scan",
       "visibleRule": "scanType = polaris",
       "options": {
+        "": "",
         "CI": "CI",
-        "sourceUpload": "SOURCE_UPLOAD"
+        "SOURCEUPLOAD": "SOURCE_UPLOAD"
       },
       "groupName": "scanOptions"
     },
@@ -269,7 +270,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The zipped source file path. It overrides the project directory setting above",
-      "visibleRule": "polarisAssessmentMode = sourceUpload",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
       "groupName": "scanOptions"
     },
     {
@@ -279,7 +280,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
-      "visibleRule": "polarisAssessmentMode = sourceUpload",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
       "groupName": "scanOptions"
     },
     {
@@ -289,7 +290,7 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
-      "visibleRule": "polarisAssessmentMode = sourceUpload",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
       "groupName": "scanOptions"
     },
     {

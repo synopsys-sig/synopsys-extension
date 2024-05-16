@@ -38,3 +38,9 @@ export interface ProjectData {
     excludes?: string[];
   };
 }
+
+export enum POLARIS_ASSESSMENT_MODES {
+  CI = "CI",
+  SOURCE_UPLOAD = "SOURCE_UPLOAD",
+  SOURCEUPLOAD = "SOURCEUPLOAD",
+}

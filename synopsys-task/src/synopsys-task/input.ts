@@ -1,5 +1,6 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
+import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
 
 const deprecatedInputs: string[] = [];
 
@@ -177,10 +178,15 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
 );
 export const POLARIS_ASSESSMENT_MODE =
   taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
-  taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR) ===
-    constants.POLARIS_CI_ASSESSMENT_MODE
-    ? constants.POLARIS_CI_ASSESSMENT_MODE
-    : constants.POLARIS_SOURCE_UPLOAD_ASSESSMENT_MODE;
+  (taskLib
+    .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+    ?.trim() === POLARIS_ASSESSMENT_MODES.CI
+    ? POLARIS_ASSESSMENT_MODES.CI
+    : taskLib
+        .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+        ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
+    ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+    : "");
 
 export const POLARIS_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
