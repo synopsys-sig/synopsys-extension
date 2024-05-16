@@ -1,6 +1,5 @@
 import path from "path";
 import * as inputs from "./input";
-import { AZURE_TOKEN } from "./input";
 import { Polaris } from "./model/polaris";
 import { Coverity } from "./model/coverity";
 import {
@@ -22,11 +21,12 @@ import {
   validateCoverityInstallDirectoryParam,
 } from "./validator";
 import {
-  filterEmptyData,
-  isBoolean,
-  isPullRequestEvent,
   parseToBoolean,
+  isBoolean,
+  filterEmptyData,
+  isPullRequestEvent,
 } from "./utility";
+import { AZURE_TOKEN } from "./input";
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
@@ -198,7 +198,20 @@ export class SynopsysToolsParameter {
       };
     }
 
-    blackduckData.data.blackduck.scan = { full: inputs.BLACKDUCK_SCAN_FULL };
+    if (inputs.BLACKDUCK_SCAN_FULL) {
+      if (
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false"
+      ) {
+        const scanFullValue =
+          inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+        blackduckData.data.blackduck.scan = { full: scanFullValue };
+      } else {
+        throw new Error(
+          "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+        );
+      }
+    }
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
