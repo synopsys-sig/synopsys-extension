@@ -110,8 +110,9 @@ export function parseToBoolean(value: string | boolean | undefined): boolean {
   return false;
 }
 
-export function isBoolean(value: string | boolean): boolean {
+export function isBoolean(value: string | boolean | undefined): boolean {
   if (
+    value !== undefined &&
     value !== null &&
     value !== "" &&
     (value.toString().toLowerCase() === "true" ||
