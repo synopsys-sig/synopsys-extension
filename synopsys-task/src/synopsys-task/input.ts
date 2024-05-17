@@ -8,30 +8,9 @@ export function getInput(
   classicEditorKey: string,
   deprecatedKey: string | null
 ) {
-  let deprecatedInput;
-  if (deprecatedKey) {
-    deprecatedInput = taskLib.getInput(deprecatedKey);
-    if (deprecatedInput) {
-      deprecatedInputs.push(deprecatedKey);
-    }
-  }
-
-  return (
-    taskLib.getInput(newKey)?.trim() ||
-    taskLib.getInput(classicEditorKey)?.trim() ||
-    deprecatedInput?.trim() ||
-    ""
-  );
-}
-
-export function getBoolInputAsString(
-  newKey: string,
-  classicEditorKey: string,
-  deprecatedKey: string | null
-) {
   const newInput = taskLib.getInput(newKey);
   if (newInput) {
-    return newInput;
+    return newInput?.trim();
   }
 
   let deprecatedInput;
@@ -39,16 +18,16 @@ export function getBoolInputAsString(
     deprecatedInput = taskLib.getInput(deprecatedKey);
     if (deprecatedInput) {
       deprecatedInputs.push(deprecatedKey);
-      return deprecatedInput;
+      return deprecatedInput?.trim();
     }
   }
 
   const classEditorInput = taskLib.getInput(classicEditorKey);
   if (classEditorInput) {
-    return classEditorInput;
+    return classEditorInput?.trim();
   }
 
-  return undefined;
+  return "";
 }
 
 export function getBoolInput(
@@ -66,8 +45,8 @@ export function getBoolInput(
 
   return (
     taskLib.getBoolInput(newKey) ||
-    taskLib.getBoolInput(classicEditorKey) ||
-    deprecatedInput
+    deprecatedInput ||
+    taskLib.getBoolInput(classicEditorKey)
   );
 }
 
@@ -86,8 +65,8 @@ export function getPathInput(
 
   return (
     taskLib.getPathInput(newKey)?.trim() ||
-    taskLib.getPathInput(classicEditorKey)?.trim() ||
     deprecatedInput?.trim() ||
+    taskLib.getPathInput(classicEditorKey)?.trim() ||
     ""
   );
 }
@@ -109,8 +88,8 @@ export function getDelimitedInput(
 
   return (
     (newKeyInput.length > 0 && newKeyInput) ||
-    (classicEditorInput.length > 0 && classicEditorInput) ||
     (deprecatedInput.length > 0 && deprecatedInput) ||
+    (classicEditorInput.length > 0 && classicEditorInput) ||
     []
   );
 }
@@ -152,7 +131,7 @@ export const BRIDGE_DOWNLOAD_VERSION = getInput(
   constants.BRIDGE_DOWNLOAD_VERSION_KEY
 );
 
-export const INCLUDE_DIAGNOSTICS = getBoolInputAsString(
+export const INCLUDE_DIAGNOSTICS = getInput(
   constants.INCLUDE_DIAGNOSTICS_KEY,
   constants.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR,
   null
@@ -208,7 +187,7 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
   constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR,
   null
 );
-export const POLARIS_PR_COMMENT_ENABLED = getBoolInputAsString(
+export const POLARIS_PR_COMMENT_ENABLED = getInput(
   constants.POLARIS_PR_COMMENT_ENABLED_KEY,
   constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY
@@ -219,7 +198,7 @@ export const POLARIS_PR_COMMENT_SEVERITIES = getDelimitedInput(
   constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY
 );
 
-export const POLARIS_REPORTS_SARIF_CREATE = getBoolInputAsString(
+export const POLARIS_REPORTS_SARIF_CREATE = getInput(
   constants.POLARIS_REPORTS_SARIF_CREATE_KEY,
   constants.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_REPORTS_SARIF_CREATE_KEY
@@ -234,7 +213,7 @@ export const POLARIS_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_REPORTS_SARIF_SEVERITIES_KEY
 );
-export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = getBoolInputAsString(
+export const POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY
@@ -281,12 +260,12 @@ export const COVERITY_POLICY_VIEW = getInput(
   constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_POLICY_VIEW_KEY
 );
-export const COVERITY_LOCAL = getBoolInputAsString(
+export const COVERITY_LOCAL = getInput(
   constants.COVERITY_LOCAL_KEY,
   constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_LOCAL_KEY
 );
-export const COVERITY_AUTOMATION_PRCOMMENT = getBoolInputAsString(
+export const COVERITY_AUTOMATION_PRCOMMENT = getInput(
   constants.COVERITY_PRCOMMENT_ENABLED_KEY,
   constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY
@@ -313,7 +292,7 @@ export const BLACKDUCK_INSTALL_DIRECTORY = getPathInput(
   constants.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY
 );
-export const BLACKDUCK_SCAN_FULL = getBoolInputAsString(
+export const BLACKDUCK_SCAN_FULL = getInput(
   constants.BLACKDUCK_SCAN_FULL_KEY,
   constants.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_SCAN_FULL_KEY
@@ -333,12 +312,14 @@ if (BLACKDUCK_AUTOMATION_FIXPR) {
   deprecatedInputs.push(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY);
 }
 export const BLACKDUCK_FIXPR_ENABLED =
-  getBoolInputAsString(
+  getInput(
     constants.BLACKDUCK_FIXPR_ENABLED_KEY,
     constants.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR,
     constants.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY
-  ) || BLACKDUCK_AUTOMATION_FIXPR;
-export const BLACKDUCK_AUTOMATION_PRCOMMENT = getBoolInputAsString(
+  ) ||
+  BLACKDUCK_AUTOMATION_FIXPR?.trim() ||
+  "";
+export const BLACKDUCK_AUTOMATION_PRCOMMENT = getInput(
   constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
   constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY
@@ -348,7 +329,7 @@ export const BLACKDUCK_FIXPR_MAXCOUNT = getInput(
   constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY
 );
-export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR = getBoolInputAsString(
+export const BLACKDUCK_FIXPR_CREATE_SINGLE_PR = getInput(
   constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY,
   constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY
@@ -363,7 +344,7 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = getDelimitedInput(
   constants.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY
 );
-export const BLACKDUCK_REPORTS_SARIF_CREATE = getBoolInputAsString(
+export const BLACKDUCK_REPORTS_SARIF_CREATE = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_CREATE_KEY
@@ -380,7 +361,7 @@ export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY
 );
 
-export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getBoolInputAsString(
+export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
