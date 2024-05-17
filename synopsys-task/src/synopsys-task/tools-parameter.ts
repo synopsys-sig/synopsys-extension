@@ -21,10 +21,10 @@ import {
   validateCoverityInstallDirectoryParam,
 } from "./validator";
 import {
-  filterEmptyData,
-  isBoolean,
-  isPullRequestEvent,
   parseToBoolean,
+  isBoolean,
+  filterEmptyData,
+  isPullRequestEvent,
 } from "./utility";
 import {
   SCAN_TYPE,
@@ -250,7 +250,20 @@ export class SynopsysToolsParameter {
       };
     }
 
-    blackduckData.data.blackduck.scan = { full: inputs.BLACKDUCK_SCAN_FULL };
+    if (inputs.BLACKDUCK_SCAN_FULL) {
+      if (
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
+        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false"
+      ) {
+        const scanFullValue =
+          inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
+        blackduckData.data.blackduck.scan = { full: scanFullValue };
+      } else {
+        throw new Error(
+          "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+        );
+      }
+    }
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
@@ -746,13 +759,11 @@ export class SynopsysToolsParameter {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
 
-    if (
-      inputs.BLACKDUCK_URL &&
-      isBoolean(inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES)
-    ) {
-      reportData.sarif.groupSCAIssues = JSON.parse(
-        inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
-      );
+    const groupSCAIssues = inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES;
+    if (inputs.BLACKDUCK_URL && isBoolean(groupSCAIssues)) {
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
+      }
     }
 
     return reportData;
@@ -786,13 +797,11 @@ export class SynopsysToolsParameter {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
 
-    if (
-      inputs.POLARIS_SERVER_URL &&
-      isBoolean(inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES)
-    ) {
-      reportData.sarif.groupSCAIssues = JSON.parse(
-        inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES
-      );
+    const groupSCAIssues = inputs.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES;
+    if (inputs.POLARIS_SERVER_URL && isBoolean(groupSCAIssues)) {
+      if (groupSCAIssues !== undefined) {
+        reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
+      }
     }
 
     const sarifReportIssueTypes: string[] = [];

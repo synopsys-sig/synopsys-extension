@@ -268,7 +268,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_MODE', {value: 'assessment_mode'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_DIRECTORY', {value: 'project_directory'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_DIRECTORY', {value: 'polaris_project_directory'})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_ARCHIVE', {value: 'source_archive'})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_PRESERVE_SYM_LINKS', {value: true})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_EXCLUDES', {value: ['source_exclude1','source_exclude2']})
@@ -282,7 +282,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
             expect(jsonData.data.polaris.assessment.mode).to.be.contains('assessment_mode');
-            expect(jsonData.data.project.directory).to.be.contains('project_directory');
+            expect(jsonData.data.project.directory).to.be.contains('polaris_project_directory');
             expect(jsonData.data.project.source.archive).to.be.contains('source_archive');
             expect(jsonData.data.project.source.preserveSymLinks).to.be.equals(true);
             expect(jsonData.data.project.source.excludes).to.be.contains('source_exclude1');
@@ -661,6 +661,31 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('should success for coverity command formation with coverity project directory', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_DIRECTORY', {value: 'coverity_project_directory'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.project.directory).to.be.contains('coverity_project_directory');
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -1197,6 +1222,26 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.reports.sarif.file.path).to.be.equals('test-path');
             expect(jsonData.data.blackduck.reports.sarif.severities).to.be.contains('CRITICAL');
             expect(jsonData.data.blackduck.reports.sarif.groupSCAIssues).to.be.equals(false);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
+        it('should success for blackduck command formation with blackduck project directory', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
+            Object.defineProperty(inputs, 'BLACKDUCK_PROJECT_DIRECTORY', {value: 'blackduck_project_directory'})
+            
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.project.directory).to.be.contains('blackduck_project_directory');
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
