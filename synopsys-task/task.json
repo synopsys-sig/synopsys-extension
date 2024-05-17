@@ -287,7 +287,7 @@
       "name": "projectSourcePreserveSymLinks",
       "type": "boolean",
       "label": "Project Source Preserve SymLinks",
-      "defaultValue": false,
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag indicating whether to preserve symlinks in the source zip",
       "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
