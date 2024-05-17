@@ -914,7 +914,7 @@ exports.POLARIS_ASSESSMENT_MODE = ((_b = taskLib.getInput(constants.POLARIS_ASSE
             : "");
 exports.POLARIS_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR, null);
 exports.PROJECT_SOURCE_ARCHIVE = getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY, constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR, null);
-exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR, null);
+exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = getBoolInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR, null);
 exports.PROJECT_SOURCE_EXCLUDES = getDelimitedInput(constants.PROJECT_SOURCE_EXCLUDES_KEY, constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR, null);
 exports.POLARIS_PR_COMMENT_ENABLED = getBoolInput(constants.POLARIS_PR_COMMENT_ENABLED_KEY, constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_POLARIS_PR_COMMENT_ENABLED_KEY);
 exports.POLARIS_PR_COMMENT_SEVERITIES = getDelimitedInput(constants.POLARIS_PR_COMMENT_SEVERITIES_KEY, constants.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR, constants.BRIDGE_POLARIS_PR_COMMENT_SEVERITIES_KEY);
@@ -1717,6 +1717,11 @@ class SynopsysToolsParameter {
                     },
                 },
             };
+            if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
+                blackduckData.data.project = {
+                    directory: inputs.BLACKDUCK_PROJECT_DIRECTORY,
+                };
+            }
             if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
                 blackduckData.data.blackduck.install = {
                     directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,

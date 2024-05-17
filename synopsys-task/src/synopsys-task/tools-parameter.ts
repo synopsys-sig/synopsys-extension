@@ -238,6 +238,12 @@ export class SynopsysToolsParameter {
       },
     };
 
+    if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
+      blackduckData.data.project = {
+        directory: inputs.BLACKDUCK_PROJECT_DIRECTORY,
+      };
+    }
+
     if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
       blackduckData.data.blackduck.install = {
         directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
