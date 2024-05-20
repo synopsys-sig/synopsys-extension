@@ -92,11 +92,15 @@ export function logExitCodes(message: string, exitCode: string): string {
         .concat(ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
 
+export function getStatusFromError(errorObject: Error): string {
+  return errorObject.message.trim().split(" ").pop() || "";
+}
+
 run().catch((error) => {
   if (error.message != undefined) {
     taskLib.error(error.message);
     const isReturnStatusEnabled = parseToBoolean(inputs.RETURN_STATUS);
-    const status = error.message.trim().split(" ").pop() || "";
+    const status = getStatusFromError(error);
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {

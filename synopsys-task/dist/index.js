@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.logExitCodes = exports.run = void 0;
+exports.getStatusFromError = exports.logExitCodes = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -107,11 +107,15 @@ function logExitCodes(message, exitCode) {
             .concat(ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
 exports.logExitCodes = logExitCodes;
+function getStatusFromError(errorObject) {
+    return errorObject.message.trim().split(" ").pop() || "";
+}
+exports.getStatusFromError = getStatusFromError;
 run().catch((error) => {
     if (error.message != undefined) {
         taskLib.error(error.message);
         const isReturnStatusEnabled = (0, utility_1.parseToBoolean)(inputs.RETURN_STATUS);
-        const status = error.message.trim().split(" ").pop() || "";
+        const status = getStatusFromError(error);
         // The statement set the exit code in the 'status' variable which can be used in the YAML file
         if (isReturnStatusEnabled) {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);

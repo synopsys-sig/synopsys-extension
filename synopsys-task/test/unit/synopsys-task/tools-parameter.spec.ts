@@ -1,6 +1,6 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as sinon from "sinon";
-import {SynopsysToolsParameter} from "../../../src/synopsys-task/tools-parameter";
+import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
 import * as process from "process";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -11,7 +11,8 @@ import * as validator from "../../../src/synopsys-task/validator";
 import {
     AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES,
 } from "../../../src/synopsys-task/model/azure";
-import {stub} from "sinon";
+import { stub } from "sinon";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -28,27 +29,27 @@ describe("Synopsys Tools Parameter test", () => {
 
         afterEach(() => {
             taskLib.rmRF(polarisStateFile);
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
-            Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: ''})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] })
+            Object.defineProperty(inputs, 'POLARIS_TRIAGE', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: '' })
             sandbox.restore();
         });
 
         it('should success for polaris command formation', function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'POLARIS_BRANCH_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'feature1' })
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: 'SCA-SIGNATURE' })
 
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -68,23 +69,24 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should fail for invalid assessment type', function () {
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast123']})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast123'] })
 
             try {
                 const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.POLARIS_ASSESSMENT_TYPES_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
             }
         });
 
         it('should success for polaris command formation with default values', function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', {value: 'SCA-SIGNATURE'})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'POLARIS_BRANCH_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'feature1' })
+            Object.defineProperty(inputs, 'POLARIS_TEST_SCA_TYPE', { value: 'SCA-SIGNATURE' })
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
 
@@ -108,17 +110,17 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
-        it('should success for polaris command formation with PR comment in PR context',  async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for polaris command formation with PR comment in PR context', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'feature1' })
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', { value: true })
+            Object.defineProperty(inputs, 'POLARIS_TRIAGE', { value: '' })
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', { value: [] })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -128,15 +130,15 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
         });
 
-        it('should success for polaris command formation with PR comment in non-PR context',  async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for polaris command formation with PR comment in non-PR context', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', { value: true })
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', { value: [] })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -145,15 +147,15 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.prcomment).to.be.undefined;
         });
 
-        it('should success for polaris command formation for polaris branch parent name in PR context',  async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: 'main'})
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for polaris command formation for polaris branch parent name in PR context', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', { value: 'main' })
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', { value: true })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -164,16 +166,16 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.branch.parent.name).to.be.equals('main')
         });
 
-        it('should success for polaris command formation for polaris branch parent name in non-PR context',  async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: 'main'})
-            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for polaris command formation for polaris branch parent name in non-PR context', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', { value: ['SCA', 'sast'] });
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'feature1' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', { value: 'main' })
+            Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', { value: true })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -184,11 +186,11 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for polaris command formation with sarif report create for non-PR context', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', { value: true })
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -207,11 +209,11 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for polaris command formation with sarif report create for PR context', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', { value: 'POLARIS_PROJECT_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', { value: true })
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
@@ -231,15 +233,15 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for polaris command formation with sarif report parameters', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
-            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: true})
-            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_ISSUE_TYPES', {value: ['SAST', 'SCA']})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' })
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', { value: 'access_token' })
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', { value: 'POLARIS_APPLICATION_NAME' })
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', { value: 'feature1' })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', { value: true })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_SEVERITIES', { value: ['CRITICAL', 'HIGH'] })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_FILE_PATH', { value: 'test-path' })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES', { value: true })
+            Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_ISSUE_TYPES', { value: ['SAST', 'SCA'] })
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -276,28 +278,28 @@ describe("Synopsys Tools Parameter test", () => {
 
         afterEach(() => {
             taskLib.rmRF(coverityStateFile);
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: ''})
-            Object.defineProperty(inputs, 'COVERITY_LOCAL', {value: false})
-            Object.defineProperty(inputs, 'COVERITY_VERSION', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', { value: '' })
+            Object.defineProperty(inputs, 'COVERITY_LOCAL', { value: false })
+            Object.defineProperty(inputs, 'COVERITY_VERSION', { value: '' })
             sandbox.restore();
         });
 
         it('should success for coverity command formation with mandatory and optional parameters', async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: process.cwd()})
-            Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_LOCAL', {value: true})
-            Object.defineProperty(inputs, 'COVERITY_VERSION', {value: '2022.12.0'})
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' })
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', { value: process.cwd() })
+            Object.defineProperty(inputs, 'COVERITY_POLICY_VIEW', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_LOCAL', { value: true })
+            Object.defineProperty(inputs, 'COVERITY_VERSION', { value: '2022.12.0' })
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
@@ -310,7 +312,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.policy.view).to.be.equals('test');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
-            expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());        
+            expect(jsonData.data.coverity.install.directory).to.be.equals(process.cwd());
             expect(jsonData.data.coverity.local).to.be.equals(true);
             expect(jsonData.data.coverity.version).to.be.equals('2022.12.0');
             expect(formattedCommand).contains('--stage connect');
@@ -320,11 +322,11 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for coverity command formation with mandatory parameters', function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' })
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', { value: 'test' })
 
             const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -333,7 +335,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
-            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(formattedCommand).contains(Promise.resolve('--stage connect'));
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -341,9 +343,9 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for coverity command formation with default values for non-PR context', function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' });
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' });
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
 
@@ -365,9 +367,9 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for coverity command formation with default values for PR context', function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' });
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' });
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
 
@@ -390,12 +392,12 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
 
-        it('should success for coverity command formation with PR comment in PR context',  async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for coverity command formation with PR comment in PR context', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' })
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
@@ -413,12 +415,12 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
-        it('should success for coverity command formation with PR comment in non-PR context',  async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+        it('should success for coverity command formation with PR comment in non-PR context', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' })
+            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(true);
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
@@ -436,12 +438,12 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for coverity command formation with invalid coverity install directory', async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
-            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
-            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', {value: 'test-dir'})
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'COVERITY_USER', { value: 'test-user' })
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', { value: 'password' })
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', { value: 'test' })
+            Object.defineProperty(inputs, 'COVERITY_INSTALL_DIRECTORY', { value: 'test-dir' })
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
@@ -452,7 +454,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
-            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');   
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -474,65 +476,65 @@ describe("Synopsys Tools Parameter test", () => {
 
         afterEach(() => {
             taskLib.rmRF(blackduckStateFile);
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_LONG_TERM_GUIDANCE', { value: '' })
             sandbox.restore();
         });
 
-         it('should success for blackduck command formation with mandatory and some optional parameters', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: 'true'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
-            
-             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-             const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackduck.token).to.be.equals('token');    
-             expect(formattedCommand).contains(Promise.resolve('--stage blackduck'));
+        it('should success for blackduck command formation with mandatory and some optional parameters', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', { value: 'test' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', { value: 'true' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', { value: ["BLOCKER", "CRITICAL", "TRIVIAL"] })
 
-             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains(Promise.resolve('--input '.concat(blackduckStateFile)));
-         });
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(formattedCommand).contains(Promise.resolve('--stage blackduck'));
 
-         it('should success for blackduck command formation with PR Comment in PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
-             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains(Promise.resolve('--input '.concat(blackduckStateFile)));
+        });
 
-             sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
+        it('should success for blackduck command formation with PR Comment in PR context', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
+            sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
-             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
-             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackduck.token).to.be.equals('token');
-             expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
-             expect(formattedCommand).contains('--stage blackduck');
+            sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
-             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.automation.prcomment).to.be.equals(true);
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
 
         it('should success for blackduck command formation with PR Comment in non-PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
@@ -549,19 +551,23 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
-         it('should fail for invalid blackduck_scan_failure_severities', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
+        it('should fail for invalid blackduck_scan_failure_severities', function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', { value: ['SCA', 'sast123'] })
 
-            synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
-                    expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))})
+            synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj => {
+                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+
+
+            })
         });
 
         it('should success for blackduck command formation with fix pr true in non-PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-            
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
@@ -580,14 +586,14 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
-         });
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
 
         it('should success for blackduck command formation with fix pr true in PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
@@ -613,14 +619,14 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for blackduck command formation with fix pr true and fix pr optional params', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: true})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 1})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'false'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', {value: ['CRITICAL', 'HIGH']})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_UPGRADE_GUIDANCE', {value: ['LONG_TERM']})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: true })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', { value: 1 })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', { value: 'false' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_FILTER_SEVERITIES', { value: ['CRITICAL', 'HIGH'] })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_UPGRADE_GUIDANCE', { value: ['LONG_TERM'] })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
@@ -646,81 +652,85 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should fail for black duck fix pr true,max count and create single pr true', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 1})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', { value: 1 })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_CREATE_SINGLE_PR', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             try {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
-                    .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY))
+                    .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY));
+                expect(errorObj.message).contains(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString());
             }
         });
 
         it('should fail for invalid value of blackduck fix pr max count', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', {value: 'invalid-value'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_MAXCOUNT', { value: 'invalid-value' })
 
             try {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
             }
         });
 
-        it('should fail for invalid azure token value with fix pr true', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
+        it('should fail for invalid azure token value with fix pr true', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: '' })
+
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
             getStubVariable.withArgs("System.AccessToken").returns("")
             try {
-                const formattedCommand = synopsysToolsParameter.getFormattedCommandForBlackduck();
+                const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                console.log("errorObj",errorObj)
-                expect(errorObj.message).equals('Missing required azure token for fix pull request/automation comment')
+                expect(errorObj.message).includes('Missing required azure token for fix pull request/automation comment')
+                expect(errorObj.message).includes(ErrorCode.MISSING_AZURE_TOKEN.toString())
             }
         });
 
         it('should form blackduck command but with undefined azure values', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', {value: 'true'})
-            Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_FIXPR_ENABLED', { value: 'true' })
+            Object.defineProperty(inputs, 'AZURE_TOKEN', { value: 'token' })
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable")
 
             getStubVariable.withArgs("Build.SourceBranchName").returns("")
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
-             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
-             const jsonData = JSON.parse(jsonString);
-             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-             expect(jsonData.data.blackduck.token).to.be.equals('token');    
-             expect(formattedCommand).contains('--stage blackduck');
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
-             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
         it('should success for blackduck command formation with mandatory parameters', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-           
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
-            expect(jsonData.data.blackduck.token).to.be.equals('token');   
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
@@ -728,12 +738,12 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for blackduck command formation with invalid blackduck install directory', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: 'test'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: 'false'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value : ["BLOCKER","CRITICAL","TRIVIAL"]})
-            
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', { value: 'test' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', { value: 'false' })
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', { value: ["BLOCKER", "CRITICAL", "TRIVIAL"] })
+
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
 
@@ -748,9 +758,9 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for blackduck command formation with sarif report create for non-PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', { value: true })
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
 
@@ -767,9 +777,9 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for blackduck command formation with sarif report create for PR context', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', { value: true })
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
@@ -787,12 +797,12 @@ describe("Synopsys Tools Parameter test", () => {
         });
 
         it('should success for blackduck command formation with sarif report parameters', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', {value: true})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_SEVERITIES', {value: ['CRITICAL','HIGH']})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', {value: 'test-path'})
-            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: false})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_CREATE', { value: true })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_SEVERITIES', { value: ['CRITICAL', 'HIGH'] })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_FILE_PATH', { value: 'test-path' })
+            Object.defineProperty(inputs, 'BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES', { value: false })
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
 

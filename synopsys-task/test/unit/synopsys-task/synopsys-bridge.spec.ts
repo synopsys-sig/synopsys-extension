@@ -1,27 +1,28 @@
-import {assert, expect} from "chai";
+import { assert, expect } from "chai";
 import * as sinon from "sinon";
-import {SinonStub} from "sinon";
-import {SynopsysBridge} from "../../../src/synopsys-task/synopsys-bridge";
+import { SinonStub } from "sinon";
+import { SynopsysBridge } from "../../../src/synopsys-task/synopsys-bridge";
 import * as utility from "../../../src/synopsys-task/utility";
-import {extractZipped} from "../../../src/synopsys-task/utility";
-import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import { extractZipped } from "../../../src/synopsys-task/utility";
+import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
 import * as path from "path";
 import * as inputs from "../../../src/synopsys-task/input";
-import {SynopsysToolsParameter} from "../../../src/synopsys-task/tools-parameter";
+import { SynopsysToolsParameter } from "../../../src/synopsys-task/tools-parameter";
 import * as validator from "../../../src/synopsys-task/validator";
 import * as constants from "../../../src/synopsys-task/application-constant";
 import fs from "fs";
 import * as taskLib from "azure-pipelines-task-lib";
 import * as httpc from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
-import {IncomingMessage} from "http";
-import {Socket} from "net";
+import { IncomingMessage } from "http";
+import { Socket } from "net";
 import os from "os";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Synopsys Bridge test", () => {
-    Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
-    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", {value: 100});
-    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
+    Object.defineProperty(constants, "RETRY_COUNT", { value: 3 });
+    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", { value: 100 });
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", { value: new Set([200, 201, 401, 403, 416]), configurable: true });
     context('Bridge command preparation', () => {
         let sandbox: sinon.SinonSandbox;
         let synopsysBridge: SynopsysBridge;
@@ -36,7 +37,7 @@ describe("Synopsys Bridge test", () => {
         });
 
         it('should run successfully for polaris command preparation', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
@@ -45,27 +46,29 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" });
         });
 
         it('should fail with no scan type provied error', async function () {
-            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url","bridge_blackduck_url"]);
+            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url", "bridge_blackduck_url"]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Requires at least one scan type");
+                expect(errorObje.message).includes(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString());
             })
         });
 
         it('should fail with mandatory parameter missing fields for polaris', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
 
-            sandbox.stub(validator, "validatePolarisInputs").returns(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing']);
+            sandbox.stub(validator, "validatePolarisInputs").returns([`[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("required parameters for polaris is missing");
+                expect(errorObje.message).includes(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString());
             })
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" })
         });
 
         it('should fail with mandatory parameter missing fields for polaris', async function () {
@@ -74,43 +77,45 @@ describe("Synopsys Bridge test", () => {
         });
 
         it('should fail with invalid assessment type error', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => {
-                throw new Error("Invalid value for bridge_polaris_assessment_types")
+                throw new Error("Invalid value for bridge_polaris_assessment_types".concat(constants.SPACE).concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString()))
             });
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
+                expect(errorObje.message).includes(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString());
             })
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" })
         });
 
         it('should fail with invalid failureSeverities type error', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' });
 
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ''});
+            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', { value: '' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
-                throw new Error("Invalid value for failureSeverities")
+                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString()))
             });
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Invalid value for failureSeverities");
+                expect(errorObje.message).includes(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString());
             })
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' })
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' });
         });
 
         // coverity test cases
         it('should run successfully for coverity command preparation', async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
@@ -119,23 +124,23 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
 
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: "" });
         });
 
         it('should fail with mandatory parameter missing fields for coverity', async function () {
 
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateCoverityInputs").returns(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing']);
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' });
+            sandbox.stub(validator, "validateCoverityInputs").returns([`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
+                expect(errorObje.message).equals(`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);
             })
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: "" })
         });
 
         // Classic editor test cases
         it('should run successfully for polaris command preparation for classic editor', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "polaris"});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "polaris" });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
@@ -144,13 +149,13 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "" });
         });
 
         it('should run successfully for coverity command preparation for classic editor', async function () {
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "coverity"});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "coverity" });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForCoverity").callsFake(() => Promise.resolve("./bridge --stage connect --state coverity_input.json"));
@@ -159,14 +164,14 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage connect --state coverity_input.json")
 
-            Object.defineProperty(inputs, 'COVERITY_URL', {value: ""});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+            Object.defineProperty(inputs, 'COVERITY_URL', { value: "" });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "" });
         });
 
         it('should run successfully for blackduck command preparation for classic editor', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "blackduck"});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "blackduck" });
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
@@ -174,8 +179,8 @@ describe("Synopsys Bridge test", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
-            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' });
+            Object.defineProperty(inputs, 'SCAN_TYPE', { value: "" });
         });
 
     });
@@ -200,11 +205,11 @@ describe("Download Bridge", () => {
     } else if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string, constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC)
-            if (isIntel) {
-                bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
-            } else {
-                bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macos_arm.zip"
-            }
+        if (isIntel) {
+            bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macosx.zip"
+        } else {
+            bridgeUrl = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/0.1.244/synopsys-bridge-0.1.244-macos_arm.zip"
+        }
     }
 
     context("air mode is enabled, executeBridgeCommand", () => {
@@ -222,10 +227,11 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: true });
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '' });
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Bridge executable file could not be found at")
+                expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
         });
 
@@ -233,36 +239,38 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: true });
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '' });
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
+                expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: failure", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(false)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '' });
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: true });
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
+                expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
         });
 
         it("Execute Bridge Command - linux/mac success getDefaultDirectory empty: success", async () => {
             sandbox.stub(taskLib, "exec").resolves(0)
             sandbox.stub(taskLib, "exist").returns(true)
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/Users/test'});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '/Users/test' });
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('')
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: true });
             const res = synopsysBridge.getSynopsysBridgePath();
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
         });
 
         it("Execute Bridge Command - linux/mac success SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY not empty", async () => {
@@ -270,12 +278,13 @@ describe("Download Bridge", () => {
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('/tmp')
 
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: true});
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: true });
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '/tmp/' });
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
+                expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
 
         });
 
@@ -283,11 +292,11 @@ describe("Download Bridge", () => {
             sandbox.stub(taskLib, "exec").rejects()
             sandbox.stub(synopsysBridge, "getBridgeDefaultPath").resolves('/tmp')
             sandbox.stub(synopsysBridge, "setBridgeExecutablePath").resolves('/tmp')
-            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
+            Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', { value: '/tmp/' });
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Error")
             })
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
 
         });
     })
@@ -306,7 +315,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {
                 value: bridgeDefaultPath,
             });
-            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
+            Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', { value: false });
             sandbox.stub(fs, "existsSync").returns(true);
             sandbox.stub(taskLib, "rmRF");
             sandbox.stub(utility, "extractZipped").returns(Promise.resolve(true));
@@ -345,6 +354,7 @@ describe("Download Bridge", () => {
                 .catch(errorObj => {
                     console.log(errorObj.message)
                     expect(errorObj.message).includes("Bridge executable file could not be found at")
+                    expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
                 })
         });
     })
@@ -455,17 +465,17 @@ describe("Download Bridge", () => {
 
         it('should fail with mandatory parameter missing fields for blackduck', async function () {
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateBlackDuckInputs").returns(['[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing']);
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' });
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing');
+                expect(errorObje.message).equals(`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);
             })
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' })
         });
 
         it('should run successfully for blackduck command preparation', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' });
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve("./bridge --stage blackduck --state bd_input.json"));
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
@@ -473,15 +483,15 @@ describe("Download Bridge", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' });
         });
 
 
         it('should run successfully for blackduck and polaris command preparation', async function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: 'https://test.com' });
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', { value: 'token' });
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
@@ -494,7 +504,7 @@ describe("Download Bridge", () => {
             console.log("preparedCommand::::" + preparedCommand)
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --stage blackduck --state bd_input.json")
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', { value: '' });
         });
 
         it("throws an error when BRIDGE_DOWNLOAD_VERSION is defined but invalid", async () => {
@@ -575,10 +585,10 @@ describe("Download Bridge", () => {
         });
 
         it("BRIDGE_DOWNLOAD_VERSION is defined and valid", async () => {
-            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", {value: "0.1.244"});
+            Object.defineProperty(inputs, "BRIDGE_DOWNLOAD_VERSION", { value: "0.1.244" });
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
-            sandbox.stub(synopsysBridge,"getBridgeUrl").returns(Promise.resolve(""))
-            sandbox.stub(synopsysBridge,"getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
+            sandbox.stub(synopsysBridge, "getBridgeUrl").returns(Promise.resolve(""))
+            sandbox.stub(synopsysBridge, "getSynopsysBridgeVersionFromLatestURL").returns(Promise.resolve("0.1.244"))
             sandbox.stub(synopsysBridge, "checkIfSynopsysBridgeVersionExists").returns(Promise.resolve(true));
 
             const result = await synopsysBridge.downloadAndExtractBridge("/");
@@ -645,13 +655,14 @@ describe("Download Bridge", () => {
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Synopsys Bridge URL cannot be empty");
+                expect(errorObj.message).includes(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString());
             })
         });
 
         // include diagnostics test case
         it('should run successfully for include diagnostics command preparation', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
-            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
+            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', { value: 'true' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
@@ -660,12 +671,12 @@ describe("Download Bridge", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json --diagnostics")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" });
         });
 
         it('should not add --diagnostics with invalid value in synopsys-bridge command', async function () {
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
-            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: 'server_url' });
+            Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', { value: 'false' });
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
@@ -674,7 +685,7 @@ describe("Download Bridge", () => {
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
             expect(preparedCommand).contains("./bridge --stage polaris --state polaris_input.json")
 
-            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""});
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', { value: "" });
         });
 
 
@@ -692,7 +703,7 @@ describe("Download Bridge", () => {
         });
 
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid", async () => {
-            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
+            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", { value: bridgeDefaultPath });
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
             sandbox.stub(taskLib, "exist").returns(true);
@@ -707,8 +718,8 @@ describe("Download Bridge", () => {
         });
 
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid: windows", async () => {
-            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: bridgeDefaultPath});
-            Object.defineProperty(process, 'platform', {value: 'win32'});
+            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", { value: bridgeDefaultPath });
+            Object.defineProperty(process, 'platform', { value: 'win32' });
             sandbox.stub(taskLib, "exist").returns(true)
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(true));
 
@@ -722,7 +733,7 @@ describe("Download Bridge", () => {
         });
 
         it("SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY is defined and valid and version does not exists", async () => {
-            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", {value: "/path/path"});
+            Object.defineProperty(inputs, "SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY", { value: "/path/path" });
             synopsysBridge.bridgeExecutablePath = bridgeDefaultPath
             sandbox.stub(taskLib, "exist").returns(true)
             sandbox.stub(synopsysBridge, "checkIfVersionExists").returns(Promise.resolve(false));
