@@ -107,6 +107,21 @@ export function showLogForDeprecatedInputs() {
   }
 }
 
+function getInputForPolarisAssessmentMode() {
+  return (
+    taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
+    (taskLib
+      .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+      ?.trim() === POLARIS_ASSESSMENT_MODES.CI
+      ? POLARIS_ASSESSMENT_MODES.CI
+      : taskLib
+          .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+          ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
+      ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+      : "")
+  );
+}
+
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL = getInput(
   constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY,
@@ -183,17 +198,7 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
   null
 );
 
-export const POLARIS_ASSESSMENT_MODE =
-  taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
-  (taskLib
-    .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-    ?.trim() === POLARIS_ASSESSMENT_MODES.CI
-    ? POLARIS_ASSESSMENT_MODES.CI
-    : taskLib
-        .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-        ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
-    ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
-    : "");
+export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 
 export const POLARIS_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,

@@ -25,6 +25,7 @@ import {
   isBoolean,
   filterEmptyData,
   isPullRequestEvent,
+  getAzureToken,
 } from "./utility";
 import {
   SCAN_TYPE,
@@ -559,12 +560,7 @@ export class SynopsysToolsParameter {
 
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
-    const azureToken =
-      SCAN_TYPE === constants.BLACKDUCK_KEY
-        ? BLACKDUCK_AZURE_TOKEN
-        : SCAN_TYPE === constants.COVERITY_KEY
-        ? COVERITY_AZURE_TOKEN
-        : POLARIS_AZURE_TOKEN;
+    const azureToken = getAzureToken();
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";

@@ -812,7 +812,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var _a, _b, _c, _d;
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BLACKDUCK_FIXPR_ENABLED = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_AZURE_TOKEN = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_AZURE_TOKEN = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_TRIAGE = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getInput = void 0;
 exports.BLACKDUCK_AZURE_TOKEN = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCK_PROJECT_DIRECTORY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCK_REPORTS_SARIF_CREATE = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCK_FIXPR_MAXCOUNT = exports.BLACKDUCK_AUTOMATION_PRCOMMENT = void 0;
@@ -890,6 +890,17 @@ function showLogForDeprecatedInputs() {
     }
 }
 exports.showLogForDeprecatedInputs = showLogForDeprecatedInputs;
+function getInputForPolarisAssessmentMode() {
+    var _a, _b, _c;
+    return (((_a = taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)) === null || _a === void 0 ? void 0 : _a.trim()) ||
+        (((_b = taskLib
+            .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)) === null || _b === void 0 ? void 0 : _b.trim()) === polaris_1.POLARIS_ASSESSMENT_MODES.CI
+            ? polaris_1.POLARIS_ASSESSMENT_MODES.CI
+            : ((_c = taskLib
+                .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)) === null || _c === void 0 ? void 0 : _c.trim()) === polaris_1.POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
+                ? polaris_1.POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+                : ""));
+}
 //Bridge download url
 exports.BRIDGE_DOWNLOAD_URL = getInput(constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY, constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR, constants.BRIDGE_DOWNLOAD_URL_KEY);
 exports.ENABLE_NETWORK_AIRGAP = getBoolInput(constants.NETWORK_AIRGAP_KEY, constants.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR, constants.BRIDGE_NETWORK_AIRGAP_KEY);
@@ -906,14 +917,7 @@ exports.POLARIS_ASSESSMENT_TYPES = getDelimitedInput(constants.POLARIS_ASSESSMEN
 exports.POLARIS_TRIAGE = getInput(constants.POLARIS_TRIAGE_KEY, constants.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR, constants.BRIDGE_POLARIS_TRIAGE_KEY);
 exports.POLARIS_BRANCH_NAME = getInput(constants.POLARIS_BRANCH_NAME_KEY, constants.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR, constants.BRIDGE_POLARIS_BRANCH_NAME_KEY);
 exports.POLARIS_BRANCH_PARENT_NAME = getInput(constants.POLARIS_BRANCH_PARENT_NAME_KEY, constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR, null);
-exports.POLARIS_ASSESSMENT_MODE = ((_b = taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)) === null || _b === void 0 ? void 0 : _b.trim()) ||
-    (((_c = taskLib
-        .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)) === null || _c === void 0 ? void 0 : _c.trim()) === polaris_1.POLARIS_ASSESSMENT_MODES.CI
-        ? polaris_1.POLARIS_ASSESSMENT_MODES.CI
-        : ((_d = taskLib
-            .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)) === null || _d === void 0 ? void 0 : _d.trim()) === polaris_1.POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
-            ? polaris_1.POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
-            : "");
+exports.POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 exports.POLARIS_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR, null);
 exports.PROJECT_SOURCE_ARCHIVE = getInput(constants.PROJECT_SOURCE_ARCHIVE_KEY, constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR, null);
 exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = getInput(constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR, null);
@@ -1960,11 +1964,7 @@ class SynopsysToolsParameter {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let azureOrganization = "";
-            const azureToken = input_1.SCAN_TYPE === constants.BLACKDUCK_KEY
-                ? input_1.BLACKDUCK_AZURE_TOKEN
-                : input_1.SCAN_TYPE === constants.COVERITY_KEY
-                    ? input_1.COVERITY_AZURE_TOKEN
-                    : input_1.POLARIS_AZURE_TOKEN;
+            const azureToken = (0, utility_1.getAzureToken)();
             let azureInstanceUrl = "";
             const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
             taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
@@ -2199,9 +2199,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.getAzureToken = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
+const input_1 = __nccwpck_require__(7533);
 const toolLib = __importStar(__nccwpck_require__(3681));
 const toolLibLocal = __importStar(__nccwpck_require__(9510));
 const process = __importStar(__nccwpck_require__(7282));
@@ -2343,6 +2344,15 @@ function isPullRequestEvent() {
     return buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST;
 }
 exports.isPullRequestEvent = isPullRequestEvent;
+function getAzureToken() {
+    const azureToken = input_1.SCAN_TYPE === constants.BLACKDUCK_KEY
+        ? input_1.BLACKDUCK_AZURE_TOKEN
+        : input_1.SCAN_TYPE === constants.COVERITY_KEY
+            ? input_1.COVERITY_AZURE_TOKEN
+            : input_1.POLARIS_AZURE_TOKEN;
+    return azureToken;
+}
+exports.getAzureToken = getAzureToken;
 
 
 /***/ }),
