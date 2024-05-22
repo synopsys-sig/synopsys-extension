@@ -139,10 +139,8 @@ export class SynopsysToolsParameter {
           polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;
         }
 
-        if (inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS) {
-          polData.data.project.source.preserveSymLinks = parseToBoolean(
-            inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
-          );
+        if (parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
+          polData.data.project.source.preserveSymLinks = true;
         }
 
         if (inputs.PROJECT_SOURCE_EXCLUDES) {
