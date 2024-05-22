@@ -1646,14 +1646,14 @@ class SynopsysToolsParameter {
         if (inputs.POLARIS_PROJECT_DIRECTORY ||
             inputs.PROJECT_SOURCE_ARCHIVE ||
             inputs.PROJECT_SOURCE_EXCLUDES ||
-            inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS) {
+            (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
             polData.data.project = {};
             if (inputs.POLARIS_PROJECT_DIRECTORY) {
                 polData.data.project.directory = inputs.POLARIS_PROJECT_DIRECTORY;
             }
             if (inputs.PROJECT_SOURCE_ARCHIVE ||
                 inputs.PROJECT_SOURCE_EXCLUDES ||
-                inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS) {
+                (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
                 polData.data.project.source = {};
                 if (inputs.PROJECT_SOURCE_ARCHIVE) {
                     polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;

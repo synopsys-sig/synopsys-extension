@@ -120,7 +120,7 @@ export class SynopsysToolsParameter {
       inputs.POLARIS_PROJECT_DIRECTORY ||
       inputs.PROJECT_SOURCE_ARCHIVE ||
       inputs.PROJECT_SOURCE_EXCLUDES ||
-      inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
+      parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)
     ) {
       polData.data.project = {};
 
@@ -131,7 +131,7 @@ export class SynopsysToolsParameter {
       if (
         inputs.PROJECT_SOURCE_ARCHIVE ||
         inputs.PROJECT_SOURCE_EXCLUDES ||
-        inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS
+        parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)
       ) {
         polData.data.project.source = {};
 
