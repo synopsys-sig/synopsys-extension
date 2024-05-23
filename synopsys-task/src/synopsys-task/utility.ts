@@ -174,3 +174,17 @@ export function isPullRequestEvent(): boolean {
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
   return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
 }
+
+export function formatBranchName(branchName: string): string {
+  const prefix = "refs/heads/";
+
+  if (!branchName.startsWith(prefix)) {
+    return branchName;
+  }
+
+  const unsupportedRegex = /[\\/'"*`]/g;
+  const replacedValue = "^";
+
+  const strippedName = branchName.substring(prefix.length);
+  return strippedName.replace(unsupportedRegex, replacedValue);
+}
