@@ -9,7 +9,7 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 7,
+    "Minor": 8,
     "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
@@ -78,7 +78,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisServerUrl",
+      "name": "bridge_polaris_serverUrl",
       "type": "string",
       "label": "Polaris URL",
       "defaultValue": "",
@@ -88,7 +88,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisAccessToken",
+      "name": "bridge_polaris_accessToken",
       "type": "string",
       "label": "Polaris Access Token",
       "defaultValue": "",
@@ -228,7 +228,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityUrl",
+      "name": "bridge_coverity_connect_url",
       "type": "string",
       "label": "Coverity Platform URL",
       "defaultValue": "",
@@ -238,7 +238,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityUser",
+      "name": "bridge_coverity_connect_user_name",
       "type": "string",
       "label": "Coverity Username",
       "defaultValue": "",
@@ -308,7 +308,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPRCommentEnabled",
+      "name": "bridge_coverity_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -328,7 +328,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckUrl",
+      "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
       "defaultValue": "",
@@ -338,7 +338,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckToken",
+      "name": "bridge_blackduck_token",
       "type": "string",
       "label": "Black Duck Access Token",
       "defaultValue": "",
@@ -358,7 +358,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckScanFull",
+      "name": "bridge_blackduck_scan_full",
       "type": "boolean",
       "label": "Full Scan",
       "defaultValue": "",
@@ -378,7 +378,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckPRCommentEnabled",
+      "name": "bridge_blackduck_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,

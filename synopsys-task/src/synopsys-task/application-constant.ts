@@ -24,13 +24,14 @@ export const SCAN_TYPE_KEY = "scanType";
  */
 export const BRIDGE_POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 export const POLARIS_SERVER_URL_KEY = "polaris_server_url";
-export const POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "polarisServerUrl";
+export const POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "bridge_polaris_serverUrl";
 /**
  * @deprecated Use polaris_access_token instead. This can be removed in future release.
  */
 export const BRIDGE_POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 export const POLARIS_ACCESS_TOKEN_KEY = "polaris_access_token";
-export const POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "polarisAccessToken";
+export const POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR =
+  "bridge_polaris_accessToken";
 /**
  * @deprecated Use polaris_application_name instead. This can be removed in future release.
  */
@@ -135,14 +136,15 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_COVERITY_URL_KEY = "bridge_coverity_connect_url";
 export const COVERITY_URL_KEY = "coverity_url";
-export const COVERITY_URL_KEY_CLASSIC_EDITOR = "coverityUrl";
+export const COVERITY_URL_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_url";
 /**
  * @deprecated Use coverity_user instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_USER_NAME_KEY =
   "bridge_coverity_connect_user_name";
 export const COVERITY_USER_KEY = "coverity_user";
-export const COVERITY_USER_KEY_CLASSIC_EDITOR = "coverityUser";
+export const COVERITY_USER_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_connect_user_name";
 /**
  * @deprecated Use coverity_passphrase instead. This can be removed in future release.
  */
@@ -186,7 +188,7 @@ export const BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "coverityPRCommentEnabled";
+  "bridge_coverity_automation_prcomment";
 /**
  * @deprecated Use coverity_local instead. This can be removed in future release.
  */
@@ -216,13 +218,13 @@ export const EXIT_CODE_MAP = new Map<string, string>([
  */
 export const BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
 export const BLACKDUCK_URL_KEY = "blackduck_url";
-export const BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "blackduckUrl";
+export const BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "bridge_blackduck_url";
 /**
  * @deprecated Use blackduck_token instead. This can be removed in future release.
  */
 export const BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 export const BLACKDUCK_TOKEN_KEY = "blackduck_token";
-export const BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "blackduckToken";
+export const BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "bridge_blackduck_token";
 /**
  * @deprecated Use blackduck_install_directory instead. This can be removed in future release.
  */
@@ -236,7 +238,8 @@ export const BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 export const BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
-export const BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "blackduckScanFull";
+export const BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR =
+  "bridge_blackduck_scan_full";
 /**
  * @deprecated Use blackduck_scan_failure_severities instead. This can be removed in future release.
  */
@@ -253,7 +256,7 @@ export const BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY =
   "bridge_blackduck_automation_prcomment";
 export const BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
 export const BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
-  "blackduckPRCommentEnabled";
+  "bridge_blackduck_automation_prcomment";
 /**
  * @deprecated Use blackduck_fixpr_enabled instead. This can be removed in future release.
  */

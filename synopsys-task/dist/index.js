@@ -142,13 +142,13 @@ exports.SCAN_TYPE_KEY = "scanType";
  */
 exports.BRIDGE_POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 exports.POLARIS_SERVER_URL_KEY = "polaris_server_url";
-exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "polarisServerUrl";
+exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "bridge_polaris_serverUrl";
 /**
  * @deprecated Use polaris_access_token instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 exports.POLARIS_ACCESS_TOKEN_KEY = "polaris_access_token";
-exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "polarisAccessToken";
+exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "bridge_polaris_accessToken";
 /**
  * @deprecated Use polaris_application_name instead. This can be removed in future release.
  */
@@ -229,13 +229,13 @@ exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = "polarisReportsSa
  */
 exports.BRIDGE_COVERITY_URL_KEY = "bridge_coverity_connect_url";
 exports.COVERITY_URL_KEY = "coverity_url";
-exports.COVERITY_URL_KEY_CLASSIC_EDITOR = "coverityUrl";
+exports.COVERITY_URL_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_url";
 /**
  * @deprecated Use coverity_user instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
 exports.COVERITY_USER_KEY = "coverity_user";
-exports.COVERITY_USER_KEY_CLASSIC_EDITOR = "coverityUser";
+exports.COVERITY_USER_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_name";
 /**
  * @deprecated Use coverity_passphrase instead. This can be removed in future release.
  */
@@ -271,7 +271,7 @@ exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "coverityPolicyView";
  */
 exports.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = "bridge_coverity_automation_prcomment";
 exports.COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
-exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "coverityPRCommentEnabled";
+exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "bridge_coverity_automation_prcomment";
 /**
  * @deprecated Use coverity_local instead. This can be removed in future release.
  */
@@ -299,13 +299,13 @@ exports.EXIT_CODE_MAP = new Map([
  */
 exports.BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
 exports.BLACKDUCK_URL_KEY = "blackduck_url";
-exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "blackduckUrl";
+exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "bridge_blackduck_url";
 /**
  * @deprecated Use blackduck_token instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 exports.BLACKDUCK_TOKEN_KEY = "blackduck_token";
-exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "blackduckToken";
+exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "bridge_blackduck_token";
 /**
  * @deprecated Use blackduck_install_directory instead. This can be removed in future release.
  */
@@ -317,7 +317,7 @@ exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckInstallDirect
  */
 exports.BRIDGE_BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
-exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "blackduckScanFull";
+exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "bridge_blackduck_scan_full";
 /**
  * @deprecated Use blackduck_scan_failure_severities instead. This can be removed in future release.
  */
@@ -329,7 +329,7 @@ exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckScanFai
  */
 exports.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
 exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
-exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckPRCommentEnabled";
+exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "bridge_blackduck_automation_prcomment";
 /**
  * @deprecated Use blackduck_fixpr_enabled instead. This can be removed in future release.
  */
@@ -27476,7 +27476,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"azure-pipelines-tool-lib","version":"2.0.7","description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","main":"tool.js","scripts":{"build":"node make.js build","test":"node make.js test","sample":"node make.js sample","units":"node make.js units"},"repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"keywords":["VSTS"],"author":"Microsoft","license":"MIT","bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"}}');
+module.exports = JSON.parse('{"_args":[["azure-pipelines-tool-lib@2.0.7","/home/jahid/synopsys-extension/synopsys-task"]],"_from":"azure-pipelines-tool-lib@2.0.7","_id":"azure-pipelines-tool-lib@2.0.7","_inBundle":false,"_integrity":"sha512-1FN67ypNwNhgZllYSm4/pAQdffSfEZJhwW8YeNvm/cKDTS6t6bukTBIkt04c1CsaQe7Ot+eDOVMn41wX1ketXw==","_location":"/azure-pipelines-tool-lib","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"azure-pipelines-tool-lib@2.0.7","name":"azure-pipelines-tool-lib","escapedName":"azure-pipelines-tool-lib","rawSpec":"2.0.7","saveSpec":null,"fetchSpec":"2.0.7"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/azure-pipelines-tool-lib/-/azure-pipelines-tool-lib-2.0.7.tgz","_spec":"2.0.7","_where":"/home/jahid/synopsys-extension/synopsys-task","author":{"name":"Microsoft"},"bugs":{"url":"https://github.com/microsoft/azure-pipelines-tool-lib/issues"},"dependencies":{"@types/semver":"^5.3.0","@types/uuid":"^3.4.5","azure-pipelines-task-lib":"^4.1.0","semver":"^5.7.0","semver-compare":"^1.0.0","typed-rest-client":"^1.8.6","uuid":"^3.3.2"},"description":"Azure Pipelines Tool Installer Lib for CI/CD Tasks","devDependencies":{"@types/mocha":"^5.2.7","@types/node":"^16.11.39","@types/shelljs":"^0.8.4","@types/xml2js":"^0.4.5","mocha":"^6.2.3","nock":"13.0.4","shelljs":"^0.8.5","typescript":"^4.0.5","xml2js":"^0.4.23"},"homepage":"https://github.com/microsoft/azure-pipelines-tool-lib#readme","keywords":["VSTS"],"license":"MIT","main":"tool.js","name":"azure-pipelines-tool-lib","repository":{"type":"git","url":"git+https://github.com/microsoft/azure-pipelines-tool-lib.git"},"scripts":{"build":"node make.js build","sample":"node make.js sample","test":"node make.js test","units":"node make.js units"},"version":"2.0.7"}');
 
 /***/ })
 
