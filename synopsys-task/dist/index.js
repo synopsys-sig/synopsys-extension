@@ -1761,19 +1761,17 @@ class SynopsysToolsParameter {
                         azureRepositoryName && pullRequestTargetBranchName
                             ? azureRepositoryName
                                 .concat("-")
-                                .concat((0, utility_1.formatBranchName)(pullRequestTargetBranchName))
+                                .concat(pullRequestTargetBranchName)
                             : "";
                 }
                 else {
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
                     coverityStreamName =
                         azureRepositoryName && sourceBranchName
-                            ? azureRepositoryName
-                                .concat("-")
-                                .concat((0, utility_1.formatBranchName)(sourceBranchName))
+                            ? azureRepositoryName.concat("-").concat(sourceBranchName)
                             : "";
                 }
-                taskLib.debug(`COVERITY_STREAM_NAME: ${coverityStreamName}`);
+                taskLib.debug(`COVERITY_STREAM_NAME: ${azureRepositoryName}`);
             }
             let covData = {
                 data: {
@@ -2114,7 +2112,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatBranchName = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -2258,17 +2256,6 @@ function isPullRequestEvent() {
     return buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST;
 }
 exports.isPullRequestEvent = isPullRequestEvent;
-function formatBranchName(branchName) {
-    const prefix = "refs/heads/";
-    if (!branchName.startsWith(prefix)) {
-        return branchName;
-    }
-    const unsupportedRegex = /[\\/'"*`]/g;
-    const replacedValue = "^";
-    const strippedName = branchName.substring(prefix.length);
-    return strippedName.replace(unsupportedRegex, replacedValue);
-}
-exports.formatBranchName = formatBranchName;
 
 
 /***/ }),

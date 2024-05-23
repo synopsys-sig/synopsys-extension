@@ -25,7 +25,6 @@ import {
   isBoolean,
   filterEmptyData,
   isPullRequestEvent,
-  formatBranchName,
 } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
@@ -349,7 +348,7 @@ export class SynopsysToolsParameter {
           azureRepositoryName && pullRequestTargetBranchName
             ? azureRepositoryName
                 .concat("-")
-                .concat(formatBranchName(pullRequestTargetBranchName))
+                .concat(pullRequestTargetBranchName)
             : "";
       } else {
         const sourceBranchName =
@@ -358,12 +357,10 @@ export class SynopsysToolsParameter {
           ) || "";
         coverityStreamName =
           azureRepositoryName && sourceBranchName
-            ? azureRepositoryName
-                .concat("-")
-                .concat(formatBranchName(sourceBranchName))
+            ? azureRepositoryName.concat("-").concat(sourceBranchName)
             : "";
       }
-      taskLib.debug(`COVERITY_STREAM_NAME: ${coverityStreamName}`);
+      taskLib.debug(`COVERITY_STREAM_NAME: ${azureRepositoryName}`);
     }
 
     let covData: InputData<Coverity> = {
