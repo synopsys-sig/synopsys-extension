@@ -182,4 +182,32 @@ describe("Utilities", () => {
             expect(result).equals(false)
         });
     });
+
+    context('formatBranchName', () => {
+        it('should format main or feature branch correctly without refs/head/', () => {
+            expect(utility.formatBranchName("main")).equals("main");
+            expect(utility.formatBranchName("feature-test")).equals("feature-test");
+            expect(utility.formatBranchName("feature_test")).equals("feature_test");
+        });
+
+        it('should format main or feature branch correctly', () => {
+            expect(utility.formatBranchName("refs/heads/main")).equals("main");
+            expect(utility.formatBranchName("refs/heads/feature-test")).equals("feature-test");
+            expect(utility.formatBranchName("refs/heads/feature_test")).equals("feature_test");
+        });
+
+        it('should format hierarchical feature branches correctly', () => {
+            expect(utility.formatBranchName("refs/heads/dev/test")).equals("dev^test");
+            expect(utility.formatBranchName("refs/heads/feature/new_feature")).equals("feature^new_feature");
+        });
+
+        it('should replace special characters with caret', () => {
+            expect(utility.formatBranchName("refs/heads/dev/test'branch")).equals("dev^test^branch");
+            expect(utility.formatBranchName("refs/heads/dev/test*branch")).equals("dev^test^branch");
+            expect(utility.formatBranchName("refs/heads/dev/test`branch")).equals("dev^test^branch");
+            expect(utility.formatBranchName("refs/heads/dev/test\\branch")).equals("dev^test^branch");
+            expect(utility.formatBranchName("refs/heads/dev/test/branch")).equals("dev^test^branch");
+            expect(utility.formatBranchName('refs/heads/dev/test"branch')).equals("dev^test^branch");
+        });
+    });
 });
