@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import {expect} from "chai";
 import * as utility from "../../../src/synopsys-task/utility";
 import {
     extractZipped,
@@ -9,14 +9,14 @@ import process from "process";
 import * as sinon from "sinon";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/synopsys-task/download-tool";
-import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
+import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
 import * as constants from "../../../src/synopsys-task/application-constant";
 
 describe("Utilities", () => {
 
-    Object.defineProperty(constants, "RETRY_COUNT", { value: 3 });
-    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", { value: 100 });
-    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", { value: new Set([200, 201, 401, 403, 416]), configurable: true });
+    Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
+    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", {value: 100});
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
 
     let sandbox: sinon.SinonSandbox;
 
@@ -61,8 +61,7 @@ describe("Utilities", () => {
         it('extractZipped - failure', async function () {
             sandbox.stub(toolLib, "extractZip").throws(new Error("invalid path"));
             await utility.extractZipped("bridge.zip", "/dest_path").catch(error => {
-                expect(error.message).includes("invalid path")
-            })
+                expect(error.message).includes("invalid path")})
         });
 
         it('extractZipped - failure- file name empty', async function () {
@@ -93,7 +92,7 @@ describe("Utilities", () => {
     context('getRemoteFile', async function () {
 
         it('getRemoteFile - success', async function () {
-            const downloadFileResponse = { filePath: "/", fileName: "synopsys-bridge.zip" } as DownloadFileResponse
+            const downloadFileResponse = {filePath: "/", fileName: "synopsys-bridge.zip"} as DownloadFileResponse
             sandbox.stub(toolLibLocal, "downloadTool").returns(Promise.resolve("/"));
             const result = await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip");
             expect(result.fileName).equals(downloadFileResponse.fileName)
