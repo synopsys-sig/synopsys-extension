@@ -27,7 +27,7 @@
   ],
   "inputs": [
     {
-      "name": "synopsysBridgeDownloadUrl",
+      "name": "bridge_download_url",
       "type": "string",
       "label": "Synopsys Bridge Download URL",
       "defaultValue": "",
@@ -36,7 +36,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "synopsysBridgeDownloadVersion",
+      "name": "bridge_download_version",
       "type": "string",
       "label": "Synopsys Bridge Version",
       "defaultValue": "",
@@ -45,7 +45,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "synopsysBridgeInstallDirectory",
+      "name": "synopsys_bridge_path",
       "type": "string",
       "label": "Synopsys Bridge Installation Path",
       "defaultValue": "",
@@ -54,7 +54,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "includeDiagnostics",
+      "name": "include_diagnostics",
       "type": "boolean",
       "label": "Include Diagnostics",
       "defaultValue": false,
@@ -98,7 +98,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisApplicationName",
+      "name": "bridge_polaris_application_name",
       "type": "string",
       "label": "Polaris Application",
       "defaultValue": "",
@@ -108,7 +108,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisProjectName",
+      "name": "bridge_polaris_project_name",
       "type": "string",
       "label": "Polaris Project",
       "defaultValue": "",
@@ -118,7 +118,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisAssessmentTypes",
+      "name": "bridge_polaris_assessment_types",
       "type": "string",
       "label": "Assessment Type",
       "defaultValue": "",
@@ -128,7 +128,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisTriage",
+      "name": "bridge_polaris_triage",
       "type": "string",
       "label": "Polaris Triage",
       "defaultValue": "",
@@ -138,7 +138,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisBranchName",
+      "name": "bridge_polaris_branch_name",
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",

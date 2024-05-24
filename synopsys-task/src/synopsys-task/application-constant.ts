@@ -39,13 +39,13 @@ export const BRIDGE_POLARIS_APPLICATION_NAME_KEY =
   "bridge_polaris_application_name";
 export const POLARIS_APPLICATION_NAME_KEY = "polaris_application_name";
 export const POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR =
-  "polarisApplicationName";
+  "bridge_polaris_application_name";
 /**
  * @deprecated Use polaris_project_name instead. This can be removed in future release.
  */
 export const BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 export const POLARIS_PROJECT_NAME_KEY = "polaris_project_name";
-export const POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "polarisProjectName";
+export const POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_project_name";
 /**
  * @deprecated Use polaris_assessment_types instead. This can be removed in future release.
  */
@@ -53,19 +53,20 @@ export const BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY =
   "bridge_polaris_assessment_types";
 export const POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
 export const POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR =
-  "polarisAssessmentTypes";
+  "bridge_polaris_assessment_types";
 /**
  * @deprecated Use polaris_triage instead. This can be removed in future release.
  */
 export const BRIDGE_POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 export const POLARIS_TRIAGE_KEY = "polaris_triage";
-export const POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "polarisTriage";
+export const POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "bridge_polaris_triage";
 /**
  * @deprecated Use polaris_branch_name instead. This can be removed in future release.
  */
 export const BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 export const POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
-export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "polarisBranchName";
+export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_branch_name";
+
 export const POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
 export const POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR =
   "polarisBranchParentName";
@@ -343,7 +344,7 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR =
   "blackduckReportsSarifGroupSCAIssues";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "includeDiagnostics";
+export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
 /**
  * @deprecated Use network_airgap instead. This can be removed in future release.
  */
@@ -357,7 +358,7 @@ export const NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "networkAirGap";
 export const BRIDGE_DOWNLOAD_URL_KEY = "bridge_download_url";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = "synopsys_bridge_download_url";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR =
-  "synopsysBridgeDownloadUrl";
+  "bridge_download_url";
 /**
  * @deprecated Use synopsys_bridge_download_version instead. This can be removed in future release.
  */
@@ -365,12 +366,12 @@ export const BRIDGE_DOWNLOAD_VERSION_KEY = "bridge_download_version";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY =
   "synopsys_bridge_download_version";
 export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR =
-  "synopsysBridgeDownloadVersion";
+  "bridge_download_version";
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
   "synopsys_bridge_install_directory";
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
-  "synopsysBridgeInstallDirectory";
+  "synopsys_bridge_path";
 
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
