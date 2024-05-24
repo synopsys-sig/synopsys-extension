@@ -45,7 +45,8 @@ export const POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 export const POLARIS_PROJECT_NAME_KEY = "polaris_project_name";
-export const POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_project_name";
+export const POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR =
+  "bridge_polaris_project_name";
 /**
  * @deprecated Use polaris_assessment_types instead. This can be removed in future release.
  */
@@ -65,7 +66,8 @@ export const POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "bridge_polaris_triage";
  */
 export const BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 export const POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
-export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_branch_name";
+export const POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR =
+  "bridge_polaris_branch_name";
 
 export const POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
 export const POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR =
@@ -152,21 +154,24 @@ export const COVERITY_USER_KEY_CLASSIC_EDITOR =
 export const BRIDGE_COVERITY_USER_PASSWORD_KEY =
   "bridge_coverity_connect_user_password";
 export const COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
-export const COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_password";
+export const COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_connect_user_password";
 /**
  * @deprecated Use coverity_project_name instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_PROJECT_NAME_KEY =
   "bridge_coverity_connect_project_name";
 export const COVERITY_PROJECT_NAME_KEY = "coverity_project_name";
-export const COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_project_name";
+export const COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_connect_project_name";
 /**
  * @deprecated Use coverity_stream_name instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_STREAM_NAME_KEY =
   "bridge_coverity_connect_stream_name";
 export const COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
-export const COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_stream_name";
+export const COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_connect_stream_name";
 /**
  * @deprecated Use coverity_install_directory instead. This can be removed in future release.
  */
@@ -181,7 +186,8 @@ export const COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
 export const BRIDGE_COVERITY_POLICY_VIEW_KEY =
   "bridge_coverity_connect_policy_view";
 export const COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
-export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_policy_view";
+export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_connect_policy_view";
 /**
  * @deprecated Use coverity_prComment_enabled instead. This can be removed in future release.
  */

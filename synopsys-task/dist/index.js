@@ -134,7 +134,7 @@ exports.POLARIS_KEY = "polaris";
 exports.COVERITY_KEY = "coverity";
 exports.BLACKDUCK_KEY = "blackduck";
 exports.AZURE_TOKEN_KEY = "azure_token";
-exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
+exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azure_token";
 exports.SCAN_TYPE_KEY = "scanType";
 // Polaris
 /**
@@ -154,31 +154,31 @@ exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "bridge_polaris_accessToken";
  */
 exports.BRIDGE_POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 exports.POLARIS_APPLICATION_NAME_KEY = "polaris_application_name";
-exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = "polarisApplicationName";
+exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_application_name";
 /**
  * @deprecated Use polaris_project_name instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 exports.POLARIS_PROJECT_NAME_KEY = "polaris_project_name";
-exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "polarisProjectName";
+exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_project_name";
 /**
  * @deprecated Use polaris_assessment_types instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
-exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "polarisAssessmentTypes";
+exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "bridge_polaris_assessment_types";
 /**
  * @deprecated Use polaris_triage instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 exports.POLARIS_TRIAGE_KEY = "polaris_triage";
-exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "polarisTriage";
+exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "bridge_polaris_triage";
 /**
  * @deprecated Use polaris_branch_name instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 exports.POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
-exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "polarisBranchName";
+exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_branch_name";
 exports.POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
 exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = "polarisBranchParentName";
 /**
@@ -241,31 +241,31 @@ exports.COVERITY_USER_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_name";
  */
 exports.BRIDGE_COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
 exports.COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
-exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "coverityPassphrase";
+exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_password";
 /**
  * @deprecated Use coverity_project_name instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 exports.COVERITY_PROJECT_NAME_KEY = "coverity_project_name";
-exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "coverityProjectName";
+exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_project_name";
 /**
  * @deprecated Use coverity_stream_name instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 exports.COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
-exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "coverityStreamName";
+exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_stream_name";
 /**
  * @deprecated Use coverity_install_directory instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
 exports.COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
-exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "coverityInstallDirectory";
+exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_coverity_install_directory";
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
 exports.COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
-exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "coverityPolicyView";
+exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_policy_view";
 /**
  * @deprecated Use coverity_prComment_enabled instead. This can be removed in future release.
  */
@@ -277,13 +277,13 @@ exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "bridge_coverity_automat
  */
 exports.BRIDGE_COVERITY_LOCAL_KEY = "bridge_coverity_local";
 exports.COVERITY_LOCAL_KEY = "coverity_local";
-exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
+exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "bridge_coverity_local";
 /**
  * @deprecated Use coverity_version instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 exports.COVERITY_VERSION_KEY = "coverity_version";
-exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
+exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = "bridge_coverity_version";
 // Bridge Exit Codes
 exports.EXIT_CODE_MAP = new Map([
     ["0", "Bridge execution successfully completed"],
@@ -311,7 +311,7 @@ exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "bridge_blackduck_token";
  */
 exports.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
-exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckInstallDirectory";
+exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_blackduck_install_directory";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
@@ -323,7 +323,7 @@ exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "bridge_blackduck_scan_full";
  */
 exports.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckScanFailureSeverities";
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "bridge_blackduck_scan_failure_severities";
 /**
  * @deprecated Use blackduck_prComment_enabled instead. This can be removed in future release.
  */
@@ -339,13 +339,13 @@ exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY = "bridge_blackduck_fixpr_enabled";
 exports.BLACKDUCK_FIXPR_ENABLED_KEY = "blackduck_fixpr_enabled";
-exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "blackduckFixPREnabled";
+exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_enabled";
 /**
  * @deprecated Use blackduck_fixpr_maxCount instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY = "bridge_blackduck_fixpr_maxCount";
 exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = "blackduck_fixpr_maxCount";
-exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "blackduckFixPRMaxCount";
+exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_maxCount";
 /**
  * @deprecated Use blackduck_fixpr_createSinglePR instead. This can be removed in future release.
  */
@@ -357,13 +357,13 @@ exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = "blackduckFixPRCre
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = "bridge_blackduck_fixpr_filter_severities";
 exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = "blackduck_fixpr_filter_severities";
-exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckFixPRFilterSeverities";
+exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_filter_severities";
 /**
  * @deprecated Use blackduck_fixpr_useUpgradeGuidance instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = "bridge_blackduck_fixpr_useUpgradeGuidance";
 exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = "blackduck_fixpr_useUpgradeGuidance";
-exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "blackduckFixPRUseUpgradeGuidance";
+exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_useUpgradeGuidance";
 /**
  * @deprecated Use blackduck_reports_sarif_create instead. This can be removed in future release.
  */
@@ -389,27 +389,27 @@ exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = "bridge_blackduck_repo
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = "blackduckReportsSarifGroupSCAIssues";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "includeDiagnostics";
+exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
 /**
  * @deprecated Use network_airgap instead. This can be removed in future release.
  */
 exports.BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 exports.NETWORK_AIRGAP_KEY = "network_airgap";
-exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "networkAirGap";
+exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "bridge_network_airgap";
 /**
  * @deprecated Use synopsys_bridge_download_url instead. This can be removed in future release.
  */
 exports.BRIDGE_DOWNLOAD_URL_KEY = "bridge_download_url";
 exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = "synopsys_bridge_download_url";
-exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = "synopsysBridgeDownloadUrl";
+exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = "bridge_download_url";
 /**
  * @deprecated Use synopsys_bridge_download_version instead. This can be removed in future release.
  */
 exports.BRIDGE_DOWNLOAD_VERSION_KEY = "bridge_download_version";
 exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = "synopsys_bridge_download_version";
-exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = "synopsysBridgeDownloadVersion";
+exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = "bridge_download_version";
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = "synopsys_bridge_install_directory";
-exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "synopsysBridgeInstallDirectory";
+exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "synopsys_bridge_path";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_LOCAL_DIRECTORY = ".bridge";
 exports.SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
