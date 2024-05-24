@@ -175,16 +175,12 @@ export function isPullRequestEvent(): boolean {
   return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
 }
 
-export function formatBranchName(branchName: string): string {
+export function extractBranchName(branchName: string): string {
   const prefix = "refs/heads/";
 
   if (!branchName.startsWith(prefix)) {
     return branchName;
   }
 
-  const unsupportedRegex = /[\\/'"*`]/g;
-  const replacedValue = "^";
-
-  const strippedName = branchName.substring(prefix.length);
-  return strippedName.replace(unsupportedRegex, replacedValue);
+  return branchName.substring(prefix.length);
 }
