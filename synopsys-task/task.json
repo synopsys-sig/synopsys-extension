@@ -27,7 +27,7 @@
   ],
   "inputs": [
     {
-      "name": "synopsysBridgeDownloadUrl",
+      "name": "bridge_download_url",
       "type": "string",
       "label": "Synopsys Bridge Download URL",
       "defaultValue": "",
@@ -36,7 +36,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "synopsysBridgeDownloadVersion",
+      "name": "bridge_download_version",
       "type": "string",
       "label": "Synopsys Bridge Version",
       "defaultValue": "",
@@ -45,7 +45,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "synopsysBridgeInstallDirectory",
+      "name": "synopsys_bridge_path",
       "type": "string",
       "label": "Synopsys Bridge Installation Path",
       "defaultValue": "",
@@ -54,7 +54,7 @@
       "groupName": "optionalSettings"
     },
     {
-      "name": "includeDiagnostics",
+      "name": "include_diagnostics",
       "type": "boolean",
       "label": "Include Diagnostics",
       "defaultValue": false,
@@ -78,7 +78,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisServerUrl",
+      "name": "bridge_polaris_serverUrl",
       "type": "string",
       "label": "Polaris URL",
       "defaultValue": "",
@@ -88,7 +88,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisAccessToken",
+      "name": "bridge_polaris_accessToken",
       "type": "string",
       "label": "Polaris Access Token",
       "defaultValue": "",
@@ -98,7 +98,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisApplicationName",
+      "name": "bridge_polaris_application_name",
       "type": "string",
       "label": "Polaris Application",
       "defaultValue": "",
@@ -108,7 +108,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisProjectName",
+      "name": "bridge_polaris_project_name",
       "type": "string",
       "label": "Polaris Project",
       "defaultValue": "",
@@ -118,7 +118,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisAssessmentTypes",
+      "name": "bridge_polaris_assessment_types",
       "type": "string",
       "label": "Assessment Type",
       "defaultValue": "",
@@ -128,7 +128,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisTriage",
+      "name": "bridge_polaris_triage",
       "type": "string",
       "label": "Polaris Triage",
       "defaultValue": "",
@@ -138,7 +138,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisBranchName",
+      "name": "bridge_polaris_branch_name",
       "type": "string",
       "label": "Polaris Branch Name",
       "defaultValue": "",
@@ -228,7 +228,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityUrl",
+      "name": "bridge_coverity_connect_url",
       "type": "string",
       "label": "Coverity Platform URL",
       "defaultValue": "",
@@ -238,7 +238,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityUser",
+      "name": "bridge_coverity_connect_user_name",
       "type": "string",
       "label": "Coverity Username",
       "defaultValue": "",
@@ -248,7 +248,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPassphrase",
+      "name": "bridge_coverity_connect_user_password",
       "type": "string",
       "label": "Coverity Password",
       "defaultValue": "",
@@ -258,7 +258,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityProjectName",
+      "name": "bridge_coverity_connect_project_name",
       "type": "string",
       "label": "Coverity Project",
       "defaultValue": "",
@@ -268,7 +268,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityStreamName",
+      "name": "bridge_coverity_connect_stream_name",
       "type": "string",
       "label": "Coverity Stream",
       "defaultValue": "",
@@ -278,7 +278,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityInstallDirectory",
+      "name": "bridge_coverity_install_directory",
       "type": "string",
       "label": "Coverity Installation Path",
       "defaultValue": "",
@@ -288,7 +288,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPolicyView",
+      "name": "bridge_coverity_connect_policy_view",
       "type": "string",
       "label": "Coverity Policy View",
       "defaultValue": "",
@@ -298,7 +298,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityVersion",
+      "name": "bridge_coverity_version",
       "type": "string",
       "label": "Coverity Version",
       "defaultValue": "",
@@ -308,7 +308,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPRCommentEnabled",
+      "name": "bridge_coverity_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -318,7 +318,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityLocal",
+      "name": "bridge_coverity_local",
       "type": "boolean",
       "label": "Local Scan",
       "defaultValue": "",
@@ -328,7 +328,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckUrl",
+      "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
       "defaultValue": "",
@@ -338,7 +338,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckToken",
+      "name": "bridge_blackduck_token",
       "type": "string",
       "label": "Black Duck Access Token",
       "defaultValue": "",
@@ -348,7 +348,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckInstallDirectory",
+      "name": "bridge_blackduck_install_directory",
       "type": "string",
       "label": "Black Duck Installation Path",
       "defaultValue": "",
@@ -358,7 +358,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckScanFull",
+      "name": "bridge_blackduck_scan_full",
       "type": "boolean",
       "label": "Full Scan",
       "defaultValue": "",
@@ -368,7 +368,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckScanFailureSeverities",
+      "name": "bridge_blackduck_scan_failure_severities",
       "type": "string",
       "label": "Scan Failure Severities",
       "defaultValue": "",
@@ -378,7 +378,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckPRCommentEnabled",
+      "name": "bridge_blackduck_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
       "defaultValue": false,
@@ -388,7 +388,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPREnabled",
+      "name": "bridge_blackduck_fixpr_enabled",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
@@ -398,7 +398,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRUseUpgradeGuidance",
+      "name": "bridge_blackduck_fixpr_useUpgradeGuidance",
       "type": "string",
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
@@ -408,7 +408,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRFilterSeverities",
+      "name": "bridge_blackduck_fixpr_filter_severities",
       "type": "string",
       "label": "List of SEVERITIES to be filtered",
       "defaultValue": "",
@@ -418,7 +418,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRMaxCount",
+      "name": "bridge_blackduck_fixpr_maxCount",
       "type": "string",
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
@@ -428,7 +428,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "azureToken",
+      "name": "azure_token",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
@@ -478,7 +478,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "networkAirGap",
+      "name": "bridge_network_airgap",
       "type": "boolean",
       "label": "Network Airgap",
       "defaultValue": false,
