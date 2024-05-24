@@ -174,3 +174,13 @@ export function isPullRequestEvent(): boolean {
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
   return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
 }
+
+export function extractBranchName(branchName: string): string {
+  const prefix = "refs/heads/";
+
+  if (!branchName.startsWith(prefix)) {
+    return branchName;
+  }
+
+  return branchName.substring(prefix.length);
+}
