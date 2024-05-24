@@ -25,7 +25,7 @@ import {
   isBoolean,
   filterEmptyData,
   isPullRequestEvent,
-  formatBranchName,
+  extractBranchName,
 } from "./utility";
 import { AZURE_TOKEN } from "./input";
 import * as url from "url";
@@ -349,7 +349,7 @@ export class SynopsysToolsParameter {
           azureRepositoryName && pullRequestTargetBranchName
             ? azureRepositoryName
                 .concat("-")
-                .concat(formatBranchName(pullRequestTargetBranchName))
+                .concat(extractBranchName(pullRequestTargetBranchName))
             : "";
       } else {
         const sourceBranchName =
@@ -360,7 +360,7 @@ export class SynopsysToolsParameter {
           azureRepositoryName && sourceBranchName
             ? azureRepositoryName
                 .concat("-")
-                .concat(formatBranchName(sourceBranchName))
+                .concat(extractBranchName(sourceBranchName))
             : "";
       }
       taskLib.debug(`COVERITY_STREAM_NAME: ${coverityStreamName}`);

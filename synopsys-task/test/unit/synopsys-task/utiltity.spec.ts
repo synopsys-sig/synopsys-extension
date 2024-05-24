@@ -1,4 +1,4 @@
-import {expect} from "chai";
+import { expect } from "chai";
 import * as utility from "../../../src/synopsys-task/utility";
 import {
     extractZipped,
@@ -9,14 +9,14 @@ import process from "process";
 import * as sinon from "sinon";
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/synopsys-task/download-tool";
-import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
+import { DownloadFileResponse } from "../../../src/synopsys-task/model/download-file-response";
 import * as constants from "../../../src/synopsys-task/application-constant";
 
 describe("Utilities", () => {
 
-    Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
-    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", {value: 100});
-    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", {value: new Set([200,201,401,403,416]), configurable: true});
+    Object.defineProperty(constants, "RETRY_COUNT", { value: 3 });
+    Object.defineProperty(constants, "RETRY_DELAY_IN_MILLISECONDS", { value: 100 });
+    Object.defineProperty(constants, "NON_RETRY_HTTP_CODES", { value: new Set([200, 201, 401, 403, 416]), configurable: true });
 
     let sandbox: sinon.SinonSandbox;
 
@@ -61,7 +61,8 @@ describe("Utilities", () => {
         it('extractZipped - failure', async function () {
             sandbox.stub(toolLib, "extractZip").throws(new Error("invalid path"));
             await utility.extractZipped("bridge.zip", "/dest_path").catch(error => {
-                expect(error.message).includes("invalid path")})
+                expect(error.message).includes("invalid path")
+            })
         });
 
         it('extractZipped - failure- file name empty', async function () {
@@ -92,7 +93,7 @@ describe("Utilities", () => {
     context('getRemoteFile', async function () {
 
         it('getRemoteFile - success', async function () {
-            const downloadFileResponse = {filePath: "/", fileName: "synopsys-bridge.zip"} as DownloadFileResponse
+            const downloadFileResponse = { filePath: "/", fileName: "synopsys-bridge.zip" } as DownloadFileResponse
             sandbox.stub(toolLibLocal, "downloadTool").returns(Promise.resolve("/"));
             const result = await utility.getRemoteFile("/", "https://synopsys.com/synopsys-bridge.zip");
             expect(result.fileName).equals(downloadFileResponse.fileName)
@@ -183,31 +184,22 @@ describe("Utilities", () => {
         });
     });
 
-    context('formatBranchName', () => {
-        it('should format main or feature branch correctly without refs/head/', () => {
-            expect(utility.formatBranchName("main")).equals("main");
-            expect(utility.formatBranchName("feature-test")).equals("feature-test");
-            expect(utility.formatBranchName("feature_test")).equals("feature_test");
+    context('extractBranchName', () => {
+        it('should extract main or feature branch correctly without prefix refs/heads/', () => {
+            expect(utility.extractBranchName("main")).equals("main");
+            expect(utility.extractBranchName("feature-test")).equals("feature-test");
+            expect(utility.extractBranchName("feature_test")).equals("feature_test");
         });
 
-        it('should format main or feature branch correctly', () => {
-            expect(utility.formatBranchName("refs/heads/main")).equals("main");
-            expect(utility.formatBranchName("refs/heads/feature-test")).equals("feature-test");
-            expect(utility.formatBranchName("refs/heads/feature_test")).equals("feature_test");
+        it('should extract main or feature branch correctly with prefix refs/heads/', () => {
+            expect(utility.extractBranchName("refs/heads/main")).equals("main");
+            expect(utility.extractBranchName("refs/heads/feature-test")).equals("feature-test");
+            expect(utility.extractBranchName("refs/heads/feature_test")).equals("feature_test");
         });
 
-        it('should format hierarchical feature branches correctly', () => {
-            expect(utility.formatBranchName("refs/heads/dev/test")).equals("dev^test");
-            expect(utility.formatBranchName("refs/heads/feature/new_feature")).equals("feature^new_feature");
-        });
-
-        it('should replace special characters with caret', () => {
-            expect(utility.formatBranchName("refs/heads/dev/test'branch")).equals("dev^test^branch");
-            expect(utility.formatBranchName("refs/heads/dev/test*branch")).equals("dev^test^branch");
-            expect(utility.formatBranchName("refs/heads/dev/test`branch")).equals("dev^test^branch");
-            expect(utility.formatBranchName("refs/heads/dev/test\\branch")).equals("dev^test^branch");
-            expect(utility.formatBranchName("refs/heads/dev/test/branch")).equals("dev^test^branch");
-            expect(utility.formatBranchName('refs/heads/dev/test"branch')).equals("dev^test^branch");
+        it('should extract hierarchical feature branches correctly with prefix refs/heads/', () => {
+            expect(utility.extractBranchName("refs/heads/dev/test")).equals("dev/test");
+            expect(utility.extractBranchName("refs/heads/feature/test/new_feature")).equals("feature/test/new_feature");
         });
     });
 });
