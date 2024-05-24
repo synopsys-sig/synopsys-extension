@@ -248,7 +248,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPassphrase",
+      "name": "bridge_coverity_connect_user_password",
       "type": "string",
       "label": "Coverity Password",
       "defaultValue": "",
@@ -258,7 +258,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityProjectName",
+      "name": "bridge_coverity_connect_project_name",
       "type": "string",
       "label": "Coverity Project",
       "defaultValue": "",
@@ -268,7 +268,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityStreamName",
+      "name": "bridge_coverity_connect_stream_name",
       "type": "string",
       "label": "Coverity Stream",
       "defaultValue": "",
@@ -278,7 +278,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityInstallDirectory",
+      "name": "bridge_coverity_install_directory",
       "type": "string",
       "label": "Coverity Installation Path",
       "defaultValue": "",
@@ -288,7 +288,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityPolicyView",
+      "name": "bridge_coverity_connect_policy_view",
       "type": "string",
       "label": "Coverity Policy View",
       "defaultValue": "",
@@ -298,7 +298,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityVersion",
+      "name": "bridge_coverity_version",
       "type": "string",
       "label": "Coverity Version",
       "defaultValue": "",
@@ -318,7 +318,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "coverityLocal",
+      "name": "bridge_coverity_local",
       "type": "boolean",
       "label": "Local Scan",
       "defaultValue": "",
@@ -348,7 +348,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckInstallDirectory",
+      "name": "bridge_blackduck_install_directory",
       "type": "string",
       "label": "Black Duck Installation Path",
       "defaultValue": "",
@@ -368,7 +368,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckScanFailureSeverities",
+      "name": "bridge_blackduck_scan_failure_severities",
       "type": "string",
       "label": "Scan Failure Severities",
       "defaultValue": "",
@@ -388,7 +388,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPREnabled",
+      "name": "bridge_blackduck_fixpr_enabled",
       "type": "boolean",
       "label": "Create Fix Pull Requests",
       "defaultValue": false,
@@ -398,7 +398,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRUseUpgradeGuidance",
+      "name": "bridge_blackduck_fixpr_useUpgradeGuidance",
       "type": "string",
       "label": "Configure Short Term or Long Term Guidance",
       "defaultValue": "",
@@ -408,7 +408,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRFilterSeverities",
+      "name": "bridge_blackduck_fixpr_filter_severities",
       "type": "string",
       "label": "List of SEVERITIES to be filtered",
       "defaultValue": "",
@@ -418,7 +418,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckFixPRMaxCount",
+      "name": "bridge_blackduck_fixpr_maxCount",
       "type": "string",
       "label": "Maximum number of Pull Requests to be created",
       "defaultValue": "",
@@ -428,7 +428,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "azureToken",
+      "name": "azure_token",
       "type": "string",
       "label": "Azure Token",
       "defaultValue": "",
@@ -478,7 +478,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "networkAirGap",
+      "name": "bridge_network_airgap",
       "type": "boolean",
       "label": "Network Airgap",
       "defaultValue": false,

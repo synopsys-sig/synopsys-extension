@@ -15,7 +15,7 @@ export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 
 export const AZURE_TOKEN_KEY = "azure_token";
-export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
+export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azure_token";
 export const SCAN_TYPE_KEY = "scanType";
 
 // Polaris
@@ -152,21 +152,21 @@ export const COVERITY_USER_KEY_CLASSIC_EDITOR =
 export const BRIDGE_COVERITY_USER_PASSWORD_KEY =
   "bridge_coverity_connect_user_password";
 export const COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
-export const COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "coverityPassphrase";
+export const COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_password";
 /**
  * @deprecated Use coverity_project_name instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_PROJECT_NAME_KEY =
   "bridge_coverity_connect_project_name";
 export const COVERITY_PROJECT_NAME_KEY = "coverity_project_name";
-export const COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "coverityProjectName";
+export const COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_project_name";
 /**
  * @deprecated Use coverity_stream_name instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_STREAM_NAME_KEY =
   "bridge_coverity_connect_stream_name";
 export const COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
-export const COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "coverityStreamName";
+export const COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_stream_name";
 /**
  * @deprecated Use coverity_install_directory instead. This can be removed in future release.
  */
@@ -174,14 +174,14 @@ export const BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY =
   "bridge_coverity_install_directory";
 export const COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
 export const COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
-  "coverityInstallDirectory";
+  "bridge_coverity_install_directory";
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_POLICY_VIEW_KEY =
   "bridge_coverity_connect_policy_view";
 export const COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
-export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "coverityPolicyView";
+export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_policy_view";
 /**
  * @deprecated Use coverity_prComment_enabled instead. This can be removed in future release.
  */
@@ -195,13 +195,13 @@ export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_COVERITY_LOCAL_KEY = "bridge_coverity_local";
 export const COVERITY_LOCAL_KEY = "coverity_local";
-export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
+export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "bridge_coverity_local";
 /**
  * @deprecated Use coverity_version instead. This can be removed in future release.
  */
 export const BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 export const COVERITY_VERSION_KEY = "coverity_version";
-export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
+export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "bridge_coverity_version";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -233,7 +233,7 @@ export const BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY =
   "bridge_blackduck_install_directory";
 export const BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
 export const BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
-  "blackduckInstallDirectory";
+  "bridge_blackduck_install_directory";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
@@ -249,7 +249,7 @@ export const BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY =
   "blackduck_scan_failure_severities";
 export const BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR =
-  "blackduckScanFailureSeverities";
+  "bridge_blackduck_scan_failure_severities";
 /**
  * @deprecated Use blackduck_prComment_enabled instead. This can be removed in future release.
  */
@@ -270,7 +270,7 @@ export const BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY =
   "bridge_blackduck_fixpr_enabled";
 export const BLACKDUCK_FIXPR_ENABLED_KEY = "blackduck_fixpr_enabled";
 export const BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR =
-  "blackduckFixPREnabled";
+  "bridge_blackduck_fixpr_enabled";
 /**
  * @deprecated Use blackduck_fixpr_maxCount instead. This can be removed in future release.
  */
@@ -278,7 +278,7 @@ export const BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY =
   "bridge_blackduck_fixpr_maxCount";
 export const BLACKDUCK_FIXPR_MAXCOUNT_KEY = "blackduck_fixpr_maxCount";
 export const BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR =
-  "blackduckFixPRMaxCount";
+  "bridge_blackduck_fixpr_maxCount";
 /**
  * @deprecated Use blackduck_fixpr_createSinglePR instead. This can be removed in future release.
  */
@@ -296,7 +296,7 @@ export const BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY =
   "blackduck_fixpr_filter_severities";
 export const BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR =
-  "blackduckFixPRFilterSeverities";
+  "bridge_blackduck_fixpr_filter_severities";
 /**
  * @deprecated Use blackduck_fixpr_useUpgradeGuidance instead. This can be removed in future release.
  */
@@ -305,7 +305,7 @@ export const BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "blackduck_fixpr_useUpgradeGuidance";
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
-  "blackduckFixPRUseUpgradeGuidance";
+  "bridge_blackduck_fixpr_useUpgradeGuidance";
 /**
  * @deprecated Use blackduck_reports_sarif_create instead. This can be removed in future release.
  */
@@ -350,7 +350,7 @@ export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
  */
 export const BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 export const NETWORK_AIRGAP_KEY = "network_airgap";
-export const NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "networkAirGap";
+export const NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "bridge_network_airgap";
 
 /**
  * @deprecated Use synopsys_bridge_download_url instead. This can be removed in future release.
