@@ -26,13 +26,9 @@ import {
   filterEmptyData,
   isPullRequestEvent,
   getAzureToken,
+  extractBranchName,
 } from "./utility";
-import {
-  SCAN_TYPE,
-  POLARIS_AZURE_TOKEN,
-  BLACKDUCK_AZURE_TOKEN,
-  COVERITY_AZURE_TOKEN,
-} from "./input";
+import { POLARIS_AZURE_TOKEN } from "./input";
 
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
@@ -399,7 +395,7 @@ export class SynopsysToolsParameter {
           azureRepositoryName && pullRequestTargetBranchName
             ? azureRepositoryName
                 .concat("-")
-                .concat(pullRequestTargetBranchName)
+                .concat(extractBranchName(pullRequestTargetBranchName))
             : "";
       } else {
         const sourceBranchName =
@@ -408,10 +404,12 @@ export class SynopsysToolsParameter {
           ) || "";
         coverityStreamName =
           azureRepositoryName && sourceBranchName
-            ? azureRepositoryName.concat("-").concat(sourceBranchName)
+            ? azureRepositoryName
+                .concat("-")
+                .concat(extractBranchName(sourceBranchName))
             : "";
       }
-      taskLib.debug(`COVERITY_STREAM_NAME: ${azureRepositoryName}`);
+      taskLib.debug(`COVERITY_STREAM_NAME: ${coverityStreamName}`);
     }
 
     let covData: InputData<Coverity> = {

@@ -192,3 +192,13 @@ export function getAzureToken(): string {
       : POLARIS_AZURE_TOKEN;
   return azureToken;
 }
+
+export function extractBranchName(branchName: string): string {
+  const prefix = "refs/heads/";
+
+  if (!branchName.startsWith(prefix)) {
+    return branchName;
+  }
+
+  return branchName.substring(prefix.length);
+}

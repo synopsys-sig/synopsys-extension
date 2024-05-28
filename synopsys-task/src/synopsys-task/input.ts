@@ -97,10 +97,10 @@ export function getDelimitedInput(
 
 export function showLogForDeprecatedInputs() {
   if (deprecatedInputs.length > 0) {
-    taskLib.warning(
+    console.log(
       `[${deprecatedInputs.join(
         ","
-      )}] is/are deprecated. Check documentation for new parameters: ${
+      )}] is/are deprecated for YAML. Check documentation for new parameters: ${
         constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL
       }`
     );
@@ -304,7 +304,7 @@ export const COVERITY_LOCAL = getInput(
   constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_LOCAL_KEY
 );
-export const COVERITY_AUTOMATION_PRCOMMENT = getInput(
+export const COVERITY_AUTOMATION_PRCOMMENT = getBoolInput(
   constants.COVERITY_PRCOMMENT_ENABLED_KEY,
   constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY
@@ -361,14 +361,14 @@ if (BLACKDUCK_AUTOMATION_FIXPR) {
   deprecatedInputs.push(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY);
 }
 export const BLACKDUCK_FIXPR_ENABLED =
-  getInput(
+  getBoolInput(
     constants.BLACKDUCK_FIXPR_ENABLED_KEY,
     constants.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR,
     constants.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY
   ) ||
   BLACKDUCK_AUTOMATION_FIXPR?.trim() ||
   "";
-export const BLACKDUCK_AUTOMATION_PRCOMMENT = getInput(
+export const BLACKDUCK_AUTOMATION_PRCOMMENT = getBoolInput(
   constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
   constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY

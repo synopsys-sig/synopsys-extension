@@ -141,43 +141,43 @@ exports.SCAN_TYPE_KEY = "scanType";
  */
 exports.BRIDGE_POLARIS_SERVER_URL_KEY = "bridge_polaris_serverUrl";
 exports.POLARIS_SERVER_URL_KEY = "polaris_server_url";
-exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "polarisServerUrl";
+exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "bridge_polaris_serverUrl";
 /**
  * @deprecated Use polaris_access_token instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_ACCESS_TOKEN_KEY = "bridge_polaris_accessToken";
 exports.POLARIS_ACCESS_TOKEN_KEY = "polaris_access_token";
-exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "polarisAccessToken";
+exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = "bridge_polaris_accessToken";
 /**
  * @deprecated Use polaris_application_name instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_APPLICATION_NAME_KEY = "bridge_polaris_application_name";
 exports.POLARIS_APPLICATION_NAME_KEY = "polaris_application_name";
-exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = "polarisApplicationName";
+exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_application_name";
 /**
  * @deprecated Use polaris_project_name instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_PROJECT_NAME_KEY = "bridge_polaris_project_name";
 exports.POLARIS_PROJECT_NAME_KEY = "polaris_project_name";
-exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "polarisProjectName";
+exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_project_name";
 /**
  * @deprecated Use polaris_assessment_types instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_ASSESSMENT_TYPES_KEY = "bridge_polaris_assessment_types";
 exports.POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
-exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "polarisAssessmentTypes";
+exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "bridge_polaris_assessment_types";
 /**
  * @deprecated Use polaris_triage instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_TRIAGE_KEY = "bridge_polaris_triage";
 exports.POLARIS_TRIAGE_KEY = "polaris_triage";
-exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "polarisTriage";
+exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = "bridge_polaris_triage";
 /**
  * @deprecated Use polaris_branch_name instead. This can be removed in future release.
  */
 exports.BRIDGE_POLARIS_BRANCH_NAME_KEY = "bridge_polaris_branch_name";
 exports.POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
-exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "polarisBranchName";
+exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_polaris_branch_name";
 exports.POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
 exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = "polarisBranchParentName";
 /**
@@ -238,43 +238,43 @@ exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = "projectSourceExcludes";
  */
 exports.BRIDGE_COVERITY_URL_KEY = "bridge_coverity_connect_url";
 exports.COVERITY_URL_KEY = "coverity_url";
-exports.COVERITY_URL_KEY_CLASSIC_EDITOR = "coverityUrl";
+exports.COVERITY_URL_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_url";
 /**
  * @deprecated Use coverity_user instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_USER_NAME_KEY = "bridge_coverity_connect_user_name";
 exports.COVERITY_USER_KEY = "coverity_user";
-exports.COVERITY_USER_KEY_CLASSIC_EDITOR = "coverityUser";
+exports.COVERITY_USER_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_name";
 /**
  * @deprecated Use coverity_passphrase instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_USER_PASSWORD_KEY = "bridge_coverity_connect_user_password";
 exports.COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
-exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "coverityPassphrase";
+exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_user_password";
 /**
  * @deprecated Use coverity_project_name instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_PROJECT_NAME_KEY = "bridge_coverity_connect_project_name";
 exports.COVERITY_PROJECT_NAME_KEY = "coverity_project_name";
-exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "coverityProjectName";
+exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_project_name";
 /**
  * @deprecated Use coverity_stream_name instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_STREAM_NAME_KEY = "bridge_coverity_connect_stream_name";
 exports.COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
-exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "coverityStreamName";
+exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_stream_name";
 /**
  * @deprecated Use coverity_install_directory instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directory";
 exports.COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
-exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "coverityInstallDirectory";
+exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_coverity_install_directory";
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_POLICY_VIEW_KEY = "bridge_coverity_connect_policy_view";
 exports.COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
-exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "coverityPolicyView";
+exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "bridge_coverity_connect_policy_view";
 /**
  * @deprecated Use coverity_prComment_enabled instead. This can be removed in future release.
  */
@@ -282,19 +282,19 @@ exports.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY = "bridge_coverity_automation_p
 exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "coverityProjectDirectory";
 exports.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "coverityAzureToken";
 exports.COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
-exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "coverityPRCommentEnabled";
+exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "bridge_coverity_automation_prcomment";
 /**
  * @deprecated Use coverity_local instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_LOCAL_KEY = "bridge_coverity_local";
 exports.COVERITY_LOCAL_KEY = "coverity_local";
-exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "coverityLocal";
+exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "bridge_coverity_local";
 /**
  * @deprecated Use coverity_version instead. This can be removed in future release.
  */
 exports.BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 exports.COVERITY_VERSION_KEY = "coverity_version";
-exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = "coverityVersion";
+exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = "bridge_coverity_version";
 // Bridge Exit Codes
 exports.EXIT_CODE_MAP = new Map([
     ["0", "Bridge execution successfully completed"],
@@ -310,37 +310,37 @@ exports.EXIT_CODE_MAP = new Map([
  */
 exports.BRIDGE_BLACKDUCK_URL_KEY = "bridge_blackduck_url";
 exports.BLACKDUCK_URL_KEY = "blackduck_url";
-exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "blackduckUrl";
+exports.BLACKDUCK_URL_KEY_CLASSIC_EDITOR = "bridge_blackduck_url";
 /**
  * @deprecated Use blackduck_token instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_API_TOKEN_KEY = "bridge_blackduck_token";
 exports.BLACKDUCK_TOKEN_KEY = "blackduck_token";
-exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "blackduckToken";
+exports.BLACKDUCK_TOKEN_KEY_CLASSIC_EDITOR = "bridge_blackduck_token";
 /**
  * @deprecated Use blackduck_install_directory instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
-exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckInstallDirectory";
+exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_blackduck_install_directory";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_SCAN_FULL_KEY = "bridge_blackduck_scan_full";
 exports.BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
-exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "blackduckScanFull";
+exports.BLACKDUCK_SCAN_FULL_KEY_CLASSIC_EDITOR = "bridge_blackduck_scan_full";
 /**
  * @deprecated Use blackduck_scan_failure_severities instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "bridge_blackduck_scan_failure_severities";
 exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
-exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckScanFailureSeverities";
+exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = "bridge_blackduck_scan_failure_severities";
 /**
  * @deprecated Use blackduck_prComment_enabled instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "bridge_blackduck_automation_prcomment";
 exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
-exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "blackduckPRCommentEnabled";
+exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = "bridge_blackduck_automation_prcomment";
 /**
  * @deprecated Use blackduck_fixpr_enabled instead. This can be removed in future release.
  */
@@ -350,13 +350,13 @@ exports.BLACKDUCK_AUTOMATION_FIXPR_KEY = "bridge_blackduck_automation_fixpr";
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY = "bridge_blackduck_fixpr_enabled";
 exports.BLACKDUCK_FIXPR_ENABLED_KEY = "blackduck_fixpr_enabled";
-exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "blackduckFixPREnabled";
+exports.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_enabled";
 /**
  * @deprecated Use blackduck_fixpr_maxCount instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY = "bridge_blackduck_fixpr_maxCount";
 exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY = "blackduck_fixpr_maxCount";
-exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "blackduckFixPRMaxCount";
+exports.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_maxCount";
 /**
  * @deprecated Use blackduck_fixpr_createSinglePR instead. This can be removed in future release.
  */
@@ -368,13 +368,13 @@ exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = "blackduckFixPRCre
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = "bridge_blackduck_fixpr_filter_severities";
 exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY = "blackduck_fixpr_filter_severities";
-exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = "blackduckFixPRFilterSeverities";
+exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_filter_severities";
 /**
  * @deprecated Use blackduck_fixpr_useUpgradeGuidance instead. This can be removed in future release.
  */
 exports.BRIDGE_BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = "bridge_blackduck_fixpr_useUpgradeGuidance";
 exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY = "blackduck_fixpr_useUpgradeGuidance";
-exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "blackduckFixPRUseUpgradeGuidance";
+exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = "bridge_blackduck_fixpr_useUpgradeGuidance";
 exports.BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "blackduckProjectDirectory";
 exports.BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "blackduckAzureToken";
 /**
@@ -402,27 +402,27 @@ exports.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = "bridge_blackduck_repo
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = "blackduckReportsSarifGroupSCAIssues";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "includeDiagnostics";
+exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
 /**
  * @deprecated Use network_airgap instead. This can be removed in future release.
  */
 exports.BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 exports.NETWORK_AIRGAP_KEY = "network_airgap";
-exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "networkAirGap";
+exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "bridge_network_airgap";
 /**
  * @deprecated Use synopsys_bridge_download_url instead. This can be removed in future release.
  */
 exports.BRIDGE_DOWNLOAD_URL_KEY = "bridge_download_url";
 exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = "synopsys_bridge_download_url";
-exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = "synopsysBridgeDownloadUrl";
+exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = "bridge_download_url";
 /**
  * @deprecated Use synopsys_bridge_download_version instead. This can be removed in future release.
  */
 exports.BRIDGE_DOWNLOAD_VERSION_KEY = "bridge_download_version";
 exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = "synopsys_bridge_download_version";
-exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = "synopsysBridgeDownloadVersion";
+exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = "bridge_download_version";
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = "synopsys_bridge_install_directory";
-exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "synopsysBridgeInstallDirectory";
+exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "synopsys_bridge_path";
 exports.PROJECT_DIRECTORY_KEY = "project_directory";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 exports.BRIDGE_LOCAL_DIRECTORY = ".bridge";
@@ -886,7 +886,7 @@ function getDelimitedInput(newKey, classicEditorKey, deprecatedKey) {
 exports.getDelimitedInput = getDelimitedInput;
 function showLogForDeprecatedInputs() {
     if (deprecatedInputs.length > 0) {
-        taskLib.warning(`[${deprecatedInputs.join(",")}] is/are deprecated. Check documentation for new parameters: ${constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL}`);
+        console.log(`[${deprecatedInputs.join(",")}] is/are deprecated for YAML. Check documentation for new parameters: ${constants.SYNOPSYS_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL}`);
     }
 }
 exports.showLogForDeprecatedInputs = showLogForDeprecatedInputs;
@@ -939,7 +939,7 @@ exports.COVERITY_STREAM_NAME = getInput(constants.COVERITY_STREAM_NAME_KEY, cons
 exports.COVERITY_INSTALL_DIRECTORY = getPathInput(constants.COVERITY_INSTALL_DIRECTORY_KEY, constants.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY);
 exports.COVERITY_POLICY_VIEW = getInput(constants.COVERITY_POLICY_VIEW_KEY, constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_POLICY_VIEW_KEY);
 exports.COVERITY_LOCAL = getInput(constants.COVERITY_LOCAL_KEY, constants.COVERITY_LOCAL_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_LOCAL_KEY);
-exports.COVERITY_AUTOMATION_PRCOMMENT = getInput(constants.COVERITY_PRCOMMENT_ENABLED_KEY, constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY);
+exports.COVERITY_AUTOMATION_PRCOMMENT = getBoolInput(constants.COVERITY_PRCOMMENT_ENABLED_KEY, constants.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY);
 exports.COVERITY_VERSION = getInput(constants.COVERITY_VERSION_KEY, constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR, constants.BRIDGE_COVERITY_VERSION_KEY);
 exports.COVERITY_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR, null);
 exports.COVERITY_AZURE_TOKEN = getInput(constants.AZURE_TOKEN_KEY, constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR, null);
@@ -956,10 +956,10 @@ const BLACKDUCK_AUTOMATION_FIXPR = taskLib.getInput(constants.BLACKDUCK_AUTOMATI
 if (BLACKDUCK_AUTOMATION_FIXPR) {
     deprecatedInputs.push(constants.BLACKDUCK_AUTOMATION_FIXPR_KEY);
 }
-exports.BLACKDUCK_FIXPR_ENABLED = getInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY, constants.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY) ||
+exports.BLACKDUCK_FIXPR_ENABLED = getBoolInput(constants.BLACKDUCK_FIXPR_ENABLED_KEY, constants.BLACKDUCK_FIXPR_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_FIXPR_ENABLED_KEY) ||
     (BLACKDUCK_AUTOMATION_FIXPR === null || BLACKDUCK_AUTOMATION_FIXPR === void 0 ? void 0 : BLACKDUCK_AUTOMATION_FIXPR.trim()) ||
     "";
-exports.BLACKDUCK_AUTOMATION_PRCOMMENT = getInput(constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY, constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
+exports.BLACKDUCK_AUTOMATION_PRCOMMENT = getBoolInput(constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY, constants.BLACKDUCK_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
 exports.BLACKDUCK_FIXPR_MAXCOUNT = getInput(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY, constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_FIXPR_MAXCOUNT_KEY);
 exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = getInput(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY, constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY);
 exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = getDelimitedInput(constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY, constants.BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_FIXPR_FILTER_SEVERITIES_KEY);
@@ -987,7 +987,7 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
     AZURE_REPOSITORY: "Build.Repository.Name",
     AZURE_SOURCE_BRANCH: "Build.SourceBranch",
     AZURE_PULL_REQUEST_NUMBER: "System.PullRequest.PullRequestId",
-    AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.targetBranchName",
+    AZURE_PULL_REQUEST_TARGET_BRANCH: "System.PullRequest.TargetBranch",
     AZURE_BUILD_REASON: "Build.Reason",
     AZURE_PULL_REQUEST_SOURCE_BRANCH: "System.PullRequest.SourceBranch",
 };
@@ -1843,17 +1843,19 @@ class SynopsysToolsParameter {
                         azureRepositoryName && pullRequestTargetBranchName
                             ? azureRepositoryName
                                 .concat("-")
-                                .concat(pullRequestTargetBranchName)
+                                .concat((0, utility_1.extractBranchName)(pullRequestTargetBranchName))
                             : "";
                 }
                 else {
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
                     coverityStreamName =
                         azureRepositoryName && sourceBranchName
-                            ? azureRepositoryName.concat("-").concat(sourceBranchName)
+                            ? azureRepositoryName
+                                .concat("-")
+                                .concat((0, utility_1.extractBranchName)(sourceBranchName))
                             : "";
                 }
-                taskLib.debug(`COVERITY_STREAM_NAME: ${azureRepositoryName}`);
+                taskLib.debug(`COVERITY_STREAM_NAME: ${coverityStreamName}`);
             }
             let covData = {
                 data: {
@@ -2199,7 +2201,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getAzureToken = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.extractBranchName = exports.getAzureToken = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const input_1 = __nccwpck_require__(7533);
@@ -2353,6 +2355,14 @@ function getAzureToken() {
     return azureToken;
 }
 exports.getAzureToken = getAzureToken;
+function extractBranchName(branchName) {
+    const prefix = "refs/heads/";
+    if (!branchName.startsWith(prefix)) {
+        return branchName;
+    }
+    return branchName.substring(prefix.length);
+}
+exports.extractBranchName = extractBranchName;
 
 
 /***/ }),

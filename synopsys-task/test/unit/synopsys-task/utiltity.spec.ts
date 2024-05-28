@@ -182,4 +182,23 @@ describe("Utilities", () => {
             expect(result).equals(false)
         });
     });
+
+    context('extractBranchName', () => {
+        it('should extract main or feature branch correctly without prefix refs/heads/', () => {
+            expect(utility.extractBranchName("main")).equals("main");
+            expect(utility.extractBranchName("feature-test")).equals("feature-test");
+            expect(utility.extractBranchName("feature_test")).equals("feature_test");
+        });
+
+        it('should extract main or feature branch correctly with prefix refs/heads/', () => {
+            expect(utility.extractBranchName("refs/heads/main")).equals("main");
+            expect(utility.extractBranchName("refs/heads/feature-test")).equals("feature-test");
+            expect(utility.extractBranchName("refs/heads/feature_test")).equals("feature_test");
+        });
+
+        it('should extract hierarchical feature branches correctly with prefix refs/heads/', () => {
+            expect(utility.extractBranchName("refs/heads/dev/test")).equals("dev/test");
+            expect(utility.extractBranchName("refs/heads/feature/test/new_feature")).equals("feature/test/new_feature");
+        });
+    });
 });
