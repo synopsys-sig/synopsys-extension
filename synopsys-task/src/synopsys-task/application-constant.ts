@@ -15,6 +15,7 @@ export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 
 export const AZURE_TOKEN_KEY = "azure_token";
+export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azure_token";
 export const SCAN_TYPE_KEY = "scanType";
 
 // Polaris
@@ -136,7 +137,6 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
-export const POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "polarisAzureToken";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
@@ -209,7 +209,6 @@ export const BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
 export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "coverityProjectDirectory";
-export const COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "coverityAzureToken";
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
   "bridge_coverity_automation_prcomment";
@@ -332,7 +331,6 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
 
 export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckProjectDirectory";
-export const BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR = "blackduckAzureToken";
 
 /**
  * @deprecated Use blackduck_reports_sarif_create instead. This can be removed in future release.

@@ -153,6 +153,12 @@ export const INCLUDE_DIAGNOSTICS = getInput(
   null
 );
 
+export const AZURE_TOKEN = getInput(
+  constants.AZURE_TOKEN_KEY,
+  constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR,
+  null
+);
+
 export const SCAN_TYPE =
   taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
 
@@ -257,11 +263,6 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES = getDelimitedInput(
   constants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY
 );
-export const POLARIS_AZURE_TOKEN = getInput(
-  constants.AZURE_TOKEN_KEY,
-  constants.POLARIS_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
-  null
-);
 
 // Coverity related inputs
 export const COVERITY_URL = getInput(
@@ -317,11 +318,6 @@ export const COVERITY_VERSION = getInput(
 export const COVERITY_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
-  null
-);
-export const COVERITY_AZURE_TOKEN = getInput(
-  constants.AZURE_TOKEN_KEY,
-  constants.COVERITY_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
   null
 );
 
@@ -419,10 +415,4 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
-);
-
-export const BLACKDUCK_AZURE_TOKEN = getInput(
-  constants.AZURE_TOKEN_KEY,
-  constants.BLACKDUCK_AZURE_TOKEN_KEY_CLASSIC_EDITOR,
-  null
 );

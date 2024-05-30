@@ -6,13 +6,6 @@ import {
   SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
 } from "./application-constant";
 
-import {
-  SCAN_TYPE,
-  POLARIS_AZURE_TOKEN,
-  BLACKDUCK_AZURE_TOKEN,
-  COVERITY_AZURE_TOKEN,
-} from "./input";
-
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
@@ -181,16 +174,6 @@ export function isPullRequestEvent(): boolean {
   const buildReason =
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
   return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
-}
-
-export function getAzureToken(): string {
-  const azureToken =
-    SCAN_TYPE === constants.BLACKDUCK_KEY
-      ? BLACKDUCK_AZURE_TOKEN
-      : SCAN_TYPE === constants.COVERITY_KEY
-      ? COVERITY_AZURE_TOKEN
-      : POLARIS_AZURE_TOKEN;
-  return azureToken;
 }
 
 export function extractBranchName(branchName: string): string {

@@ -229,16 +229,6 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "polarisAzureToken",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Polaris pull request comment is enabled.",
-      "visibleRule": "scanType = polaris",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "polarisProjectDirectory",
       "type": "string",
       "label": "Project Directory",
@@ -380,16 +370,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "coverityAzureToken",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity pull request comment is enabled.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -544,16 +524,6 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "blackduckAzureToken",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when BlackDuck pull request comment or fix pull request is enabled.",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "blackduckProjectDirectory",
       "type": "string",
       "label": "Project Directory",
@@ -561,6 +531,16 @@
       "required": false,
       "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
       "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck/Polaris PR comment and BlackDuck FIX PR is enabled.",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
       "groupName": "scanOptions"
     },
     {

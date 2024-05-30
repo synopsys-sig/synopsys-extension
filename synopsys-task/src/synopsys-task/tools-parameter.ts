@@ -25,10 +25,9 @@ import {
   isBoolean,
   filterEmptyData,
   isPullRequestEvent,
-  getAzureToken,
   extractBranchName,
 } from "./utility";
-import { POLARIS_AZURE_TOKEN } from "./input";
+import { AZURE_TOKEN } from "./input";
 
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
@@ -157,7 +156,7 @@ export class SynopsysToolsParameter {
             inputs.POLARIS_BRANCH_PARENT_NAME;
         }
 
-        if (!POLARIS_AZURE_TOKEN) {
+        if (!AZURE_TOKEN) {
           throw new Error(
             "Missing required azure token for pull request comment"
           );
@@ -165,7 +164,7 @@ export class SynopsysToolsParameter {
 
         polData.data.azure = this.setAzureData(
           "",
-          POLARIS_AZURE_TOKEN,
+          AZURE_TOKEN,
           "",
           "",
           "",
@@ -556,7 +555,7 @@ export class SynopsysToolsParameter {
 
   private async getAzureRepoInfo(): Promise<AzureData | undefined> {
     let azureOrganization = "";
-    const azureToken = getAzureToken();
+    const azureToken = AZURE_TOKEN;
     let azureInstanceUrl = "";
     const collectionUri =
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
