@@ -1658,7 +1658,10 @@ class SynopsysToolsParameter {
                     polData.data.project.source.preserveSymLinks = true;
                 }
                 if (inputs.PROJECT_SOURCE_EXCLUDES) {
-                    polData.data.project.source.excludes = inputs.PROJECT_SOURCE_EXCLUDES;
+                    const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter((sourceExclude) => sourceExclude && sourceExclude.trim() !== "").map((sourceExclude) => sourceExclude.trim());
+                    if (sourceExcludes.length > 0) {
+                        polData.data.project.source.excludes = sourceExcludes;
+                    }
                 }
             }
         }
