@@ -28,6 +28,7 @@ import {
   extractBranchName,
 } from "./utility";
 import { AZURE_TOKEN } from "./input";
+
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
@@ -91,7 +92,12 @@ export class SynopsysToolsParameter {
           serverUrl: inputs.POLARIS_SERVER_URL,
           application: { name: polarisApplicationName },
           project: { name: polarisProjectName },
-          assessment: { types: assessmentTypeArray },
+          assessment: {
+            types: assessmentTypeArray,
+            ...(inputs.POLARIS_ASSESSMENT_MODE && {
+              mode: inputs.POLARIS_ASSESSMENT_MODE,
+            }),
+          },
           branch: { parent: {} },
         },
       },
@@ -103,6 +109,44 @@ export class SynopsysToolsParameter {
 
     if (inputs.POLARIS_TRIAGE) {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+    }
+
+    if (
+      inputs.POLARIS_PROJECT_DIRECTORY ||
+      inputs.PROJECT_SOURCE_ARCHIVE ||
+      inputs.PROJECT_SOURCE_EXCLUDES ||
+      parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)
+    ) {
+      polData.data.project = {};
+
+      if (inputs.POLARIS_PROJECT_DIRECTORY) {
+        polData.data.project.directory = inputs.POLARIS_PROJECT_DIRECTORY;
+      }
+
+      if (
+        inputs.PROJECT_SOURCE_ARCHIVE ||
+        inputs.PROJECT_SOURCE_EXCLUDES ||
+        parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)
+      ) {
+        polData.data.project.source = {};
+
+        if (inputs.PROJECT_SOURCE_ARCHIVE) {
+          polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;
+        }
+
+        if (parseToBoolean(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
+          polData.data.project.source.preserveSymLinks = true;
+        }
+
+        if (inputs.PROJECT_SOURCE_EXCLUDES) {
+          const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter(
+            (sourceExclude) => sourceExclude && sourceExclude.trim() !== ""
+          ).map((sourceExclude) => sourceExclude.trim());
+          if (sourceExcludes.length > 0) {
+            polData.data.project.source.excludes = sourceExcludes;
+          }
+        }
+      }
     }
 
     const isPullRequest = isPullRequestEvent();
@@ -117,7 +161,7 @@ export class SynopsysToolsParameter {
             inputs.POLARIS_BRANCH_PARENT_NAME;
         }
 
-        if (!inputs.AZURE_TOKEN) {
+        if (!AZURE_TOKEN) {
           throw new Error(
             "Missing required azure token for pull request comment"
           );
@@ -125,7 +169,7 @@ export class SynopsysToolsParameter {
 
         polData.data.azure = this.setAzureData(
           "",
-          inputs.AZURE_TOKEN,
+          AZURE_TOKEN,
           "",
           "",
           "",
@@ -192,6 +236,12 @@ export class SynopsysToolsParameter {
         },
       },
     };
+
+    if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
+      blackduckData.data.project = {
+        directory: inputs.BLACKDUCK_PROJECT_DIRECTORY,
+      };
+    }
 
     if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
       blackduckData.data.blackduck.install = {
@@ -399,6 +449,12 @@ export class SynopsysToolsParameter {
     if (inputs.COVERITY_POLICY_VIEW) {
       covData.data.coverity.connect.policy = {
         view: inputs.COVERITY_POLICY_VIEW,
+      };
+    }
+
+    if (inputs.COVERITY_PROJECT_DIRECTORY) {
+      covData.data.project = {
+        directory: inputs.COVERITY_PROJECT_DIRECTORY,
       };
     }
 

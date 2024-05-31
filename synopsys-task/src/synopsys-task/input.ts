@@ -1,5 +1,6 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
+import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
 
 const deprecatedInputs: string[] = [];
 
@@ -106,6 +107,21 @@ export function showLogForDeprecatedInputs() {
   }
 }
 
+function getInputForPolarisAssessmentMode() {
+  return (
+    taskLib.getInput(constants.POLARIS_ASSESSMENT_MODE_KEY)?.trim() ||
+    (taskLib
+      .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+      ?.trim() === POLARIS_ASSESSMENT_MODES.CI
+      ? POLARIS_ASSESSMENT_MODES.CI
+      : taskLib
+          .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+          ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
+      ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+      : "")
+  );
+}
+
 //Bridge download url
 export const BRIDGE_DOWNLOAD_URL = getInput(
   constants.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY,
@@ -137,7 +153,6 @@ export const INCLUDE_DIAGNOSTICS = getInput(
   null
 );
 
-// Polaris related inputs
 export const AZURE_TOKEN = getInput(
   constants.AZURE_TOKEN_KEY,
   constants.AZURE_TOKEN_KEY_CLASSIC_EDITOR,
@@ -147,6 +162,7 @@ export const AZURE_TOKEN = getInput(
 export const SCAN_TYPE =
   taskLib.getInput(constants.SCAN_TYPE_KEY)?.trim() || "";
 
+// Polaris related inputs
 export const POLARIS_SERVER_URL = getInput(
   constants.POLARIS_SERVER_URL_KEY,
   constants.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR,
@@ -187,6 +203,30 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
   constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR,
   null
 );
+
+export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
+
+export const POLARIS_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
+);
+export const PROJECT_SOURCE_ARCHIVE = getInput(
+  constants.PROJECT_SOURCE_ARCHIVE_KEY,
+  constants.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR,
+  null
+);
+export const PROJECT_SOURCE_PRESERVE_SYM_LINKS = getInput(
+  constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
+  constants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR,
+  null
+);
+export const PROJECT_SOURCE_EXCLUDES = getDelimitedInput(
+  constants.PROJECT_SOURCE_EXCLUDES_KEY,
+  constants.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR,
+  null
+);
+
 export const POLARIS_PR_COMMENT_ENABLED = getInput(
   constants.POLARIS_PR_COMMENT_ENABLED_KEY,
   constants.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR,
@@ -275,6 +315,11 @@ export const COVERITY_VERSION = getInput(
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_VERSION_KEY
 );
+export const COVERITY_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
+);
 
 // Blackduck related inputs
 export const BLACKDUCK_URL = getInput(
@@ -353,6 +398,11 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY
+);
+export const BLACKDUCK_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
 );
 
 export const BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput(

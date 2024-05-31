@@ -147,6 +147,7 @@
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
+
     {
       "name": "polarisBranchParentName",
       "type": "string",
@@ -225,6 +226,51 @@
       "required": false,
       "helpMarkDown": "Comma separated list of issues types to include in SARIF report. Supported values: SAST,SCA.",
       "visibleRule": "polarisReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "polarisAssessmentMode",
+      "type": "pickList",
+      "label": "Polaris Assessment Mode",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The test mode type of this scan",
+      "visibleRule": "scanType = polaris",
+      "options": {
+        "": "",
+        "CI": "CI",
+        "SOURCEUPLOAD": "SOURCE_UPLOAD"
+      },
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "projectSourceArchive",
+      "type": "string",
+      "label": "Upload Archive Instead Of Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The zipped source file path. It overrides the project directory setting above",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "projectSourceExcludes",
+      "type": "string",
+      "label": "Project Source Excludes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A list of git ignore pattern strings that indicate the files need to be excluded from the zip file.",
+      "visibleRule": "polarisAssessmentMode = SOURCEUPLOAD",
       "groupName": "scanOptions"
     },
     {
@@ -324,6 +370,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -428,16 +484,6 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "azure_token",
-      "type": "string",
-      "label": "Azure Token",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck PR comment and FIX PR is enabled.",
-      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
-      "groupName": "scanOptions"
-    },
-    {
       "name": "blackduckReportsSarifCreate",
       "type": "boolean",
       "label": "Generate SARIF Report for Black Duck Issues",
@@ -475,6 +521,26 @@
       "required": false,
       "helpMarkDown": "Comma separated list of issue severities to include in SARIF report. Supported values: CRITICAL,HIGH,MEDIUM,LOW",
       "visibleRule": "blackduckReportsSarifCreate = true",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "azure_token",
+      "type": "string",
+      "label": "Azure Token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "PAT or System.AccessToken has to be passed with legitimate access when Coverity/BlackDuck/Polaris PR comment and BlackDuck FIX PR is enabled.",
+      "visibleRule": "scanType = coverity || scanType = blackduck || scanType = polaris",
       "groupName": "scanOptions"
     },
     {

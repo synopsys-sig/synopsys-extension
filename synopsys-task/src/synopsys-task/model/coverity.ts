@@ -11,6 +11,7 @@ export interface Coverity {
 export interface ProjectData {
   repository?: { name: string };
   branch?: { name: string };
+  directory?: string;
 }
 
 export interface AutomationData {

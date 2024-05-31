@@ -132,6 +132,20 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY =
   "polaris_reports_sarif_issue_types";
 export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
   "polarisReportsSarifIssueTypes";
+export const POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
+export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
+  "polarisAssessmentMode";
+export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "polarisProjectDirectory";
+export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
+export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
+export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
+  "project_source_preserveSymLinks";
+export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR =
+  "projectSourcePreserveSymLinks";
+export const PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";
+export const PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR =
+  "projectSourceExcludes";
 
 // Coverity
 /**
@@ -193,6 +207,8 @@ export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
+export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "coverityProjectDirectory";
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
 export const COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR =
   "bridge_coverity_automation_prcomment";
@@ -312,6 +328,10 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "blackduck_fixpr_useUpgradeGuidance";
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
+
+export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
+  "blackduckProjectDirectory";
+
 /**
  * @deprecated Use blackduck_reports_sarif_create instead. This can be removed in future release.
  */
@@ -379,6 +399,7 @@ export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "synopsys_bridge_path";
 
+export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "synopsys_bridge_diagnostics";
 export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";

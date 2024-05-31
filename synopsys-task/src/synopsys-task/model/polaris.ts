@@ -4,6 +4,7 @@ import { Reports } from "./reports";
 
 export interface Polaris {
   polaris: PolarisData;
+  project?: ProjectData;
   azure?: AzureData;
 }
 
@@ -14,7 +15,7 @@ export interface PolarisData {
   application: { name: string };
   branch: Branch;
   project: { name: string };
-  assessment: { types: string[] };
+  assessment: { types: string[]; mode?: string };
   prcomment?: PRComment;
   reports?: Reports;
 }
@@ -27,4 +28,19 @@ export interface Branch {
 export interface PRComment {
   enabled: boolean;
   severities: string[];
+}
+
+export interface ProjectData {
+  directory?: string;
+  source?: {
+    archive?: string;
+    preserveSymLinks?: boolean;
+    excludes?: string[];
+  };
+}
+
+export enum POLARIS_ASSESSMENT_MODES {
+  CI = "CI",
+  SOURCE_UPLOAD = "SOURCE_UPLOAD",
+  SOURCEUPLOAD = "SOURCEUPLOAD",
 }

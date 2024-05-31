@@ -5,6 +5,7 @@ import {
   RETRY_DELAY_IN_MILLISECONDS,
   SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
 } from "./application-constant";
+
 import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";

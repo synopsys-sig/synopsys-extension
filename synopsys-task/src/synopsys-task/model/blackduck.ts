@@ -14,6 +14,7 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
 
 export interface Blackduck {
   blackduck: BlackduckData;
+  project?: ProjectData;
   azure?: AzureData;
   network?: NetworkAirGap;
   environment?: Environment;
@@ -57,4 +58,8 @@ export interface BlackDuckFixPrData {
 
 export interface BlackDuckFixPrFilerData {
   severities?: string[];
+}
+
+export interface ProjectData {
+  directory?: string;
 }
