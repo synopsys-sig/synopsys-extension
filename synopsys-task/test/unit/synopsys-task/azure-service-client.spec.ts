@@ -7,6 +7,7 @@ import {Socket} from "net";
 import * as ifm from "typed-rest-client/Interfaces";
 import {AzureData} from "../../../src/synopsys-task/model/azure";
 import {expect} from "chai";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 
 describe("getPullRequestIdForClassicEditorFlow", () => {
@@ -92,6 +93,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             } as any);
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
                 expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: feature/xyz')
+                expect(errorObj.message).contains(ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString())
             })
 
         })
@@ -114,6 +116,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
 
             await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
                 expect(errorObj.message).contains('Failed to get pull request Id for current build from source branch: feature/xyz')
+                expect(errorObj.message).contains(ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString())
             })
 
 

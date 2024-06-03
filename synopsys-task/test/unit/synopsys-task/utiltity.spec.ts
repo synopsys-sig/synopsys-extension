@@ -11,6 +11,7 @@ import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/synopsys-task/download-tool";
 import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
 import * as constants from "../../../src/synopsys-task/application-constant";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Utilities", () => {
 
@@ -67,14 +68,16 @@ describe("Utilities", () => {
         it('extractZipped - failure- file name empty', async function () {
             sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
             await utility.extractZipped("", "/dest_path").catch(errorObj => {
-                expect(errorObj.message).includes("File does not exist")
+                expect(errorObj.message).includes("File does not exist");
+                expect(errorObj.message).includes(ErrorCode.FILE_DOES_NOT_EXIST.toString());
             })
         });
 
         it('extractZipped - failure- destination path empty', async function () {
             sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
             await utility.extractZipped("bridge.zip", "").catch(errorObj => {
-                expect(errorObj.message).includes("No destination directory found")
+                expect(errorObj.message).includes("No destination directory found");
+                expect(errorObj.message).includes(ErrorCode.NO_DESTINATION_DIRECTORY.toString());
             })
         });
     });
@@ -102,6 +105,7 @@ describe("Utilities", () => {
         it('getRemoteFile - failure - url empty', async function () {
             await utility.getRemoteFile("/", "").catch(error => {
                 expect(error.message).includes("URL cannot be empty")
+                expect(error.message).includes(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
             });
 
         });
