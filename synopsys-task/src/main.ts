@@ -39,13 +39,15 @@ export async function run() {
 
     // Execute prepared commands
     const result: number = await sb.executeBridgeCommand(
-        bridgePath,
-        getWorkSpaceDirectory(),
-        command
+      bridgePath,
+      getWorkSpaceDirectory(),
+      command
     );
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
-      console.log(`##vso[task.setvariable variable=status;isoutput=true]${result}`);
+      console.log(
+        `##vso[task.setvariable variable=status;isoutput=true]${result}`
+      );
     }
   } catch (error: any) {
     throw error;
@@ -81,11 +83,11 @@ export async function run() {
 
 export function logExitCodes(message: string, exitCode: string): string {
   return constants.EXIT_CODE_MAP.has(exitCode)
-      ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
-      : "Undefined error from extension: "
-          .concat(message)
-          .concat(constants.SPACE)
-          .concat(ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
+    ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
+    : "Undefined error from extension: "
+        .concat(message)
+        .concat(constants.SPACE)
+        .concat(ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
 
 export function getStatusFromError(errorObject: Error): string {
@@ -101,13 +103,14 @@ run().catch((error) => {
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {
       console.log(
-          `##vso[task.setvariable variable=status;isoutput=true]${status}`);
+        `##vso[task.setvariable variable=status;isoutput=true]${status}`
+      );
     }
     taskLib.setResult(
-        taskLib.TaskResult.Failed,
-        isReturnStatusEnabled
-            ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-            : "Workflow failed!"
+      taskLib.TaskResult.Failed,
+      isReturnStatusEnabled
+        ? "Workflow failed! ".concat(logExitCodes(error.message, status))
+        : "Workflow failed!"
     );
   }
 });

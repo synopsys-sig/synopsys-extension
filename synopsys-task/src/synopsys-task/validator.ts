@@ -38,8 +38,8 @@ export function validateParameters(
   if (invalidParams.length > 0) {
     errors.push(
       `[${invalidParams.join()}] - required parameters for ${toolName} is missing`
-          .concat(constants.SPACE)
-          .concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString())
+        .concat(constants.SPACE)
+        .concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString())
     );
   }
   return errors;
@@ -98,8 +98,8 @@ export function validateCoverityInstallDirectoryParam(
   ) {
     taskLib.error(
       `[${constants.COVERITY_INSTALL_DIRECTORY_KEY}] parameter for Coverity is invalid`
-          .concat(constants.SPACE)
-          .concat(ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString())
+        .concat(constants.SPACE)
+        .concat(ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString())
     );
     return false;
   }
@@ -112,8 +112,8 @@ export function validateBlackduckFailureSeverities(
   if (severities == null || severities.length === 0) {
     taskLib.error(
       "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
-          .concat(constants.SPACE)
-          .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+        .concat(constants.SPACE)
+        .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
     );
     return false;
   }

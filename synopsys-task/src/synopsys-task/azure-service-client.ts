@@ -46,21 +46,21 @@ export class SynopsysAzureService {
         return azurePrResponse.value[0].pullRequestId;
       } else {
         throw new Error(
-            "Unable to find a Pull request Id from current source build with branch: "
-                .concat(azureData.repository.branch.name)
-                .concat(constants.SPACE)
-                .concat(
-                    ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
-                )
+          "Unable to find a Pull request Id from current source build with branch: "
+            .concat(azureData.repository.branch.name)
+            .concat(constants.SPACE)
+            .concat(
+              ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
+            )
         );
       }
     } else {
       throw new Error(
         "Failed to get pull request Id for current build from source branch: "
-            .concat(constants.SPACE)
-            .concat(
-                ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
-            )
+          .concat(constants.SPACE)
+          .concat(
+            ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
+          )
       );
     }
   }

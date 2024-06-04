@@ -66,10 +66,10 @@ export class SynopsysToolsParameter {
           assessmentTypeArray.push(assessmentType.trim());
         } else {
           throw new Error(
-              "Invalid value for "
-                  .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
-                  .concat(constants.SPACE)
-                  .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
+            "Invalid value for "
+              .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
           );
         }
       }
@@ -168,8 +168,8 @@ export class SynopsysToolsParameter {
         if (!AZURE_TOKEN) {
           throw new Error(
             "Missing required azure token for pull request comment"
-                .concat(constants.SPACE)
-                .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+              .concat(constants.SPACE)
+              .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
           );
         }
 
@@ -265,10 +265,10 @@ export class SynopsysToolsParameter {
         blackduckData.data.blackduck.scan = { full: scanFullValue };
       } else {
         throw new Error(
-            "Missing boolean value for "
-                .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
-                .concat(constants.SPACE)
-                .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
+          "Missing boolean value for "
+            .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
         );
       }
     }
@@ -290,10 +290,10 @@ export class SynopsysToolsParameter {
       for (const failureSeverity of failureSeverities) {
         if (values.indexOf(failureSeverity) == -1) {
           throw new Error(
-              "Invalid value for "
-                  .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
-                  .concat(constants.SPACE)
-                  .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+            "Invalid value for "
+              .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
           );
         } else {
           failureSeverityEnums.push(
@@ -523,10 +523,10 @@ export class SynopsysToolsParameter {
       isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
     ) {
       throw new Error(
-          "Invalid value for "
-              .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
-              .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
+        "Invalid value for "
+          .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
       );
     }
     const createSinglePr = parseToBoolean(
@@ -534,11 +534,12 @@ export class SynopsysToolsParameter {
     );
     if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
       throw new Error(
-        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
-            .concat(" is not applicable with ")
-            .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
-            .concat(constants.SPACE)
-            .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
+        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+          " is not applicable with "
+        )
+          .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
       );
     }
     const blackDuckFixPrData: BlackDuckFixPrData = {};
@@ -632,8 +633,8 @@ export class SynopsysToolsParameter {
     if (azureToken == "") {
       throw new Error(
         "Missing required azure token for fix pull request/automation comment"
-            .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+          .concat(constants.SPACE)
+          .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
       );
     }
 

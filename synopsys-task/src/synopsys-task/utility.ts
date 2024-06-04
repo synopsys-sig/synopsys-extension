@@ -32,22 +32,22 @@ export async function extractZipped(
 ): Promise<boolean> {
   if (file == null || file.length === 0) {
     return Promise.reject(
-        new Error(
-            "File does not exist"
-                .concat(constants.SPACE)
-                .concat(ErrorCode.FILE_DOES_NOT_EXIST.toString())
-        )
+      new Error(
+        "File does not exist"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.FILE_DOES_NOT_EXIST.toString())
+      )
     );
   }
 
   // Extract file name from file with full path
   if (destinationPath == null || destinationPath.length === 0) {
     return Promise.reject(
-        new Error(
-            "No destination directory found"
-                .concat(constants.SPACE)
-                .concat(ErrorCode.NO_DESTINATION_DIRECTORY.toString())
-        )
+      new Error(
+        "No destination directory found"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.NO_DESTINATION_DIRECTORY.toString())
+      )
     );
   }
 
@@ -65,11 +65,11 @@ export async function getRemoteFile(
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
     return Promise.reject(
-        new Error(
-            "URL cannot be empty"
-                .concat(constants.SPACE)
-                .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
-        )
+      new Error(
+        "URL cannot be empty"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+      )
     );
   }
 
@@ -117,9 +117,9 @@ export async function getRemoteFile(
     }
   } while (retryCountLocal >= 0);
   return Promise.reject(
-      "Synopsys bridge download has been failed"
-          .concat(constants.SPACE)
-          .concat(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString())
+    "Synopsys bridge download has been failed"
+      .concat(constants.SPACE)
+      .concat(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString())
   );
 }
 
@@ -157,9 +157,9 @@ export function getWorkSpaceDirectory(): string {
     return repoLocalPath;
   } else {
     throw new Error(
-        "Workspace directory could not be located"
-            .concat(constants.SPACE)
-            .concat(ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString())
+      "Workspace directory could not be located"
+        .concat(constants.SPACE)
+        .concat(ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString())
     );
   }
 }
