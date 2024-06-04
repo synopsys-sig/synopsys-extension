@@ -168,7 +168,7 @@ describe('Tool Tests', function () {
                 reject('Shouldnt have succeeded');
             } catch (err: any) {
                 err = err as Error
-                if (err.message == 502) {
+                if (err.message.includes("502")) {
                     resolve();
                 }
                 reject(err);

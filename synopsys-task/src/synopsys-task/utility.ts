@@ -98,7 +98,7 @@ export async function getRemoteFile(
       }
 
       if (
-        !NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
+        !NON_RETRY_HTTP_CODES.has(Number(getStatusCode(error.message))) ||
         error.message.includes("did not match downloaded file size")
       ) {
         console.info(
@@ -211,4 +211,9 @@ export function extractBranchName(branchName: string): string {
   }
 
   return branchName.substring(prefix.length);
+}
+
+export function getStatusCode(str: string) {
+  const words = str.split(" ");
+  return words.length < 2 ? str : words[words.length - 2];
 }
