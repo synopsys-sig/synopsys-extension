@@ -509,11 +509,11 @@ class SynopsysAzureService {
                         };
                     }
                     else {
-                        throw new Error("Unable to find an Pull request Id from current source build with branch: ".concat(azureData.repository.branch.name));
+                        console.info("Unable to find pull request info from current source build with branch: ".concat(azureData.repository.branch.name));
                     }
                 }
                 else {
-                    throw new Error("Failed to get pull request Id for current build from source branch: "
+                    throw new Error("Failed to get pull request info for current build from source branch: "
                         .concat(azureData.repository.branch.name)
                         .concat(" With error: ")
                         .concat(yield httpResponse.readBody()));

@@ -92,7 +92,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
             await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Unable to find an Pull request Id from current source build with branch: feature/xyz')
+                expect(errorObj.message).contains('Unable to find pull request info from current source build with branch: feature/xyz')
             })
 
         })
@@ -114,7 +114,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             } as any);
 
             await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Failed to get pull request Id for current build from source branch: feature/xyz')
+                expect(errorObj.message).contains('Failed to get pull request info for current build from source branch: feature/xyz')
             })
 
 
