@@ -141,7 +141,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
-            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
+            expect(jsonData.data.polaris.prcomment).to.be.undefined;
         });
 
         it('should success for polaris command formation for polaris branch parent name in PR context',  async function () {
@@ -179,8 +179,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
-            expect(jsonData.data.polaris.prcomment.enabled).to.be.true;
-            expect(jsonData.data.polaris.branch.parent.name).equals('main');
+            expect(jsonData.data.polaris.prcomment).to.be.undefined;
+            expect(jsonData.data.polaris.branch.parent).to.be.undefined
         });
 
         it('should success for polaris command formation with sarif report create for non-PR context', async function () {
@@ -372,7 +372,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
         });
 
-        it('should success for coverity command formation with default values for non-PR context', async function () {
+        it('should success for coverity command formation with default values for non-PR context', function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
@@ -382,7 +382,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH).returns("feature");
 
-            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
@@ -396,11 +396,10 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
         });
 
-        it('should success for coverity command formation with default values for PR context', async function () {
+        it('should success for coverity command formation with default values for PR context', function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
-            Object.defineProperty(inputs, 'COVERITY_AUTOMATION_PRCOMMENT', {value: 'true'})
 
             const getStubVariable = sandbox.stub(taskLib, "getVariable");
 
@@ -408,7 +407,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH).returns("main");
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
-            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
@@ -460,7 +459,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
             expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
-            expect(jsonData.data.coverity.automation.prcomment).to.be.true
+            expect(jsonData.data.coverity.automation).to.be.undefined
 
             expect(formattedCommand).contains('--stage connect');
 
@@ -597,8 +596,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzureRepoInfoForManualTriggerFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -643,8 +642,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzureRepoInfoForManualTriggerFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -776,7 +775,7 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');
-            expect(jsonData.data.blackduck.automation.prcomment).to.be.true;
+            expect(jsonData.data.blackduck.automation).to.be.undefined;
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
@@ -880,8 +879,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzureRepoInfoForManualTriggerFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
@@ -920,8 +919,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzureRepoInfoForManualTriggerFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
@@ -1022,7 +1021,7 @@ describe("Synopsys Tools Parameter test", () => {
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
             expect(jsonData.data.blackduck.token).to.be.equals('token');
-            expect(jsonData.data.blackduck.fixpr.enabled).to.be.true;
+            expect(jsonData.data.blackduck.fixpr).to.be.undefined;
             expect(formattedCommand).contains('--stage blackduck');
 
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');

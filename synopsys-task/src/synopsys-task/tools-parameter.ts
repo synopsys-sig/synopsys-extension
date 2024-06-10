@@ -149,38 +149,42 @@ export class SynopsysToolsParameter {
       }
     }
 
+    const isPullRequest = isPullRequestEvent();
+
     if (parseToBoolean(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-      console.info("Polaris PR comment is enabled");
-      if (inputs.POLARIS_BRANCH_PARENT_NAME) {
-        polData.data.polaris.branch.parent.name =
-          inputs.POLARIS_BRANCH_PARENT_NAME;
-      }
+      if (!isPullRequest) {
+        console.info("Polaris PR comment is ignored for non pull request scan");
+      } else {
+        console.info("Polaris PR comment is enabled");
+        if (inputs.POLARIS_BRANCH_PARENT_NAME) {
+          polData.data.polaris.branch.parent.name =
+            inputs.POLARIS_BRANCH_PARENT_NAME;
+        }
 
-      if (!AZURE_TOKEN) {
-        throw new Error(
-          "Missing required azure token for pull request comment"
+        if (!AZURE_TOKEN) {
+          throw new Error(
+            "Missing required azure token for pull request comment"
+          );
+        }
+
+        polData.data.azure = this.setAzureData(
+          "",
+          AZURE_TOKEN,
+          "",
+          "",
+          "",
+          "",
+          ""
         );
-      }
 
-      polData.data.azure = this.setAzureData(
-        "",
-        AZURE_TOKEN,
-        "",
-        "",
-        "",
-        "",
-        ""
-      );
+        polData.data.polaris.prcomment = { severities: [], enabled: true };
 
-      polData.data.polaris.prcomment = { severities: [], enabled: true };
-
-      if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
-        polData.data.polaris.prcomment.severities =
-          inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+        if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
+          polData.data.polaris.prcomment.severities =
+            inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+        }
       }
     }
-
-    const isPullRequest = isPullRequestEvent();
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
@@ -301,59 +305,36 @@ export class SynopsysToolsParameter {
       }
     }
 
-    const isPrCommentEnabled = parseToBoolean(
-      inputs.BLACKDUCK_AUTOMATION_PRCOMMENT
-    );
-
-    const azureData = await this.getAzureRepoInfo();
-    const synopsysAzureService = new SynopsysAzureService();
-    const azureRepoManualTriggerInfo =
-      await synopsysAzureService.getAzureRepoInfoForManualTriggerFlow(
-        azureData
-      );
-
-    if (isPrCommentEnabled && !azureData?.repository.pull.number) {
-      if (azureData && azureRepoManualTriggerInfo) {
-        azureData.repository.pull.number =
-          azureRepoManualTriggerInfo.pullRequestId;
-        taskLib.debug(
-          `Azure pull request number for manual trigger flow: ${azureData?.repository.pull.number}`
-        );
-      }
-    }
+    const isPullRequest = isPullRequestEvent();
 
     // Check and put environment variable for fix pull request
     if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
-      console.log("Black Duck Fix PR is enabled");
-
-      if (!AZURE_TOKEN) {
-        throw new Error("Missing required azure token for fix pull request");
+      if (isPullRequest) {
+        console.info("Black Duck Fix PR ignored for pull request scan");
+      } else {
+        console.log("Black Duck Fix PR is enabled");
+        blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
+        blackduckData.data.azure = await this.getAzureRepoInfo();
       }
-
-      blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
-      blackduckData.data.azure = azureData;
     }
 
-    if (isPrCommentEnabled) {
-      console.info("BlackDuck PR comment is enabled");
-
-      if (!AZURE_TOKEN) {
-        throw new Error(
-          "Missing required azure token for pull request comment"
+    if (parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
+      if (!isPullRequest) {
+        console.info(
+          "Black Duck PR comment is ignored for non pull request scan"
         );
+      } else {
+        console.info("BlackDuck PR comment is enabled");
+        blackduckData.data.azure = await this.getAzureRepoInfo();
+        blackduckData.data.environment = this.setEnvironmentScanPullData();
+        blackduckData.data.blackduck.automation = { prcomment: true };
+        blackduckData.data;
       }
-
-      blackduckData.data.azure = azureData;
-      blackduckData.data.environment = this.setEnvironmentScanPullData();
-      blackduckData.data.blackduck.automation = { prcomment: true };
-      blackduckData.data;
     }
 
     if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
       blackduckData.data.network = { airGap: true };
     }
-
-    const isPullRequest = isPullRequestEvent();
 
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
@@ -399,42 +380,21 @@ export class SynopsysToolsParameter {
 
     const azureRepositoryName = this.getAzureRepositoryName();
 
-    const isPrCommentEnabled = parseToBoolean(
-      inputs.COVERITY_AUTOMATION_PRCOMMENT
-    );
-
-    const azureData = await this.getAzureRepoInfo();
-    const synopsysAzureService = new SynopsysAzureService();
-    const azureRepoManualTriggerInfo =
-      await synopsysAzureService.getAzureRepoInfoForManualTriggerFlow(
-        azureData
-      );
-
-    if (isPrCommentEnabled && !azureData?.repository.pull.number) {
-      if (azureData && azureRepoManualTriggerInfo) {
-        azureData.repository.pull.number =
-          azureRepoManualTriggerInfo.pullRequestId;
-        taskLib.debug(
-          `Azure pull request number for manual trigger flow: ${azureData?.repository.pull.number}`
-        );
-      }
-    }
-
     let coverityProjectName = inputs.COVERITY_PROJECT_NAME;
     if (!coverityProjectName) {
       coverityProjectName = azureRepositoryName;
       taskLib.debug(`COVERITY_PROJECT_NAME: ${coverityProjectName}`);
     }
 
+    const isPullRequest = isPullRequestEvent();
+
     let coverityStreamName = inputs.COVERITY_STREAM_NAME;
     if (!coverityStreamName) {
-      if (isPrCommentEnabled && azureData?.repository.pull.number) {
+      if (isPullRequest) {
         const pullRequestTargetBranchName =
           taskLib.getVariable(
             AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH
-          ) ||
-          azureRepoManualTriggerInfo?.targetRefName ||
-          "";
+          ) || "";
         coverityStreamName =
           azureRepositoryName && pullRequestTargetBranchName
             ? azureRepositoryName
@@ -498,18 +458,17 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (isPrCommentEnabled) {
-      console.info("Coverity PR comment is enabled");
-
-      if (!AZURE_TOKEN) {
-        throw new Error(
-          "Missing required azure token for pull request comment"
+    if (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
+      if (!isPullRequest) {
+        console.info(
+          "Coverity PR comment is ignored for non pull request scan"
         );
+      } else {
+        console.info("Coverity PR comment is enabled");
+        covData.data.azure = await this.getAzureRepoInfo();
+        covData.data.environment = this.setEnvironmentScanPullData();
+        covData.data.coverity.automation = { prcomment: true };
       }
-
-      covData.data.azure = azureData;
-      covData.data.environment = this.setEnvironmentScanPullData();
-      covData.data.coverity.automation = { prcomment: true };
     }
 
     if (inputs.COVERITY_VERSION) {
@@ -655,6 +614,12 @@ export class SynopsysToolsParameter {
       `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`
     );
 
+    if (azureToken == "") {
+      throw new Error(
+        "Missing required azure token for fix pull request/automation comment"
+      );
+    }
+
     taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
     taskLib.debug(`Azure Organization: ${azureOrganization}`);
     taskLib.debug(`Azure Project Name: ${azureProject}`);
@@ -681,6 +646,24 @@ export class SynopsysToolsParameter {
         azurePullRequestNumber
       );
 
+      const isPullRequest = isPullRequestEvent();
+
+      if (
+        isPullRequest &&
+        azurePullRequestNumber == "" &&
+        (parseToBoolean(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
+          parseToBoolean(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))
+      ) {
+        const synopsysAzureService = new SynopsysAzureService();
+        azureData.repository.pull.number =
+          await synopsysAzureService.getPullRequestIdForClassicEditorFlow(
+            azureData
+          );
+        taskLib.debug(
+          `Azure pull request number for classic editor flow: ${azureData.repository.pull.number}`
+        );
+        return azureData;
+      }
       return azureData;
     }
     taskLib.debug("Azure data is undefined.");

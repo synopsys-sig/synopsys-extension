@@ -46,8 +46,3 @@ export const AZURE_ENVIRONMENT_VARIABLES = {
 export enum AZURE_BUILD_REASON {
   PULL_REQUEST = "PullRequest",
 }
-
-export interface AzureRepoManualTriggerInfo {
-  pullRequestId?: number;
-  targetRefName?: string;
-}
