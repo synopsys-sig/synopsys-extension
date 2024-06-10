@@ -1792,6 +1792,9 @@ class SynopsysToolsParameter {
                 }
                 else {
                     console.log("Black Duck Fix PR is enabled");
+                    if (input_1.AZURE_TOKEN == "") {
+                        throw new Error("Missing required azure token for fix pull request");
+                    }
                     blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
                     blackduckData.data.azure = azureData;
                 }
@@ -1802,6 +1805,9 @@ class SynopsysToolsParameter {
                 }
                 else {
                     console.info("BlackDuck PR comment is enabled");
+                    if (input_1.AZURE_TOKEN == "") {
+                        throw new Error("Missing required azure token for pull request comment");
+                    }
                     blackduckData.data.azure = azureData;
                     blackduckData.data.environment = this.setEnvironmentScanPullData();
                     blackduckData.data.blackduck.automation = { prcomment: true };
@@ -1916,6 +1922,9 @@ class SynopsysToolsParameter {
                 }
                 else {
                     console.info("Coverity PR comment is enabled");
+                    if (input_1.AZURE_TOKEN == "") {
+                        throw new Error("Missing required azure token for pull request comment");
+                    }
                     covData.data.azure = azureData;
                     covData.data.environment = this.setEnvironmentScanPullData();
                     covData.data.coverity.automation = { prcomment: true };
@@ -2013,9 +2022,6 @@ class SynopsysToolsParameter {
         taskLib.debug(`Azure repo branch name: ${azureProject}`);
         const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
         taskLib.debug(`Azure pull request number, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`);
-        if (azureToken == "") {
-            throw new Error("Missing required azure token for fix pull request/automation comment");
-        }
         taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
         taskLib.debug(`Azure Organization: ${azureOrganization}`);
         taskLib.debug(`Azure Project Name: ${azureProject}`);
@@ -2042,7 +2048,7 @@ class SynopsysToolsParameter {
                 azurePrResponse =
                     yield synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData);
                 if (azureData &&
-                    azureData.repository.pull.number === undefined &&
+                    azureData.repository.pull.number === 0 &&
                     azurePrResponse) {
                     azureData.repository.pull.number = azurePrResponse.pullRequestId;
                     taskLib.debug(`Azure pull request number for manual trigger flow: ${azureData.repository.pull.number}`);

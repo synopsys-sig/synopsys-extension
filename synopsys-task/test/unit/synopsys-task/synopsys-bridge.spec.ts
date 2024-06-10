@@ -101,9 +101,12 @@ describe("Synopsys Bridge test", () => {
             });
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).includes("Invalid value for failureSeverities");
-            })
+            try {
+                await synopsysBridge.prepareCommand("/temp");
+            } catch (e) {
+                const errorObject = e as Error;
+                expect(errorObject.message).includes("Invalid value for failureSeverities");
+            }
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});

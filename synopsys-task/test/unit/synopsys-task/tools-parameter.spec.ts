@@ -42,7 +42,7 @@ describe("Synopsys Tools Parameter test", () => {
             sandbox.restore();
         });
 
-        it('should success for polaris command formation', function () {
+        it('should success for polaris command formation', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
@@ -52,7 +52,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
 
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -67,18 +67,18 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(polarisStateFile));
         });
 
-        it('should fail for invalid assessment type', function () {
+        it('should fail for invalid assessment type', async function () {
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast123']})
 
             try {
-                const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+                const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.POLARIS_ASSESSMENT_TYPES_KEY))
             }
         });
 
-        it('should success for polaris command formation with default values', function () {
+        it('should success for polaris command formation with default values', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
@@ -90,7 +90,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
 
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -120,7 +120,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -137,7 +137,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_SEVERITIES', {value: []})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -156,7 +156,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -175,7 +175,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_PR_COMMENT_ENABLED', {value: true})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -190,7 +190,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_CREATE', {value: true})
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -215,7 +215,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -242,7 +242,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES', {value: true})
             Object.defineProperty(inputs, 'POLARIS_REPORTS_SARIF_ISSUE_TYPES', {value: ['SAST', 'SCA']})
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -273,7 +273,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'PROJECT_SOURCE_PRESERVE_SYM_LINKS', {value: true})
             Object.defineProperty(inputs, 'PROJECT_SOURCE_EXCLUDES', {value: ['source_exclude1','source_exclude2']})
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForPolaris();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
             const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
@@ -372,7 +372,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
         });
 
-        it('should success for coverity command formation with default values for non-PR context', function () {
+        it('should success for coverity command formation with default values for non-PR context', async function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
@@ -382,7 +382,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH).returns("feature");
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
@@ -390,13 +390,13 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('testRepo');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('testRepo-feature');
-            expect(formattedCommand).contains(Promise.resolve('--stage connect'));
+            expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
-            expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
-        it('should success for coverity command formation with default values for PR context', function () {
+        it('should success for coverity command formation with default values for PR context', async function () {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
             Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
@@ -407,7 +407,7 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH).returns("main");
             getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
-            const formattedCommand = synopsysToolsParameter.getFormattedCommandForCoverity();
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
             const jsonData = JSON.parse(jsonString);
             expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
@@ -415,10 +415,10 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
             expect(jsonData.data.coverity.connect.project.name).to.be.equals('testRepo');
             expect(jsonData.data.coverity.connect.stream.name).to.be.equals('testRepo-main');
-            expect(formattedCommand).contains(Promise.resolve('--stage connect'));
+            expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
-            expect(formattedCommand).contains(Promise.resolve('--input '.concat(coverityStateFile)));
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
 
 

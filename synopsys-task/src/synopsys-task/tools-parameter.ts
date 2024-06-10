@@ -336,6 +336,9 @@ export class SynopsysToolsParameter {
         console.info("Black Duck Fix PR ignored for pull request scan");
       } else {
         console.log("Black Duck Fix PR is enabled");
+        if (AZURE_TOKEN == "") {
+          throw new Error("Missing required azure token for fix pull request");
+        }
         blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
         blackduckData.data.azure = azureData;
       }
@@ -348,6 +351,11 @@ export class SynopsysToolsParameter {
         );
       } else {
         console.info("BlackDuck PR comment is enabled");
+        if (AZURE_TOKEN == "") {
+          throw new Error(
+            "Missing required azure token for pull request comment"
+          );
+        }
         blackduckData.data.azure = azureData;
         blackduckData.data.environment = this.setEnvironmentScanPullData();
         blackduckData.data.blackduck.automation = { prcomment: true };
@@ -501,6 +509,11 @@ export class SynopsysToolsParameter {
         );
       } else {
         console.info("Coverity PR comment is enabled");
+        if (AZURE_TOKEN == "") {
+          throw new Error(
+            "Missing required azure token for pull request comment"
+          );
+        }
         covData.data.azure = azureData;
         covData.data.environment = this.setEnvironmentScanPullData();
         covData.data.coverity.automation = { prcomment: true };
@@ -650,12 +663,6 @@ export class SynopsysToolsParameter {
       `Azure pull request number, obtained from the environment variable ${AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`
     );
 
-    if (azureToken == "") {
-      throw new Error(
-        "Missing required azure token for fix pull request/automation comment"
-      );
-    }
-
     taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
     taskLib.debug(`Azure Organization: ${azureOrganization}`);
     taskLib.debug(`Azure Project Name: ${azureProject}`);
@@ -701,7 +708,7 @@ export class SynopsysToolsParameter {
 
       if (
         azureData &&
-        azureData.repository.pull.number === undefined &&
+        azureData.repository.pull.number === 0 &&
         azurePrResponse
       ) {
         azureData.repository.pull.number = azurePrResponse.pullRequestId;
