@@ -13,6 +13,7 @@ import {
   uploadSarifResultAsArtifact,
 } from "./synopsys-task/diagnostics";
 import { showLogForDeprecatedInputs } from "./synopsys-task/input";
+import { AzurePrResponse } from "./synopsys-task/model/azure";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -20,6 +21,7 @@ export async function run() {
   taskLib.debug(`tempDir: ${tempDir}`);
   const workSpaceDir = getWorkSpaceDirectory();
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
+  let azurePrResponse: AzurePrResponse | undefined;
   try {
     const sb = new SynopsysBridge();
 
@@ -41,25 +43,20 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
-    const isPullRequest = isPullRequestEvent();
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      if (!isPullRequest) {
-        console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-        uploadSarifResultAsArtifact(
-          constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-          inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
-        );
-      }
+      console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+      uploadSarifResultAsArtifact(
+        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+        inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+      );
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      if (!isPullRequest) {
-        console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-        uploadSarifResultAsArtifact(
-          constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-          inputs.POLARIS_REPORTS_SARIF_FILE_PATH
-        );
-      }
+      console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+      uploadSarifResultAsArtifact(
+        constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+        inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+      );
     }
 
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {

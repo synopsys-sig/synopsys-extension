@@ -11,6 +11,8 @@ import * as toolLib from "azure-pipelines-tool-lib";
 import * as toolLibLocal from "../../../src/synopsys-task/download-tool";
 import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-file-response";
 import * as constants from "../../../src/synopsys-task/application-constant";
+import * as taskLib from "azure-pipelines-task-lib";
+import {AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES} from "../../../src/synopsys-task/model/azure";
 
 describe("Utilities", () => {
 
@@ -180,6 +182,23 @@ describe("Utilities", () => {
         it('should return false with any random string value', function () {
             const result = utility.isBoolean("test");
             expect(result).equals(false)
+        });
+    });
+
+    context('isPullRequestEvent', () => {
+        it('should return true for PR automation flow', () => {
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.PULL_REQUEST);
+
+            expect(utility.isPullRequestEvent(undefined)).to.be.true;
+        });
+
+        it('should return true for manual trigger PR flow', () => {
+            expect(utility.isPullRequestEvent({pullRequestId: 10, targetRefName: 'refs/heads/main'})).to.be.true;
+        });
+
+        it('should return false for non-PR event or manual trigger no-PR flow', () => {
+            expect(utility.isPullRequestEvent(undefined)).to.be.false;
         });
     });
 

@@ -596,8 +596,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzurePrResponseForManualTriggerFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -642,8 +642,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzurePrResponseForManualTriggerFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
             const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
@@ -879,8 +879,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzurePrResponseForManualTriggerFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
@@ -919,8 +919,8 @@ describe("Synopsys Tools Parameter test", () => {
 
             sandbox.stub(utility, 'isPullRequestEvent').returns(true);
 
-            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getPullRequestIdForClassicEditorFlow');
-            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve(95));
+            const getPullRequestIdForClassicEditorFlowStub = sandbox.stub(SynopsysAzureService.prototype, 'getAzurePrResponseForManualTriggerFlow');
+            getPullRequestIdForClassicEditorFlowStub.returns(Promise.resolve({pullRequestId: 95, targetRefName: 'refs/heads/main'}));
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');

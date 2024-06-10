@@ -12,7 +12,11 @@ import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
-import { AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES } from "./model/azure";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+  AzurePrResponse,
+} from "./model/azure";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -170,10 +174,15 @@ export function filterEmptyData(data: object) {
   );
 }
 
-export function isPullRequestEvent(): boolean {
+export function isPullRequestEvent(
+  azurePrResponse: AzurePrResponse | undefined
+): boolean {
   const buildReason =
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-  return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
+  return (
+    buildReason === AZURE_BUILD_REASON.PULL_REQUEST ||
+    azurePrResponse?.pullRequestId !== undefined
+  );
 }
 
 export function extractBranchName(branchName: string): string {
