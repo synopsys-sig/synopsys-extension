@@ -173,12 +173,6 @@ export class SynopsysToolsParameter {
             inputs.POLARIS_BRANCH_PARENT_NAME;
         }
 
-        if (!AZURE_TOKEN) {
-          throw new Error(
-            "Missing required azure token for pull request comment"
-          );
-        }
-
         polData.data.azure = this.setAzureData(
           "",
           AZURE_TOKEN,
@@ -351,11 +345,6 @@ export class SynopsysToolsParameter {
         );
       } else {
         console.info("BlackDuck PR comment is enabled");
-        if (AZURE_TOKEN == "") {
-          throw new Error(
-            "Missing required azure token for pull request comment"
-          );
-        }
         blackduckData.data.azure = azureData;
         blackduckData.data.environment = this.setEnvironmentScanPullData();
         blackduckData.data.blackduck.automation = { prcomment: true };
@@ -509,11 +498,6 @@ export class SynopsysToolsParameter {
         );
       } else {
         console.info("Coverity PR comment is enabled");
-        if (AZURE_TOKEN == "") {
-          throw new Error(
-            "Missing required azure token for pull request comment"
-          );
-        }
         covData.data.azure = azureData;
         covData.data.environment = this.setEnvironmentScanPullData();
         covData.data.coverity.automation = { prcomment: true };
@@ -670,27 +654,15 @@ export class SynopsysToolsParameter {
     taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
     taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
 
-    // This condition is required as per ts-lint as these fields may have undefined as well
-    if (
-      azureInstanceUrl != "" &&
-      azureToken != "" &&
-      azureOrganization != "" &&
-      azureProject != "" &&
-      azureRepo != "" &&
-      azureRepoBranchName != ""
-    ) {
-      return this.setAzureData(
-        azureInstanceUrl,
-        azureToken,
-        azureOrganization,
-        azureProject,
-        azureRepo,
-        azureRepoBranchName,
-        azurePullRequestNumber
-      );
-    }
-    taskLib.debug("Azure data is undefined.");
-    return undefined;
+    return this.setAzureData(
+      azureInstanceUrl,
+      azureToken,
+      azureOrganization,
+      azureProject,
+      azureRepo,
+      azureRepoBranchName,
+      azurePullRequestNumber
+    );
   }
 
   private async updateAzurePrNumberForManualTriggerFlow(
@@ -700,6 +672,12 @@ export class SynopsysToolsParameter {
     let azurePrResponse;
 
     if (isPrCommentEnabled) {
+      if (azureData?.user.token == undefined || azureData.user.token == "") {
+        throw new Error(
+          "Missing required azure token for pull request comment"
+        );
+      }
+
       const synopsysAzureService = new SynopsysAzureService();
       azurePrResponse =
         await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(

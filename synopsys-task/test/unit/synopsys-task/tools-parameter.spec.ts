@@ -746,8 +746,6 @@ describe("Synopsys Tools Parameter test", () => {
              Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
              sandbox.stub(taskLib, "getVariable").returns(AZURE_BUILD_REASON.PULL_REQUEST);
 
-             sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
-
              sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
              const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
              const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
@@ -766,8 +764,6 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'BLACKDUCK_AUTOMATION_PRCOMMENT', {value: 'true'})
             Object.defineProperty(inputs, 'AZURE_TOKEN', {value: 'token'})
-
-            sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(true);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
@@ -1013,8 +1009,6 @@ describe("Synopsys Tools Parameter test", () => {
             getStubVariable.withArgs("Build.Repository.Name").returns("test-repo")
             getStubVariable.withArgs("Build.SourceBranchName").returns("test-branch")
             getStubVariable.withArgs("Build.Reason").returns(AZURE_BUILD_REASON.PULL_REQUEST)
-
-            sandbox.stub(SynopsysToolsParameter.prototype, <any>"getAzureRepoInfo");
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
