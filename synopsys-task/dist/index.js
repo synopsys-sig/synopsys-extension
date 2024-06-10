@@ -1789,7 +1789,7 @@ class SynopsysToolsParameter {
                 }
                 else {
                     console.log("Black Duck Fix PR is enabled");
-                    if (input_1.AZURE_TOKEN == "") {
+                    if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
                         throw new Error("Missing required azure token for fix pull request");
                     }
                     blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
@@ -2028,13 +2028,11 @@ class SynopsysToolsParameter {
                 if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
                     throw new Error("Missing required azure token for pull request comment");
                 }
-                const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
-                azurePrResponse =
-                    yield synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData);
-                if (azureData &&
-                    azureData.repository.pull.number === 0 &&
-                    azurePrResponse) {
-                    azureData.repository.pull.number = azurePrResponse.pullRequestId;
+                if (azureData && azureData.repository.pull.number === 0) {
+                    const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
+                    azurePrResponse =
+                        yield synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData);
+                    azureData.repository.pull.number = azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.pullRequestId;
                     taskLib.debug(`Azure pull request number for manual trigger flow: ${azureData.repository.pull.number}`);
                 }
             }
