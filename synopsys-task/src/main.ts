@@ -14,6 +14,7 @@ import {
 } from "./synopsys-task/diagnostics";
 import { showLogForDeprecatedInputs } from "./synopsys-task/input";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
+import { BuildStatus } from "./synopsys-task/enum/BuildStatus";
 import { equalsIgnoreCase } from "./synopsys-task/utility";
 
 export async function run() {
@@ -58,14 +59,19 @@ export async function run() {
           "Marked the build as Failed"
         );
       } else if (
-        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.SucceededWithIssues)
+        equalsIgnoreCase(
+          inputs.MARK_BUILD_STATUS,
+          BuildStatus.SucceededWithIssues
+        )
       ) {
         taskLib.setResult(
           taskLib.TaskResult.SucceededWithIssues,
-          "Marked the build as SuccededWithIssues"
+          "Marked the build as SucceededWithIssues"
         );
-      } else if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)) {
-        taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build");
+      } else if (
+        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)
+      ) {
+        taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build as Succeeded");
       }
     }
   } catch (error: any) {

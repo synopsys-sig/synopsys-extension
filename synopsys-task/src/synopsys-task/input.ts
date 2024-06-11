@@ -421,5 +421,4 @@ export const RETURN_STATUS =
   taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
 
 export const MARK_BUILD_STATUS =
-  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() ||
-  "FAILED";
+  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() || "FAILED";
