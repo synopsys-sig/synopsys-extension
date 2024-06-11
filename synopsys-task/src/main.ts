@@ -14,6 +14,7 @@ import {
 } from "./synopsys-task/diagnostics";
 import { showLogForDeprecatedInputs } from "./synopsys-task/input";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
+import { equalsIgnoreCase } from "./synopsys-task/utility";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -48,6 +49,24 @@ export async function run() {
       console.log(
         `##vso[task.setvariable variable=status;isoutput=true]${result}`
       );
+    }
+
+    if (result == ErrorCode.BRIDGE_BREAK_ENABLED) {
+      if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Failed)) {
+        taskLib.setResult(
+          taskLib.TaskResult.Failed,
+          "Marked the build as Failed"
+        );
+      } else if (
+        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.SucceededWithIssues)
+      ) {
+        taskLib.setResult(
+          taskLib.TaskResult.SucceededWithIssues,
+          "Marked the build as SuccededWithIssues"
+        );
+      } else if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)) {
+        taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build");
+      }
     }
   } catch (error: any) {
     throw error;

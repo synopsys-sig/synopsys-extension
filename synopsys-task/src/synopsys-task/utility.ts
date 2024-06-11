@@ -217,3 +217,7 @@ export function getStatusCode(str: string) {
   const words = str.split(" ");
   return words.length < 2 ? str : words[words.length - 2];
 }
+
+export function equalsIgnoreCase(a: string, b: string): boolean {
+  return a.toLowerCase() === b.toLowerCase();
+}

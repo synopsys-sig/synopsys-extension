@@ -518,7 +518,9 @@ export const SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR =
   "bridge_download_version";
 
 export const RETURN_STATUS_KEY = "return_status";
-export const RETURN_STATUS_KEY_CLASSIC_EDITOR = "returnStatus";
+//export const RETURN_STATUS_KEY_CLASSIC_EDITOR = "returnStatus";
+
+export const MARK_BUILD_STATUS_KEY = "mark_build_status";
 
 export const SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY =
   "synopsys_bridge_install_directory";
