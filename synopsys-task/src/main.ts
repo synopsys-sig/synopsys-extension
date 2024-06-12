@@ -3,6 +3,7 @@ import {
   getTempDir,
   parseToBoolean,
   isPullRequestEvent,
+  IS_PR_EVENT,
 } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -44,19 +45,23 @@ export async function run() {
     throw error;
   } finally {
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-      uploadSarifResultAsArtifact(
-        constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-        inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
-      );
+      if (!IS_PR_EVENT) {
+        console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+        uploadSarifResultAsArtifact(
+          constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
+          inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+        );
+      }
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-      uploadSarifResultAsArtifact(
-        constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
-        inputs.POLARIS_REPORTS_SARIF_FILE_PATH
-      );
+      if (!IS_PR_EVENT) {
+        console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+        uploadSarifResultAsArtifact(
+          constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
+          inputs.POLARIS_REPORTS_SARIF_FILE_PATH
+        );
+      }
     }
 
     if (parseToBoolean(inputs.INCLUDE_DIAGNOSTICS)) {

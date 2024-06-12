@@ -76,12 +76,16 @@ function run() {
         }
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-                console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                if (!utility_1.IS_PR_EVENT) {
+                    console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-                console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
-                (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                if (!utility_1.IS_PR_EVENT) {
+                    console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+                    (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
+                }
             }
             if ((0, utility_1.parseToBoolean)(inputs.INCLUDE_DIAGNOSTICS)) {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
@@ -492,7 +496,7 @@ class SynopsysAzureService {
                 process.env["BUILD_REASON"] !== "PullRequest") {
                 const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
                 const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, this.apiVersion);
-                taskLib.debug(`Endpoint: ${endpoint}`);
+                taskLib.debug(`Azure check pull request API: ${endpoint}`);
                 const token = ":".concat(azureData.user.token);
                 const encodedToken = Buffer.from(token, "utf8").toString("base64");
                 const httpClient = new HttpClient_1.HttpClient("synopsys-azure-service");
@@ -509,7 +513,7 @@ class SynopsysAzureService {
                         };
                     }
                     else {
-                        console.info("Unable to find pull request info from current source build with branch: ".concat(azureData.repository.branch.name));
+                        console.info("Unable to find pull request info for the current source build with branch: ".concat(azureData.repository.branch.name));
                     }
                 }
                 else {
@@ -2210,7 +2214,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractBranchName = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -2349,10 +2353,15 @@ function filterEmptyData(data) {
         : value);
 }
 exports.filterEmptyData = filterEmptyData;
+// Global variable to check PR events for uploading SARIF files in main.ts, reducing the need for current code refactoring
+exports.IS_PR_EVENT = false;
 function isPullRequestEvent(azurePrResponse) {
     const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-    return (buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST ||
-        (azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.pullRequestId) !== undefined);
+    exports.IS_PR_EVENT =
+        buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST ||
+            ((azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.pullRequestId) !== undefined &&
+                azurePrResponse.pullRequestId > 0);
+    return exports.IS_PR_EVENT;
 }
 exports.isPullRequestEvent = isPullRequestEvent;
 function extractBranchName(branchName) {

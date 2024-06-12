@@ -34,7 +34,7 @@ export class SynopsysAzureService {
         azureData.repository.branch.name,
         this.apiVersion
       );
-      taskLib.debug(`Endpoint: ${endpoint}`);
+      taskLib.debug(`Azure check pull request API: ${endpoint}`);
       const token: string = ":".concat(azureData.user.token);
       const encodedToken: string = Buffer.from(token, "utf8").toString(
         "base64"
@@ -54,7 +54,7 @@ export class SynopsysAzureService {
           };
         } else {
           console.info(
-            "Unable to find pull request info from current source build with branch: ".concat(
+            "Unable to find pull request info for the current source build with branch: ".concat(
               azureData.repository.branch.name
             )
           );
