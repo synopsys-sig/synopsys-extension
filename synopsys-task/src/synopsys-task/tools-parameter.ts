@@ -316,16 +316,17 @@ export class SynopsysToolsParameter {
     const isPrCommentEnabled = parseToBoolean(
       inputs.BLACKDUCK_AUTOMATION_PRCOMMENT
     );
+    const isFixPrEnabled = parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED);
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
-      isPrCommentEnabled
+      isPrCommentEnabled || isFixPrEnabled
     );
 
     const isPullRequest = isPullRequestEvent(azurePrResponse);
 
     // Check and put environment variable for fix pull request
-    if (parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED)) {
+    if (isFixPrEnabled) {
       if (isPullRequest) {
         console.info("Black Duck Fix PR ignored for pull request scan");
       } else {
@@ -435,6 +436,15 @@ export class SynopsysToolsParameter {
                 .concat(extractBranchName(pullRequestTargetBranchName))
             : "";
       } else {
+        const buildReason =
+          taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+          "";
+        if (buildReason === AZURE_BUILD_REASON.MANUAL) {
+          throw new Error(
+            "COVERITY_STREAM_NAME is mandatory for azure manual trigger"
+          );
+        }
+
         const sourceBranchName =
           taskLib.getVariable(
             AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH
@@ -667,11 +677,11 @@ export class SynopsysToolsParameter {
 
   private async updateAzurePrNumberForManualTriggerFlow(
     azureData: AzureData | undefined,
-    isPrCommentEnabled: boolean
+    isPrCommentOrFixPrEnabled: boolean
   ): Promise<AzurePrResponse | undefined> {
     let azurePrResponse;
 
-    if (isPrCommentEnabled) {
+    if (isPrCommentOrFixPrEnabled) {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
           "Missing required azure token for pull request comment"

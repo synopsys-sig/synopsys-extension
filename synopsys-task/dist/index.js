@@ -998,6 +998,7 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
 var AZURE_BUILD_REASON;
 (function (AZURE_BUILD_REASON) {
     AZURE_BUILD_REASON["PULL_REQUEST"] = "PullRequest";
+    AZURE_BUILD_REASON["MANUAL"] = "Manual";
 })(AZURE_BUILD_REASON = exports.AZURE_BUILD_REASON || (exports.AZURE_BUILD_REASON = {}));
 
 
@@ -1784,10 +1785,11 @@ class SynopsysToolsParameter {
             }
             const azureData = this.getAzureRepoInfo();
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT);
-            const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
+            const isFixPrEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED);
+            const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled || isFixPrEnabled);
             const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
             // Check and put environment variable for fix pull request
-            if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED)) {
+            if (isFixPrEnabled) {
                 if (isPullRequest) {
                     console.info("Black Duck Fix PR ignored for pull request scan");
                 }
@@ -1869,6 +1871,11 @@ class SynopsysToolsParameter {
                             : "";
                 }
                 else {
+                    const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                        "";
+                    if (buildReason === azure_1.AZURE_BUILD_REASON.MANUAL) {
+                        throw new Error("COVERITY_STREAM_NAME is mandatory for azure manual trigger");
+                    }
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
                     coverityStreamName =
                         azureRepositoryName && sourceBranchName
@@ -2025,10 +2032,10 @@ class SynopsysToolsParameter {
         taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
         return this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
     }
-    updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled) {
+    updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentOrFixPrEnabled) {
         return __awaiter(this, void 0, void 0, function* () {
             let azurePrResponse;
-            if (isPrCommentEnabled) {
+            if (isPrCommentOrFixPrEnabled) {
                 if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
                     throw new Error("Missing required azure token for pull request comment");
                 }

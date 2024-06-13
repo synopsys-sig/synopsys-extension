@@ -45,6 +45,7 @@ export const AZURE_ENVIRONMENT_VARIABLES = {
 
 export enum AZURE_BUILD_REASON {
   PULL_REQUEST = "PullRequest",
+  MANUAL = "Manual",
 }
 
 export interface AzurePrResponse {
