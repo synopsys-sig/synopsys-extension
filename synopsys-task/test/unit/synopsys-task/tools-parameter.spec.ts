@@ -15,6 +15,8 @@ import {
 import {stub} from "sinon";
 import * as utility from "../../../src/synopsys-task/utility";
 import {isPullRequestEvent} from "../../../src/synopsys-task/utility";
+import {COVERITY_STREAM_NAME} from "../../../src/synopsys-task/input";
+import {COVERITY_STREAM_NAME_KEY} from "../../../src/synopsys-task/application-constant";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -419,6 +421,24 @@ describe("Synopsys Tools Parameter test", () => {
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('should fail for coverity stream name for Manual trigger', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'});
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'});
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON).returns(AZURE_BUILD_REASON.MANUAL);
+
+            try {
+                const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains("COVERITY_STREAM_NAME is mandatory for azure manual trigger")
+            }
         });
 
 
