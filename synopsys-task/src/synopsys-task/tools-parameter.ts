@@ -331,9 +331,6 @@ export class SynopsysToolsParameter {
         console.info("Black Duck Fix PR ignored for pull request scan");
       } else {
         console.log("Black Duck Fix PR is enabled");
-        if (azureData?.user.token == undefined || azureData.user.token == "") {
-          throw new Error("Missing required azure token for fix pull request");
-        }
         blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
         blackduckData.data.azure = azureData;
       }
@@ -684,7 +681,7 @@ export class SynopsysToolsParameter {
     if (isPrCommentOrFixPrEnabled) {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
-          "Missing required azure token for pull request comment"
+          "Missing required azure token for fix pull request/automation comment"
         );
       }
 

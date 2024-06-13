@@ -1795,9 +1795,6 @@ class SynopsysToolsParameter {
                 }
                 else {
                     console.log("Black Duck Fix PR is enabled");
-                    if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
-                        throw new Error("Missing required azure token for fix pull request");
-                    }
                     blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
                     blackduckData.data.azure = azureData;
                 }
@@ -2037,7 +2034,7 @@ class SynopsysToolsParameter {
             let azurePrResponse;
             if (isPrCommentOrFixPrEnabled) {
                 if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
-                    throw new Error("Missing required azure token for pull request comment");
+                    throw new Error("Missing required azure token for fix pull request/automation comment");
                 }
                 if (azureData && azureData.repository.pull.number === 0) {
                     const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
