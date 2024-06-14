@@ -54,6 +54,7 @@ function run() {
         taskLib.debug(`tempDir: ${tempDir}`);
         const workSpaceDir = (0, utility_1.getWorkSpaceDirectory)();
         taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
+        let azurePrResponse;
         try {
             const sb = new synopsys_bridge_1.SynopsysBridge();
             (0, input_1.showLogForDeprecatedInputs)();
@@ -74,15 +75,14 @@ function run() {
             throw error;
         }
         finally {
-            const isPullRequest = (0, utility_1.isPullRequestEvent)();
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-                if (!isPullRequest) {
+                if (!utility_1.IS_PR_EVENT) {
                     console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-                if (!isPullRequest) {
+                if (!utility_1.IS_PR_EVENT) {
                     console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
                 }
@@ -489,33 +489,41 @@ class SynopsysAzureService {
             "/{0}/{1}/_apis/git/repositories/{2}/pullrequests?searchCriteria.status=active&$top=1&searchCriteria.sourceRefName={3}&api-version={4}";
         this.apiVersion = "7.0";
     }
-    getPullRequestIdForClassicEditorFlow(azureData) {
+    getAzurePrResponseForManualTriggerFlow(azureData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
-            const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, this.apiVersion);
-            taskLib.debug(`Endpoint: ${endpoint}`);
-            const token = ":".concat(azureData.user.token);
-            const encodedToken = Buffer.from(token, "utf8").toString("base64");
-            const httpClient = new HttpClient_1.HttpClient("synopsys-azure-service");
-            const httpResponse = yield httpClient.get(endpoint, {
-                Authorization: "Basic ".concat(encodedToken),
-                Accept: "application/json",
-            });
-            if (httpResponse.message.statusCode === 200) {
-                const azurePrResponse = JSON.parse(yield httpResponse.readBody());
-                if (azurePrResponse.count === 1) {
-                    return azurePrResponse.value[0].pullRequestId;
+            if (azureData &&
+                process.env["BUILD_REASON"] &&
+                process.env["BUILD_REASON"] !== "PullRequest") {
+                const StringFormat = (url, ...args) => url.replace(/{(\d+)}/g, (match, index) => encodeURIComponent(args[index]) || "");
+                const endpoint = StringFormat(azureData.api.url.concat(this.azureGetMergeRequestsAPI), azureData.organization.name, azureData.project.name, azureData.repository.name, azureData.repository.branch.name, this.apiVersion);
+                taskLib.debug(`Azure check pull request API: ${endpoint}`);
+                const token = ":".concat(azureData.user.token);
+                const encodedToken = Buffer.from(token, "utf8").toString("base64");
+                const httpClient = new HttpClient_1.HttpClient("synopsys-azure-service");
+                const httpResponse = yield httpClient.get(endpoint, {
+                    Authorization: "Basic ".concat(encodedToken),
+                    Accept: "application/json",
+                });
+                if (httpResponse.message.statusCode === 200) {
+                    const azurePrResponse = JSON.parse(yield httpResponse.readBody());
+                    if (azurePrResponse.count === 1) {
+                        return {
+                            pullRequestId: azurePrResponse.value[0].pullRequestId,
+                            targetRefName: azurePrResponse.value[0].targetRefName,
+                        };
+                    }
+                    else {
+                        console.info("Unable to find pull request info for the current source build with branch: ".concat(azureData.repository.branch.name));
+                    }
                 }
                 else {
-                    throw new Error("Unable to find an Pull request Id from current source build with branch: ".concat(azureData.repository.branch.name));
+                    throw new Error("Failed to get pull request info for current build from source branch: "
+                        .concat(azureData.repository.branch.name)
+                        .concat(" With error: ")
+                        .concat(yield httpResponse.readBody()));
                 }
             }
-            else {
-                throw new Error("Failed to get pull request Id for current build from source branch: "
-                    .concat(azureData.repository.branch.name)
-                    .concat(" With error: ")
-                    .concat(yield httpResponse.readBody()));
-            }
+            return undefined;
         });
     }
 }
@@ -990,6 +998,7 @@ exports.AZURE_ENVIRONMENT_VARIABLES = {
 var AZURE_BUILD_REASON;
 (function (AZURE_BUILD_REASON) {
     AZURE_BUILD_REASON["PULL_REQUEST"] = "PullRequest";
+    AZURE_BUILD_REASON["MANUAL"] = "Manual";
 })(AZURE_BUILD_REASON = exports.AZURE_BUILD_REASON || (exports.AZURE_BUILD_REASON = {}));
 
 
@@ -1155,7 +1164,7 @@ class SynopsysBridge {
                 }
                 else {
                     // To support multi-scan using YAML
-                    [formattedCommand, polarisErrors] = this.preparePolarisCommand(formattedCommand, tempDir);
+                    [formattedCommand, polarisErrors] = yield this.preparePolarisCommand(formattedCommand, tempDir);
                     [formattedCommand, coverityErrors] = yield this.prepareBlackduckCommand(formattedCommand, tempDir);
                     [formattedCommand, blackduckErrors] = yield this.prepareCoverityCommand(formattedCommand, tempDir);
                 }
@@ -1186,7 +1195,7 @@ class SynopsysBridge {
         return __awaiter(this, void 0, void 0, function* () {
             let errors = [];
             if (input_1.SCAN_TYPE == "polaris") {
-                [formattedCommand, errors] = this.preparePolarisCommand(formattedCommand, tempDir);
+                [formattedCommand, errors] = yield this.preparePolarisCommand(formattedCommand, tempDir);
             }
             else if (input_1.SCAN_TYPE == "blackduck") {
                 [formattedCommand, errors] = yield this.prepareBlackduckCommand(formattedCommand, tempDir);
@@ -1198,13 +1207,15 @@ class SynopsysBridge {
         });
     }
     preparePolarisCommand(formattedCommand, tempDir) {
-        // validating and preparing command for polaris
-        const polarisErrors = (0, validator_1.validatePolarisInputs)();
-        const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
-        if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
-            formattedCommand = formattedCommand.concat(commandFormatter.getFormattedCommandForPolaris());
-        }
-        return [formattedCommand, polarisErrors];
+        return __awaiter(this, void 0, void 0, function* () {
+            // validating and preparing command for polaris
+            const polarisErrors = (0, validator_1.validatePolarisInputs)();
+            const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
+            if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
+                formattedCommand = formattedCommand.concat(yield commandFormatter.getFormattedCommandForPolaris());
+            }
+            return [formattedCommand, polarisErrors];
+        });
     }
     prepareCoverityCommand(formattedCommand, tempDir) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1578,13 +1589,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SynopsysToolsParameter = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const inputs = __importStar(__nccwpck_require__(7533));
+const input_1 = __nccwpck_require__(7533);
 const blackduck_1 = __nccwpck_require__(5467);
 const azure_1 = __nccwpck_require__(3655);
 const constants = __importStar(__nccwpck_require__(3051));
 const taskLib = __importStar(__nccwpck_require__(347));
 const validator_1 = __nccwpck_require__(6717);
 const utility_1 = __nccwpck_require__(837);
-const input_1 = __nccwpck_require__(7533);
 const url = __importStar(__nccwpck_require__(7310));
 const azure_service_client_1 = __nccwpck_require__(5601);
 class SynopsysToolsParameter {
@@ -1592,125 +1603,127 @@ class SynopsysToolsParameter {
         this.tempDir = tempDir;
     }
     getFormattedCommandForPolaris() {
-        let command = "";
-        const assessmentTypeArray = [];
-        const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
-        if (assessmentTypes != null && assessmentTypes.length > 0) {
-            for (const assessmentType of assessmentTypes) {
-                console.log(assessmentType);
-                const regEx = new RegExp("^[a-zA-Z]+$");
-                if (assessmentType.trim().length > 0 &&
-                    regEx.test(assessmentType.trim())) {
-                    assessmentTypeArray.push(assessmentType.trim());
-                }
-                else {
-                    throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
-                }
-            }
-        }
-        const azureRepositoryName = this.getAzureRepositoryName();
-        let polarisApplicationName = inputs.POLARIS_APPLICATION_NAME;
-        if (!polarisApplicationName) {
-            polarisApplicationName = azureRepositoryName;
-            taskLib.debug(`POLARIS_APPLICATION_NAME: ${polarisApplicationName}`);
-        }
-        let polarisProjectName = inputs.POLARIS_PROJECT_NAME;
-        if (!polarisProjectName) {
-            polarisProjectName = azureRepositoryName;
-            taskLib.debug(`POLARIS_PROJECT_NAME: ${polarisProjectName}`);
-        }
-        let polData = {
-            data: {
-                polaris: {
-                    accesstoken: inputs.POLARIS_ACCESS_TOKEN,
-                    serverUrl: inputs.POLARIS_SERVER_URL,
-                    application: { name: polarisApplicationName },
-                    project: { name: polarisProjectName },
-                    assessment: Object.assign({ types: assessmentTypeArray }, (inputs.POLARIS_ASSESSMENT_MODE && {
-                        mode: inputs.POLARIS_ASSESSMENT_MODE,
-                    })),
-                    branch: { parent: {} },
-                },
-            },
-        };
-        if (inputs.POLARIS_BRANCH_NAME) {
-            polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
-        }
-        if (inputs.POLARIS_TRIAGE) {
-            polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
-        }
-        if (inputs.POLARIS_PROJECT_DIRECTORY ||
-            inputs.PROJECT_SOURCE_ARCHIVE ||
-            inputs.PROJECT_SOURCE_EXCLUDES ||
-            (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
-            polData.data.project = {};
-            if (inputs.POLARIS_PROJECT_DIRECTORY) {
-                polData.data.project.directory = inputs.POLARIS_PROJECT_DIRECTORY;
-            }
-            if (inputs.PROJECT_SOURCE_ARCHIVE ||
-                inputs.PROJECT_SOURCE_EXCLUDES ||
-                (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
-                polData.data.project.source = {};
-                if (inputs.PROJECT_SOURCE_ARCHIVE) {
-                    polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;
-                }
-                if ((0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
-                    polData.data.project.source.preserveSymLinks = true;
-                }
-                if (inputs.PROJECT_SOURCE_EXCLUDES) {
-                    const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter((sourceExclude) => sourceExclude && sourceExclude.trim() !== "").map((sourceExclude) => sourceExclude.trim());
-                    if (sourceExcludes.length > 0) {
-                        polData.data.project.source.excludes = sourceExcludes;
+        return __awaiter(this, void 0, void 0, function* () {
+            let command = "";
+            const assessmentTypeArray = [];
+            const assessmentTypes = inputs.POLARIS_ASSESSMENT_TYPES;
+            if (assessmentTypes != null && assessmentTypes.length > 0) {
+                for (const assessmentType of assessmentTypes) {
+                    console.log(assessmentType);
+                    const regEx = new RegExp("^[a-zA-Z]+$");
+                    if (assessmentType.trim().length > 0 &&
+                        regEx.test(assessmentType.trim())) {
+                        assessmentTypeArray.push(assessmentType.trim());
+                    }
+                    else {
+                        throw new Error("Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY));
                     }
                 }
             }
-        }
-        const isPullRequest = (0, utility_1.isPullRequestEvent)();
-        if ((0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED)) {
-            if (!isPullRequest) {
-                console.info("Polaris PR comment is ignored for non pull request scan");
+            const azureRepositoryName = this.getAzureRepositoryName();
+            let polarisApplicationName = inputs.POLARIS_APPLICATION_NAME;
+            if (!polarisApplicationName) {
+                polarisApplicationName = azureRepositoryName;
+                taskLib.debug(`POLARIS_APPLICATION_NAME: ${polarisApplicationName}`);
             }
-            else {
-                console.info("Polaris PR comment is enabled");
-                if (inputs.POLARIS_BRANCH_PARENT_NAME) {
-                    polData.data.polaris.branch.parent.name =
-                        inputs.POLARIS_BRANCH_PARENT_NAME;
+            let polarisProjectName = inputs.POLARIS_PROJECT_NAME;
+            if (!polarisProjectName) {
+                polarisProjectName = azureRepositoryName;
+                taskLib.debug(`POLARIS_PROJECT_NAME: ${polarisProjectName}`);
+            }
+            let polData = {
+                data: {
+                    polaris: {
+                        accesstoken: inputs.POLARIS_ACCESS_TOKEN,
+                        serverUrl: inputs.POLARIS_SERVER_URL,
+                        application: { name: polarisApplicationName },
+                        project: { name: polarisProjectName },
+                        assessment: Object.assign({ types: assessmentTypeArray }, (inputs.POLARIS_ASSESSMENT_MODE && {
+                            mode: inputs.POLARIS_ASSESSMENT_MODE,
+                        })),
+                        branch: { parent: {} },
+                    },
+                },
+            };
+            if (inputs.POLARIS_BRANCH_NAME) {
+                polData.data.polaris.branch.name = inputs.POLARIS_BRANCH_NAME;
+            }
+            if (inputs.POLARIS_TRIAGE) {
+                polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
+            }
+            if (inputs.POLARIS_PROJECT_DIRECTORY ||
+                inputs.PROJECT_SOURCE_ARCHIVE ||
+                inputs.PROJECT_SOURCE_EXCLUDES ||
+                (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
+                polData.data.project = {};
+                if (inputs.POLARIS_PROJECT_DIRECTORY) {
+                    polData.data.project.directory = inputs.POLARIS_PROJECT_DIRECTORY;
                 }
-                if (!input_1.AZURE_TOKEN) {
-                    throw new Error("Missing required azure token for pull request comment");
+                if (inputs.PROJECT_SOURCE_ARCHIVE ||
+                    inputs.PROJECT_SOURCE_EXCLUDES ||
+                    (0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
+                    polData.data.project.source = {};
+                    if (inputs.PROJECT_SOURCE_ARCHIVE) {
+                        polData.data.project.source.archive = inputs.PROJECT_SOURCE_ARCHIVE;
+                    }
+                    if ((0, utility_1.parseToBoolean)(inputs.PROJECT_SOURCE_PRESERVE_SYM_LINKS)) {
+                        polData.data.project.source.preserveSymLinks = true;
+                    }
+                    if (inputs.PROJECT_SOURCE_EXCLUDES) {
+                        const sourceExcludes = inputs.PROJECT_SOURCE_EXCLUDES.filter((sourceExclude) => sourceExclude && sourceExclude.trim() !== "").map((sourceExclude) => sourceExclude.trim());
+                        if (sourceExcludes.length > 0) {
+                            polData.data.project.source.excludes = sourceExcludes;
+                        }
+                    }
                 }
-                polData.data.azure = this.setAzureData("", input_1.AZURE_TOKEN, "", "", "", "", "");
-                polData.data.polaris.prcomment = { severities: [], enabled: true };
-                if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
-                    polData.data.polaris.prcomment.severities =
-                        inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+            }
+            const azureData = this.getAzureRepoInfo();
+            const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED);
+            const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
+            const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
+            if (isPrCommentEnabled) {
+                if (!isPullRequest) {
+                    console.info("Polaris PR comment is ignored for non pull request scan");
+                }
+                else {
+                    console.info("Polaris PR comment is enabled");
+                    if (inputs.POLARIS_BRANCH_PARENT_NAME) {
+                        polData.data.polaris.branch.parent.name =
+                            inputs.POLARIS_BRANCH_PARENT_NAME;
+                    }
+                    polData.data.azure = this.setAzureData("", input_1.AZURE_TOKEN, "", "", "", "", "");
+                    polData.data.polaris.prcomment = { severities: [], enabled: true };
+                    if (inputs.POLARIS_PR_COMMENT_SEVERITIES) {
+                        polData.data.polaris.prcomment.severities =
+                            inputs.POLARIS_PR_COMMENT_SEVERITIES.filter((severity) => severity);
+                    }
                 }
             }
-        }
-        if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-            if (!isPullRequest) {
-                polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+            if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
+                if (!isPullRequest) {
+                    polData.data.polaris.reports = this.setSarifReportsInputsForPolaris();
+                }
+                else {
+                    console.info("Polaris SARIF report create/upload is ignored for pull request scan");
+                }
             }
-            else {
-                console.info("Polaris SARIF report create/upload is ignored for pull request scan");
-            }
-        }
-        // Remove empty data from json object
-        polData = (0, utility_1.filterEmptyData)(polData);
-        const inputJson = JSON.stringify(polData);
-        let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
-        taskLib.writeFile(stateFilePath, inputJson);
-        // Wrap the file path with double quotes, to make it work with directory path with space as well
-        stateFilePath = '"'.concat(stateFilePath).concat('"');
-        taskLib.debug("Generated state json file at - ".concat(stateFilePath));
-        command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
-            .concat(SynopsysToolsParameter.POLARIS_STAGE)
-            .concat(SynopsysToolsParameter.SPACE)
-            .concat(SynopsysToolsParameter.INPUT_OPTION)
-            .concat(SynopsysToolsParameter.SPACE)
-            .concat(stateFilePath)
-            .concat(SynopsysToolsParameter.SPACE);
-        return command;
+            // Remove empty data from json object
+            polData = (0, utility_1.filterEmptyData)(polData);
+            const inputJson = JSON.stringify(polData);
+            let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.POLARIS_STATE_FILE_NAME);
+            taskLib.writeFile(stateFilePath, inputJson);
+            // Wrap the file path with double quotes, to make it work with directory path with space as well
+            stateFilePath = '"'.concat(stateFilePath).concat('"');
+            taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+            command = SynopsysToolsParameter.STAGE_OPTION.concat(SynopsysToolsParameter.SPACE)
+                .concat(SynopsysToolsParameter.POLARIS_STAGE)
+                .concat(SynopsysToolsParameter.SPACE)
+                .concat(SynopsysToolsParameter.INPUT_OPTION)
+                .concat(SynopsysToolsParameter.SPACE)
+                .concat(stateFilePath)
+                .concat(SynopsysToolsParameter.SPACE);
+            return command;
+        });
     }
     getFormattedCommandForBlackduck() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1770,25 +1783,29 @@ class SynopsysToolsParameter {
                     };
                 }
             }
-            const isPullRequest = (0, utility_1.isPullRequestEvent)();
+            const azureData = this.getAzureRepoInfo();
+            const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT);
+            const isFixPrEnabled = (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED);
+            const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled || isFixPrEnabled);
+            const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
             // Check and put environment variable for fix pull request
-            if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_FIXPR_ENABLED)) {
+            if (isFixPrEnabled) {
                 if (isPullRequest) {
                     console.info("Black Duck Fix PR ignored for pull request scan");
                 }
                 else {
                     console.log("Black Duck Fix PR is enabled");
                     blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
-                    blackduckData.data.azure = yield this.getAzureRepoInfo();
+                    blackduckData.data.azure = azureData;
                 }
             }
-            if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT)) {
+            if (isPrCommentEnabled) {
                 if (!isPullRequest) {
                     console.info("Black Duck PR comment is ignored for non pull request scan");
                 }
                 else {
                     console.info("BlackDuck PR comment is enabled");
-                    blackduckData.data.azure = yield this.getAzureRepoInfo();
+                    blackduckData.data.azure = azureData;
                     blackduckData.data.environment = this.setEnvironmentScanPullData();
                     blackduckData.data.blackduck.automation = { prcomment: true };
                     blackduckData.data;
@@ -1833,11 +1850,16 @@ class SynopsysToolsParameter {
                 coverityProjectName = azureRepositoryName;
                 taskLib.debug(`COVERITY_PROJECT_NAME: ${coverityProjectName}`);
             }
-            const isPullRequest = (0, utility_1.isPullRequestEvent)();
+            const azureData = this.getAzureRepoInfo();
+            const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT);
+            const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
+            const isPullRequest = (0, utility_1.isPullRequestEvent)(azurePrResponse);
             let coverityStreamName = inputs.COVERITY_STREAM_NAME;
             if (!coverityStreamName) {
                 if (isPullRequest) {
-                    const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) || "";
+                    const pullRequestTargetBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_TARGET_BRANCH) ||
+                        (azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.targetRefName) ||
+                        "";
                     coverityStreamName =
                         azureRepositoryName && pullRequestTargetBranchName
                             ? azureRepositoryName
@@ -1846,6 +1868,11 @@ class SynopsysToolsParameter {
                             : "";
                 }
                 else {
+                    const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) ||
+                        "";
+                    if (buildReason === azure_1.AZURE_BUILD_REASON.MANUAL) {
+                        throw new Error("COVERITY_STREAM_NAME is mandatory for azure manual trigger");
+                    }
                     const sourceBranchName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
                     coverityStreamName =
                         azureRepositoryName && sourceBranchName
@@ -1891,13 +1918,13 @@ class SynopsysToolsParameter {
                     directory: inputs.COVERITY_PROJECT_DIRECTORY,
                 };
             }
-            if ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT)) {
+            if (isPrCommentEnabled) {
                 if (!isPullRequest) {
                     console.info("Coverity PR comment is ignored for non pull request scan");
                 }
                 else {
                     console.info("Coverity PR comment is enabled");
-                    covData.data.azure = yield this.getAzureRepoInfo();
+                    covData.data.azure = azureData;
                     covData.data.environment = this.setEnvironmentScanPullData();
                     covData.data.coverity.automation = { prcomment: true };
                 }
@@ -1963,70 +1990,61 @@ class SynopsysToolsParameter {
     }
     getAzureRepoInfo() {
         var _a;
+        let azureOrganization = "";
+        const azureToken = input_1.AZURE_TOKEN;
+        let azureInstanceUrl = "";
+        const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
+        taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
+        if (collectionUri != "") {
+            const parsedUrl = url.parse(collectionUri);
+            azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+            azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
+            if (parsedUrl.host &&
+                !azureOrganization &&
+                parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
+                if (parsedUrl.host.split(".")[0]) {
+                    azureOrganization = parsedUrl.host.split(".")[0];
+                    azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
+                }
+            }
+        }
+        taskLib.debug("Azure organization name:".concat(azureOrganization));
+        const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
+        taskLib.debug(`Azure project, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`);
+        const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
+        taskLib.debug(`Azure repo, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`);
+        const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
+        taskLib.debug(`Build Reason: ${buildReason}`);
+        const azureRepoBranchName = buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST
+            ? taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH) || ""
+            : taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
+        taskLib.debug(`Azure repo branch name: ${azureProject}`);
+        const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
+        taskLib.debug(`Azure pull request number, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`);
+        taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
+        taskLib.debug(`Azure Organization: ${azureOrganization}`);
+        taskLib.debug(`Azure Project Name: ${azureProject}`);
+        taskLib.debug(`Azure Repository Name: ${azureRepo}`);
+        taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
+        taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
+        return this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
+    }
+    updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentOrFixPrEnabled) {
         return __awaiter(this, void 0, void 0, function* () {
-            let azureOrganization = "";
-            const azureToken = input_1.AZURE_TOKEN;
-            let azureInstanceUrl = "";
-            const collectionUri = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION) || "";
-            taskLib.debug(`Azure API URL, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_ORGANIZATION}, is: ${collectionUri}`);
-            if (collectionUri != "") {
-                const parsedUrl = url.parse(collectionUri);
-                azureInstanceUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-                azureOrganization = ((_a = parsedUrl.pathname) === null || _a === void 0 ? void 0 : _a.split("/")[1]) || "";
-                if (parsedUrl.host &&
-                    !azureOrganization &&
-                    parsedUrl.host.indexOf(".visualstudio.com") !== -1) {
-                    if (parsedUrl.host.split(".")[0]) {
-                        azureOrganization = parsedUrl.host.split(".")[0];
-                        azureInstanceUrl = constants.DEFAULT_AZURE_API_URL;
-                    }
+            let azurePrResponse;
+            if (isPrCommentOrFixPrEnabled) {
+                if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
+                    throw new Error("Missing required azure token for fix pull request/automation comment");
                 }
-            }
-            taskLib.debug("Azure organization name:".concat(azureOrganization));
-            const azureProject = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT) || "";
-            taskLib.debug(`Azure project, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PROJECT}, is: ${azureProject}`);
-            const azureRepo = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
-            taskLib.debug(`Azure repo, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY}, is: ${azureProject}`);
-            const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-            taskLib.debug(`Build Reason: ${buildReason}`);
-            const azureRepoBranchName = buildReason == azure_1.AZURE_BUILD_REASON.PULL_REQUEST
-                ? taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_SOURCE_BRANCH) || ""
-                : taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_SOURCE_BRANCH) || "";
-            taskLib.debug(`Azure repo branch name: ${azureProject}`);
-            const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
-            taskLib.debug(`Azure pull request number, obtained from the environment variable ${azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER}, is: ${azurePullRequestNumber}`);
-            if (azureToken == "") {
-                throw new Error("Missing required azure token for fix pull request/automation comment");
-            }
-            taskLib.debug(`Azure Instance Url: ${azureInstanceUrl}`);
-            taskLib.debug(`Azure Organization: ${azureOrganization}`);
-            taskLib.debug(`Azure Project Name: ${azureProject}`);
-            taskLib.debug(`Azure Repository Name: ${azureRepo}`);
-            taskLib.debug(`Azure Repository Branch Name: ${azureRepoBranchName}`);
-            taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
-            // This condition is required as per ts-lint as these fields may have undefined as well
-            if (azureInstanceUrl != "" &&
-                azureToken != "" &&
-                azureOrganization != "" &&
-                azureProject != "" &&
-                azureRepo != "" &&
-                azureRepoBranchName != "") {
-                const azureData = this.setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber);
-                const isPullRequest = (0, utility_1.isPullRequestEvent)();
-                if (isPullRequest &&
-                    azurePullRequestNumber == "" &&
-                    ((0, utility_1.parseToBoolean)(inputs.COVERITY_AUTOMATION_PRCOMMENT) ||
-                        (0, utility_1.parseToBoolean)(inputs.BLACKDUCK_AUTOMATION_PRCOMMENT))) {
+                if (azureData && azureData.repository.pull.number === 0) {
                     const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
-                    azureData.repository.pull.number =
-                        yield synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData);
-                    taskLib.debug(`Azure pull request number for classic editor flow: ${azureData.repository.pull.number}`);
-                    return azureData;
+                    azurePrResponse =
+                        yield synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData);
+                    azureData.repository.pull.number = azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.pullRequestId;
+                    taskLib.debug(`Azure pull request number for manual trigger flow: ${azureData.repository.pull.number}`);
                 }
-                return azureData;
             }
-            taskLib.debug("Azure data is undefined.");
-            return undefined;
+            return azurePrResponse;
         });
     }
     setAzureData(azureInstanceUrl, azureToken, azureOrganization, azureProject, azureRepo, azureRepoBranchName, azurePullRequestNumber) {
@@ -2200,7 +2218,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractBranchName = exports.isPullRequestEvent = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
+exports.extractBranchName = exports.isPullRequestEvent = exports.IS_PR_EVENT = exports.filterEmptyData = exports.getDefaultSarifReportPath = exports.sleep = exports.getWorkSpaceDirectory = exports.isBoolean = exports.parseToBoolean = exports.getRemoteFile = exports.extractZipped = exports.getTempDir = exports.cleanUrl = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const application_constant_1 = __nccwpck_require__(3051);
 const toolLib = __importStar(__nccwpck_require__(3681));
@@ -2339,9 +2357,15 @@ function filterEmptyData(data) {
         : value);
 }
 exports.filterEmptyData = filterEmptyData;
-function isPullRequestEvent() {
+// Global variable to check PR events for uploading SARIF files in main.ts, reducing the need for current code refactoring
+exports.IS_PR_EVENT = false;
+function isPullRequestEvent(azurePrResponse) {
     const buildReason = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-    return buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST;
+    exports.IS_PR_EVENT =
+        buildReason === azure_1.AZURE_BUILD_REASON.PULL_REQUEST ||
+            ((azurePrResponse === null || azurePrResponse === void 0 ? void 0 : azurePrResponse.pullRequestId) !== undefined &&
+                azurePrResponse.pullRequestId > 0);
+    return exports.IS_PR_EVENT;
 }
 exports.isPullRequestEvent = isPullRequestEvent;
 function extractBranchName(branchName) {

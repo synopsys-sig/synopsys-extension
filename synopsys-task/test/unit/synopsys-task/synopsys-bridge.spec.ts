@@ -39,7 +39,8 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -100,9 +101,12 @@ describe("Synopsys Bridge test", () => {
             });
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
-            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).includes("Invalid value for failureSeverities");
-            })
+            try {
+                await synopsysBridge.prepareCommand("/temp");
+            } catch (e) {
+                const errorObject = e as Error;
+                expect(errorObject.message).includes("Invalid value for failureSeverities");
+            }
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'});
@@ -138,7 +142,8 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: "polaris"});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -484,7 +489,8 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => Promise.resolve(" --stage blackduck --state bd_input.json"));
@@ -654,7 +660,8 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'true'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");
@@ -668,7 +675,8 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'INCLUDE_DIAGNOSTICS', {value: 'false'});
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
-            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => "./bridge --stage polaris --state polaris_input.json");
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() =>
+                Promise.resolve("./bridge --stage polaris --state polaris_input.json"));
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             const preparedCommand = await synopsysBridge.prepareCommand("/temp");

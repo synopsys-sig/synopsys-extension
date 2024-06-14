@@ -121,7 +121,7 @@ export class SynopsysBridge {
           await this.formatCommandForClassicEditor(formattedCommand, tempDir);
       } else {
         // To support multi-scan using YAML
-        [formattedCommand, polarisErrors] = this.preparePolarisCommand(
+        [formattedCommand, polarisErrors] = await this.preparePolarisCommand(
           formattedCommand,
           tempDir
         );
@@ -174,7 +174,7 @@ export class SynopsysBridge {
   ): Promise<[string, string[]]> {
     let errors: string[] = [];
     if (SCAN_TYPE == "polaris") {
-      [formattedCommand, errors] = this.preparePolarisCommand(
+      [formattedCommand, errors] = await this.preparePolarisCommand(
         formattedCommand,
         tempDir
       );
@@ -192,16 +192,16 @@ export class SynopsysBridge {
     return [formattedCommand, errors];
   }
 
-  private preparePolarisCommand(
+  private async preparePolarisCommand(
     formattedCommand: string,
     tempDir: string
-  ): [string, string[]] {
+  ): Promise<[string, string[]]> {
     // validating and preparing command for polaris
     const polarisErrors: string[] = validatePolarisInputs();
     const commandFormatter = new SynopsysToolsParameter(tempDir);
     if (polarisErrors.length === 0 && inputs.POLARIS_SERVER_URL) {
       formattedCommand = formattedCommand.concat(
-        commandFormatter.getFormattedCommandForPolaris()
+        await commandFormatter.getFormattedCommandForPolaris()
       );
     }
     return [formattedCommand, polarisErrors];
