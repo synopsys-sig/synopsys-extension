@@ -45,34 +45,12 @@ export async function run() {
       getWorkSpaceDirectory(),
       command
     );
+    console.log("Result ==============: ", result);
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       console.log(
         `##vso[task.setvariable variable=status;isoutput=true]${result}`
       );
-    }
-
-    if (result == ErrorCode.BRIDGE_BREAK_ENABLED) {
-      if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Failed)) {
-        taskLib.setResult(
-          taskLib.TaskResult.Failed,
-          "Marked the build as Failed"
-        );
-      } else if (
-        equalsIgnoreCase(
-          inputs.MARK_BUILD_STATUS,
-          BuildStatus.SucceededWithIssues
-        )
-      ) {
-        taskLib.setResult(
-          taskLib.TaskResult.SucceededWithIssues,
-          "Marked the build as SucceededWithIssues"
-        );
-      } else if (
-        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)
-      ) {
-        taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build as Succeeded");
-      }
     }
   } catch (error: any) {
     throw error;
@@ -131,11 +109,43 @@ run().catch((error) => {
         `##vso[task.setvariable variable=status;isoutput=true]${status}`
       );
     }
-    taskLib.setResult(
+
+    if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
+      if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)) {
+        console.log("########## Inside Succeeded");
+        taskLib.setResult(
+          taskLib.TaskResult.Succeeded,
+          "Marked the build as Succeeded"
+        );
+      } else if (
+        equalsIgnoreCase(
+          inputs.MARK_BUILD_STATUS,
+          BuildStatus.SucceededWithIssues
+        )
+      ) {
+        console.log(">>>>>>>>>>> Inside SucceededWithIssues");
+        taskLib.setResult(
+          taskLib.TaskResult.SucceededWithIssues,
+          "Marked the build as SucceededWithIssues"
+        );
+      } else if (
+        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Failed)
+      ) {
+        console.log(":::::::::::::: Inside FAILED ");
+        taskLib.setResult(
+          taskLib.TaskResult.Failed,
+          isReturnStatusEnabled
+            ? "Workflow failed! ".concat(logExitCodes(error.message, status))
+            : "Workflow failed!"
+        );
+      }
+    }
+
+    /*taskLib.setResult(
       taskLib.TaskResult.Failed,
       isReturnStatusEnabled
         ? "Workflow failed! ".concat(logExitCodes(error.message, status))
         : "Workflow failed!"
-    );
+    );*/
   }
 });
