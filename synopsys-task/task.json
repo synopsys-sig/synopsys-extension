@@ -551,7 +551,22 @@
       "required": false,
       "helpMarkDown": "If provided, Synopsys Task will be using local network to download and execute synopsys bridge.",
       "groupName": "optionalSettings"
-    }
+    },
+    {
+      "name": "markBuildStatus",
+      "type": "pickList",
+      "label": "Mark Build Status If Issues Are Present",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the build status if issues are present. Default value: Failed. Supported values are: Failure, SucceededWithIssues and Succeeded.",
+      "options": {
+        "": "",
+        "Failure": "Failure",
+        "SucceededWithIssues": "SucceededWithIssues",
+        "Succeeded": "Succeeded"
+      },
+      "groupName": "optionalSettings"
+    },
   ],
   "execution": {
     "Node10": {

@@ -423,4 +423,5 @@ export const RETURN_STATUS =
 
 export const MARK_BUILD_STATUS =
   taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() ||
+  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR)?.trim() ||
   BuildStatus.Failed;
