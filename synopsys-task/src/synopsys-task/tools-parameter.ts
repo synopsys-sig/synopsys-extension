@@ -447,8 +447,10 @@ export class SynopsysToolsParameter {
         if (buildReason === AZURE_BUILD_REASON.MANUAL) {
           throw new Error(
             "COVERITY_STREAM_NAME is mandatory for azure manual trigger"
-                .concat(constants.SPACE)
-                .concat(ErrorCode.REQUIRED_COVERITY_STREAM_NAME.toString())
+              .concat(constants.SPACE)
+              .concat(
+                ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString()
+              )
           );
         }
 
@@ -698,8 +700,8 @@ export class SynopsysToolsParameter {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
           "Missing required azure token for fix pull request/automation comment"
-              .concat(constants.SPACE)
-              .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
         );
       }
 

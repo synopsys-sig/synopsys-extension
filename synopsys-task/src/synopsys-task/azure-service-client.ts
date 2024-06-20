@@ -65,10 +65,10 @@ export class SynopsysAzureService {
         throw new Error(
           "Failed to get pull request info for current build from source branch: "
             .concat(azureData.repository.branch.name)
-              .concat(constants.SPACE)
-              .concat(
-                  ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
-              )
+            .concat(constants.SPACE)
+            .concat(
+              ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString()
+            )
         );
       }
     }

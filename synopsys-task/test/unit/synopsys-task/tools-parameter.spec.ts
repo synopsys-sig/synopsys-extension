@@ -437,6 +437,7 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains("COVERITY_STREAM_NAME is mandatory for azure manual trigger")
+                expect(errorObj.message).contains(ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString());
             }
         });
 

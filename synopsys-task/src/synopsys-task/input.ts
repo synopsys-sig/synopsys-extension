@@ -1,6 +1,7 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
+import { BuildStatus } from "./enum/BuildStatus";
 
 const deprecatedInputs: string[] = [];
 
@@ -421,4 +422,5 @@ export const RETURN_STATUS =
   taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
 
 export const MARK_BUILD_STATUS =
-  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() || "FAILED";
+  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() ||
+  BuildStatus.Failed;

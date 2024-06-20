@@ -3,6 +3,7 @@ import {
   getTempDir,
   parseToBoolean,
   IS_PR_EVENT,
+  getMappedTaskResult,
 } from "./synopsys-task/utility";
 import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -17,6 +18,7 @@ import { AzurePrResponse } from "./synopsys-task/model/azure";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 import { BuildStatus } from "./synopsys-task/enum/BuildStatus";
 import { equalsIgnoreCase } from "./synopsys-task/utility";
+import { TaskResult } from "azure-pipelines-task-lib/task";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -100,7 +102,6 @@ export function getStatusFromError(errorObject: Error): string {
 
 run().catch((error) => {
   if (error.message != undefined) {
-    taskLib.error(error.message);
     const isReturnStatusEnabled = parseToBoolean(inputs.RETURN_STATUS);
     const status = getStatusFromError(error);
 
@@ -111,35 +112,27 @@ run().catch((error) => {
       );
     }
 
-    if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
-      if (equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Succeeded)) {
-        console.log("########## Inside Succeeded");
-        taskLib.setResult(
-          taskLib.TaskResult.Succeeded,
-          "Marked the build as Succeeded"
-        ); //need to confirm the message
-      } else if (
-        equalsIgnoreCase(
-          inputs.MARK_BUILD_STATUS,
-          BuildStatus.SucceededWithIssues
-        )
-      ) {
-        console.log(">>>>>>>>>>> Inside SucceededWithIssues");
-        taskLib.setResult(
-          taskLib.TaskResult.SucceededWithIssues,
-          "Marked the build as SucceededWithIssues"
-        ); //need to confirm the message
-      } else if (
-        equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Failed)
-      ) {
-        console.log(":::::::::::::: Inside FAILED ");
-        taskLib.setResult(
-          taskLib.TaskResult.Failed,
-          isReturnStatusEnabled
-            ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-            : "Workflow failed!"
-        ); //need to confirm the message
-      }
+    const taskResult: TaskResult = getMappedTaskResult(
+      inputs.MARK_BUILD_STATUS
+    );
+
+    if (
+      status == ErrorCode.BRIDGE_BREAK_ENABLED.toString() &&
+      taskResult !== TaskResult.Failed
+    ) {
+      console.log(`Marked build status as: ${taskResult}`);
+      taskLib.setResult(
+        taskResult,
+        "Marked build status as ".concat(taskResult.toString())
+      );
+    } else {
+      taskLib.error(error.message);
+      taskLib.setResult(
+        taskLib.TaskResult.Failed,
+        isReturnStatusEnabled
+          ? "Workflow failed! ".concat(logExitCodes(error.message, status))
+          : "Workflow failed! ".concat(error.message)
+      );
     }
   }
 });

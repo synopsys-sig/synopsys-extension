@@ -1,4 +1,5 @@
 import path from "path";
+import * as constants from "./application-constant";
 import {
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
@@ -11,13 +12,14 @@ import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as constants from "./application-constant";
+import { TaskResult } from "azure-pipelines-task-lib/task";
 import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
   AzurePrResponse,
 } from "./model/azure";
 import { ErrorCode } from "./enum/ErrorCodes";
+import { BuildStatus } from "./enum/BuildStatus";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -233,4 +235,14 @@ export function getStatusCode(str: string) {
 
 export function equalsIgnoreCase(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
+}
+
+export function getMappedTaskResult(buildStatus: string): TaskResult {
+  if (equalsIgnoreCase(buildStatus, BuildStatus.Succeeded)) {
+    return TaskResult.Succeeded;
+  } else if (equalsIgnoreCase(buildStatus, BuildStatus.SucceededWithIssues)) {
+    return TaskResult.SucceededWithIssues;
+  } else {
+    return TaskResult.Failed;
+  }
 }

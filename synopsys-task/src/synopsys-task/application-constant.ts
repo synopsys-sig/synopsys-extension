@@ -327,11 +327,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
     "No destination directory found for unzipping Synopsys Bridge",
   ],
   [
-    ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString(),
-    "Unable to find a Pull request Id from current source build with branch",
-  ],
-  [
-    ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FROM_SOURCE_BRANCH.toString(),
+    ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
     "Failed to get pull request Id for current build from source branch",
   ],
   [
@@ -341,6 +337,10 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   [
     ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
     "coverity_install_directory parameter for Coverity is invalid",
+  ],
+  [
+    ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
+    "COVERITY_STREAM_NAME is mandatory for azure manual trigger",
   ],
   [
     ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
