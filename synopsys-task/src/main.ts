@@ -116,7 +116,7 @@ run().catch((error) => {
         taskLib.setResult(
           taskLib.TaskResult.Succeeded,
           "Marked the build as Succeeded"
-        );
+        ); //need to confirm the message
       } else if (
         equalsIgnoreCase(
           inputs.MARK_BUILD_STATUS,
@@ -127,7 +127,7 @@ run().catch((error) => {
         taskLib.setResult(
           taskLib.TaskResult.SucceededWithIssues,
           "Marked the build as SucceededWithIssues"
-        );
+        ); //need to confirm the message
       } else if (
         equalsIgnoreCase(inputs.MARK_BUILD_STATUS, BuildStatus.Failed)
       ) {
@@ -137,15 +137,8 @@ run().catch((error) => {
           isReturnStatusEnabled
             ? "Workflow failed! ".concat(logExitCodes(error.message, status))
             : "Workflow failed!"
-        );
+        ); //need to confirm the message
       }
     }
-
-    /*taskLib.setResult(
-      taskLib.TaskResult.Failed,
-      isReturnStatusEnabled
-        ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-        : "Workflow failed!"
-    );*/
   }
 });

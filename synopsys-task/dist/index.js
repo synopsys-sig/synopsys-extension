@@ -128,25 +128,19 @@ run().catch((error) => {
         if (status == ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
             if ((0, utility_2.equalsIgnoreCase)(inputs.MARK_BUILD_STATUS, BuildStatus_1.BuildStatus.Succeeded)) {
                 console.log("########## Inside Succeeded");
-                taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build as Succeeded");
+                taskLib.setResult(taskLib.TaskResult.Succeeded, "Marked the build as Succeeded"); //need to confirm the message
             }
             else if ((0, utility_2.equalsIgnoreCase)(inputs.MARK_BUILD_STATUS, BuildStatus_1.BuildStatus.SucceededWithIssues)) {
                 console.log(">>>>>>>>>>> Inside SucceededWithIssues");
-                taskLib.setResult(taskLib.TaskResult.SucceededWithIssues, "Marked the build as SucceededWithIssues");
+                taskLib.setResult(taskLib.TaskResult.SucceededWithIssues, "Marked the build as SucceededWithIssues"); //need to confirm the message
             }
             else if ((0, utility_2.equalsIgnoreCase)(inputs.MARK_BUILD_STATUS, BuildStatus_1.BuildStatus.Failed)) {
                 console.log(":::::::::::::: Inside FAILED ");
                 taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
                     ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-                    : "Workflow failed!");
+                    : "Workflow failed!"); //need to confirm the message
             }
         }
-        /*taskLib.setResult(
-          taskLib.TaskResult.Failed,
-          isReturnStatusEnabled
-            ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-            : "Workflow failed!"
-        );*/
     }
 });
 
@@ -2980,8 +2974,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -10175,7 +10169,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
 function debug(message) {
     tl.debug(message);
 }
