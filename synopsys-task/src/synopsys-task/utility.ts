@@ -12,7 +12,11 @@ import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
-import { AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES } from "./model/azure";
+import {
+  AZURE_BUILD_REASON,
+  AZURE_ENVIRONMENT_VARIABLES,
+  AzurePrResponse,
+} from "./model/azure";
 import { ErrorCode } from "./enum/ErrorCodes";
 
 export function cleanUrl(url: string): string {
@@ -197,10 +201,19 @@ export function filterEmptyData(data: object) {
   );
 }
 
-export function isPullRequestEvent(): boolean {
+// Global variable to check PR events for uploading SARIF files in main.ts, reducing the need for current code refactoring
+export let IS_PR_EVENT = false;
+
+export function isPullRequestEvent(
+  azurePrResponse: AzurePrResponse | undefined
+): boolean {
   const buildReason =
     taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_BUILD_REASON) || "";
-  return buildReason === AZURE_BUILD_REASON.PULL_REQUEST;
+  IS_PR_EVENT =
+    buildReason === AZURE_BUILD_REASON.PULL_REQUEST ||
+    (azurePrResponse?.pullRequestId !== undefined &&
+      azurePrResponse.pullRequestId > 0);
+  return IS_PR_EVENT;
 }
 
 export function extractBranchName(branchName: string): string {

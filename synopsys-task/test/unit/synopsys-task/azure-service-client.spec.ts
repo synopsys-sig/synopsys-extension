@@ -70,8 +70,9 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
 
-            const result = await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData)
-            expect(result).equals(18)
+            const result = await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData)
+            expect(result?.pullRequestId).equals(18);
+            expect(result?.targetRefName).equals('refs/heads/main');
         })
 
         it('Test getBridgeVersionFromLatestURL exception', async () => {
@@ -91,8 +92,8 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
             sinon.stub(httpc, 'HttpClient').returns({
                 get: httpClientStub,
             } as any);
-            await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Unable to find a Pull request Id from current source build with branch: feature/xyz')
+            await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
+                expect(errorObj.message).contains('Unable to find pull request info from current source build with branch: feature/xyz')
                 expect(errorObj.message).contains(ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString())
             })
 
@@ -114,8 +115,8 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
                 get: httpClientStub,
             } as any);
 
-            await synopsysAzureService.getPullRequestIdForClassicEditorFlow(azureData).catch(errorObj => {
-                expect(errorObj.message).contains('Failed to get pull request Id for current build from source branch:')
+            await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
+                expect(errorObj.message).contains('Failed to get pull request info for current build from source branch: feature/xyz')
                 expect(errorObj.message).contains(ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString())
             })
 

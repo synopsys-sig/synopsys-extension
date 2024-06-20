@@ -1,5 +1,5 @@
 import { HttpClient } from "typed-rest-client/HttpClient";
-import { AzureData } from "./model/azure";
+import { AzureData, AzurePrResponse } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
@@ -14,54 +14,64 @@ export class SynopsysAzureService {
     this.apiVersion = "7.0";
   }
 
-  async getPullRequestIdForClassicEditorFlow(
-    azureData: AzureData
-  ): Promise<number> {
-    const StringFormat = (url: string, ...args: string[]) =>
-      url.replace(
-        /{(\d+)}/g,
-        (match, index) => encodeURIComponent(args[index]) || ""
+  async getAzurePrResponseForManualTriggerFlow(
+    azureData: AzureData | undefined
+  ): Promise<AzurePrResponse | undefined> {
+    if (
+      azureData &&
+      process.env["BUILD_REASON"] &&
+      process.env["BUILD_REASON"] !== "PullRequest"
+    ) {
+      const StringFormat = (url: string, ...args: string[]) =>
+        url.replace(
+          /{(\d+)}/g,
+          (match, index) => encodeURIComponent(args[index]) || ""
+        );
+
+      const endpoint = StringFormat(
+        azureData.api.url.concat(this.azureGetMergeRequestsAPI),
+        azureData.organization.name,
+        azureData.project.name,
+        azureData.repository.name,
+        azureData.repository.branch.name,
+        this.apiVersion
+      );
+      taskLib.debug(`Azure check pull request API: ${endpoint}`);
+      const token: string = ":".concat(azureData.user.token);
+      const encodedToken: string = Buffer.from(token, "utf8").toString(
+        "base64"
       );
 
-    const endpoint = StringFormat(
-      azureData.api.url.concat(this.azureGetMergeRequestsAPI),
-      azureData.organization.name,
-      azureData.project.name,
-      azureData.repository.name,
-      azureData.repository.branch.name,
-      this.apiVersion
-    );
-    taskLib.debug(`Endpoint: ${endpoint}`);
-    const token: string = ":".concat(azureData.user.token);
-    const encodedToken: string = Buffer.from(token, "utf8").toString("base64");
-
-    const httpClient = new HttpClient("synopsys-azure-service");
-    const httpResponse = await httpClient.get(endpoint, {
-      Authorization: "Basic ".concat(encodedToken),
-      Accept: "application/json",
-    });
-    if (httpResponse.message.statusCode === 200) {
-      const azurePrResponse = JSON.parse(await httpResponse.readBody());
-      if (azurePrResponse.count === 1) {
-        return azurePrResponse.value[0].pullRequestId;
+      const httpClient = new HttpClient("synopsys-azure-service");
+      const httpResponse = await httpClient.get(endpoint, {
+        Authorization: "Basic ".concat(encodedToken),
+        Accept: "application/json",
+      });
+      if (httpResponse.message.statusCode === 200) {
+        const azurePrResponse = JSON.parse(await httpResponse.readBody());
+        if (azurePrResponse.count === 1) {
+          return {
+            pullRequestId: azurePrResponse.value[0].pullRequestId,
+            targetRefName: azurePrResponse.value[0].targetRefName,
+          };
+        } else {
+          console.info(
+            "Unable to find pull request info for the current source build with branch: ".concat(
+              azureData.repository.branch.name
+            )
+          );
+        }
       } else {
         throw new Error(
-          "Unable to find a Pull request Id from current source build with branch: "
+          "Failed to get pull request info for current build from source branch: "
             .concat(azureData.repository.branch.name)
-            .concat(constants.SPACE)
-            .concat(
-              ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
-            )
+              .concat(constants.SPACE)
+              .concat(
+                  ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
+              )
         );
       }
-    } else {
-      throw new Error(
-        "Failed to get pull request Id for current build from source branch: "
-          .concat(constants.SPACE)
-          .concat(
-            ErrorCode.FAILED_TO_GET_PULL_REQUEST_ID_FOR_CURRENT_BUILD.toString()
-          )
-      );
     }
+    return undefined;
   }
 }
