@@ -10,7 +10,7 @@
   "version": {
     "Major": 1,
     "Minor": 7,
-    "Patch": 0
+    "Patch": 103
   },
   "instanceNameFormat": "Synopsys Security Scan",
   "groups": [
@@ -561,7 +561,7 @@
       "helpMarkDown": "Specify the build status if issues are present. Default value: Failed. Supported values are: Failure, SucceededWithIssues and Succeeded.",
       "options": {
         "": "",
-        "Failure": "Failure",
+        "Failed": "Failed",
         "SucceededWithIssues": "SucceededWithIssues",
         "Succeeded": "Succeeded"
       },
