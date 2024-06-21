@@ -43,12 +43,12 @@ exports.getStatusFromError = exports.logExitCodes = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
+const task_1 = __nccwpck_require__(347);
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
-const diagnostics_1 = __nccwpck_require__(2926);
 const input_1 = __nccwpck_require__(7533);
+const diagnostics_1 = __nccwpck_require__(2926);
 const ErrorCodes_1 = __nccwpck_require__(4487);
-const task_1 = __nccwpck_require__(347);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Synopsys Task started...");
@@ -115,6 +115,22 @@ function getStatusFromError(errorObject) {
     return errorObject.message.trim().split(" ").pop() || "";
 }
 exports.getStatusFromError = getStatusFromError;
+function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage, isReturnStatusEnabled) {
+    if (status == ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
+        console.log(`Marking build status as ${taskResult} since issues are present`);
+        if (taskResult === task_1.TaskResult.Failed) {
+            taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
+                ? "Workflow failed! ".concat(logExitCodes(errorMessage, status))
+                : "Workflow failed! ".concat(errorMessage));
+        }
+        else {
+            taskLib.setResult(taskResult, "Marked build status as ".concat(taskResult.toString()));
+        }
+    }
+    else {
+        console.log(`Marking build status as ${taskResult} is ignored since exit code is: ${status}`);
+    }
+}
 run().catch((error) => {
     if (error.message != undefined) {
         const isReturnStatusEnabled = (0, utility_1.parseToBoolean)(inputs.RETURN_STATUS);
@@ -123,14 +139,12 @@ run().catch((error) => {
         if (isReturnStatusEnabled) {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
         }
+        taskLib.error(error.message);
         const taskResult = (0, utility_1.getMappedTaskResult)(inputs.MARK_BUILD_STATUS);
-        if (status == ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString() &&
-            taskResult !== task_1.TaskResult.Failed) {
-            console.log(`Marked build status as: ${taskResult}`);
-            taskLib.setResult(taskResult, "Marked build status as ".concat(taskResult.toString()));
+        if (taskResult) {
+            markBuildStatusIfIssuesArePresent(status, taskResult, error.message, isReturnStatusEnabled);
         }
         else {
-            taskLib.error(error.message);
             taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
                 ? "Workflow failed! ".concat(logExitCodes(error.message, status))
                 : "Workflow failed! ".concat(error.message));
@@ -1047,14 +1061,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var _a, _b, _c, _d;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BLACKDUCK_AUTOMATION_PRCOMMENT = exports.BLACKDUCK_FIXPR_ENABLED = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES = exports.BLACKDUCK_SCAN_FULL = exports.BLACKDUCK_INSTALL_DIRECTORY = exports.BLACKDUCK_API_TOKEN = exports.BLACKDUCK_URL = exports.COVERITY_PROJECT_DIRECTORY = exports.COVERITY_VERSION = exports.COVERITY_AUTOMATION_PRCOMMENT = exports.COVERITY_LOCAL = exports.COVERITY_POLICY_VIEW = exports.COVERITY_INSTALL_DIRECTORY = exports.COVERITY_STREAM_NAME = exports.COVERITY_PROJECT_NAME = exports.COVERITY_USER_PASSWORD = exports.COVERITY_USER = exports.COVERITY_URL = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.POLARIS_REPORTS_SARIF_SEVERITIES = exports.POLARIS_REPORTS_SARIF_FILE_PATH = exports.POLARIS_REPORTS_SARIF_CREATE = exports.POLARIS_PR_COMMENT_SEVERITIES = exports.POLARIS_PR_COMMENT_ENABLED = exports.PROJECT_SOURCE_EXCLUDES = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS = exports.PROJECT_SOURCE_ARCHIVE = exports.POLARIS_PROJECT_DIRECTORY = exports.POLARIS_ASSESSMENT_MODE = exports.POLARIS_BRANCH_PARENT_NAME = exports.POLARIS_BRANCH_NAME = exports.POLARIS_TRIAGE = exports.POLARIS_ASSESSMENT_TYPES = exports.POLARIS_PROJECT_NAME = exports.POLARIS_APPLICATION_NAME = exports.POLARIS_ACCESS_TOKEN = exports.POLARIS_SERVER_URL = exports.SCAN_TYPE = exports.AZURE_TOKEN = exports.INCLUDE_DIAGNOSTICS = exports.BRIDGE_DOWNLOAD_VERSION = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.ENABLE_NETWORK_AIRGAP = exports.BRIDGE_DOWNLOAD_URL = exports.showLogForDeprecatedInputs = exports.getDelimitedInput = exports.getPathInput = exports.getBoolInput = exports.getInput = void 0;
 exports.MARK_BUILD_STATUS = exports.RETURN_STATUS = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = exports.BLACKDUCK_PROJECT_DIRECTORY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH = exports.BLACKDUCK_REPORTS_SARIF_CREATE = exports.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE = exports.BLACKDUCK_FIXPR_FILTER_SEVERITIES = exports.BLACKDUCK_FIXPR_CREATE_SINGLE_PR = exports.BLACKDUCK_FIXPR_MAXCOUNT = void 0;
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const polaris_1 = __nccwpck_require__(9073);
-const BuildStatus_1 = __nccwpck_require__(3825);
 const deprecatedInputs = [];
 function getInput(newKey, classicEditorKey, deprecatedKey) {
     const newInput = taskLib.getInput(newKey);
@@ -1205,9 +1218,7 @@ exports.BLACKDUCK_PROJECT_DIRECTORY = getInput(constants.PROJECT_DIRECTORY_KEY, 
 exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES = getDelimitedInput(constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, constants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY);
 exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY, constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR, constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES);
 exports.RETURN_STATUS = ((_b = taskLib.getInput(constants.RETURN_STATUS_KEY)) === null || _b === void 0 ? void 0 : _b.trim()) || "true";
-exports.MARK_BUILD_STATUS = ((_c = taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)) === null || _c === void 0 ? void 0 : _c.trim()) ||
-    ((_d = taskLib.getInput(constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR)) === null || _d === void 0 ? void 0 : _d.trim()) ||
-    BuildStatus_1.BuildStatus.Failed;
+exports.MARK_BUILD_STATUS = getInput(constants.MARK_BUILD_STATUS_KEY, constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR, null);
 
 
 /***/ }),
@@ -2678,8 +2689,11 @@ function getMappedTaskResult(buildStatus) {
     else if (equalsIgnoreCase(buildStatus, BuildStatus_1.BuildStatus.SucceededWithIssues)) {
         return task_1.TaskResult.SucceededWithIssues;
     }
-    else {
+    else if (equalsIgnoreCase(buildStatus, BuildStatus_1.BuildStatus.Failed)) {
         return task_1.TaskResult.Failed;
+    }
+    else {
+        return undefined;
     }
 }
 exports.getMappedTaskResult = getMappedTaskResult;

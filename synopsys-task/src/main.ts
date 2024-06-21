@@ -5,15 +5,18 @@ import {
   IS_PR_EVENT,
   parseToBoolean,
 } from "./synopsys-task/utility";
-import {SynopsysBridge} from "./synopsys-task/synopsys-bridge";
+import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import {TaskResult} from "azure-pipelines-task-lib/task";
+import { TaskResult } from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
 import * as inputs from "./synopsys-task/input";
-import {showLogForDeprecatedInputs} from "./synopsys-task/input";
-import {uploadDiagnostics, uploadSarifResultAsArtifact,} from "./synopsys-task/diagnostics";
-import {AzurePrResponse} from "./synopsys-task/model/azure";
-import {ErrorCode} from "./synopsys-task/enum/ErrorCodes";
+import { showLogForDeprecatedInputs } from "./synopsys-task/input";
+import {
+  uploadDiagnostics,
+  uploadSarifResultAsArtifact,
+} from "./synopsys-task/diagnostics";
+import { AzurePrResponse } from "./synopsys-task/model/azure";
+import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 
 export async function run() {
   console.log("Synopsys Task started...");
@@ -95,6 +98,36 @@ export function getStatusFromError(errorObject: Error): string {
   return errorObject.message.trim().split(" ").pop() || "";
 }
 
+function markBuildStatusIfIssuesArePresent(
+  status: string,
+  taskResult: TaskResult,
+  errorMessage: string,
+  isReturnStatusEnabled: boolean
+) {
+  if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
+    console.log(
+      `Marking build status as ${taskResult} since issues are present`
+    );
+    if (taskResult === TaskResult.Failed) {
+      taskLib.setResult(
+        taskLib.TaskResult.Failed,
+        isReturnStatusEnabled
+          ? "Workflow failed! ".concat(logExitCodes(errorMessage, status))
+          : "Workflow failed! ".concat(errorMessage)
+      );
+    } else {
+      taskLib.setResult(
+        taskResult,
+        "Marked build status as ".concat(taskResult.toString())
+      );
+    }
+  } else {
+    console.log(
+      `Marking build status as ${taskResult} is ignored since exit code is: ${status}`
+    );
+  }
+}
+
 run().catch((error) => {
   if (error.message != undefined) {
     const isReturnStatusEnabled = parseToBoolean(inputs.RETURN_STATUS);
@@ -114,30 +147,18 @@ run().catch((error) => {
     );
 
     if (taskResult) {
-      if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
-        console.log(`Marking build status as ${taskResult} since issues are present`);
-        if (taskResult === TaskResult.Failed) {
-          taskLib.setResult(
-              taskLib.TaskResult.Failed,
-              isReturnStatusEnabled
-                  ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-                  : "Workflow failed! ".concat(error.message)
-          );
-        } else {
-          taskLib.setResult(
-              taskResult,
-              "Marked build status as ".concat(taskResult.toString())
-          );
-        }
-      } else {
-        console.log(`Marking build status as ${taskResult} is ignored since exit code is: ${status}`);
-      }
+      markBuildStatusIfIssuesArePresent(
+        status,
+        taskResult,
+        error.message,
+        isReturnStatusEnabled
+      );
     } else {
       taskLib.setResult(
-          taskLib.TaskResult.Failed,
-          isReturnStatusEnabled
-              ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-              : "Workflow failed! ".concat(error.message)
+        taskLib.TaskResult.Failed,
+        isReturnStatusEnabled
+          ? "Workflow failed! ".concat(logExitCodes(error.message, status))
+          : "Workflow failed! ".concat(error.message)
       );
     }
   }
