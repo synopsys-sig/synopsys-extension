@@ -25,6 +25,10 @@ export interface CoverityConnect {
   network?: NetworkAirGap;
   local?: boolean;
   version?: string;
+  build?: Command;
+  clean?: Command;
+  config?: Config;
+  args?: string;
 }
 
 export interface CoverityData {
@@ -37,4 +41,12 @@ export interface CoverityData {
 
 export interface NetworkAirGap {
   airGap: boolean;
+}
+
+export interface Command {
+  command: string;
+}
+
+export interface Config {
+  path: string;
 }

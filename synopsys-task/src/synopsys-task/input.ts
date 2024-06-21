@@ -321,6 +321,27 @@ export const COVERITY_PROJECT_DIRECTORY = getInput(
   null
 );
 
+export const COVERITY_BUILD_COMMAND = getInput(
+  constants.COVERITY_BUILD_COMMAND_KEY,
+  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR,
+  null
+);
+export const COVERITY_CLEAN_COMMAND = getInput(
+  constants.COVERITY_CLEAN_COMMAND_KEY,
+  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR,
+  null
+);
+export const COVERITY_CONFIG_PATH = getInput(
+  constants.COVERITY_CONFIG_PATH_KEY,
+  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR,
+  null
+);
+export const COVERITY_ARGS = getInput(
+  constants.COVERITY_ARGS_KEY,
+  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR,
+  null
+);
+
 // Blackduck related inputs
 export const BLACKDUCK_URL = getInput(
   constants.BLACKDUCK_URL_KEY,
@@ -415,4 +436,20 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY,
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
+);
+
+export const BLACKDUCK_SEARCH_DEPTH = getInput(
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY,
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR,
+  null
+);
+export const BLACKDUCK_CONFIG_PATH = getInput(
+  constants.BLACKDUCK_CONFIG_PATH_KEY,
+  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR,
+  null
+);
+export const BLACKDUCK_ARGS = getInput(
+  constants.BLACKDUCK_ARGS_KEY,
+  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR,
+  null
 );

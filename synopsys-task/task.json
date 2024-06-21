@@ -384,6 +384,46 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "coverityBuildCommand",
+      "type": "string",
+      "label": "Coverity Build Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build command for Coverity",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityCleanCommand",
+      "type": "string",
+      "label": "Coverity Clean Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Clean command for Coverity",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityConfigPath",
+      "type": "string",
+      "label": "Coverity Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity config file path location",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityArgs",
+      "type": "string",
+      "label": "Coverity Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma separated list of coverity options",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -530,6 +570,36 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckSearchDepth",
+      "type": "string",
+      "label": "Blackduck Search Depth",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Number indicating the search depth in the source directory",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckConfigPath",
+      "type": "string",
+      "label": "Blackduck Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Black Duck config file path location",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckArgs",
+      "type": "string",
+      "label": "Blackduck Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma separated list of black duck options",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },

@@ -224,6 +224,14 @@ export const COVERITY_LOCAL_KEY_CLASSIC_EDITOR = "bridge_coverity_local";
 export const BRIDGE_COVERITY_VERSION_KEY = "bridge_coverity_version";
 export const COVERITY_VERSION_KEY = "coverity_version";
 export const COVERITY_VERSION_KEY_CLASSIC_EDITOR = "bridge_coverity_version";
+export const COVERITY_BUILD_COMMAND_KEY = "coverity_build_command";
+export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = "coverityBuildCommand";
+export const COVERITY_CLEAN_COMMAND_KEY = "coverity_clean_command";
+export const COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = "coverityCleanCommand";
+export const COVERITY_CONFIG_PATH_KEY = "coverity_config_path";
+export const COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = "coverityConfigPath";
+export const COVERITY_ARGS_KEY = "coverity_args";
+export const COVERITY_ARGS_KEY_CLASSIC_EDITOR = "coverityArgs";
 
 // Bridge Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -368,6 +376,12 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY =
   "blackduck_reports_sarif_groupSCAIssues";
 export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR =
   "blackduckReportsSarifGroupSCAIssues";
+export const BLACKDUCK_SEARCH_DEPTH_KEY = "blackduck_search_depth";
+export const BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR = "blackduckSearchDepth";
+export const BLACKDUCK_CONFIG_PATH_KEY = "blackduck_config_path";
+export const BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR = "blackduckConfigPath";
+export const BLACKDUCK_ARGS_KEY = "blackduck_args";
+export const BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR = "blackduckArgs";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
