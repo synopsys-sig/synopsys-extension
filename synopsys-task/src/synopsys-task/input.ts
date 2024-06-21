@@ -421,7 +421,8 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
 export const RETURN_STATUS =
   taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
 
-export const MARK_BUILD_STATUS =
-  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY)?.trim() ||
-  taskLib.getInput(constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR)?.trim() ||
-  BuildStatus.Failed;
+export const MARK_BUILD_STATUS = getInput(
+    constants.MARK_BUILD_STATUS_KEY,
+    constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+    null
+);

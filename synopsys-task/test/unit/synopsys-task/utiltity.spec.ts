@@ -241,6 +241,7 @@ describe("Utilities", () => {
             expect(utility.getMappedTaskResult(BuildStatus.Failed)).equals(TaskResult.Failed);
             expect(utility.getMappedTaskResult(BuildStatus.Succeeded)).equals(TaskResult.Succeeded);
             expect(utility.getMappedTaskResult(BuildStatus.SucceededWithIssues)).equals(TaskResult.SucceededWithIssues);
+            expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
 });

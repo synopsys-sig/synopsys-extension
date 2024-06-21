@@ -237,12 +237,14 @@ export function equalsIgnoreCase(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
 
-export function getMappedTaskResult(buildStatus: string): TaskResult {
+export function getMappedTaskResult(buildStatus: string): TaskResult | undefined {
   if (equalsIgnoreCase(buildStatus, BuildStatus.Succeeded)) {
     return TaskResult.Succeeded;
   } else if (equalsIgnoreCase(buildStatus, BuildStatus.SucceededWithIssues)) {
     return TaskResult.SucceededWithIssues;
-  } else {
+  } else if (equalsIgnoreCase(buildStatus, BuildStatus.Failed)) {
     return TaskResult.Failed;
+  } else {
+    return undefined;
   }
 }
