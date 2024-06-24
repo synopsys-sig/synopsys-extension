@@ -108,14 +108,21 @@ function markBuildStatusIfIssuesArePresent(
 
   if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
     console.log(errorMessage);
-    console.log(exitMessage);
-    taskLib.setResult(
-      taskResult,
+    if (taskResult === TaskResult.Succeeded) {
+      console.log(exitMessage);
+    }
+    console.log(
       `Marking the build ${TaskResult[taskResult]} as configured in the task`
     );
+    taskLib.setResult(taskResult, exitMessage);
   } else {
+    taskLib.error(errorMessage);
     console.log(
       `Marking build status as ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
+    );
+    taskLib.setResult(
+      taskLib.TaskResult.Failed,
+      "Workflow failed! ".concat(exitMessage)
     );
   }
 }
