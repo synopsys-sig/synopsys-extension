@@ -118,7 +118,7 @@ function markBuildStatusIfIssuesArePresent(
   } else {
     taskLib.error(errorMessage);
     console.log(
-      `Marking build status as ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
+      `Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
     );
     taskLib.setResult(
       taskLib.TaskResult.Failed,

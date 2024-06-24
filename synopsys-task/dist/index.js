@@ -127,7 +127,7 @@ function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage) {
     }
     else {
         taskLib.error(errorMessage);
-        console.log(`Marking build status as ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`);
+        console.log(`Marking build status ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`);
         taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(exitMessage));
     }
 }
