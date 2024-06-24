@@ -558,7 +558,7 @@
       "label": "Mark Build Status If Issues Are Present",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Specify the build status if issues are present. Default value: Failed. Supported values are: Failure, SucceededWithIssues and Succeeded.",
+      "helpMarkDown": "Specify the build status if issues are present. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
         "": "",
         "Failed": "Failed",
@@ -566,7 +566,7 @@
         "Succeeded": "Succeeded"
       },
       "groupName": "optionalSettings"
-    },
+    }
   ],
   "execution": {
     "Node10": {

@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getStatusFromError = exports.logExitCodes = exports.run = void 0;
+exports.getStatusFromError = exports.getExitMessage = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -72,7 +72,6 @@ function run() {
             }
             // Execute prepared commands
             const result = yield sb.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
-            console.log("Result ==============: ", result);
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
                 console.log(`##vso[task.setvariable variable=status;isoutput=true]${result}`);
@@ -102,7 +101,7 @@ function run() {
     });
 }
 exports.run = run;
-function logExitCodes(message, exitCode) {
+function getExitMessage(message, exitCode) {
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
         : "Undefined error from extension: "
@@ -110,25 +109,20 @@ function logExitCodes(message, exitCode) {
             .concat(constants.SPACE)
             .concat(ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
 }
-exports.logExitCodes = logExitCodes;
+exports.getExitMessage = getExitMessage;
 function getStatusFromError(errorObject) {
     return errorObject.message.trim().split(" ").pop() || "";
 }
 exports.getStatusFromError = getStatusFromError;
-function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage, isReturnStatusEnabled) {
+function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage) {
+    const exitMessage = getExitMessage(errorMessage, status);
     if (status == ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
-        console.log(`Marking build status as ${taskResult} since issues are present`);
-        if (taskResult === task_1.TaskResult.Failed) {
-            taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
-                ? "Workflow failed! ".concat(logExitCodes(errorMessage, status))
-                : "Workflow failed! ".concat(errorMessage));
-        }
-        else {
-            taskLib.setResult(taskResult, "Marked build status as ".concat(taskResult.toString()));
-        }
+        console.log(errorMessage);
+        console.log(exitMessage);
+        taskLib.setResult(taskResult, `Marking the build ${task_1.TaskResult[taskResult]} as configured in the task`);
     }
     else {
-        console.log(`Marking build status as ${taskResult} is ignored since exit code is: ${status}`);
+        console.log(`Marking build status as ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`);
     }
 }
 run().catch((error) => {
@@ -139,15 +133,13 @@ run().catch((error) => {
         if (isReturnStatusEnabled) {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
         }
-        taskLib.error(error.message);
         const taskResult = (0, utility_1.getMappedTaskResult)(inputs.MARK_BUILD_STATUS);
-        if (taskResult) {
-            markBuildStatusIfIssuesArePresent(status, taskResult, error.message, isReturnStatusEnabled);
+        if (taskResult && taskResult !== task_1.TaskResult.Failed) {
+            markBuildStatusIfIssuesArePresent(status, taskResult, error.message);
         }
         else {
-            taskLib.setResult(taskLib.TaskResult.Failed, isReturnStatusEnabled
-                ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-                : "Workflow failed! ".concat(error.message));
+            taskLib.error(error.message);
+            taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(getExitMessage(error.message, status)));
         }
     }
 });

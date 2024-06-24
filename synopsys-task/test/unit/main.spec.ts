@@ -181,8 +181,8 @@ describe("Main function test cases", () => {
             const undefinedExitCode = "9090";
 
 
-            const erroMessageForDefinedExitCodes = main.logExitCodes(errorMessage, exitCode);
-            const erroMessageForUndefinedExitCodes = main.logExitCodes(undefinedErrorMessage, undefinedExitCode);
+            const erroMessageForDefinedExitCodes = main.getExitMessage(errorMessage, exitCode);
+            const erroMessageForUndefinedExitCodes = main.getExitMessage(undefinedErrorMessage, undefinedExitCode);
             expect("Exit Code: 101 Requires at least one scan type").to.equal(erroMessageForDefinedExitCodes);
             expect("Undefined error from extension: Unknown error 999").to.equal(erroMessageForUndefinedExitCodes);
         });

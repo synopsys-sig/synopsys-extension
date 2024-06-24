@@ -47,7 +47,7 @@ export async function run() {
       getWorkSpaceDirectory(),
       command
     );
-    console.log("Result ==============: ", result);
+
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
       console.log(
@@ -85,7 +85,7 @@ export async function run() {
   console.log("Synopsys Task workflow execution completed");
 }
 
-export function logExitCodes(message: string, exitCode: string): string {
+export function getExitMessage(message: string, exitCode: string): string {
   return constants.EXIT_CODE_MAP.has(exitCode)
     ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
     : "Undefined error from extension: "
@@ -101,29 +101,20 @@ export function getStatusFromError(errorObject: Error): string {
 function markBuildStatusIfIssuesArePresent(
   status: string,
   taskResult: TaskResult,
-  errorMessage: string,
-  isReturnStatusEnabled: boolean
+  errorMessage: string
 ) {
+  const exitMessage = getExitMessage(errorMessage, status);
+
   if (status == ErrorCode.BRIDGE_BREAK_ENABLED.toString()) {
-    console.log(
-      `Marking build status as ${taskResult} since issues are present`
+    console.log(errorMessage);
+    console.log(exitMessage);
+    taskLib.setResult(
+      taskResult,
+      `Marking the build ${TaskResult[taskResult]} as configured in the task`
     );
-    if (taskResult === TaskResult.Failed) {
-      taskLib.setResult(
-        taskLib.TaskResult.Failed,
-        isReturnStatusEnabled
-          ? "Workflow failed! ".concat(logExitCodes(errorMessage, status))
-          : "Workflow failed! ".concat(errorMessage)
-      );
-    } else {
-      taskLib.setResult(
-        taskResult,
-        "Marked build status as ".concat(taskResult.toString())
-      );
-    }
   } else {
     console.log(
-      `Marking build status as ${taskResult} is ignored since exit code is: ${status}`
+      `Marking build status as ${TaskResult[taskResult]} is ignored since exit code is: ${status}`
     );
   }
 }
@@ -140,25 +131,17 @@ run().catch((error) => {
       );
     }
 
-    taskLib.error(error.message);
-
     const taskResult: TaskResult | undefined = getMappedTaskResult(
       inputs.MARK_BUILD_STATUS
     );
 
-    if (taskResult) {
-      markBuildStatusIfIssuesArePresent(
-        status,
-        taskResult,
-        error.message,
-        isReturnStatusEnabled
-      );
+    if (taskResult && taskResult !== TaskResult.Failed) {
+      markBuildStatusIfIssuesArePresent(status, taskResult, error.message);
     } else {
+      taskLib.error(error.message);
       taskLib.setResult(
         taskLib.TaskResult.Failed,
-        isReturnStatusEnabled
-          ? "Workflow failed! ".concat(logExitCodes(error.message, status))
-          : "Workflow failed! ".concat(error.message)
+        "Workflow failed! ".concat(getExitMessage(error.message, status))
       );
     }
   }
