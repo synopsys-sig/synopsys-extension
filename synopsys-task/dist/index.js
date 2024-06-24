@@ -103,11 +103,12 @@ function run() {
 exports.run = run;
 function getExitMessage(message, exitCode) {
     return constants.EXIT_CODE_MAP.has(exitCode)
-        ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
-        : "Undefined error from extension: "
-            .concat(message)
-            .concat(constants.SPACE)
-            .concat(ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
+        ? "Exit Code: " + exitCode + " - " + constants.EXIT_CODE_MAP.get(exitCode)
+        : "Exit Code: " +
+            ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString() +
+            " - " +
+            "Undefined error from extension: " +
+            message;
 }
 exports.getExitMessage = getExitMessage;
 function getStatusFromError(errorObject) {

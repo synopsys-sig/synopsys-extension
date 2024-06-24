@@ -87,11 +87,12 @@ export async function run() {
 
 export function getExitMessage(message: string, exitCode: string): string {
   return constants.EXIT_CODE_MAP.has(exitCode)
-    ? "Exit Code: " + exitCode + " " + constants.EXIT_CODE_MAP.get(exitCode)
-    : "Undefined error from extension: "
-        .concat(message)
-        .concat(constants.SPACE)
-        .concat(ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString());
+    ? "Exit Code: " + exitCode + " - " + constants.EXIT_CODE_MAP.get(exitCode)
+    : "Exit Code: " +
+        ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString() +
+        " - " +
+        "Undefined error from extension: " +
+        message;
 }
 
 export function getStatusFromError(errorObject: Error): string {
