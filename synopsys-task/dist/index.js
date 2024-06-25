@@ -2691,6 +2691,9 @@ function getMappedTaskResult(buildStatus) {
         return task_1.TaskResult.Failed;
     }
     else {
+        if (buildStatus) {
+            console.log(`Unsupported value for ${application_constant_1.MARK_BUILD_STATUS_KEY}: ${buildStatus}`);
+        }
         return undefined;
     }
 }

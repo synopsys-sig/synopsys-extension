@@ -1,6 +1,7 @@
 import path from "path";
 import * as constants from "./application-constant";
 import {
+  MARK_BUILD_STATUS_KEY,
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
@@ -247,6 +248,11 @@ export function getMappedTaskResult(
   } else if (equalsIgnoreCase(buildStatus, BuildStatus.Failed)) {
     return TaskResult.Failed;
   } else {
+    if (buildStatus) {
+      console.log(
+        `Unsupported value for ${MARK_BUILD_STATUS_KEY}: ${buildStatus}`
+      );
+    }
     return undefined;
   }
 }
