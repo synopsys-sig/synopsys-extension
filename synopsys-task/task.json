@@ -20,6 +20,18 @@
       "isExpanded": true
     },
     {
+      "name": "coverityToolSettings",
+      "displayName": "Coverity (SAST) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = polaris || scanType = coverity"
+    },
+    {
+      "name": "blackduckToolSettings",
+      "displayName": "Black Duck (SCA) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = polaris || scanType = blackduck"
+    },
+    {
       "name": "optionalSettings",
       "displayName": "Optional Settings",
       "isExpanded": false
@@ -386,42 +398,38 @@
     {
       "name": "coverityBuildCommand",
       "type": "string",
-      "label": "Coverity Build Command",
+      "label": "Build Command",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build command for Coverity",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverityToolSettings"
     },
     {
       "name": "coverityCleanCommand",
       "type": "string",
-      "label": "Coverity Clean Command",
+      "label": "Clean Command",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Clean command for Coverity",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverityToolSettings"
     },
     {
       "name": "coverityConfigPath",
       "type": "string",
-      "label": "Coverity Config Path",
+      "label": "Config Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path location",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "groupName": "coverityToolSettings"
     },
     {
       "name": "coverityArgs",
       "type": "string",
-      "label": "Coverity Arguments",
+      "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Comma separated list of coverity options",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
+      "helpMarkDown": "Coverity options separated by space",
+      "groupName": "coverityToolSettings"
     },
     {
       "name": "bridge_blackduck_url",
@@ -576,32 +584,29 @@
     {
       "name": "blackduckSearchDepth",
       "type": "string",
-      "label": "Blackduck Search Depth",
+      "label": "Search Depth",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduckToolSettings"
     },
     {
       "name": "blackduckConfigPath",
       "type": "string",
-      "label": "Blackduck Config Path",
+      "label": "Config Path",
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Black Duck config file path location",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "groupName": "blackduckToolSettings"
     },
     {
       "name": "blackduckArgs",
       "type": "string",
-      "label": "Blackduck Arguments",
+      "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Comma separated list of black duck options",
-      "visibleRule": "scanType = blackduck",
-      "groupName": "scanOptions"
+      "helpMarkDown": "Black Duck options separated by space",
+      "groupName": "blackduckToolSettings"
     },
     {
       "name": "azure_token",

@@ -1698,6 +1698,9 @@ class SynopsysToolsParameter {
                     }
                 }
             }
+            // Set Coverity or Blackduck Arbitrary Arguments
+            polData.data.coverity = this.setCoverityArbitraryArgs();
+            polData.data.blackduck = this.setBlackDuckArbitraryArgs();
             const azureData = this.getAzureRepoInfo();
             const isPrCommentEnabled = (0, utility_1.parseToBoolean)(inputs.POLARIS_PR_COMMENT_ENABLED);
             const azurePrResponse = yield this.updateAzurePrNumberForManualTriggerFlow(azureData, isPrCommentEnabled);
@@ -1778,20 +1781,8 @@ class SynopsysToolsParameter {
                     throw new Error("Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY));
                 }
             }
-            if (inputs.BLACKDUCK_SEARCH_DEPTH &&
-                Number.isInteger(parseInt(inputs.BLACKDUCK_SEARCH_DEPTH))) {
-                blackduckData.data.blackduck.search = {
-                    depth: parseInt(inputs.BLACKDUCK_SEARCH_DEPTH),
-                };
-            }
-            if (inputs.BLACKDUCK_CONFIG_PATH) {
-                blackduckData.data.blackduck.config = {
-                    path: inputs.BLACKDUCK_CONFIG_PATH,
-                };
-            }
-            if (inputs.BLACKDUCK_ARGS) {
-                blackduckData.data.blackduck.args = inputs.BLACKDUCK_ARGS;
-            }
+            // Set arbitrary (To support both BlackDuck and Polaris)
+            blackduckData.data.blackduck = Object.assign({}, this.setBlackDuckArbitraryArgs(), blackduckData.data.blackduck);
             if (failureSeverities && failureSeverities.length > 0) {
                 (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
                 const failureSeverityEnums = [];
@@ -1953,24 +1944,6 @@ class SynopsysToolsParameter {
                     directory: inputs.COVERITY_PROJECT_DIRECTORY,
                 };
             }
-            if (inputs.COVERITY_BUILD_COMMAND) {
-                covData.data.coverity.build = {
-                    command: inputs.COVERITY_BUILD_COMMAND,
-                };
-            }
-            if (inputs.COVERITY_CLEAN_COMMAND) {
-                covData.data.coverity.clean = {
-                    command: inputs.COVERITY_CLEAN_COMMAND,
-                };
-            }
-            if (inputs.COVERITY_CONFIG_PATH) {
-                covData.data.coverity.config = {
-                    path: inputs.COVERITY_CONFIG_PATH,
-                };
-            }
-            if (inputs.COVERITY_ARGS) {
-                covData.data.coverity.args = inputs.COVERITY_ARGS;
-            }
             if (isPrCommentEnabled) {
                 if (!isPullRequest) {
                     console.info("Coverity PR comment is ignored for non pull request scan");
@@ -1988,6 +1961,8 @@ class SynopsysToolsParameter {
             if ((0, utility_1.parseToBoolean)(inputs.ENABLE_NETWORK_AIRGAP)) {
                 covData.data.coverity.network = { airGap: true };
             }
+            // Set arbitrary (To support both Coverity and Polaris)
+            covData.data.coverity = Object.assign({}, this.setCoverityArbitraryArgs(), covData.data.coverity);
             // Remove empty data from json object
             covData = (0, utility_1.filterEmptyData)(covData);
             const inputJson = JSON.stringify(covData);
@@ -2213,6 +2188,46 @@ class SynopsysToolsParameter {
         const azureRepositoryName = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
         taskLib.debug(`Azure Repository Name: ${azureRepositoryName}`);
         return azureRepositoryName;
+    }
+    setCoverityArbitraryArgs() {
+        const covData = { data: {} };
+        if (inputs.COVERITY_BUILD_COMMAND) {
+            covData.data.build = {
+                command: inputs.COVERITY_BUILD_COMMAND,
+            };
+        }
+        if (inputs.COVERITY_CLEAN_COMMAND) {
+            covData.data.clean = {
+                command: inputs.COVERITY_CLEAN_COMMAND,
+            };
+        }
+        if (inputs.COVERITY_CONFIG_PATH) {
+            covData.data.config = {
+                path: inputs.COVERITY_CONFIG_PATH,
+            };
+        }
+        if (inputs.COVERITY_ARGS) {
+            covData.data.args = inputs.COVERITY_ARGS;
+        }
+        return covData.data;
+    }
+    setBlackDuckArbitraryArgs() {
+        const blackduckData = { data: {} };
+        if (inputs.BLACKDUCK_SEARCH_DEPTH &&
+            Number.isInteger(parseInt(inputs.BLACKDUCK_SEARCH_DEPTH))) {
+            blackduckData.data.search = {
+                depth: parseInt(inputs.BLACKDUCK_SEARCH_DEPTH),
+            };
+        }
+        if (inputs.BLACKDUCK_CONFIG_PATH) {
+            blackduckData.data.config = {
+                path: inputs.BLACKDUCK_CONFIG_PATH,
+            };
+        }
+        if (inputs.BLACKDUCK_ARGS) {
+            blackduckData.data.args = inputs.BLACKDUCK_ARGS;
+        }
+        return blackduckData.data;
     }
 }
 SynopsysToolsParameter.STAGE_OPTION = "--stage";
