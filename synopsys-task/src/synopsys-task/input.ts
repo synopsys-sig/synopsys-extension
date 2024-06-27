@@ -32,18 +32,17 @@ export function getInput(
 }
 
 export function getArbitraryInputs(
-  newKey: string,
+  yamlKey: string,
   classicEditorKey: string,
-  classicEditorKeyForPolaris: string,
-  deprecatedKey: string | null
+  classicEditorKeyForPolaris: string
 ) {
   if (
     taskLib.getInput(constants.SCAN_TYPE_KEY) == "polaris" &&
     classicEditorKeyForPolaris.length > 0
   ) {
-    return getInput(newKey, classicEditorKeyForPolaris, deprecatedKey);
+    return taskLib.getInput(classicEditorKeyForPolaris);
   }
-  return getInput(newKey, classicEditorKey, deprecatedKey);
+  return taskLib.getInput(yamlKey);
 }
 
 export function getBoolInput(
@@ -339,26 +338,22 @@ export const COVERITY_PROJECT_DIRECTORY = getInput(
 export const COVERITY_BUILD_COMMAND = getArbitraryInputs(
   constants.COVERITY_BUILD_COMMAND_KEY,
   constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 export const COVERITY_CLEAN_COMMAND = getArbitraryInputs(
   constants.COVERITY_CLEAN_COMMAND_KEY,
   constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 export const COVERITY_CONFIG_PATH = getArbitraryInputs(
   constants.COVERITY_CONFIG_PATH_KEY,
   constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 export const COVERITY_ARGS = getArbitraryInputs(
   constants.COVERITY_ARGS_KEY,
   constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 
 // Blackduck related inputs
@@ -460,18 +455,15 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
 export const BLACKDUCK_SEARCH_DEPTH = getArbitraryInputs(
   constants.BLACKDUCK_SEARCH_DEPTH_KEY,
   constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 export const BLACKDUCK_CONFIG_PATH = getArbitraryInputs(
   constants.BLACKDUCK_CONFIG_PATH_KEY,
   constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
 export const BLACKDUCK_ARGS = getArbitraryInputs(
   constants.BLACKDUCK_ARGS_KEY,
   constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
-  null
+  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
