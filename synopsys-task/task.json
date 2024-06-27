@@ -23,13 +23,25 @@
       "name": "coverityToolSettings",
       "displayName": "Coverity (SAST) Tool Settings",
       "isExpanded": false,
-      "visibleRule": "scanType = polaris || scanType = coverity"
+      "visibleRule": "scanType = coverity"
     },
     {
       "name": "blackduckToolSettings",
       "displayName": "Black Duck (SCA) Tool Settings",
       "isExpanded": false,
-      "visibleRule": "scanType = polaris || scanType = blackduck"
+      "visibleRule": "scanType = blackduck"
+    },
+    {
+      "name": "coverityToolSettingsForPolaris",
+      "displayName": "Coverity (SAST) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = polaris"
+    },
+    {
+      "name": "blackduckToolSettingsForPolaris",
+      "displayName": "Black Duck (SCA) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = polaris"
     },
     {
       "name": "optionalSettings",
@@ -402,6 +414,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build command for Coverity",
+      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
     },
     {
@@ -411,6 +424,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Clean command for Coverity",
+      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
     },
     {
@@ -420,6 +434,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Coverity config file path location",
+      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
     },
     {
@@ -428,8 +443,49 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity options separated by space",
+      "helpMarkDown": "Coverity Arguments separated by space",
+      "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
+    },
+    {
+      "name": "coverityBuildCommandForPolaris",
+      "type": "string",
+      "label": "Build Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build command for Coverity",
+      "visibleRule": "scanType = polaris",
+      "groupName": "coverityToolSettingsForPolaris"
+    },
+    {
+      "name": "coverityCleanCommandForPolaris",
+      "type": "string",
+      "label": "Clean Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Clean command for Coverity",
+      "visibleRule": "scanType = polaris",
+      "groupName": "coverityToolSettingsForPolaris"
+    },
+    {
+      "name": "coverityConfigPathForPolaris",
+      "type": "string",
+      "label": "Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity config file path location",
+      "visibleRule": "scanType = polaris",
+      "groupName": "coverityToolSettingsForPolaris"
+    },
+    {
+      "name": "coverityArgsForPolaris",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity Arguments separated by space",
+      "visibleRule": "scanType = polaris",
+      "groupName": "coverityToolSettingsForPolaris"
     },
     {
       "name": "bridge_blackduck_url",
@@ -588,6 +644,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Number indicating the search depth in the source directory",
+      "visibleRule": "scanType = blackduck",
       "groupName": "blackduckToolSettings"
     },
     {
@@ -597,6 +654,7 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Black Duck config file path location",
+      "visibleRule": "scanType = blackduck",
       "groupName": "blackduckToolSettings"
     },
     {
@@ -605,8 +663,39 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Black Duck options separated by space",
+      "helpMarkDown": "Black Duck Arguments separated by space",
+      "visibleRule": "scanType = blackduck",
       "groupName": "blackduckToolSettings"
+    },
+    {
+      "name": "blackduckSearchDepthForPolaris",
+      "type": "string",
+      "label": "Search Depth",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Number indicating the search depth in the source directory",
+      "visibleRule": "scanType = polaris",
+      "groupName": "blackduckToolSettingsForPolaris"
+    },
+    {
+      "name": "blackduckConfigPathForPolaris",
+      "type": "string",
+      "label": "Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Black Duck config file path location",
+      "visibleRule": "scanType = polaris",
+      "groupName": "blackduckToolSettingsForPolaris"
+    },
+    {
+      "name": "blackduckArgsForPolaris",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Black Duck Arguments separated by space",
+      "visibleRule": "scanType = polaris",
+      "groupName": "blackduckToolSettingsForPolaris"
     },
     {
       "name": "azure_token",
