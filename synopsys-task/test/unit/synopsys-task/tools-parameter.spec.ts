@@ -41,6 +41,10 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: ''})
             sandbox.restore();
         });
 
