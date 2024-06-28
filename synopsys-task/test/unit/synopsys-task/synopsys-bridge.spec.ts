@@ -17,6 +17,7 @@ import * as ifm from "typed-rest-client/Interfaces";
 import {IncomingMessage} from "http";
 import {Socket} from "net";
 import os from "os";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Synopsys Bridge test", () => {
     Object.defineProperty(constants, "RETRY_COUNT", {value: 3});
@@ -60,10 +61,11 @@ describe("Synopsys Bridge test", () => {
         it('should fail with mandatory parameter missing fields for polaris', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
 
-            sandbox.stub(validator, "validatePolarisInputs").returns(['[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing']);
+            sandbox.stub(validator, "validatePolarisInputs").returns([`[bridge_polaris_accessToken,bridge_polaris_application_name,bridge_polaris_project_name,bridge_polaris_assessment_types] - required parameters for polaris is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("required parameters for polaris is missing");
+                expect(errorObje.message).includes(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString());
             })
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
@@ -79,12 +81,13 @@ describe("Synopsys Bridge test", () => {
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForPolaris").callsFake(() => {
-                throw new Error("Invalid value for bridge_polaris_assessment_types")
+                throw new Error("Invalid value for bridge_polaris_assessment_types".concat(constants.SPACE).concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString()))
             });
             sandbox.stub(validator, "validatePolarisInputs").returns([]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Invalid value for bridge_polaris_assessment_types");
+                expect(errorObje.message).includes(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString());
             })
 
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: ""})
@@ -97,7 +100,7 @@ describe("Synopsys Bridge test", () => {
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
-                throw new Error("Invalid value for failureSeverities")
+                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString()))
             });
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
@@ -106,6 +109,7 @@ describe("Synopsys Bridge test", () => {
             } catch (e) {
                 const errorObject = e as Error;
                 expect(errorObject.message).includes("Invalid value for failureSeverities");
+                expect(errorObject.message).includes(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString());
             }
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
@@ -129,10 +133,9 @@ describe("Synopsys Bridge test", () => {
         it('should fail with mandatory parameter missing fields for coverity', async function () {
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateCoverityInputs").returns(['[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing']);
+            sandbox.stub(validator, "validateCoverityInputs").returns([`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing');
-            })
+                expect(errorObje.message).equals(`[bridge_coverity_connect_user_password,bridge_coverity_connect_project_name,bridge_coverity_connect_stream_name] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);            })
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
 
@@ -231,6 +234,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: ''});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("Bridge executable file could not be found at")
+                expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
         });
 
@@ -243,6 +247,7 @@ describe("Download Bridge", () => {
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
+                expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
             })
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
@@ -256,6 +261,7 @@ describe("Download Bridge", () => {
             const res = synopsysBridge.getSynopsysBridgePath().catch(errorObj => {
                 console.log(errorObj.message)
                 expect(errorObj.message).includes("Synopsys Bridge default directory does not exist")
+                expect(errorObj.message).includes(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
             })
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
         });
@@ -279,6 +285,7 @@ describe("Download Bridge", () => {
             Object.defineProperty(inputs, 'SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY', {value: '/tmp/'});
             synopsysBridge.executeBridgeCommand(bridgeDefaultPath, bridgeDefaultPath, bridgeDefaultPath).catch(errorObj => {
                 expect(errorObj.message).includes("does not exist")
+                expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
             })
             Object.defineProperty(inputs, 'ENABLE_NETWORK_AIRGAP', {value: false});
 
@@ -350,6 +357,7 @@ describe("Download Bridge", () => {
                 .catch(errorObj => {
                     console.log(errorObj.message)
                     expect(errorObj.message).includes("Bridge executable file could not be found at")
+                    expect(errorObj.message).includes(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
                 })
         });
     })
@@ -461,10 +469,9 @@ describe("Download Bridge", () => {
         it('should fail with mandatory parameter missing fields for blackduck', async function () {
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'});
-            sandbox.stub(validator, "validateBlackDuckInputs").returns(['[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing']);
+            sandbox.stub(validator, "validateBlackDuckInputs").returns([`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
-                expect(errorObje.message).equals('[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing');
-            })
+                expect(errorObje.message).equals(`[bridge_blackduck_url,bridge_blackduck_token] - required parameters for coverity is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);            })
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
         });
 
@@ -651,6 +658,7 @@ describe("Download Bridge", () => {
 
             await synopsysBridge.downloadAndExtractBridge("/").catch(errorObj => {
                 expect(errorObj.message).includes("Provided Synopsys Bridge URL cannot be empty");
+                expect(errorObj.message).includes(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString());
             })
         });
 

@@ -416,3 +416,12 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES
 );
+
+export const RETURN_STATUS =
+  taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
+
+export const MARK_BUILD_STATUS = getInput(
+  constants.MARK_BUILD_STATUS_KEY,
+  constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  null
+);

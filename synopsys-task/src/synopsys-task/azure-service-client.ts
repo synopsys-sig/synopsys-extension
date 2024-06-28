@@ -1,6 +1,8 @@
 import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData, AzurePrResponse } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as constants from "./application-constant";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
@@ -63,8 +65,10 @@ export class SynopsysAzureService {
         throw new Error(
           "Failed to get pull request info for current build from source branch: "
             .concat(azureData.repository.branch.name)
-            .concat(" With error: ")
-            .concat(await httpResponse.readBody())
+            .concat(constants.SPACE)
+            .concat(
+              ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString()
+            )
         );
       }
     }

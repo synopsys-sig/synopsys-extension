@@ -30,6 +30,7 @@ import {
 } from "./application-constant";
 import os from "os";
 import semver from "semver";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysBridge {
   bridgeExecutablePath: string;
@@ -76,9 +77,10 @@ export class SynopsysBridge {
     );
     if (!taskLib.exist(executableBridgePath)) {
       throw new Error(
-        "Synopsys Bridge executable file could not be found at ".concat(
-          executableBridgePath
-        )
+        "Synopsys Bridge executable file could not be found at "
+          .concat(executableBridgePath)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
       );
     }
     try {
@@ -106,6 +108,8 @@ export class SynopsysBridge {
               .concat(",")
               .concat(constants.BLACKDUCK_URL_KEY)
               .concat(")")
+              .concat(constants.SPACE)
+              .concat(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString())
           )
         );
       }
@@ -271,15 +275,19 @@ export class SynopsysBridge {
       ) {
         return Promise.reject(
           new Error(
-            "Provided Synopsys Bridge url is not valid for the configured ".concat(
-              process.platform,
-              " runner"
-            )
+            "Provided Synopsys Bridge url is not valid for the configured "
+              .concat(process.platform, " runner")
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_SYNOPSYS_BRIDGE_URL.toString())
           )
         );
       } else if (errorObject.toLowerCase().includes("empty")) {
         return Promise.reject(
-          new Error("Provided Synopsys Bridge URL cannot be empty")
+          new Error(
+            "Provided Synopsys Bridge URL cannot be empty"
+              .concat(constants.SPACE)
+              .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+          )
         );
       } else {
         return Promise.reject(new Error(errorObject));
@@ -294,7 +302,13 @@ export class SynopsysBridge {
       bridgeUrl = inputs.BRIDGE_DOWNLOAD_URL;
 
       if (!validateBridgeUrl(inputs.BRIDGE_DOWNLOAD_URL)) {
-        return Promise.reject(new Error("Invalid URL"));
+        return Promise.reject(
+          new Error(
+            "Invalid URL"
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_URL.toString())
+          )
+        );
       }
       // To check whether bridge already exists with same version mentioned in bridge url
       const versionsArray = bridgeUrl.match(".*synopsys-bridge-([0-9.]*).*");
@@ -316,7 +330,11 @@ export class SynopsysBridge {
         version = inputs.BRIDGE_DOWNLOAD_VERSION;
       } else {
         return Promise.reject(
-          new Error("Provided Synopsys Bridge version not found in artifactory")
+          new Error(
+            "Provided Synopsys Bridge version not found in artifactory"
+              .concat(constants.SPACE)
+              .concat(ErrorCode.SYNOPSYS_BRIDGE_VERSION_NOT_FOUND.toString())
+          )
         );
       }
     } else {
@@ -595,13 +613,21 @@ export class SynopsysBridge {
         "Looking for synopsys bridge in Synopsys Bridge Install Directory"
       );
       if (!taskLib.exist(synopsysBridgeDirectoryPath)) {
-        throw new Error("Synopsys Bridge Install Directory does not exist");
+        throw new Error(
+          "Synopsys Bridge Install Directory does not exist"
+            .concat(constants.SPACE)
+            .concat(ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString())
+        );
       }
     } else {
       console.info("Looking for synopsys bridge in default path");
       if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
         if (!taskLib.exist(this.getBridgeDefaultPath())) {
-          throw new Error("Synopsys Bridge default directory does not exist");
+          throw new Error(
+            "Synopsys Bridge default directory does not exist"
+              .concat(constants.SPACE)
+              .concat(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
+          );
         }
       }
     }
