@@ -141,7 +141,7 @@ run().catch((error) => {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
         }
         const taskResult = (0, utility_1.getMappedTaskResult)(inputs.MARK_BUILD_STATUS);
-        if (taskResult && taskResult !== task_1.TaskResult.Failed) {
+        if (taskResult !== undefined && taskResult !== task_1.TaskResult.Failed) {
             markBuildStatusIfIssuesArePresent(status, taskResult, error.message);
         }
         else {

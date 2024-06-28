@@ -142,7 +142,7 @@ run().catch((error) => {
       inputs.MARK_BUILD_STATUS
     );
 
-    if (taskResult && taskResult !== TaskResult.Failed) {
+    if (taskResult !== undefined && taskResult !== TaskResult.Failed) {
       markBuildStatusIfIssuesArePresent(status, taskResult, error.message);
     } else {
       taskLib.error(error.message);
