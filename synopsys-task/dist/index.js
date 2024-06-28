@@ -126,8 +126,9 @@ function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage) {
         taskLib.setResult(taskResult, exitMessage);
     }
     else {
+        const ignoreMessageForBuildStatus = `Marking build status ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`;
         taskLib.error(errorMessage);
-        console.log(`Marking build status ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`);
+        console.log(ignoreMessageForBuildStatus);
         taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(exitMessage));
     }
 }
@@ -140,7 +141,7 @@ run().catch((error) => {
             console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
         }
         const taskResult = (0, utility_1.getMappedTaskResult)(inputs.MARK_BUILD_STATUS);
-        if (taskResult !== undefined && taskResult !== task_1.TaskResult.Failed) {
+        if (taskResult && taskResult !== task_1.TaskResult.Failed) {
             markBuildStatusIfIssuesArePresent(status, taskResult, error.message);
         }
         else {
