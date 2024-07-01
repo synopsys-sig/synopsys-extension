@@ -40,8 +40,8 @@ export function getArbitraryInputs(
   if (classicEditorKeyForPolaris.length > 0 && scanType == "polaris") {
     return taskLib.getInput(classicEditorKeyForPolaris);
   } else if (
-    (classicEditorKey.length > 0 && scanType == "coverity") ||
-    scanType == "blackduck"
+    classicEditorKey.length > 0 &&
+    (scanType == "coverity" || scanType == "blackduck")
   ) {
     return taskLib.getInput(classicEditorKey);
   }
