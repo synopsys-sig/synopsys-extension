@@ -868,9 +868,13 @@ function getInput(newKey, classicEditorKey, deprecatedKey) {
 }
 exports.getInput = getInput;
 function getArbitraryInputs(yamlKey, classicEditorKey, classicEditorKeyForPolaris) {
-    if (taskLib.getInput(constants.SCAN_TYPE_KEY) == "polaris" &&
-        classicEditorKeyForPolaris.length > 0) {
+    const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
+    if (classicEditorKeyForPolaris.length > 0 && scanType == "polaris") {
         return taskLib.getInput(classicEditorKeyForPolaris);
+    }
+    else if ((classicEditorKey.length > 0 && scanType == "coverity") ||
+        scanType == "blackduck") {
+        return taskLib.getInput(classicEditorKey);
     }
     return taskLib.getInput(yamlKey);
 }
