@@ -555,10 +555,10 @@
     {
       "name": "markBuildStatus",
       "type": "pickList",
-      "label": "Mark Build Status If Issues Are Present",
+      "label": "Mark Build Status",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Specify the build status if issues are present. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
+      "helpMarkDown": "Specify the build status to use if policy violating issues are found. Default value: Failed. Supported values are: Failed, SucceededWithIssues and Succeeded.",
       "options": {
         "": "",
         "Failed": "Failed",
