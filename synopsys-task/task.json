@@ -9,7 +9,7 @@
   "author": "Synopsys",
   "version": {
     "Major": 1,
-    "Minor": 7,
+    "Minor": 8,
     "Patch": 0
   },
   "instanceNameFormat": "Synopsys Security Scan",
@@ -443,7 +443,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity config file path",
+      "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
       "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
     },
@@ -453,7 +453,7 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Coverity Arguments separated by space",
+      "helpMarkDown": "Additional Coverity Arguments separated by space.",
       "visibleRule": "scanType = coverity",
       "groupName": "coverityToolSettings"
     },
@@ -463,7 +463,7 @@
       "label": "Build Command",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Build command for Coverity",
+      "helpMarkDown": "Build command for Coverity.",
       "visibleRule": "scanType = polaris",
       "groupName": "coverityToolSettingsForPolaris"
     },
@@ -473,7 +473,7 @@
       "label": "Clean Command",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Clean command for Coverity",
+      "helpMarkDown": "Clean command for Coverity.",
       "visibleRule": "scanType = polaris",
       "groupName": "coverityToolSettingsForPolaris"
     },
@@ -483,7 +483,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Coverity config file path",
+      "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
       "visibleRule": "scanType = polaris",
       "groupName": "coverityToolSettingsForPolaris"
     },
@@ -493,7 +493,7 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Coverity Arguments separated by space",
+      "helpMarkDown": "Additional Coverity Arguments separated by space.",
       "visibleRule": "scanType = polaris",
       "groupName": "coverityToolSettingsForPolaris"
     },
@@ -663,7 +663,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Black Duck config file path",
+      "helpMarkDown": "Black Duck config file path (.properties/.yml).",
       "visibleRule": "scanType = blackduck",
       "groupName": "blackduckToolSettings"
     },
@@ -673,7 +673,7 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Black Duck Arguments separated by space",
+      "helpMarkDown": "Additional Black Duck Arguments separated by space.",
       "visibleRule": "scanType = blackduck",
       "groupName": "blackduckToolSettings"
     },
@@ -683,7 +683,7 @@
       "label": "Search Depth",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Number indicating the search depth in the source directory",
+      "helpMarkDown": "Number indicating the search depth in the source directory.",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckToolSettingsForPolaris"
     },
@@ -693,7 +693,7 @@
       "label": "Config File Path",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Black Duck config file path",
+      "helpMarkDown": "Black Duck config file path (.properties/.yml).",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckToolSettingsForPolaris"
     },
@@ -703,7 +703,7 @@
       "label": "Additional Arguments",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Additional Black Duck Arguments separated by space",
+      "helpMarkDown": "Additional Black Duck Arguments separated by space.",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckToolSettingsForPolaris"
     },
