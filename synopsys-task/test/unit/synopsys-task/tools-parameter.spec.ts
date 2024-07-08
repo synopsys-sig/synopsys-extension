@@ -39,6 +39,10 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_BRANCH_PARENT_NAME', {value: ''})
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
             Object.defineProperty(inputs, 'POLARIS_TRIAGE', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: ''})
             sandbox.restore();
         });
 
@@ -100,6 +104,50 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.polaris.application.name).to.be.contains('testRepo');
             expect(jsonData.data.polaris.project.name).to.be.contains('testRepo');
             expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile));
+        });
+
+        it('should success for polaris command formation with Arbitrary arguments', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'POLARIS_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']});
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+
+            Object.defineProperty(inputs, 'BLACKDUCK_SEARCH_DEPTH', {value: '2'})
+            Object.defineProperty(inputs, 'BLACKDUCK_CONFIG_PATH', {value: 'BLACKDUCK_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'BLACKDUCK_ARGS', {value: 'BLACKDUCK_ARGS'})
+
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: 'COVERITY_BUILD_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: 'COVERITY_CLEAN_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: 'COVERITY_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: 'COVERITY_ARGS'})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.application.name).to.be.contains('testRepo');
+            expect(jsonData.data.polaris.project.name).to.be.contains('testRepo');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+
+            expect(jsonData.data.blackduck.search.depth).to.be.equals(2)
+            expect(jsonData.data.blackduck.config.path).to.be.equals('BLACKDUCK_CONFIG_PATH')
+            expect(jsonData.data.blackduck.args).to.be.equals('BLACKDUCK_ARGS')
+
+            expect(jsonData.data.coverity.build.command).to.be.equals('COVERITY_BUILD_COMMAND')
+            expect(jsonData.data.coverity.clean.command).to.be.equals('COVERITY_CLEAN_COMMAND')
+            expect(jsonData.data.coverity.config.path).to.be.equals('COVERITY_CONFIG_PATH')
+            expect(jsonData.data.coverity.args).to.be.equals('COVERITY_ARGS')
 
             expect(formattedCommand).contains('--stage polaris');
 
@@ -711,6 +759,27 @@ describe("Synopsys Tools Parameter test", () => {
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(coverityStateFile));
         });
+
+        it('should pass coverity arbitrary fields to bridge', async () => {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'COVERITY_USER'})
+            Object.defineProperty(inputs, 'COVERITY_PASSPHRASE', {value: 'COVERITY_PASSPHRASE'})
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: 'COVERITY_BUILD_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: 'COVERITY_CLEAN_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: 'COVERITY_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: 'COVERITY_ARGS'})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(formattedCommand).contains('--stage connect')
+            expect(jsonData.data.coverity.build.command).to.be.equals('COVERITY_BUILD_COMMAND')
+            expect(jsonData.data.coverity.clean.command).to.be.equals('COVERITY_CLEAN_COMMAND')
+            expect(jsonData.data.coverity.config.path).to.be.equals('COVERITY_CONFIG_PATH')
+            expect(jsonData.data.coverity.args).to.be.equals('COVERITY_ARGS')
+        })
     });
 
     context('Black Duck command preparation', () => {
@@ -1266,5 +1335,24 @@ describe("Synopsys Tools Parameter test", () => {
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
+        it('should pass blackduck arbitrary fields to bridge', async () => {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'BLACKDUCK_API_TOKEN'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SEARCH_DEPTH', {value: '2'})
+            Object.defineProperty(inputs, 'BLACKDUCK_CONFIG_PATH', {value: 'BLACKDUCK_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'BLACKDUCK_ARGS', {value: 'BLACKDUCK_ARGS'})
+
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(formattedCommand).contains('--stage blackduck')
+            expect(jsonData.data.blackduck.url).to.be.equals('BLACKDUCK_URL')
+            expect(jsonData.data.blackduck.token).to.be.equals('BLACKDUCK_API_TOKEN')
+            expect(jsonData.data.blackduck.search.depth).to.be.equals(2)
+            expect(jsonData.data.blackduck.config.path).to.be.equals('BLACKDUCK_CONFIG_PATH')
+            expect(jsonData.data.blackduck.args).to.be.equals('BLACKDUCK_ARGS')
+        })
     });
 });

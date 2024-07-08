@@ -1,5 +1,6 @@
 import { AzureData } from "./azure";
 import { Environment } from "./blackduck";
+import exp from "constants";
 
 export interface Coverity {
   coverity: CoverityConnect;
@@ -18,13 +19,20 @@ export interface AutomationData {
   prcomment?: boolean;
 }
 
-export interface CoverityConnect {
+export interface CoverityConnect extends CoverityArbitrary {
   connect: CoverityData;
   install?: { directory: string };
   automation?: AutomationData;
   network?: NetworkAirGap;
   local?: boolean;
   version?: string;
+}
+
+export interface CoverityArbitrary {
+  build?: Command;
+  clean?: Command;
+  config?: Config;
+  args?: string;
 }
 
 export interface CoverityData {
@@ -37,4 +45,12 @@ export interface CoverityData {
 
 export interface NetworkAirGap {
   airGap: boolean;
+}
+
+export interface Command {
+  command: string;
+}
+
+export interface Config {
+  path: string;
 }

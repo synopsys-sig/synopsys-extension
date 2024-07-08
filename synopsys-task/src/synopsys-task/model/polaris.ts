@@ -1,11 +1,20 @@
 import { AzureData } from "./azure";
 
 import { Reports } from "./reports";
+import {
+  Coverity,
+  CoverityArbitrary,
+  CoverityConnect,
+  CoverityData,
+} from "./coverity";
+import { Blackduck, BlackDuckArbitrary, BlackduckData } from "./blackduck";
 
 export interface Polaris {
   polaris: PolarisData;
   project?: ProjectData;
   azure?: AzureData;
+  coverity?: CoverityArbitrary;
+  blackduck?: BlackDuckArbitrary;
 }
 
 export interface PolarisData {

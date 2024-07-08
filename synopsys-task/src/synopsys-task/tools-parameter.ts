@@ -2,10 +2,12 @@ import path from "path";
 import * as inputs from "./input";
 import { AZURE_TOKEN } from "./input";
 import { Polaris } from "./model/polaris";
-import { Coverity } from "./model/coverity";
+import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
+  BlackDuckArbitrary,
+  BlackduckData,
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
@@ -154,6 +156,10 @@ export class SynopsysToolsParameter {
       }
     }
 
+    // Set Coverity or Blackduck Arbitrary Arguments
+    polData.data.coverity = this.setCoverityArbitraryArgs();
+    polData.data.blackduck = this.setBlackDuckArbitraryArgs();
+
     const azureData = this.getAzureRepoInfo();
 
     const isPrCommentEnabled = parseToBoolean(
@@ -276,6 +282,13 @@ export class SynopsysToolsParameter {
         );
       }
     }
+
+    // Set arbitrary (To support both BlackDuck and Polaris)
+    blackduckData.data.blackduck = Object.assign(
+      {},
+      this.setBlackDuckArbitraryArgs() as BlackduckData,
+      blackduckData.data.blackduck
+    );
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
@@ -530,6 +543,13 @@ export class SynopsysToolsParameter {
     if (parseToBoolean(inputs.ENABLE_NETWORK_AIRGAP)) {
       covData.data.coverity.network = { airGap: true };
     }
+
+    // Set arbitrary (To support both Coverity and Polaris)
+    covData.data.coverity = Object.assign(
+      {},
+      this.setCoverityArbitraryArgs() as CoverityConnect,
+      covData.data.coverity
+    );
 
     // Remove empty data from json object
     covData = filterEmptyData(covData);
@@ -874,5 +894,54 @@ export class SynopsysToolsParameter {
       taskLib.getVariable(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY) || "";
     taskLib.debug(`Azure Repository Name: ${azureRepositoryName}`);
     return azureRepositoryName;
+  }
+
+  private setCoverityArbitraryArgs(): CoverityArbitrary {
+    const covData: InputData<CoverityArbitrary> = { data: {} };
+    if (inputs.COVERITY_BUILD_COMMAND) {
+      covData.data.build = {
+        command: inputs.COVERITY_BUILD_COMMAND,
+      };
+    }
+
+    if (inputs.COVERITY_CLEAN_COMMAND) {
+      covData.data.clean = {
+        command: inputs.COVERITY_CLEAN_COMMAND,
+      };
+    }
+
+    if (inputs.COVERITY_CONFIG_PATH) {
+      covData.data.config = {
+        path: inputs.COVERITY_CONFIG_PATH,
+      };
+    }
+
+    if (inputs.COVERITY_ARGS) {
+      covData.data.args = inputs.COVERITY_ARGS;
+    }
+    return covData.data;
+  }
+
+  private setBlackDuckArbitraryArgs(): BlackDuckArbitrary {
+    const blackduckData: InputData<BlackDuckArbitrary> = { data: {} };
+    if (
+      inputs.BLACKDUCK_SEARCH_DEPTH &&
+      Number.isInteger(parseInt(inputs.BLACKDUCK_SEARCH_DEPTH))
+    ) {
+      blackduckData.data.search = {
+        depth: parseInt(inputs.BLACKDUCK_SEARCH_DEPTH),
+      };
+    }
+
+    if (inputs.BLACKDUCK_CONFIG_PATH) {
+      blackduckData.data.config = {
+        path: inputs.BLACKDUCK_CONFIG_PATH,
+      };
+    }
+
+    if (inputs.BLACKDUCK_ARGS) {
+      blackduckData.data.args = inputs.BLACKDUCK_ARGS;
+    }
+    return blackduckData.data;
   }
 }

@@ -20,7 +20,7 @@ export interface Blackduck {
   environment?: Environment;
 }
 
-export interface BlackduckData {
+export interface BlackduckData extends BlackDuckArbitrary {
   url: string;
   token: string;
   install?: { directory: string };
@@ -31,6 +31,12 @@ export interface BlackduckData {
   automation?: AutomationData;
   fixpr?: BlackDuckFixPrData;
   reports?: Reports;
+}
+
+export interface BlackDuckArbitrary {
+  search?: Search;
+  config?: Config;
+  args?: string;
 }
 
 export interface AutomationData {
@@ -62,4 +68,12 @@ export interface BlackDuckFixPrFilerData {
 
 export interface ProjectData {
   directory?: string;
+}
+
+export interface Search {
+  depth: number;
+}
+
+export interface Config {
+  path: string;
 }
