@@ -114,6 +114,14 @@ export class SynopsysToolsParameter {
       polData.data.polaris.triage = inputs.POLARIS_TRIAGE;
     }
 
+    if (inputs.POLARIS_TEST_SCA_TYPE) {
+      polData.data.polaris.test = {
+        sca: {
+          type: inputs.POLARIS_TEST_SCA_TYPE,
+        },
+      };
+    }
+
     if (
       inputs.POLARIS_PROJECT_DIRECTORY ||
       inputs.PROJECT_SOURCE_ARCHIVE ||

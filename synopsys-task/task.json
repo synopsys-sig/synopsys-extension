@@ -162,6 +162,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisTestScaType",
+      "type": "string",
+      "label": "Polaris Test SCA Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Polaris test type to trigger signature scan or package manager scan.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_polaris_branch_name",
       "type": "string",
       "label": "Polaris Branch Name",
