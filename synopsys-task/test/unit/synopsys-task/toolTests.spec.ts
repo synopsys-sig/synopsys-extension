@@ -7,6 +7,8 @@ import * as sinon from "sinon";
 import process from "process";
 import {afterEach} from "mocha";
 import nock = require ('nock');
+import { ErrorCode } from '../../../src/synopsys-task/enum/ErrorCodes';
+import * as constants from "../../../src/synopsys-task/application-constant";
 
 let tempPath = path.join(process.cwd(), 'TEMP');
 
@@ -122,7 +124,10 @@ describe('Tool Tests', function () {
                 reject('a file was downloaded but it shouldnt have been');
             }
             catch (err){
-                assert.equal((err as Error).message, 400, 'status code exists');
+                assert.equal((err as Error).message, "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 400".concat(constants.SPACE)
+                    .concat(
+                        ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString()
+                    ), 'status code exists');
 
                 resolve();
             }
@@ -163,7 +168,7 @@ describe('Tool Tests', function () {
                 reject('Shouldnt have succeeded');
             } catch (err: any) {
                 err = err as Error
-                if (err.message == 502) {
+                if (err.message.includes("502")) {
                     resolve();
                 }
                 reject(err);
