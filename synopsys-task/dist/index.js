@@ -2759,6 +2759,9 @@ function extractBranchName(branchName) {
     return branchName.substring(prefix.length);
 }
 exports.extractBranchName = extractBranchName;
+// This function extracts the status code from a given error message string.
+// Example: "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 502 124",
+// The function will return the HTTP status code. For the above example: 502
 function getStatusCode(str) {
     const words = str.split(" ");
     return words.length < 2 ? str : words[words.length - 2];
