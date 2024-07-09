@@ -35,6 +35,7 @@ import {
 import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
+import { ErrorCode } from "./enum/ErrorCodes";
 
 export class SynopsysToolsParameter {
   tempDir: string;
@@ -68,7 +69,10 @@ export class SynopsysToolsParameter {
           assessmentTypeArray.push(assessmentType.trim());
         } else {
           throw new Error(
-            "Invalid value for ".concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+            "Invalid value for "
+              .concat(constants.POLARIS_ASSESSMENT_TYPES_KEY)
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
           );
         }
       }
@@ -271,7 +275,10 @@ export class SynopsysToolsParameter {
         blackduckData.data.blackduck.scan = { full: scanFullValue };
       } else {
         throw new Error(
-          "Missing boolean value for ".concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+          "Missing boolean value for "
+            .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
         );
       }
     }
@@ -300,9 +307,10 @@ export class SynopsysToolsParameter {
       for (const failureSeverity of failureSeverities) {
         if (values.indexOf(failureSeverity) == -1) {
           throw new Error(
-            "Invalid value for ".concat(
-              constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY
-            )
+            "Invalid value for "
+              .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
           );
         } else {
           failureSeverityEnums.push(
@@ -452,6 +460,10 @@ export class SynopsysToolsParameter {
         if (buildReason === AZURE_BUILD_REASON.MANUAL) {
           throw new Error(
             "COVERITY_STREAM_NAME is mandatory for azure manual trigger"
+              .concat(constants.SPACE)
+              .concat(
+                ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString()
+              )
           );
         }
 
@@ -573,7 +585,10 @@ export class SynopsysToolsParameter {
       isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
     ) {
       throw new Error(
-        "Invalid value for ".concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+        "Invalid value for "
+          .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
       );
     }
     const createSinglePr = parseToBoolean(
@@ -583,7 +598,10 @@ export class SynopsysToolsParameter {
       throw new Error(
         constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
           " is not applicable with "
-        ).concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+        )
+          .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+          .concat(constants.SPACE)
+          .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
       );
     }
     const blackDuckFixPrData: BlackDuckFixPrData = {};
@@ -702,6 +720,8 @@ export class SynopsysToolsParameter {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
           "Missing required azure token for fix pull request/automation comment"
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
         );
       }
 

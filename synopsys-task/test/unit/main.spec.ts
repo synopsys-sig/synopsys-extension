@@ -4,6 +4,7 @@ import * as main from "../../src/main";
 import * as inputs from "../../src/synopsys-task/input";
 import { SynopsysBridge } from "../../src/synopsys-task/synopsys-bridge";
 import * as diagnostics from "../../src/synopsys-task/diagnostics";
+import { ErrorCode } from "../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Main function test cases", () => {
 
@@ -155,6 +156,37 @@ describe("Main function test cases", () => {
             main.run().catch(errorObj => {
                 expect(errorObj.message).includes("Synopsys Default Bridge path does not exist");
             })
+        });
+    });
+
+    context('return status', () => {
+        it('should extract the return_status from the error message', async () => {
+            const error = new Error('Requires at least one scan type '.concat(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString()));
+            const emptyErrorMessage = new Error('')
+
+            const returnStatus = main.getStatusFromError(error);
+            const emptyReturnStatus = main.getStatusFromError(emptyErrorMessage)
+
+            expect(returnStatus).to.equal(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString());
+            expect('').to.equal(emptyReturnStatus);
+        });
+    });
+
+    context('log exit codes', () => {
+        it('log corresponding error message including return_status for know error', async () => {
+            const errorMessage = 'Requires at least one scan type'
+            const exitCode = ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString();
+
+            const errorMessageForDefinedExitCodes = main.getExitMessage(errorMessage, exitCode);
+            expect("Exit Code: 101 - Requires at least one scan type").to.equal(errorMessageForDefinedExitCodes);
+        });
+
+        it('log corresponding error message including return_status for unknown error', async () => {
+            const undefinedErrorMessage = 'Unknown error'
+            const undefinedExitCode = "9090";
+
+            const errorMessageForUndefinedExitCodes = main.getExitMessage(undefinedErrorMessage, undefinedExitCode);
+            expect("Exit Code: 999 - Undefined error from extension: Unknown error").to.equal(errorMessageForUndefinedExitCodes);
         });
     });
 });

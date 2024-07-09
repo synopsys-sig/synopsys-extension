@@ -7,6 +7,7 @@ import {Socket} from "net";
 import * as ifm from "typed-rest-client/Interfaces";
 import {AzureData} from "../../../src/synopsys-task/model/azure";
 import {expect} from "chai";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 
 describe("getPullRequestIdForClassicEditorFlow", () => {
@@ -115,6 +116,7 @@ describe("getPullRequestIdForClassicEditorFlow", () => {
 
             await synopsysAzureService.getAzurePrResponseForManualTriggerFlow(azureData).catch(errorObj => {
                 expect(errorObj.message).contains('Failed to get pull request info for current build from source branch: feature/xyz')
+                expect(errorObj.message).contains(ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString())
             })
 
 

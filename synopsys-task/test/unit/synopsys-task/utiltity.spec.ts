@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import * as utility from "../../../src/synopsys-task/utility";
 import {
-    extractZipped,
+    extractZipped, getStatusCode,
     getWorkSpaceDirectory,
     parseToBoolean
 } from "../../../src/synopsys-task/utility";
@@ -13,6 +13,9 @@ import {DownloadFileResponse} from "../../../src/synopsys-task/model/download-fi
 import * as constants from "../../../src/synopsys-task/application-constant";
 import * as taskLib from "azure-pipelines-task-lib";
 import {AZURE_BUILD_REASON, AZURE_ENVIRONMENT_VARIABLES} from "../../../src/synopsys-task/model/azure";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
+import {BuildStatus} from "../../../src/synopsys-task/enum/BuildStatus";
+import {TaskResult} from "azure-pipelines-task-lib/task";
 
 describe("Utilities", () => {
 
@@ -69,14 +72,16 @@ describe("Utilities", () => {
         it('extractZipped - failure- file name empty', async function () {
             sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
             await utility.extractZipped("", "/dest_path").catch(errorObj => {
-                expect(errorObj.message).includes("File does not exist")
+                expect(errorObj.message).includes("File does not exist");
+                expect(errorObj.message).includes(ErrorCode.FILE_DOES_NOT_EXIST.toString());
             })
         });
 
         it('extractZipped - failure- destination path empty', async function () {
             sandbox.stub(toolLib, "extractZip").returns(Promise.resolve("/"));
             await utility.extractZipped("bridge.zip", "").catch(errorObj => {
-                expect(errorObj.message).includes("No destination directory found")
+                expect(errorObj.message).includes("No destination directory found");
+                expect(errorObj.message).includes(ErrorCode.NO_DESTINATION_DIRECTORY.toString());
             })
         });
     });
@@ -104,6 +109,7 @@ describe("Utilities", () => {
         it('getRemoteFile - failure - url empty', async function () {
             await utility.getRemoteFile("/", "").catch(error => {
                 expect(error.message).includes("URL cannot be empty")
+                expect(error.message).includes(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
             });
 
         });
@@ -218,6 +224,24 @@ describe("Utilities", () => {
         it('should extract hierarchical feature branches correctly with prefix refs/heads/', () => {
             expect(utility.extractBranchName("refs/heads/dev/test")).equals("dev/test");
             expect(utility.extractBranchName("refs/heads/feature/test/new_feature")).equals("feature/test/new_feature");
+        });
+    });
+
+    context('equalsIgnoreCase', () => {
+        it('should equals ignore case correctly', () => {
+            expect(utility.equalsIgnoreCase("", "")).to.be.true;
+            expect(utility.equalsIgnoreCase("Failed", "failed")).to.be.true;
+            expect(utility.equalsIgnoreCase("Failed", "FAILED")).to.be.true;
+            expect(utility.equalsIgnoreCase("Failed", "Succeeded")).to.be.false;
+        });
+    });
+
+    context('getMappedTaskResult', () => {
+        it('should map build status to task result correctly', () => {
+            expect(utility.getMappedTaskResult(BuildStatus.Failed)).equals(TaskResult.Failed);
+            expect(utility.getMappedTaskResult(BuildStatus.Succeeded)).equals(TaskResult.Succeeded);
+            expect(utility.getMappedTaskResult(BuildStatus.SucceededWithIssues)).equals(TaskResult.SucceededWithIssues);
+            expect(utility.getMappedTaskResult("")).equals(undefined);
         });
     });
 });

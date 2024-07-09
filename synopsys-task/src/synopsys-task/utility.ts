@@ -1,5 +1,7 @@
 import path from "path";
+import * as constants from "./application-constant";
 import {
+  MARK_BUILD_STATUS_KEY,
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
@@ -11,12 +13,14 @@ import * as toolLibLocal from "../synopsys-task/download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import * as constants from "./application-constant";
+import { TaskResult } from "azure-pipelines-task-lib/task";
 import {
   AZURE_BUILD_REASON,
   AZURE_ENVIRONMENT_VARIABLES,
   AzurePrResponse,
 } from "./model/azure";
+import { ErrorCode } from "./enum/ErrorCodes";
+import { BuildStatus } from "./enum/BuildStatus";
 
 export function cleanUrl(url: string): string {
   if (url && url.endsWith("/")) {
@@ -34,12 +38,24 @@ export async function extractZipped(
   destinationPath: string
 ): Promise<boolean> {
   if (file == null || file.length === 0) {
-    return Promise.reject(new Error("File does not exist"));
+    return Promise.reject(
+      new Error(
+        "File does not exist"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.FILE_DOES_NOT_EXIST.toString())
+      )
+    );
   }
 
   // Extract file name from file with full path
   if (destinationPath == null || destinationPath.length === 0) {
-    return Promise.reject(new Error("No destination directory found"));
+    return Promise.reject(
+      new Error(
+        "No destination directory found"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.NO_DESTINATION_DIRECTORY.toString())
+      )
+    );
   }
 
   try {
@@ -55,7 +71,13 @@ export async function getRemoteFile(
   url: string
 ): Promise<DownloadFileResponse> {
   if (url == null || url.length === 0) {
-    return Promise.reject(new Error("URL cannot be empty"));
+    return Promise.reject(
+      new Error(
+        "URL cannot be empty"
+          .concat(constants.SPACE)
+          .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+      )
+    );
   }
 
   let fileNameFromUrl = "";
@@ -83,7 +105,7 @@ export async function getRemoteFile(
       }
 
       if (
-        !NON_RETRY_HTTP_CODES.has(Number(error.message)) ||
+        !NON_RETRY_HTTP_CODES.has(Number(getStatusCode(error.message))) ||
         error.message.includes("did not match downloaded file size")
       ) {
         console.info(
@@ -101,7 +123,11 @@ export async function getRemoteFile(
       }
     }
   } while (retryCountLocal >= 0);
-  return Promise.reject("Synopsys bridge download has been failed");
+  return Promise.reject(
+    "Synopsys bridge download has been failed"
+      .concat(constants.SPACE)
+      .concat(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString())
+  );
 }
 
 export function parseToBoolean(value: string | boolean | undefined): boolean {
@@ -137,7 +163,11 @@ export function getWorkSpaceDirectory(): string {
   if (repoLocalPath !== undefined) {
     return repoLocalPath;
   } else {
-    throw new Error("Workspace directory could not be located");
+    throw new Error(
+      "Workspace directory could not be located"
+        .concat(constants.SPACE)
+        .concat(ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString())
+    );
   }
 }
 
@@ -197,4 +227,35 @@ export function extractBranchName(branchName: string): string {
   }
 
   return branchName.substring(prefix.length);
+}
+
+// This function extracts the status code from a given error message string.
+// Example: "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 502 124",
+// The function will return the HTTP status code. For the above example: 502
+export function getStatusCode(str: string) {
+  const words = str.split(" ");
+  return words.length < 2 ? str : words[words.length - 2];
+}
+
+export function equalsIgnoreCase(a: string, b: string): boolean {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+export function getMappedTaskResult(
+  buildStatus: string
+): TaskResult | undefined {
+  if (equalsIgnoreCase(buildStatus, BuildStatus.Succeeded)) {
+    return TaskResult.Succeeded;
+  } else if (equalsIgnoreCase(buildStatus, BuildStatus.SucceededWithIssues)) {
+    return TaskResult.SucceededWithIssues;
+  } else if (equalsIgnoreCase(buildStatus, BuildStatus.Failed)) {
+    return TaskResult.Failed;
+  } else {
+    if (buildStatus) {
+      console.log(
+        `Unsupported value for ${MARK_BUILD_STATUS_KEY}: ${buildStatus}`
+      );
+    }
+    return undefined;
+  }
 }

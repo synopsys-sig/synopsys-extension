@@ -470,3 +470,12 @@ export const BLACKDUCK_ARGS = getArbitraryInputs(
   constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR,
   constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS
 );
+
+export const RETURN_STATUS =
+  taskLib.getInput(constants.RETURN_STATUS_KEY)?.trim() || "true";
+
+export const MARK_BUILD_STATUS = getInput(
+  constants.MARK_BUILD_STATUS_KEY,
+  constants.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR,
+  null
+);

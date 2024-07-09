@@ -14,9 +14,7 @@ import {
 } from "../../../src/synopsys-task/model/azure";
 import {stub} from "sinon";
 import * as utility from "../../../src/synopsys-task/utility";
-import {isPullRequestEvent} from "../../../src/synopsys-task/utility";
-import {COVERITY_STREAM_NAME} from "../../../src/synopsys-task/input";
-import {COVERITY_STREAM_NAME_KEY} from "../../../src/synopsys-task/application-constant";
+import { ErrorCode } from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Synopsys Tools Parameter test", () => {
     context('Polaris command preparation', () => {
@@ -81,6 +79,7 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.POLARIS_ASSESSMENT_TYPES_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString())
             }
         });
 
@@ -486,6 +485,7 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains("COVERITY_STREAM_NAME is mandatory for azure manual trigger")
+                expect(errorObj.message).contains(ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString());
             }
         });
 
@@ -871,7 +871,9 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ['SCA','sast123']})
 
             synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
-                    expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))})
+                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+            })
         });
 
         it('PR Context(yml): Black Duck command formation with pr comment and azure legacy visual studio url', async function () {
@@ -1157,7 +1159,8 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 expect(errorObj.message).contains(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY
-                    .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY))
+                    .concat(' is not applicable with ').concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY));
+                expect(errorObj.message).contains(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString());
             }
         });
 
@@ -1171,7 +1174,8 @@ describe("Synopsys Tools Parameter test", () => {
                 const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
             } catch (e) {
                 const errorObj = e as Error;
-                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY))
+                expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY));
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString());
             }
         });
 
@@ -1186,7 +1190,8 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 console.log("errorObj",errorObj)
-                expect(errorObj.message).equals('Missing required azure token for fix pull request/automation comment')
+                expect(errorObj.message).includes('Missing required azure token for fix pull request/automation comment');
+                expect(errorObj.message).includes(ErrorCode.MISSING_AZURE_TOKEN.toString());
             }
         });
 
