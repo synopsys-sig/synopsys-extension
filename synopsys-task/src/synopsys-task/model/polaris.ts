@@ -27,6 +27,11 @@ export interface PolarisData {
   assessment: { types: string[]; mode?: string };
   prcomment?: PRComment;
   reports?: Reports;
+  test?: Test;
+}
+
+export interface Test {
+  sca: { type: string };
 }
 
 export interface Branch {

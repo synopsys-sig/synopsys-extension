@@ -220,6 +220,11 @@ export const POLARIS_BRANCH_PARENT_NAME = getInput(
   constants.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR,
   null
 );
+export const POLARIS_TEST_SCA_TYPE = getInput(
+  constants.POLARIS_TEST_SCA_TYPE_KEY,
+  constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR,
+  null
+);
 
 export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 

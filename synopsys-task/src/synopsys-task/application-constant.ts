@@ -136,6 +136,8 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
 export const POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
 export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
+export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
+export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
