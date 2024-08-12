@@ -807,7 +807,7 @@
       "groupName": "blackduckToolSettingsForSrm"
     },
     {
-      "name": "bridgeSrmUrl",
+      "name": "srmUrl",
       "type": "string",
       "label": "SRM Server URL",
       "defaultValue": "",
@@ -817,7 +817,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmApikey",
+      "name": "srmApikey",
       "type": "string",
       "label": "SRM API Key",
       "defaultValue": "",
@@ -827,7 +827,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmAssessmentTypes",
+      "name": "srmAssessmentTypes",
       "type": "string",
       "label": "SRM Assessment Types",
       "defaultValue": "",
@@ -837,7 +837,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmProjectName",
+      "name": "srmProjectName",
       "type": "string",
       "label": "SRM Project Name",
       "defaultValue": "",
@@ -847,7 +847,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmProjectId",
+      "name": "srmProjectId",
       "type": "string",
       "label": "SRM Project Id",
       "defaultValue": "",
@@ -857,7 +857,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmBranchName",
+      "name": "srmBranchName",
       "type": "string",
       "label": "SRM Branch Name",
       "defaultValue": "",
@@ -867,7 +867,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeSrmBranchParent",
+      "name": "srmBranchParent",
       "type": "string",
       "label": "SRM Parent Branch Name",
       "defaultValue": "",
@@ -877,7 +877,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeCoverityExecutionPath",
+      "name": "coverityExecutionPath",
       "type": "string",
       "label": "Coverity Installation Path",
       "defaultValue": "",
@@ -887,7 +887,7 @@
       "groupName": "scanOptions"
     },
     {
-      "name": "bridgeBlackduckExecutionPath",
+      "name": "blackduckExecutionPath",
       "type": "string",
       "label": "Black Duck Installation Path",
       "defaultValue": "",

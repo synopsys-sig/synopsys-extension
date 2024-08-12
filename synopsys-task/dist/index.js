@@ -317,7 +317,7 @@ exports.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY = "bridge_coverity_install_directo
 exports.COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
 exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_coverity_install_directory";
 exports.COVERITY_EXECUTION_PATH_KEY = "coverity_execution_path";
-exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "bridgeCoverityExecutionPath";
+exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "coverityExecutionPath";
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
  */
@@ -509,7 +509,7 @@ exports.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY = "bridge_blackduck_install_direc
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
 exports.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridge_blackduck_install_directory";
 exports.BLACKDUCK_EXECUTION_PATH_KEY = "blackduck_execution_path";
-exports.BLACKDUCK_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "bridgeBlackduckExecutionPath";
+exports.BLACKDUCK_EXECUTION_PATH_KEY_CLASSIC_EDITOR = "blackduckExecutionPath";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
@@ -601,19 +601,19 @@ exports.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = "blackduckArgsForPolaris
 exports.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "blackduckArgsForSrm";
 //SRM
 exports.SRM_URL_KEY = "srm_url";
-exports.SRM_URL_KEY_CLASSIC_EDITOR = "bridgeSrmUrl";
+exports.SRM_URL_KEY_CLASSIC_EDITOR = "srmUrl";
 exports.SRM_APIKEY_KEY = "srm_apikey";
-exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = "bridgeSrmApikey";
+exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = "srmApikey";
 exports.SRM_ASSESSMENT_TYPES_KEY = "srm_assessment_types";
-exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "bridgeSrmAssessmentTypes";
+exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = "srmAssessmentTypes";
 exports.SRM_PROJECT_NAME_KEY = "srm_project_name";
-exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridgeSrmProjectName";
+exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = "srmProjectName";
 exports.SRM_PROJECT_ID_KEY = "srm_project_id";
-exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = "bridgeSrmProjectId";
+exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = "srmProjectId";
 exports.SRM_BRANCH_NAME_KEY = "srm_branch_name";
-exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridgeSrmBranchName";
+exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "srmBranchName";
 exports.SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
-exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "bridgeSrmBranchParent";
+exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "srmBranchParent";
 exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 exports.INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";

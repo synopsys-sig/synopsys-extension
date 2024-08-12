@@ -1,4 +1,3 @@
-import { AzureData } from "./azure";
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckArbitrary } from "./blackduck";
 
@@ -15,7 +14,6 @@ export interface SrmData {
   assessment: { types: string[] };
   project?: { name?: string; id?: string };
   branch?: BranchInfo;
-  azure?: AzureData;
 }
 
 export interface ExecutionPath {
