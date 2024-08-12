@@ -1358,4 +1358,225 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.blackduck.args).to.be.equals('BLACKDUCK_ARGS')
         })
     });
+
+    context('SRM command preparation',()=>{
+        let sandbox: sinon.SinonSandbox;
+        let synopsysToolsParameter: SynopsysToolsParameter;
+        let srmStateFile: string;
+
+        beforeEach(() => {
+            sandbox = sinon.createSandbox();
+            const tempDir = process.cwd();
+            srmStateFile = path.join(tempDir, "srm_input.json");
+            synopsysToolsParameter = new SynopsysToolsParameter(tempDir);
+        });
+        afterEach(()=>{
+            taskLib.rmRF(srmStateFile);
+            Object.defineProperty(inputs, 'SRM_URL', {value: ''})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: ''})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ''})
+            Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: ''})
+            Object.defineProperty(inputs, 'SRM_BRANCH_NAME', {value: ''})
+            Object.defineProperty(inputs, 'SRM_PROJECT_ID',{value: ''})
+            Object.defineProperty(inputs, 'SRM_BRANCH_PARENT', {value: ''})
+            Object.defineProperty(inputs, 'SRM_PROJECT_DIRECTORY', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_EXECUTION_PATH', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: ''})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_EXECUTION_PATH', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_SEARCH_DEPTH', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_CONFIG_PATH', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_ARGS', {value: ''})
+            sandbox.restore();
+        })
+
+        it('should fail for invalid assessment type', async function () {
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA123','SAST123']})
+
+            try {
+                const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+            } catch (e) {
+                const errorObj = e as Error;
+                expect(errorObj.message).contains('Invalid value for '.concat(constants.SRM_ASSESSMENT_TYPES_KEY))
+                expect(errorObj.message).contains(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString())
+            }
+        });
+
+        it('should success for SRM command formation with mandatory parameters', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with empty project name & project id', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+
+            const getStubVariable = sandbox.stub(taskLib, "getVariable");
+            getStubVariable.withArgs(AZURE_ENVIRONMENT_VARIABLES.AZURE_REPOSITORY).returns("testRepo");
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.name).to.be.contains('testRepo');
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with srm project name', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.name).to.be.contains('SRM_PROJECT_NAME');
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with srm project id ', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'SRM_PROJECT_ID', {value: '12'})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.id).to.be.equals('12');
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with Optional parameters ', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'SRM_BRANCH_NAME', {value: 'SRM_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'SRM_BRANCH_PARENT', {value: 'SRM_BRANCH_PARENT'})
+            Object.defineProperty(inputs, 'COVERITY_EXECUTION_PATH', {value: '/COVERITY_EXECUTION_PATH'})
+            Object.defineProperty(inputs, 'BLACKDUCK_EXECUTION_PATH', {value: '/BLACKDUCK_EXECUTION_PATH'})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.name).to.be.contains('SRM_PROJECT_NAME');
+            expect(jsonData.data.srm.branch.name).to.be.contains('SRM_BRANCH_NAME');
+            expect(jsonData.data.coverity.execution.path).to.be.contains('/COVERITY_EXECUTION_PATH')
+            expect(jsonData.data.blackduck.execution.path).to.be.contains('/BLACKDUCK_EXECUTION_PATH')
+
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with assessment mode and project directory parameters', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'SRM_BRANCH_NAME', {value: 'SRM_BRANCH_NAME'})
+            Object.defineProperty(inputs, 'SRM_BRANCH_PARENT', {value: 'SRM_BRANCH_PARENT'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_MODE', {value: 'assessment_mode'})
+            Object.defineProperty(inputs, 'SRM_PROJECT_DIRECTORY', {value: 'srm_project_directory'})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.name).to.be.contains('SRM_PROJECT_NAME');
+            expect(jsonData.data.srm.branch.name).to.be.contains('SRM_BRANCH_NAME');
+            expect(jsonData.data.srm.branch.parent).to.be.contains('SRM_BRANCH_PARENT');
+            expect(jsonData.data.srm.assessment.mode).to.be.contains('assessment_mode');
+            expect(jsonData.data.project.directory).to.be.contains('srm_project_directory');
+
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile))
+        });
+
+        it('should success for SRM command formation with Arbitrary Parameters', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+
+            Object.defineProperty(inputs, 'BLACKDUCK_SEARCH_DEPTH', {value: '2'})
+            Object.defineProperty(inputs, 'BLACKDUCK_CONFIG_PATH', {value: 'BLACKDUCK_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'BLACKDUCK_ARGS', {value: 'BLACKDUCK_ARGS'})
+
+            Object.defineProperty(inputs, 'COVERITY_BUILD_COMMAND', {value: 'COVERITY_BUILD_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CLEAN_COMMAND', {value: 'COVERITY_CLEAN_COMMAND'})
+            Object.defineProperty(inputs, 'COVERITY_CONFIG_PATH', {value: 'COVERITY_CONFIG_PATH'})
+            Object.defineProperty(inputs, 'COVERITY_ARGS', {value: 'COVERITY_ARGS'})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+
+            expect(jsonData.data.blackduck.search.depth).to.be.equals(2)
+            expect(jsonData.data.blackduck.config.path).to.be.equals('BLACKDUCK_CONFIG_PATH')
+            expect(jsonData.data.blackduck.args).to.be.equals('BLACKDUCK_ARGS')
+
+            expect(jsonData.data.coverity.build.command).to.be.equals('COVERITY_BUILD_COMMAND')
+            expect(jsonData.data.coverity.clean.command).to.be.equals('COVERITY_CLEAN_COMMAND')
+            expect(jsonData.data.coverity.config.path).to.be.equals('COVERITY_CONFIG_PATH')
+            expect(jsonData.data.coverity.args).to.be.equals('COVERITY_ARGS')
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+    })
 });
