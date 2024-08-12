@@ -3,6 +3,7 @@ import * as inputs from "./input";
 import { AZURE_TOKEN } from "./input";
 import { Polaris } from "./model/polaris";
 import { Coverity, CoverityArbitrary, CoverityConnect } from "./model/coverity";
+import { Srm } from "./model/srm";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
@@ -49,6 +50,9 @@ export class SynopsysToolsParameter {
   private static COVERITY_STATE_FILE_NAME = "coverity_input.json";
   private static COVERITY_STAGE = "connect";
   static DIAGNOSTICS_OPTION = "--diagnostics";
+
+  private static SRM_STAGE = "srm";
+  private static SRM_STATE_FILE_NAME = "srm_input.json";
 
   constructor(tempDir: string) {
     this.tempDir = tempDir;
@@ -642,6 +646,119 @@ export class SynopsysToolsParameter {
       blackDuckFixPrData.filter = { severities: fixPRFilterSeverities };
     }
     return blackDuckFixPrData;
+  }
+
+  async getFormattedCommandForSrm(): Promise<string> {
+    let command = "";
+    const assessmentTypeArray: string[] = [];
+    const assessmentTypes = inputs.SRM_ASSESSMENT_TYPES;
+    if (assessmentTypes != null && assessmentTypes.length > 0) {
+      for (const assessmentType of assessmentTypes) {
+        const regEx = new RegExp("^[a-zA-Z]+$");
+        if (
+          assessmentType.trim().length > 0 &&
+          regEx.test(assessmentType.trim())
+        ) {
+          assessmentTypeArray.push(assessmentType.trim());
+        } else {
+          throw new Error(
+            "Invalid value for "
+              .concat(constants.SRM_ASSESSMENT_TYPES_KEY)
+              .concat(constants.SPACE)
+              .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString())
+          );
+        }
+      }
+    }
+
+    const srmData: InputData<Srm> = {
+      data: {
+        srm: {
+          url: inputs.SRM_URL,
+          apikey: inputs.SRM_APIKEY,
+          assessment: {
+            types: assessmentTypeArray,
+            ...(inputs.SRM_ASSESSMENT_MODE && {
+              mode: inputs.SRM_ASSESSMENT_MODE,
+            }),
+          },
+        },
+      },
+    };
+
+    if (inputs.SRM_BRANCH_NAME || inputs.SRM_BRANCH_PARENT) {
+      srmData.data.srm.branch = {
+        ...(inputs.SRM_BRANCH_NAME && { name: inputs.SRM_BRANCH_NAME }),
+        ...(inputs.SRM_BRANCH_PARENT && { parent: inputs.SRM_BRANCH_PARENT }),
+      };
+    }
+    if (inputs.SRM_PROJECT_NAME || inputs.SRM_PROJECT_ID) {
+      srmData.data.srm.project = {
+        ...(inputs.SRM_PROJECT_NAME && { name: inputs.SRM_PROJECT_NAME }),
+        ...(inputs.SRM_PROJECT_ID && { id: inputs.SRM_PROJECT_ID }),
+      };
+    } else {
+      const azureRepositoryName = this.getAzureRepositoryName();
+      taskLib.debug(`SRM project name: ${azureRepositoryName}`);
+      srmData.data.srm.project = {
+        name: azureRepositoryName,
+      };
+    }
+    if (inputs.BLACKDUCK_EXECUTION_PATH) {
+      srmData.data.blackduck = {
+        execution: {
+          path: inputs.BLACKDUCK_EXECUTION_PATH,
+        },
+      };
+    }
+
+    if (inputs.COVERITY_EXECUTION_PATH) {
+      srmData.data.coverity = {
+        execution: {
+          path: inputs.COVERITY_EXECUTION_PATH,
+        },
+      };
+    }
+    if (inputs.SRM_PROJECT_DIRECTORY) {
+      srmData.data.project = {
+        directory: inputs.SRM_PROJECT_DIRECTORY,
+      };
+    }
+
+    // Set Coverity or Blackduck Arbitrary Arguments
+    const coverityArgs = this.setCoverityArbitraryArgs();
+    const blackduckArgs = this.setBlackDuckArbitraryArgs();
+
+    if (Object.keys(coverityArgs).length > 0) {
+      srmData.data.coverity = { ...srmData.data.coverity, ...coverityArgs };
+    }
+    if (Object.keys(blackduckArgs).length > 0) {
+      srmData.data.blackduck = { ...srmData.data.blackduck, ...blackduckArgs };
+    }
+
+    const inputJson = JSON.stringify(srmData);
+
+    let stateFilePath = path.join(
+      this.tempDir,
+      SynopsysToolsParameter.SRM_STATE_FILE_NAME
+    );
+    taskLib.writeFile(stateFilePath, inputJson);
+
+    // Wrap the file path with double quotes, to make it work with directory path with space as well
+    stateFilePath = '"'.concat(stateFilePath).concat('"');
+    taskLib.debug("Generated state json file at - ".concat(stateFilePath));
+
+    command = SynopsysToolsParameter.STAGE_OPTION.concat(
+      SynopsysToolsParameter.SPACE
+    )
+      .concat(SynopsysToolsParameter.SRM_STAGE)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(SynopsysToolsParameter.INPUT_OPTION)
+      .concat(SynopsysToolsParameter.SPACE)
+      .concat(stateFilePath)
+      .concat(SynopsysToolsParameter.SPACE);
+
+    return command;
   }
 
   private getAzureRepoInfo(): AzureData | undefined {

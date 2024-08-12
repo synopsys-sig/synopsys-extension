@@ -14,6 +14,7 @@ export const APPLICATION_NAME = "synopsys-extension";
 export const POLARIS_KEY = "polaris";
 export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
+export const SRM_KEY = "srm";
 
 export const AZURE_TOKEN_KEY = "azure_token";
 export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azure_token";
@@ -197,6 +198,11 @@ export const BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY =
 export const COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
 export const COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "bridge_coverity_install_directory";
+
+export const COVERITY_EXECUTION_PATH_KEY = "coverity_execution_path";
+export const COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR =
+  "bridge_coverity_execution_path";
+
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
  */
@@ -231,18 +237,25 @@ export const COVERITY_BUILD_COMMAND_KEY = "coverity_build_command";
 export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = "coverityBuildCommand";
 export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "coverityBuildCommandForPolaris";
+export const COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "coverityBuildCommandForSrm";
 export const COVERITY_CLEAN_COMMAND_KEY = "coverity_clean_command";
 export const COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = "coverityCleanCommand";
 export const COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "coverityCleanCommandForPolaris";
+export const COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "coverityCleanCommandForSrm";
 export const COVERITY_CONFIG_PATH_KEY = "coverity_config_path";
 export const COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = "coverityConfigPath";
 export const COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "coverityConfigPathForPolaris";
+export const COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "coverityConfigPathForSrm";
 export const COVERITY_ARGS_KEY = "coverity_args";
 export const COVERITY_ARGS_KEY_CLASSIC_EDITOR = "coverityArgs";
 export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "coverityArgsForPolaris";
+export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "coverityArgsForSrm";
 
 // Bridge and ADO Exit Codes
 export const EXIT_CODE_MAP = new Map<string, string>([
@@ -274,7 +287,7 @@ export const EXIT_CODE_MAP = new Map<string, string>([
   ],
   [
     ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
-    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity) are missing",
+    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
   ],
   [
     ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
@@ -397,6 +410,10 @@ export const BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY =
 export const BLACKDUCK_INSTALL_DIRECTORY_KEY = "blackduck_install_directory";
 export const BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "bridge_blackduck_install_directory";
+
+export const BLACKDUCK_EXECUTION_PATH_KEY = "blackduck_execution_path";
+export const BLACKDUCK_EXECUTION_PATH_KEY_CLASSIC_EDITOR =
+  "bridge_blackduck_execution_path";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
@@ -513,14 +530,46 @@ export const BLACKDUCK_SEARCH_DEPTH_KEY = "blackduck_search_depth";
 export const BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR = "blackduckSearchDepth";
 export const BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "blackduckSearchDepthForPolaris";
+export const BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "blackduckSearchDepthForSrm";
 export const BLACKDUCK_CONFIG_PATH_KEY = "blackduck_config_path";
 export const BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR = "blackduckConfigPath";
 export const BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "blackduckConfigPathForPolaris";
+export const BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM =
+  "blackduckConfigPathForSrm";
 export const BLACKDUCK_ARGS_KEY = "blackduck_args";
 export const BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR = "blackduckArgs";
 export const BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "blackduckArgsForPolaris";
+export const BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "blackduckArgsForSrm";
+
+//SRM
+export const SRM_URL_KEY = "srm_url";
+export const SRM_URL_KEY_CLASSIC_EDITOR = "bridge_srm_url";
+
+export const SRM_APIKEY_KEY = "srm_apikey";
+export const SRM_APIKEY_KEY_CLASSIC_EDITOR = "bridge_srm_apikey";
+
+export const SRM_ASSESSMENT_TYPES_KEY = "srm_assessment_types";
+export const SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR =
+  "bridge_srm_assessment_types";
+
+export const SRM_PROJECT_NAME_KEY = "srm_project_name";
+export const SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_srm_project_name";
+
+export const SRM_PROJECT_ID_KEY = "srm_project_id";
+export const SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = "bridge_srm_project_id";
+
+export const SRM_BRANCH_NAME_KEY = "srm_branch_name";
+export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_srm_branch_name";
+
+export const SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
+export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "bridge_srm_branch_parent";
+
+export const SRM_ASSESSMENT_MODE_KEY = "srm_assessment_mode";
+export const SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = "srmAssessmentMode";
+export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";

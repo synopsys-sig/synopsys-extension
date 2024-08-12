@@ -9,6 +9,7 @@ import {
   validateCoverityInputs,
   validatePolarisInputs,
   validateScanTypes,
+  validateSrmInputs,
 } from "./validator";
 
 import * as constants from "./application-constant";
@@ -98,7 +99,7 @@ export class SynopsysBridge {
       let formattedCommand = "";
       const invalidParams: string[] = validateScanTypes();
 
-      if (invalidParams.length === 3) {
+      if (invalidParams.length === 4) {
         return Promise.reject(
           new Error(
             "Requires at least one scan type: ("
@@ -107,6 +108,8 @@ export class SynopsysBridge {
               .concat(constants.COVERITY_URL_KEY)
               .concat(",")
               .concat(constants.BLACKDUCK_URL_KEY)
+              .concat(",")
+              .concat(constants.SRM_URL_KEY)
               .concat(")")
               .concat(constants.SPACE)
               .concat(ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString())
@@ -118,6 +121,7 @@ export class SynopsysBridge {
       let polarisErrors: string[] = [];
       let coverityErrors: string[] = [];
       let blackduckErrors: string[] = [];
+      let srmErrors: string[] = [];
 
       if (SCAN_TYPE.length > 0) {
         // To support single scan using Classic Editor
@@ -137,6 +141,10 @@ export class SynopsysBridge {
           formattedCommand,
           tempDir
         );
+        [formattedCommand, srmErrors] = await this.prepareSrmCommand(
+          formattedCommand,
+          tempDir
+        );
       }
 
       let validationErrors: string[] = [];
@@ -144,6 +152,7 @@ export class SynopsysBridge {
         polarisErrors,
         coverityErrors,
         blackduckErrors,
+        srmErrors,
         classicEditorErrors
       );
 
@@ -192,8 +201,27 @@ export class SynopsysBridge {
         formattedCommand,
         tempDir
       );
+    } else if (SCAN_TYPE == "srm") {
+      [formattedCommand, errors] = await this.prepareSrmCommand(
+        formattedCommand,
+        tempDir
+      );
     }
     return [formattedCommand, errors];
+  }
+
+  private async prepareSrmCommand(
+    formattedCommand: string,
+    tempDir: string
+  ): Promise<[string, string[]]> {
+    const srmErrors: string[] = validateSrmInputs();
+    const commandFormatter = new SynopsysToolsParameter(tempDir);
+    if (srmErrors.length === 0 && inputs.SRM_URL) {
+      formattedCommand = formattedCommand.concat(
+        await commandFormatter.getFormattedCommandForSrm()
+      );
+    }
+    return [formattedCommand, srmErrors];
   }
 
   private async preparePolarisCommand(

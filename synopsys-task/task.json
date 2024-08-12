@@ -3,7 +3,7 @@
   "id": "edd0f606-d9e3-4294-9d0d-64f9f1aadfde",
   "name": "SynopsysSecurityScan",
   "friendlyName": "Synopsys Security Scan",
-  "description": "Run security scans on Polaris, Black Duck or Coverity platforms",
+  "description": "Run security scans on Polaris, Black Duck, Coverity or Software Risk Manager platforms",
   "helpMarkDown": "",
   "category": "Utility",
   "author": "Synopsys",
@@ -42,6 +42,24 @@
       "displayName": "Black Duck (SCA) Tool Settings",
       "isExpanded": false,
       "visibleRule": "scanType = polaris"
+    },
+    {
+      "name": "srmToolSettings",
+      "displayName": "Software Risk Manager (SRM) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = srm"
+    },
+    {
+      "name": "coverityToolSettingsForSrm",
+      "displayName": "Coverity (SAST) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = srm"
+    },
+    {
+      "name": "blackduckToolSettingsForSrm",
+      "displayName": "Black Duck (SCA) Tool Settings",
+      "isExpanded": false,
+      "visibleRule": "scanType = srm"
     },
     {
       "name": "optionalSettings",
@@ -97,7 +115,8 @@
         "": "",
         "polaris": "Polaris",
         "blackduck": "Black Duck",
-        "coverity": "Coverity Platform"
+        "coverity": "Coverity Platform",
+        "srm": "Software Risk Manager"
       },
       "groupName": "scanOptions"
     },
@@ -508,6 +527,46 @@
       "groupName": "coverityToolSettingsForPolaris"
     },
     {
+      "name": "coverityBuildCommandForSrm",
+      "type": "string",
+      "label": "Build Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build command for Coverity.",
+      "visibleRule": "scanType = srm",
+      "groupName": "coverityToolSettingsForSrm"
+    },
+    {
+      "name": "coverityCleanCommandForSrm",
+      "type": "string",
+      "label": "Clean Command",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Clean command for Coverity.",
+      "visibleRule": "scanType = srm",
+      "groupName": "coverityToolSettingsForSrm"
+    },
+    {
+      "name": "coverityConfigPathForSrm",
+      "type": "string",
+      "label": "Config File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Coverity config file path (.yaml/.yml/.json).",
+      "visibleRule": "scanType = srm",
+      "groupName": "coverityToolSettingsForSrm"
+    },
+    {
+      "name": "coverityArgsForSrm",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional Coverity Arguments separated by space.",
+      "visibleRule": "scanType = srm",
+      "groupName": "coverityToolSettingsForSrm"
+    },
+    {
       "name": "bridge_blackduck_url",
       "type": "string",
       "label": "Black Duck URL",
@@ -716,6 +775,136 @@
       "helpMarkDown": "Additional Black Duck Arguments separated by space.",
       "visibleRule": "scanType = polaris",
       "groupName": "blackduckToolSettingsForPolaris"
+    },
+    {
+      "name": "blackduckSearchDepthForSrm",
+      "type": "string",
+      "label": "Search Depth",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Number indicating the search depth in the source directory.",
+      "visibleRule": "scanType = srm",
+      "groupName": "blackduckToolSettingsForSrm"
+    },
+    {
+      "name": "blackduckConfigPathForSrm",
+      "type": "string",
+      "label": "Config File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Black Duck config file path (.properties/.yml).",
+      "visibleRule": "scanType = srm",
+      "groupName": "blackduckToolSettingsForSrm"
+    },
+    {
+      "name": "blackduckArgsForSrm",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional Black Duck Arguments separated by space.",
+      "visibleRule": "scanType = srm",
+      "groupName": "blackduckToolSettingsForSrm"
+    },
+    {
+      "name": "bridge_srm_url",
+      "type": "string",
+      "label": "SRM Server URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "URL for SRM Server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_apikey",
+      "type": "string",
+      "label": "SRM API Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "API Key for SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_assessment_types",
+      "type": "string",
+      "label": "SRM Assessment Types",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "SRM Assessment Types separated by comma. Supported values: SAST, SCA.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_project_name",
+      "type": "string",
+      "label": "SRM Project Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Project name in SRM server. If not provided, azure repository name will be set as default value.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_project_id",
+      "type": "string",
+      "label": "SRM Project Id",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Project id in SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_branch_name",
+      "type": "string",
+      "label": "SRM Branch Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Branch name in SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_srm_branch_parent",
+      "type": "string",
+      "label": "SRM Parent Branch Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Parent Branch name in SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_coverity_execution_path",
+      "type": "string",
+      "label": "Coverity Installation Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to Coverity CLI.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "bridge_blackduck_execution_path",
+      "type": "string",
+      "label": "Black Duck Installation Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the Black Duck Detect jar file to use.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "srmProjectDirectory",
+      "type": "string",
+      "label": "Project Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project source directory. Defaults to repository root directory. Set this to specify a custom folder that is other than repository root",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
     },
     {
       "name": "azure_token",
