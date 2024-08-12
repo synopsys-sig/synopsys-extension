@@ -1512,14 +1512,13 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(srmStateFile));
         });
 
-        it('should success for SRM command formation with assessment mode and project directory parameters', async function () {
+        it('should success for SRM command formation with  project directory parameters', async function () {
             Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
             Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
             Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
             Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
             Object.defineProperty(inputs, 'SRM_BRANCH_NAME', {value: 'SRM_BRANCH_NAME'})
             Object.defineProperty(inputs, 'SRM_BRANCH_PARENT', {value: 'SRM_BRANCH_PARENT'})
-            Object.defineProperty(inputs, 'SRM_ASSESSMENT_MODE', {value: 'assessment_mode'})
             Object.defineProperty(inputs, 'SRM_PROJECT_DIRECTORY', {value: 'srm_project_directory'})
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
@@ -1533,7 +1532,6 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.srm.project.name).to.be.contains('SRM_PROJECT_NAME');
             expect(jsonData.data.srm.branch.name).to.be.contains('SRM_BRANCH_NAME');
             expect(jsonData.data.srm.branch.parent).to.be.contains('SRM_BRANCH_PARENT');
-            expect(jsonData.data.srm.assessment.mode).to.be.contains('assessment_mode');
             expect(jsonData.data.project.directory).to.be.contains('srm_project_directory');
 
             expect(formattedCommand).contains('--stage srm');

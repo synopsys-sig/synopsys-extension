@@ -678,9 +678,6 @@ export class SynopsysToolsParameter {
           apikey: inputs.SRM_APIKEY,
           assessment: {
             types: assessmentTypeArray,
-            ...(inputs.SRM_ASSESSMENT_MODE && {
-              mode: inputs.SRM_ASSESSMENT_MODE,
-            }),
           },
         },
       },

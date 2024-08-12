@@ -201,7 +201,7 @@ export const COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
 
 export const COVERITY_EXECUTION_PATH_KEY = "coverity_execution_path";
 export const COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR =
-  "bridge_coverity_execution_path";
+  "bridgeCoverityExecutionPath";
 
 /**
  * @deprecated Use coverity_policy_view instead. This can be removed in future release.
@@ -413,7 +413,7 @@ export const BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
 
 export const BLACKDUCK_EXECUTION_PATH_KEY = "blackduck_execution_path";
 export const BLACKDUCK_EXECUTION_PATH_KEY_CLASSIC_EDITOR =
-  "bridge_blackduck_execution_path";
+  "bridgeBlackduckExecutionPath";
 /**
  * @deprecated Use blackduck_scan_full instead. This can be removed in future release.
  */
@@ -546,29 +546,27 @@ export const BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "blackduckArgsForSrm";
 
 //SRM
 export const SRM_URL_KEY = "srm_url";
-export const SRM_URL_KEY_CLASSIC_EDITOR = "bridge_srm_url";
+export const SRM_URL_KEY_CLASSIC_EDITOR = "bridgeSrmUrl";
 
 export const SRM_APIKEY_KEY = "srm_apikey";
-export const SRM_APIKEY_KEY_CLASSIC_EDITOR = "bridge_srm_apikey";
+export const SRM_APIKEY_KEY_CLASSIC_EDITOR = "bridgeSrmApikey";
 
 export const SRM_ASSESSMENT_TYPES_KEY = "srm_assessment_types";
 export const SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR =
-  "bridge_srm_assessment_types";
+  "bridgeSrmAssessmentTypes";
 
 export const SRM_PROJECT_NAME_KEY = "srm_project_name";
-export const SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridge_srm_project_name";
+export const SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = "bridgeSrmProjectName";
 
 export const SRM_PROJECT_ID_KEY = "srm_project_id";
-export const SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = "bridge_srm_project_id";
+export const SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = "bridgeSrmProjectId";
 
 export const SRM_BRANCH_NAME_KEY = "srm_branch_name";
-export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridge_srm_branch_name";
+export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "bridgeSrmBranchName";
 
 export const SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
-export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "bridge_srm_branch_parent";
+export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "bridgeSrmBranchParent";
 
-export const SRM_ASSESSMENT_MODE_KEY = "srm_assessment_mode";
-export const SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = "srmAssessmentMode";
 export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";

@@ -1,7 +1,6 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
-import { SRM_ASSESSMENT_MODES } from "./model/srm";
 
 const deprecatedInputs: string[] = [];
 
@@ -139,20 +138,6 @@ function getInputForPolarisAssessmentMode() {
           .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
           ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
       ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
-      : "")
-  );
-}
-function getInputForSrmAssessmentMode() {
-  return (
-    taskLib.getInput(constants.SRM_ASSESSMENT_MODE_KEY)?.trim() ||
-    (taskLib
-      .getInput(constants.SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-      ?.trim() === SRM_ASSESSMENT_MODES.CI
-      ? SRM_ASSESSMENT_MODES.CI
-      : taskLib
-          .getInput(constants.SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
-          ?.trim() === SRM_ASSESSMENT_MODES.SOURCEUPLOAD
-      ? SRM_ASSESSMENT_MODES.SOURCE_UPLOAD
       : "")
   );
 }
@@ -527,7 +512,6 @@ export const SRM_ASSESSMENT_TYPES = getDelimitedInput(
   constants.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
   null
 );
-export const SRM_ASSESSMENT_MODE = getInputForSrmAssessmentMode();
 export const SRM_PROJECT_NAME = getInput(
   constants.SRM_PROJECT_NAME_KEY,
   constants.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR,
