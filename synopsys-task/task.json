@@ -116,7 +116,7 @@
         "polaris": "Polaris",
         "blackduck": "Black Duck",
         "coverity": "Coverity Platform",
-        "srm": "Software Risk Manager"
+        "srm": "Software Risk Manager (SRM)"
       },
       "groupName": "scanOptions"
     },
