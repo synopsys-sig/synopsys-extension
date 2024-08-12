@@ -1,6 +1,7 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { POLARIS_ASSESSMENT_MODES } from "./model/polaris";
+import { SRM_ASSESSMENT_MODES } from "./model/srm";
 
 const deprecatedInputs: string[] = [];
 
@@ -34,11 +35,14 @@ export function getInput(
 export function getArbitraryInputs(
   yamlKey: string,
   classicEditorKey: string,
-  classicEditorKeyForPolaris: string
+  classicEditorKeyForPolaris: string,
+  classicEditorKeyForSrm: string
 ) {
   const scanType = taskLib.getInput(constants.SCAN_TYPE_KEY);
   if (classicEditorKeyForPolaris.length > 0 && scanType == "polaris") {
     return taskLib.getInput(classicEditorKeyForPolaris);
+  } else if (classicEditorKeyForSrm.length > 0 && scanType == "srm") {
+    return taskLib.getInput(classicEditorKeyForSrm);
   } else if (
     classicEditorKey.length > 0 &&
     (scanType == "coverity" || scanType == "blackduck")
@@ -135,6 +139,20 @@ function getInputForPolarisAssessmentMode() {
           .getInput(constants.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
           ?.trim() === POLARIS_ASSESSMENT_MODES.SOURCEUPLOAD
       ? POLARIS_ASSESSMENT_MODES.SOURCE_UPLOAD
+      : "")
+  );
+}
+function getInputForSrmAssessmentMode() {
+  return (
+    taskLib.getInput(constants.SRM_ASSESSMENT_MODE_KEY)?.trim() ||
+    (taskLib
+      .getInput(constants.SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+      ?.trim() === SRM_ASSESSMENT_MODES.CI
+      ? SRM_ASSESSMENT_MODES.CI
+      : taskLib
+          .getInput(constants.SRM_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR)
+          ?.trim() === SRM_ASSESSMENT_MODES.SOURCEUPLOAD
+      ? SRM_ASSESSMENT_MODES.SOURCE_UPLOAD
       : "")
   );
 }
@@ -317,6 +335,11 @@ export const COVERITY_INSTALL_DIRECTORY = getPathInput(
   constants.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_INSTALL_DIRECTORY_KEY
 );
+export const COVERITY_EXECUTION_PATH = getPathInput(
+  constants.COVERITY_EXECUTION_PATH_KEY,
+  constants.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR,
+  null
+);
 export const COVERITY_POLICY_VIEW = getInput(
   constants.COVERITY_POLICY_VIEW_KEY,
   constants.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR,
@@ -346,22 +369,26 @@ export const COVERITY_PROJECT_DIRECTORY = getInput(
 export const COVERITY_BUILD_COMMAND = getArbitraryInputs(
   constants.COVERITY_BUILD_COMMAND_KEY,
   constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 export const COVERITY_CLEAN_COMMAND = getArbitraryInputs(
   constants.COVERITY_CLEAN_COMMAND_KEY,
   constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 export const COVERITY_CONFIG_PATH = getArbitraryInputs(
   constants.COVERITY_CONFIG_PATH_KEY,
   constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 export const COVERITY_ARGS = getArbitraryInputs(
   constants.COVERITY_ARGS_KEY,
   constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR,
-  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 
 // Blackduck related inputs
@@ -379,6 +406,11 @@ export const BLACKDUCK_INSTALL_DIRECTORY = getPathInput(
   constants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
   constants.BLACKDUCK_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_INSTALL_DIRECTORY_KEY
+);
+export const BLACKDUCK_EXECUTION_PATH = getPathInput(
+  constants.BLACKDUCK_EXECUTION_PATH_KEY,
+  constants.BLACKDUCK_EXECUTION_PATH_KEY_CLASSIC_EDITOR,
+  null
 );
 export const BLACKDUCK_SCAN_FULL = getInput(
   constants.BLACKDUCK_SCAN_FULL_KEY,
@@ -463,17 +495,63 @@ export const BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES = getInput(
 export const BLACKDUCK_SEARCH_DEPTH = getArbitraryInputs(
   constants.BLACKDUCK_SEARCH_DEPTH_KEY,
   constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.BLACKDUCK_SEARCH_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 export const BLACKDUCK_CONFIG_PATH = getArbitraryInputs(
   constants.BLACKDUCK_CONFIG_PATH_KEY,
   constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.BLACKDUCK_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM
 );
 export const BLACKDUCK_ARGS = getArbitraryInputs(
   constants.BLACKDUCK_ARGS_KEY,
   constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR,
-  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS
+  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS,
+  constants.BLACKDUCK_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM
+);
+
+//SRM inputs
+export const SRM_URL = getInput(
+  constants.SRM_URL_KEY,
+  constants.SRM_URL_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_APIKEY = getInput(
+  constants.SRM_APIKEY_KEY,
+  constants.SRM_APIKEY_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_ASSESSMENT_TYPES = getDelimitedInput(
+  constants.SRM_ASSESSMENT_TYPES_KEY,
+  constants.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_ASSESSMENT_MODE = getInputForSrmAssessmentMode();
+export const SRM_PROJECT_NAME = getInput(
+  constants.SRM_PROJECT_NAME_KEY,
+  constants.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_PROJECT_ID = getInput(
+  constants.SRM_PROJECT_ID_KEY,
+  constants.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_BRANCH_NAME = getInput(
+  constants.SRM_BRANCH_NAME_KEY,
+  constants.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_BRANCH_PARENT = getInput(
+  constants.SRM_BRANCH_PARENT_KEY,
+  constants.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_PROJECT_DIRECTORY = getInput(
+  constants.PROJECT_DIRECTORY_KEY,
+  constants.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
+  null
 );
 
 export const RETURN_STATUS =
