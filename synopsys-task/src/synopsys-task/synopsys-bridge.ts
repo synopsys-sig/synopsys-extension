@@ -215,8 +215,8 @@ export class SynopsysBridge {
     tempDir: string
   ): Promise<[string, string[]]> {
     const srmErrors: string[] = validateSrmInputs();
-    const commandFormatter = new SynopsysToolsParameter(tempDir);
     if (srmErrors.length === 0 && inputs.SRM_URL) {
+      const commandFormatter = new SynopsysToolsParameter(tempDir);
       formattedCommand = formattedCommand.concat(
         await commandFormatter.getFormattedCommandForSrm()
       );

@@ -1553,8 +1553,8 @@ class SynopsysBridge {
     prepareSrmCommand(formattedCommand, tempDir) {
         return __awaiter(this, void 0, void 0, function* () {
             const srmErrors = (0, validator_1.validateSrmInputs)();
-            const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
             if (srmErrors.length === 0 && inputs.SRM_URL) {
+                const commandFormatter = new tools_parameter_1.SynopsysToolsParameter(tempDir);
                 formattedCommand = formattedCommand.concat(yield commandFormatter.getFormattedCommandForSrm());
             }
             return [formattedCommand, srmErrors];

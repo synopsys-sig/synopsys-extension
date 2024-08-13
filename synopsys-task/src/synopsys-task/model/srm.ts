@@ -3,7 +3,7 @@ import { BlackDuckArbitrary } from "./blackduck";
 
 export interface Srm {
   srm: SrmData;
-  coverity?: coverityDetails;
+  coverity?: CoverityDetails;
   blackduck?: BlackduckDetails;
   project?: ProjectData;
 }
@@ -28,5 +28,5 @@ export interface ProjectData {
   directory?: string;
 }
 
-export interface coverityDetails extends ExecutionPath, CoverityArbitrary {}
+export interface CoverityDetails extends ExecutionPath, CoverityArbitrary {}
 export interface BlackduckDetails extends ExecutionPath, BlackDuckArbitrary {}
