@@ -671,7 +671,7 @@ export class SynopsysToolsParameter {
       }
     }
 
-    const srmData: InputData<Srm> = {
+    let srmData: InputData<Srm> = {
       data: {
         srm: {
           url: inputs.SRM_URL,
@@ -732,7 +732,8 @@ export class SynopsysToolsParameter {
     if (Object.keys(blackduckArgs).length > 0) {
       srmData.data.blackduck = { ...srmData.data.blackduck, ...blackduckArgs };
     }
-
+    // Remove empty data from json object
+    srmData = filterEmptyData(srmData);
     const inputJson = JSON.stringify(srmData);
 
     let stateFilePath = path.join(

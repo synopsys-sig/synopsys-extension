@@ -2407,7 +2407,7 @@ class SynopsysToolsParameter {
                     }
                 }
             }
-            const srmData = {
+            let srmData = {
                 data: {
                     srm: {
                         url: inputs.SRM_URL,
@@ -2459,6 +2459,8 @@ class SynopsysToolsParameter {
             if (Object.keys(blackduckArgs).length > 0) {
                 srmData.data.blackduck = Object.assign(Object.assign({}, srmData.data.blackduck), blackduckArgs);
             }
+            // Remove empty data from json object
+            srmData = (0, utility_1.filterEmptyData)(srmData);
             const inputJson = JSON.stringify(srmData);
             let stateFilePath = path_1.default.join(this.tempDir, SynopsysToolsParameter.SRM_STATE_FILE_NAME);
             taskLib.writeFile(stateFilePath, inputJson);
@@ -2983,7 +2985,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isNullOrEmptyValue = exports.validateSrmInputs = exports.validateBlackDuckInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
+exports.validateSrmInputs = exports.validateBlackDuckInputs = exports.validateBlackduckFailureSeverities = exports.validateCoverityInstallDirectoryParam = exports.validateCoverityInputs = exports.validateBridgeUrl = exports.isNullOrEmpty = exports.validateParameters = exports.validatePolarisInputs = exports.validateScanTypes = void 0;
 const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -3108,10 +3110,6 @@ function validateSrmInputs() {
     return errors;
 }
 exports.validateSrmInputs = validateSrmInputs;
-function isNullOrEmptyValue(param) {
-    return param == null || param.length === 0;
-}
-exports.isNullOrEmptyValue = isNullOrEmptyValue;
 
 
 /***/ }),
