@@ -3,6 +3,7 @@ import * as constants from '../../../src/synopsys-task/application-constant';
 import * as validator from '../../../src/synopsys-task/validator';
 import { expect } from 'chai';
 import * as mocha from 'mocha';
+import {ErrorCode} from "../../../src/synopsys-task/enum/ErrorCodes";
 
 describe("Validator test", () => {
     context('validator context',() => {
@@ -67,12 +68,14 @@ describe("Validator test", () => {
             Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: []})
 
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ''})
+            Object.defineProperty(inputs, 'SRM_URL', {value: ''})
         });
 
         it('should return empty array for validateScanType', function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'SRM_URL'})
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).equals(0);
         });
@@ -167,7 +170,7 @@ describe("Validator test", () => {
         it('should return empty array for validateScanType', function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
             const validationsErrors = validator.validateScanTypes();
-            expect(validationsErrors.length).equals(2);
+            expect(validationsErrors.length).equals(3);
         });
 
         it('should have error for no scan type provided', function () {
@@ -203,4 +206,46 @@ describe("Validator test", () => {
             expect(bdValidationErrors[0]).contains('['.concat(constants.BLACKDUCK_TOKEN_KEY).concat('] - required parameters for blackduck is missing'))
         });
     });
+    context('SRM validation',()=>{
+            afterEach(() => {
+                Object.defineProperty(inputs, 'SRM_URL', {value: ''})
+                Object.defineProperty(inputs, 'SRM_APIKEY', {value: ''})
+                Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ''})
+                Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: ''})
+                Object.defineProperty(inputs, 'SRM_BRANCH_NAME', {value: ''})
+                Object.defineProperty(inputs, 'SRM_BRANCH_PARENT', {value: ''})
+                Object.defineProperty(inputs, 'COVERITY_EXECUTION_PATH', {value: ''})
+                Object.defineProperty(inputs, 'BLACKDUCK_EXECUTION_PATH', {value: ''})
+            });
+
+        it('should return empty array for validateScanType', function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'SRM_URL'})
+            const validationsErrors = validator.validateScanTypes();
+            expect(validationsErrors.length).equals(3);
+        });
+
+        it('should have error for no scan type provided', function () {
+            const validationsErrors = validator.validateScanTypes();
+            expect(validationsErrors.length).greaterThan(0);
+            expect(validationsErrors[3]).contains(constants.SRM_URL_KEY);
+        });
+        it('should return empty array for validateSrmInputs', function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+
+            const validationErrors = validator.validateSrmInputs();
+            expect(validationErrors.length).equals(0);
+        });
+
+        it('should failed with messing SRM parameters', function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: ''})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ''})
+
+            const validationErrors = validator.validateSrmInputs();
+            expect(validationErrors.length).greaterThan(0);
+            expect(validationErrors[0]).contains('[srm_apikey,srm_assessment_types] - required parameters for srm is missing '.concat(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()));
+        });
+    })
 });

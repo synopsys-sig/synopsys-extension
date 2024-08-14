@@ -51,7 +51,7 @@ describe("Synopsys Bridge test", () => {
         });
 
         it('should fail with no scan type provied error', async function () {
-            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url","bridge_blackduck_url"]);
+            sandbox.stub(validator, "validateScanTypes").returns(["bridge_polaris_serverUrl", "bridge_coverity_connect_url","bridge_blackduck_url","bridge_srm_url"]);
 
             synopsysBridge.prepareCommand("/temp").catch(errorObje => {
                 expect(errorObje.message).includes("Requires at least one scan type");
@@ -139,6 +139,51 @@ describe("Synopsys Bridge test", () => {
             Object.defineProperty(inputs, 'COVERITY_URL', {value: ""})
         });
 
+        // SRM test cases
+        it('should run successfully for SRM command preparation', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
+                Promise.resolve("./bridge --stage srm --state srm_input.json"));
+            sandbox.stub(validator, "validateSrmInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage srm --state srm_input.json")
+
+            Object.defineProperty(inputs, 'SRM_URL', {value: ""});
+        });
+
+        it('should fail with mandatory parameter missing fields for SRM', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
+
+            sandbox.stub(validator, "validateSrmInputs").returns([`[bridge_srm_apikey, bridge_srm_assessment_types] - required parameters for SRM is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`]);
+
+            synopsysBridge.prepareCommand("/temp").catch(errorObje => {
+                expect(errorObje.message).equals(`[bridge_srm_apikey, bridge_srm_assessment_types] - required parameters for SRM is missing ${ErrorCode.MISSING_REQUIRED_PARAMETERS.toString()}`);
+                expect(errorObje.message).includes(ErrorCode.MISSING_REQUIRED_PARAMETERS.toString());
+            })
+            Object.defineProperty(inputs, 'SRM_URL', {value: ""})
+        });
+
+        it('should fail with invalid assessment type error', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() => {
+                throw new Error("Invalid value for bridge_srm_assessment_types".concat(constants.SPACE).concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString()))
+            });
+            sandbox.stub(validator, "validateSrmInputs").returns([]);
+            try {
+                await synopsysBridge.prepareCommand("/temp");
+            } catch (e) {
+                const errorObject = e as Error;
+                expect(errorObject.message).includes("Invalid value for bridge_srm_assessment_types");
+                expect(errorObject.message).includes(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString());
+            }
+            Object.defineProperty(inputs, 'SRM_URL', {value: ""})
+        });
+
         // Classic editor test cases
         it('should run successfully for polaris command preparation for classic editor', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
@@ -183,6 +228,22 @@ describe("Synopsys Bridge test", () => {
             expect(preparedCommand).contains("./bridge --stage blackduck --state bd_input.json")
 
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
+        });
+
+        it('should run successfully for SRM command preparation for classic editor', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'});
+            Object.defineProperty(inputs, 'SCAN_TYPE', {value: "srm"});
+
+            sandbox.stub(validator, "validateScanTypes").returns([]);
+            sandbox.stub(SynopsysToolsParameter.prototype, "getFormattedCommandForSrm").callsFake(() =>
+                Promise.resolve("./bridge --stage srm --state srm_input.json"));
+            sandbox.stub(validator, "validateSrmInputs").returns([]);
+
+            const preparedCommand = await synopsysBridge.prepareCommand("/temp");
+            expect(preparedCommand).contains("./bridge --stage srm --state srm_input.json")
+
+            Object.defineProperty(inputs, 'SRM_URL', {value: ""});
             Object.defineProperty(inputs, 'SCAN_TYPE', {value: ""});
         });
 
