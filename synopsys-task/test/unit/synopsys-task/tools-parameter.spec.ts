@@ -314,6 +314,33 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(polarisStateFile))
         });
 
+        it('should success for polaris command formation with polaris wait for scan param', async function () {
+            Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'POLARIS_ASSESSMENT_TYPES', {value: ['SCA','sast']})
+            Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
+            Object.defineProperty(inputs, 'POLARIS_WAIT_FOR_SCAN', {value: true})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
+
+            const jsonString = fs.readFileSync(polarisStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.polaris.serverUrl).to.be.contains('server_url');
+            expect(jsonData.data.polaris.accesstoken).to.be.contains('access_token');
+            expect(jsonData.data.polaris.assessment.types).to.be.contains('SCA','sast');
+            expect(jsonData.data.polaris.application.name).to.be.contains('POLARIS_APPLICATION_NAME');
+            expect(jsonData.data.polaris.project.name).to.be.contains('POLARIS_PROJECT_NAME');
+            expect(jsonData.data.polaris.branch.name).to.be.contains('feature1');
+            expect(jsonData.data.polaris.waitForScan).to.be.equals(true);
+
+            expect(formattedCommand).contains('--stage polaris');
+
+            polarisStateFile = '"'.concat(polarisStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(polarisStateFile))
+        });
+
         it('should success for polaris command formation with assessment mode and project directory parameters', async function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'})
             Object.defineProperty(inputs, 'POLARIS_ACCESS_TOKEN', {value: 'access_token'})
@@ -732,6 +759,31 @@ describe("Synopsys Tools Parameter test", () => {
             expect(jsonData.data.azure.repository.name).to.be.equals('test-repo');
             expect(jsonData.data.azure.repository.branch.name).to.be.equals('refs/heads/feature/test-branch');
             expect(jsonData.data.azure.repository.pull.number).to.be.equals(95);
+            expect(formattedCommand).contains('--stage connect');
+
+            coverityStateFile = '"'.concat(coverityStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(coverityStateFile));
+        });
+
+        it('should success for coverity command formation with coverity wait for scan param', async function () {
+            Object.defineProperty(inputs, 'COVERITY_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'COVERITY_USER', {value: 'test-user'})
+            Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
+            Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
+            Object.defineProperty(inputs, 'COVERITY_WAIT_FOR_SCAN', {value: true})
+
+            sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
+
+            const jsonString = fs.readFileSync(coverityStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.coverity.connect.url).to.be.equals('https://test.com');
+            expect(jsonData.data.coverity.connect.user.name).to.be.equals('test-user');
+            expect(jsonData.data.coverity.connect.user.password).to.be.equals('password');
+            expect(jsonData.data.coverity.connect.stream.name).to.be.equals('test');
+            expect(jsonData.data.coverity.connect.project.name).to.be.equals('test');
+            expect(jsonData.data.coverity.waitForScan).to.be.equals(true);
             expect(formattedCommand).contains('--stage connect');
 
             coverityStateFile = '"'.concat(coverityStateFile).concat('"');
@@ -1319,6 +1371,26 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
+        it('should success for blackduck command formation with blackduck wait for scan param', async function () {
+            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
+            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_WAIT_FOR_SCAN', {value: true})
+            
+            sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
+
+            const jsonString = fs.readFileSync(blackduckStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+            expect(jsonData.data.blackduck.url).to.be.equals('https://test.com');
+            expect(jsonData.data.blackduck.token).to.be.equals('token');
+            expect(jsonData.data.blackduck.waitForScan).to.be.equals(true);
+            
+            expect(formattedCommand).contains('--stage blackduck');
+
+            blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
+        });
+
         it('should success for blackduck command formation with blackduck project directory', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
@@ -1338,6 +1410,7 @@ describe("Synopsys Tools Parameter test", () => {
             blackduckStateFile = '"'.concat(blackduckStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
+
         it('should pass blackduck arbitrary fields to bridge', async () => {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'BLACKDUCK_API_TOKEN'})
@@ -1510,6 +1583,30 @@ describe("Synopsys Tools Parameter test", () => {
 
             srmStateFile = '"'.concat(srmStateFile).concat('"');
             expect(formattedCommand).contains('--input '.concat(srmStateFile));
+        });
+
+        it('should success for SRM command formation with SRM wait for scan param', async function () {
+            Object.defineProperty(inputs, 'SRM_URL', {value: 'srm_url'})
+            Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
+            Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
+            Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
+            Object.defineProperty(inputs, 'SRM_WAIT_FOR_SCAN', {value: true})
+
+            const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
+
+            const jsonString = fs.readFileSync(srmStateFile, 'utf-8');
+            const jsonData = JSON.parse(jsonString);
+
+            expect(jsonData.data.srm.url).to.be.contains('srm_url');
+            expect(jsonData.data.srm.apikey).to.be.contains('srm_apikey');
+            expect(jsonData.data.srm.assessment.types).to.be.contains('SCA','SAST');
+            expect(jsonData.data.srm.project.name).to.be.contains('SRM_PROJECT_NAME');
+            expect(jsonData.data.srm.waitForScan).to.be.equal(true);
+
+            expect(formattedCommand).contains('--stage srm');
+
+            srmStateFile = '"'.concat(srmStateFile).concat('"');
+            expect(formattedCommand).contains('--input '.concat(srmStateFile))
         });
 
         it('should success for SRM command formation with  project directory parameters', async function () {

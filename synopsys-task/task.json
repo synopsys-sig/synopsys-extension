@@ -282,6 +282,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisWaitForScan",
+      "type": "boolean",
+      "label": "Polaris Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisProjectDirectory",
       "type": "string",
       "label": "Project Directory",
@@ -433,6 +443,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "coverityWaitForScan",
+      "type": "boolean",
+      "label": "Coverity Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -707,6 +727,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "blackduckWaitForScan",
+      "type": "boolean",
+      "label": "Black Duck Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "blackduckProjectDirectory",
       "type": "string",
       "label": "Project Directory",
@@ -873,6 +903,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Parent Branch name in SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "srmWaitForScan",
+      "type": "boolean",
+      "label": "SRM Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
       "visibleRule": "scanType = srm",
       "groupName": "scanOptions"
     },

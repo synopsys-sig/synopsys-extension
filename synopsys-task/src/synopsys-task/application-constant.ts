@@ -139,6 +139,8 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
+
+export const POLARIS_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR = "polarisWaitForScan";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
@@ -216,6 +218,7 @@ export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
+export const COVERITY_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR = "coverityWaitForScan";
 export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "coverityProjectDirectory";
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
@@ -487,6 +490,8 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
 
+export const BLACKDUCK_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR =
+  "blackduckWaitForScan";
 export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckProjectDirectory";
 
@@ -566,6 +571,7 @@ export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "srmBranchName";
 export const SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
 export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "srmBranchParent";
 
+export const SRM_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR = "srmWaitForScan";
 export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 
 export const INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
@@ -576,6 +582,8 @@ export const INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = "include_diagnostics";
 export const BRIDGE_NETWORK_AIRGAP_KEY = "bridge_network_airgap";
 export const NETWORK_AIRGAP_KEY = "network_airgap";
 export const NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = "bridge_network_airgap";
+
+export const WAIT_FOR_SCAN_KEY = "wait_for_scan";
 
 /**
  * @deprecated Use synopsys_bridge_download_url instead. This can be removed in future release.

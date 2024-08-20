@@ -130,6 +130,12 @@ export class SynopsysToolsParameter {
       };
     }
 
+    if (isBoolean(inputs.POLARIS_WAIT_FOR_SCAN)) {
+      polData.data.polaris.waitForScan = parseToBoolean(
+        inputs.POLARIS_WAIT_FOR_SCAN
+      );
+    }
+
     if (
       inputs.POLARIS_PROJECT_DIRECTORY ||
       inputs.PROJECT_SOURCE_ARCHIVE ||
@@ -264,6 +270,12 @@ export class SynopsysToolsParameter {
         },
       },
     };
+
+    if (isBoolean(inputs.BLACKDUCK_WAIT_FOR_SCAN)) {
+      blackduckData.data.blackduck.waitForScan = parseToBoolean(
+        inputs.BLACKDUCK_WAIT_FOR_SCAN
+      );
+    }
 
     if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
       blackduckData.data.project = {
@@ -529,6 +541,12 @@ export class SynopsysToolsParameter {
       };
     }
 
+    if (isBoolean(inputs.COVERITY_WAIT_FOR_SCAN)) {
+      covData.data.coverity.waitForScan = parseToBoolean(
+        inputs.COVERITY_WAIT_FOR_SCAN
+      );
+    }
+
     if (inputs.COVERITY_PROJECT_DIRECTORY) {
       covData.data.project = {
         directory: inputs.COVERITY_PROJECT_DIRECTORY,
@@ -716,6 +734,11 @@ export class SynopsysToolsParameter {
         },
       };
     }
+
+    if (isBoolean(inputs.SRM_WAIT_FOR_SCAN)) {
+      srmData.data.srm.waitForScan = parseToBoolean(inputs.SRM_WAIT_FOR_SCAN);
+    }
+
     if (inputs.SRM_PROJECT_DIRECTORY) {
       srmData.data.project = {
         directory: inputs.SRM_PROJECT_DIRECTORY,
