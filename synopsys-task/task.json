@@ -202,6 +202,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisWaitForScan",
+      "type": "boolean",
+      "label": "Polaris Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
@@ -279,16 +289,6 @@
       "required": false,
       "helpMarkDown": "Comma separated list of issues types to include in SARIF report. Supported values: SAST,SCA.",
       "visibleRule": "polarisReportsSarifCreate = true",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "polarisWaitForScan",
-      "type": "boolean",
-      "label": "Polaris Wait For Scan",
-      "defaultValue": true,
-      "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
-      "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
     {
@@ -427,6 +427,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "coverityWaitForScan",
+      "type": "boolean",
+      "label": "Coverity Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_coverity_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
@@ -443,16 +453,6 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Flag to enable/disable to run coverity scan locally.",
-      "visibleRule": "scanType = coverity",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "coverityWaitForScan",
-      "type": "boolean",
-      "label": "Coverity Wait For Scan",
-      "defaultValue": true,
-      "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -637,6 +637,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "blackduckWaitForScan",
+      "type": "boolean",
+      "label": "Black Duck Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_blackduck_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
@@ -724,16 +734,6 @@
       "required": false,
       "helpMarkDown": "Comma separated list of issue severities to include in SARIF report. Supported values: CRITICAL,HIGH,MEDIUM,LOW",
       "visibleRule": "blackduckReportsSarifCreate = true",
-      "groupName": "scanOptions"
-    },
-    {
-      "name": "blackduckWaitForScan",
-      "type": "boolean",
-      "label": "Black Duck Wait For Scan",
-      "defaultValue": true,
-      "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
-      "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
     {
