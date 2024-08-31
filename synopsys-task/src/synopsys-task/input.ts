@@ -228,9 +228,9 @@ export const POLARIS_TEST_SCA_TYPE = getInput(
   constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR,
   null
 );
-export const POLARIS_WAIT_FOR_SCAN = getInput(
-  constants.WAIT_FOR_SCAN_KEY,
-  constants.POLARIS_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR,
+export const POLARIS_WAITFORSCAN = getInput(
+  constants.POLARIS_WAITFORSCAN_KEY,
+  constants.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
 
@@ -350,9 +350,9 @@ export const COVERITY_VERSION = getInput(
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_COVERITY_VERSION_KEY
 );
-export const COVERITY_WAIT_FOR_SCAN = getInput(
-  constants.WAIT_FOR_SCAN_KEY,
-  constants.COVERITY_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR,
+export const COVERITY_WAITFORSCAN = getInput(
+  constants.COVERITY_WAITFORSCAN_KEY,
+  constants.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
 export const COVERITY_PROJECT_DIRECTORY = getInput(
@@ -469,9 +469,9 @@ export const BLACKDUCK_REPORTS_SARIF_FILE_PATH = getInput(
   constants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR,
   constants.BRIDGE_BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY
 );
-export const BLACKDUCK_WAIT_FOR_SCAN = getInput(
-  constants.WAIT_FOR_SCAN_KEY,
-  constants.BLACKDUCK_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR,
+export const BLACKDUCK_WAITFORSCAN = getInput(
+  constants.BLACKDUCK_WAITFORSCAN_KEY,
+  constants.BLACKDUCK_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
 export const BLACKDUCK_PROJECT_DIRECTORY = getInput(
@@ -547,9 +547,9 @@ export const SRM_BRANCH_PARENT = getInput(
   constants.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR,
   null
 );
-export const SRM_WAIT_FOR_SCAN = getInput(
-  constants.WAIT_FOR_SCAN_KEY,
-  constants.SRM_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR,
+export const SRM_WAITFORSCAN = getInput(
+  constants.SRM_WAITFORSCAN_KEY,
+  constants.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
 export const SRM_PROJECT_DIRECTORY = getInput(

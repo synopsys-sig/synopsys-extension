@@ -321,7 +321,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'POLARIS_APPLICATION_NAME', {value: 'POLARIS_APPLICATION_NAME'})
             Object.defineProperty(inputs, 'POLARIS_PROJECT_NAME', {value: 'POLARIS_PROJECT_NAME'})
             Object.defineProperty(inputs, 'POLARIS_BRANCH_NAME', {value: 'feature1'})
-            Object.defineProperty(inputs, 'POLARIS_WAIT_FOR_SCAN', {value: true})
+            Object.defineProperty(inputs, 'POLARIS_WAITFORSCAN', {value: true})
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForPolaris();
 
@@ -771,7 +771,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'COVERITY_USER_PASSWORD', {value: 'password'})
             Object.defineProperty(inputs, 'COVERITY_PROJECT_NAME', {value: 'test'})
             Object.defineProperty(inputs, 'COVERITY_STREAM_NAME', {value: 'test'})
-            Object.defineProperty(inputs, 'COVERITY_WAIT_FOR_SCAN', {value: true})
+            Object.defineProperty(inputs, 'COVERITY_WAITFORSCAN', {value: true})
 
             sandbox.stub(validator, "validateCoverityInstallDirectoryParam").returns(false);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForCoverity();
@@ -1374,7 +1374,7 @@ describe("Synopsys Tools Parameter test", () => {
         it('should success for blackduck command formation with blackduck wait for scan param', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_WAIT_FOR_SCAN', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_WAITFORSCAN', {value: true})
             
             sandbox.stub(validator, "validateBlackduckFailureSeverities").returns(false);
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForBlackduck();
@@ -1590,7 +1590,7 @@ describe("Synopsys Tools Parameter test", () => {
             Object.defineProperty(inputs, 'SRM_APIKEY', {value: 'srm_apikey'})
             Object.defineProperty(inputs, 'SRM_ASSESSMENT_TYPES', {value: ['SCA','SAST']})
             Object.defineProperty(inputs, 'SRM_PROJECT_NAME', {value: 'SRM_PROJECT_NAME'})
-            Object.defineProperty(inputs, 'SRM_WAIT_FOR_SCAN', {value: true})
+            Object.defineProperty(inputs, 'SRM_WAITFORSCAN', {value: true})
 
             const formattedCommand = await synopsysToolsParameter.getFormattedCommandForSrm();
 

@@ -130,9 +130,9 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (isBoolean(inputs.POLARIS_WAIT_FOR_SCAN)) {
+    if (isBoolean(inputs.POLARIS_WAITFORSCAN)) {
       polData.data.polaris.waitForScan = parseToBoolean(
-        inputs.POLARIS_WAIT_FOR_SCAN
+        inputs.POLARIS_WAITFORSCAN
       );
     }
 
@@ -271,9 +271,9 @@ export class SynopsysToolsParameter {
       },
     };
 
-    if (isBoolean(inputs.BLACKDUCK_WAIT_FOR_SCAN)) {
+    if (isBoolean(inputs.BLACKDUCK_WAITFORSCAN)) {
       blackduckData.data.blackduck.waitForScan = parseToBoolean(
-        inputs.BLACKDUCK_WAIT_FOR_SCAN
+        inputs.BLACKDUCK_WAITFORSCAN
       );
     }
 
@@ -541,9 +541,9 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (isBoolean(inputs.COVERITY_WAIT_FOR_SCAN)) {
+    if (isBoolean(inputs.COVERITY_WAITFORSCAN)) {
       covData.data.coverity.waitForScan = parseToBoolean(
-        inputs.COVERITY_WAIT_FOR_SCAN
+        inputs.COVERITY_WAITFORSCAN
       );
     }
 
@@ -735,8 +735,8 @@ export class SynopsysToolsParameter {
       };
     }
 
-    if (isBoolean(inputs.SRM_WAIT_FOR_SCAN)) {
-      srmData.data.srm.waitForScan = parseToBoolean(inputs.SRM_WAIT_FOR_SCAN);
+    if (isBoolean(inputs.SRM_WAITFORSCAN)) {
+      srmData.data.srm.waitForScan = parseToBoolean(inputs.SRM_WAITFORSCAN);
     }
 
     if (inputs.SRM_PROJECT_DIRECTORY) {
