@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import { AzureData } from "./azure";
 import { Reports } from "./reports";
 export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
@@ -13,17 +15,17 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
 }
 
 export interface Blackduck {
-  blackduck: BlackduckData;
+  blackducksca: BlackduckData;
+  detect?: BlackDuckDetect;
   project?: ProjectData;
   azure?: AzureData;
   network?: NetworkAirGap;
   environment?: Environment;
 }
 
-export interface BlackduckData extends BlackDuckArbitrary {
+export interface BlackduckData {
   url: string;
   token: string;
-  install?: { directory: string };
   scan?: {
     full?: boolean;
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
@@ -33,7 +35,8 @@ export interface BlackduckData extends BlackDuckArbitrary {
   reports?: Reports;
 }
 
-export interface BlackDuckArbitrary {
+export interface BlackDuckDetect {
+  install?: { directory?: string };
   search?: Search;
   config?: Config;
   args?: string;

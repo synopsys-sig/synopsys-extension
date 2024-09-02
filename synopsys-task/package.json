@@ -1,5 +1,5 @@
 {
-  "name": "synopsys-task",
+  "name": "blackduck-security-scan",
   "version": "1.9.0",
   "main": "lib/main.js",
   "scripts": {

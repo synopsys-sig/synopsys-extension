@@ -1,20 +1,17 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import { AzureData } from "./azure";
 
 import { Reports } from "./reports";
-import {
-  Coverity,
-  CoverityArbitrary,
-  CoverityConnect,
-  CoverityData,
-} from "./coverity";
-import { Blackduck, BlackDuckArbitrary, BlackduckData } from "./blackduck";
+import { CoverityArbitrary } from "./coverity";
+import { BlackDuckDetect } from "./blackduck";
 
 export interface Polaris {
   polaris: PolarisData;
   project?: ProjectData;
   azure?: AzureData;
   coverity?: CoverityArbitrary;
-  blackduck?: BlackDuckArbitrary;
+  detect?: BlackDuckDetect;
 }
 
 export interface PolarisData {

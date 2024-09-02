@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import path from "path";
 import * as constants from "./application-constant";
 import {
@@ -5,11 +7,11 @@ import {
   NON_RETRY_HTTP_CODES,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
-  SYNOPSYS_BRIDGE_ZIP_FILE_NAME,
+  BRIDGE_CLI_ZIP_FILE_NAME,
 } from "./application-constant";
 
 import * as toolLib from "azure-pipelines-tool-lib";
-import * as toolLibLocal from "../synopsys-task/download-tool";
+import * as toolLibLocal from ".//download-tool";
 import * as process from "process";
 import { DownloadFileResponse } from "./model/download-file-response";
 import * as taskLib from "azure-pipelines-task-lib/task";
@@ -75,7 +77,7 @@ export async function getRemoteFile(
       new Error(
         "URL cannot be empty"
           .concat(constants.SPACE)
-          .concat(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+          .concat(ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())
       )
     );
   }
@@ -85,7 +87,7 @@ export async function getRemoteFile(
     fileNameFromUrl = url.substring(url.lastIndexOf("/") + 1);
     destFilePath = path.join(
       destFilePath,
-      fileNameFromUrl || SYNOPSYS_BRIDGE_ZIP_FILE_NAME
+      fileNameFromUrl || BRIDGE_CLI_ZIP_FILE_NAME
     );
   }
 
@@ -109,7 +111,7 @@ export async function getRemoteFile(
         error.message.includes("did not match downloaded file size")
       ) {
         console.info(
-          "Synopsys Bridge download has been failed, Retries left: "
+          "Bridge CLI download has been failed, Retries left: "
             .concat(String(retryCountLocal))
             .concat(", Waiting: ")
             .concat(String(retryDelay / 1000))
@@ -124,9 +126,9 @@ export async function getRemoteFile(
     }
   } while (retryCountLocal >= 0);
   return Promise.reject(
-    "Synopsys bridge download has been failed"
+    "Bridge CLI download has been failed"
       .concat(constants.SPACE)
-      .concat(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED.toString())
+      .concat(ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString())
   );
 }
 
@@ -230,7 +232,7 @@ export function extractBranchName(branchName: string): string {
 }
 
 // This function extracts the status code from a given error message string.
-// Example: "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 502 124",
+// Example: "Failed to download Bridge CLI zip from specified URL. HTTP status code: 502 124",
 // The function will return the HTTP status code. For the above example: 502
 export function getStatusCode(str: string) {
   const words = str.split(" ");

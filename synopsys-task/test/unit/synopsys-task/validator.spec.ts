@@ -1,9 +1,12 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as inputs from '../../../src/synopsys-task/input';
 import * as constants from '../../../src/synopsys-task/application-constant';
 import * as validator from '../../../src/synopsys-task/validator';
 import { expect } from 'chai';
 import * as mocha from 'mocha';
 import {ErrorCode} from "../../../src/synopsys-task/enum/ErrorCodes";
+import {BLACKDUCK_SCA_URL_KEY} from "../../../src/synopsys-task/application-constant";
 
 describe("Validator test", () => {
     context('validator context',() => {
@@ -74,7 +77,7 @@ describe("Validator test", () => {
         it('should return empty array for validateScanType', function () {
             Object.defineProperty(inputs, 'POLARIS_SERVER_URL', {value: 'server_url'});
             Object.defineProperty(inputs, 'COVERITY_URL', {value: 'COVERITY_URL'})
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'BLACKDUCK_SCA_URL'})
             Object.defineProperty(inputs, 'SRM_URL', {value: 'SRM_URL'})
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).equals(0);
@@ -158,17 +161,17 @@ describe("Validator test", () => {
 
     context('Blackduck validation', () => {
         afterEach(() => {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_INSTALL_DIRECTORY', {value: ''})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: true})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: []})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_API_TOKEN', {value: ''})
+            Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: ''})
+            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES', {value: []})
 
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: ''})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: ''})
         });
 
         it('should return empty array for validateScanType', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'BLACKDUCK_URL'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'BLACKDUCK_SCA_URL'})
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).equals(3);
         });
@@ -176,30 +179,30 @@ describe("Validator test", () => {
         it('should have error for no scan type provided', function () {
             const validationsErrors = validator.validateScanTypes();
             expect(validationsErrors.length).greaterThan(0);
-            expect(validationsErrors[1]).contains(constants.BLACKDUCK_URL_KEY);
+            expect(validationsErrors[1]).contains(constants.BLACKDUCK_SCA_URL_KEY);
         });
 
         it('should return empty array for validateBlackduckInputs', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FULL', {value: true})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: ["BLOCKER","CRITICAL","TRIVIAL"]});
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_API_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'DETECT_SCAN_FULL', {value: true})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES', {value: ["BLOCKER","CRITICAL","TRIVIAL"]});
 
             const bdValidationErrors = validator.validateBlackDuckInputs();
             expect(bdValidationErrors.length).equals(0);
         });
 
         it('should return boolean for invalid Blackduck Failure Severities', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
-            Object.defineProperty(inputs, 'BLACKDUCK_API_TOKEN', {value: 'access_token'})
-            Object.defineProperty(inputs, 'BLACKDUCK_SCAN_FAILURE_SEVERITIES', {value: []});
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_API_TOKEN', {value: 'access_token'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES', {value: []});
 
             const isValid = validator.validateBlackduckFailureSeverities([]);
             expect(isValid).equals(false);
         });
 
         it('should return mandatory fields missing error for validateBlackDuckInputs', function () {
-            Object.defineProperty(inputs, 'BLACKDUCK_URL', {value: 'server_url'})
+            Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'server_url'})
 
             const bdValidationErrors = validator.validateBlackDuckInputs();
             expect(bdValidationErrors.length).greaterThan(0);

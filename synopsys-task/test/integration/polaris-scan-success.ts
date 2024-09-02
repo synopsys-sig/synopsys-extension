@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as tmrm from "azure-pipelines-task-lib/mock-run";
 import * as ta from "azure-pipelines-task-lib/mock-answer";
 import * as process from 'process';
@@ -6,7 +8,7 @@ import * as constants from "../../src/synopsys-task/application-constant";
 
 let taskPath = path.join(__dirname, "..", "..", "lib", "main.js");
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
-tmr.registerMockExport("downloadTool", __dirname.concat("synopsys-bridge.zip"));
+tmr.registerMockExport("downloadTool", __dirname.concat("b.zip"));
 tmr.registerMockExport("exist", () => {return true});
 tmr.registerMockExport("stats", () => {
     return {
@@ -68,17 +70,17 @@ function getBridgeDefaultPath() {
     if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
+            constants.BRIDGE_CLI_DEFAULT_PATH_MAC
         );
     } else if (osName === "linux") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
+            constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
         );
     } else if (osName === "win32") {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
+            constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
         );
     }
     return bridgeDefaultPath;

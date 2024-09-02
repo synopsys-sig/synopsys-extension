@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import {
   getMappedTaskResult,
   getTempDir,
@@ -5,7 +7,7 @@ import {
   IS_PR_EVENT,
   parseToBoolean,
 } from "./synopsys-task/utility";
-import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
+import { Bridge } from "./synopsys-task/bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { TaskResult } from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
@@ -19,30 +21,28 @@ import { AzurePrResponse } from "./synopsys-task/model/azure";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 
 export async function run() {
-  console.log("Synopsys Task started...");
+  console.log("Black Duck Security Scan Task started...");
   const tempDir = getTempDir();
   taskLib.debug(`tempDir: ${tempDir}`);
   const workSpaceDir = getWorkSpaceDirectory();
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
   try {
-    const sb = new SynopsysBridge();
+    const bridge = new Bridge();
 
     showLogForDeprecatedInputs();
     // Prepare tool commands
-    const command: string = await sb.prepareCommand(tempDir);
+    const command: string = await bridge.prepareCommand(tempDir);
     let bridgePath = "";
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
-      bridgePath = await sb.downloadAndExtractBridge(tempDir);
+      bridgePath = await bridge.downloadAndExtractBridge(tempDir);
     } else {
-      console.log(
-        "Network air gap is enabled, skipping synopsys-bridge download."
-      );
-      bridgePath = await sb.getSynopsysBridgePath();
+      console.log("Network air gap is enabled, skipping Bridge CLI download.");
+      bridgePath = await bridge.getBridgePath();
     }
 
     // Execute prepared commands
-    const result: number = await sb.executeBridgeCommand(
+    const result: number = await bridge.executeBridgeCommand(
       bridgePath,
       getWorkSpaceDirectory(),
       command
@@ -57,12 +57,12 @@ export async function run() {
   } catch (error: any) {
     throw error;
   } finally {
-    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
+    if (parseToBoolean(inputs.BLACKDUCK_SCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
-        console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+        console.log("BLACKDUCK_SCA_REPORTS_SARIF_CREATE is enabled");
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-          inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+          inputs.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH
         );
       }
     }
@@ -82,7 +82,7 @@ export async function run() {
     }
   }
 
-  console.log("Synopsys Task workflow execution completed");
+  console.log("Black Duck Security Scan completed");
 }
 
 export function getExitMessage(message: string, exitCode: string): string {

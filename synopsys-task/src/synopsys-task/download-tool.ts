@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as httpm from "typed-rest-client/HttpClient";
 import * as ifm from "typed-rest-client/Interfaces";
 import * as path from "path";
@@ -6,7 +8,7 @@ import * as tl from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
 
-const userAgent = "SynopsysSecurityScan";
+const userAgent = "BlackDuckSecurityScan";
 const requestOptions = {
   // ignoreSslError: true,
   proxy: tl.getHttpProxyConfiguration(),
@@ -71,7 +73,7 @@ export async function downloadTool(
         );
         reject(
           new Error(
-            "Failed to download synopsys-bridge zip from specified URL. HTTP status code: "
+            "Failed to download Bridge CLI zip from specified URL. HTTP status code: "
               .concat(String(response.message.statusCode))
               .concat(constants.SPACE)
               .concat(
