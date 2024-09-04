@@ -36,11 +36,14 @@ export interface BlackduckData {
 }
 
 export interface BlackDuckDetect {
-  install?: { directory?: string };
+  scan?: { full?: boolean };
+  install?: Install;
   search?: Search;
   config?: Config;
   args?: string;
 }
+
+export interface Install extends ProjectData {}
 
 export interface AutomationData {
   fixpr?: boolean;

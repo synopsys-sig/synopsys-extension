@@ -1231,7 +1231,7 @@ describe("Synopsys Tools Parameter test", () => {
             expect(formattedCommand).contains('--input '.concat(blackduckStateFile));
         });
 
-        it('should success for blackduck command formation with invalid blackduck install directory', async function () {
+        it('should success for blackduck command formation with invalid detect install directory', async function () {
             Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: 'https://test.com'})
             Object.defineProperty(inputs, 'BLACKDUCK_SCA_API_TOKEN', {value: 'token'})
             Object.defineProperty(inputs, 'DETECT_INSTALL_DIRECTORY', {value: '/test'})

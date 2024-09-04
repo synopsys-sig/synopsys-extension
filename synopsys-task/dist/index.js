@@ -2045,25 +2045,7 @@ class BridgeToolsParameter {
                     directory: inputs.BLACKDUCK_SCA_PROJECT_DIRECTORY,
                 };
             }
-            if (inputs.DETECT_INSTALL_DIRECTORY) {
-                blackduckData.data.detect = {
-                    install: { directory: inputs.DETECT_INSTALL_DIRECTORY },
-                };
-            }
-            if (inputs.DETECT_SCAN_FULL) {
-                if (inputs.DETECT_SCAN_FULL.toLowerCase() === "true" ||
-                    inputs.DETECT_SCAN_FULL.toLowerCase() === "false") {
-                    const scanFullValue = inputs.DETECT_SCAN_FULL.toLowerCase() === "true";
-                    blackduckData.data.blackducksca.scan = { full: scanFullValue };
-                }
-                else {
-                    throw new Error("Missing boolean value for "
-                        .concat(constants.DETECT_SCAN_FULL_KEY)
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.MISSING_BOOLEAN_VALUE.toString()));
-                }
-            }
-            blackduckData.data.detect = Object.assign({}, this.setBlackDuckDetectArgs(), blackduckData.data.detect);
+            blackduckData.data.detect = this.setBlackDuckDetectArgs();
             if (failureSeverities && failureSeverities.length > 0) {
                 (0, validator_1.validateBlackduckFailureSeverities)(failureSeverities);
                 const failureSeverityEnums = [];
@@ -2597,22 +2579,40 @@ class BridgeToolsParameter {
         return covData.data;
     }
     setBlackDuckDetectArgs() {
-        const blackduckData = { data: {} };
+        const blackDuckDetectInputData = { data: {} };
+        if (inputs.DETECT_INSTALL_DIRECTORY) {
+            blackDuckDetectInputData.data.install = {
+                directory: inputs.DETECT_INSTALL_DIRECTORY,
+            };
+        }
+        if (inputs.DETECT_SCAN_FULL) {
+            if (inputs.DETECT_SCAN_FULL.toLowerCase() === "true" ||
+                inputs.DETECT_SCAN_FULL.toLowerCase() === "false") {
+                const scanFullValue = inputs.DETECT_SCAN_FULL.toLowerCase() === "true";
+                blackDuckDetectInputData.data.scan = { full: scanFullValue };
+            }
+            else {
+                throw new Error("Missing boolean value for "
+                    .concat(constants.DETECT_SCAN_FULL_KEY)
+                    .concat(constants.SPACE)
+                    .concat(ErrorCodes_1.ErrorCode.MISSING_BOOLEAN_VALUE.toString()));
+            }
+        }
         if (inputs.DETECT_SEARCH_DEPTH &&
             Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))) {
-            blackduckData.data.search = {
+            blackDuckDetectInputData.data.search = {
                 depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
             };
         }
         if (inputs.DETECT_CONFIG_PATH) {
-            blackduckData.data.config = {
+            blackDuckDetectInputData.data.config = {
                 path: inputs.DETECT_CONFIG_PATH,
             };
         }
         if (inputs.DETECT_ARGS) {
-            blackduckData.data.args = inputs.DETECT_ARGS;
+            blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
         }
-        return blackduckData.data;
+        return blackDuckDetectInputData.data;
     }
 }
 BridgeToolsParameter.STAGE_OPTION = "--stage";
