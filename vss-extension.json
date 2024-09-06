@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "synopsys-security-scan",
   "name": "Synopsys Security Scan",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "publisher": "synopsys-security-scan",
   "public": true,
   "targets": [
