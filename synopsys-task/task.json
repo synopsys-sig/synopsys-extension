@@ -202,6 +202,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "polarisWaitForScan",
+      "type": "boolean",
+      "label": "Polaris Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "visibleRule": "scanType = polaris",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "polarisPRCommentEnabled",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
@@ -417,6 +427,16 @@
       "groupName": "scanOptions"
     },
     {
+      "name": "coverityWaitForScan",
+      "type": "boolean",
+      "label": "Coverity Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
+      "visibleRule": "scanType = coverity",
+      "groupName": "scanOptions"
+    },
+    {
       "name": "bridge_coverity_automation_prcomment",
       "type": "boolean",
       "label": "Add Comments to Pull Requests",
@@ -613,6 +633,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Build will be broken, if specified severity threshold is met. <a href='https://community.synopsys.com/s/article/Black-Duck-Configuring-Policy-Management' target='_blank'>Click Here</a> for more info.",
+      "visibleRule": "scanType = blackduck",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "blackduckWaitForScan",
+      "type": "boolean",
+      "label": "Black Duck Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -873,6 +903,16 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Parent Branch name in SRM server.",
+      "visibleRule": "scanType = srm",
+      "groupName": "scanOptions"
+    },
+    {
+      "name": "srmWaitForScan",
+      "type": "boolean",
+      "label": "SRM Wait For Scan",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = srm",
       "groupName": "scanOptions"
     },

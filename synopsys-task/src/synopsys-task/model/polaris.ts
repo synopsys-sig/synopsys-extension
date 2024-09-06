@@ -1,5 +1,5 @@
 import { AzureData } from "./azure";
-
+import { AsyncMode } from "./async-mode";
 import { Reports } from "./reports";
 import {
   Coverity,
@@ -17,7 +17,7 @@ export interface Polaris {
   blackduck?: BlackDuckArbitrary;
 }
 
-export interface PolarisData {
+export interface PolarisData extends AsyncMode {
   triage?: string;
   accesstoken: string;
   serverUrl: string;

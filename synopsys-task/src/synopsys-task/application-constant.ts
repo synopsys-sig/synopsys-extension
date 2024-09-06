@@ -139,6 +139,8 @@ export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
+export const POLARIS_WAITFORSCAN_KEY = "polaris_waitForScan";
+export const POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = "polarisWaitForScan";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
@@ -216,6 +218,8 @@ export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR =
  */
 export const BRIDGE_COVERITY_AUTOMATION_PRCOMMENT_KEY =
   "bridge_coverity_automation_prcomment";
+export const COVERITY_WAITFORSCAN_KEY = "coverity_waitForScan";
+export const COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = "coverityWaitForScan";
 export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "coverityProjectDirectory";
 export const COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
@@ -486,7 +490,8 @@ export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY =
   "blackduck_fixpr_useUpgradeGuidance";
 export const BLACKDUCK_FIXPR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "bridge_blackduck_fixpr_useUpgradeGuidance";
-
+export const BLACKDUCK_WAITFORSCAN_KEY = "blackduck_waitForScan";
+export const BLACKDUCK_WAITFORSCAN_KEY_CLASSIC_EDITOR = "blackduckWaitForScan";
 export const BLACKDUCK_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "blackduckProjectDirectory";
 
@@ -565,6 +570,9 @@ export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "srmBranchName";
 
 export const SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
 export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "srmBranchParent";
+
+export const SRM_WAITFORSCAN_KEY = "srm_waitForScan";
+export const SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = "srmWaitForScan";
 
 export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 

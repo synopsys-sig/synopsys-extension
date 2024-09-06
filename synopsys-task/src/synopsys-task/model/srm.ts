@@ -1,5 +1,6 @@
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckArbitrary } from "./blackduck";
+import { AsyncMode } from "./async-mode";
 
 export interface Srm {
   srm: SrmData;
@@ -8,7 +9,7 @@ export interface Srm {
   project?: ProjectData;
 }
 
-export interface SrmData {
+export interface SrmData extends AsyncMode {
   url: string;
   apikey: string;
   assessment: { types: string[] };
