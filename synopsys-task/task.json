@@ -207,7 +207,7 @@
       "label": "Polaris Wait For Scan",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = polaris",
       "groupName": "scanOptions"
     },
@@ -432,7 +432,7 @@
       "label": "Coverity Wait For Scan",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = coverity",
       "groupName": "scanOptions"
     },
@@ -642,7 +642,7 @@
       "label": "Black Duck Wait For Scan",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = blackduck",
       "groupName": "scanOptions"
     },
@@ -912,7 +912,7 @@
       "label": "SRM Wait For Scan",
       "defaultValue": true,
       "required": false,
-      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true. Supported values: true or false",
+      "helpMarkDown": "It specifies whether the workflow should wait for the analysis to complete or not. Default value: true.",
       "visibleRule": "scanType = srm",
       "groupName": "scanOptions"
     },
