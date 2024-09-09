@@ -38,6 +38,12 @@ import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
 import { ErrorCode } from "./enum/ErrorCodes";
+import {
+  AZURE_PULL_REQUEST_NUMBER_IS_EMPTY,
+  INVALID_VALUE_ERROR,
+  MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT,
+  MISSING_BOOL_VALUE,
+} from "./application-constant";
 
 export class BridgeToolsParameter {
   tempDir: string;
@@ -294,7 +300,9 @@ export class BridgeToolsParameter {
             "Invalid value for "
               .concat(constants.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+              .concat(
+                ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()
+              )
           );
         } else {
           failureSeverityEnums.push(
@@ -636,8 +644,7 @@ export class BridgeToolsParameter {
           assessmentTypeArray.push(assessmentType.trim());
         } else {
           throw new Error(
-            "Invalid value for "
-              .concat(constants.SRM_ASSESSMENT_TYPES_KEY)
+            INVALID_VALUE_ERROR.concat(constants.SRM_ASSESSMENT_TYPES_KEY)
               .concat(constants.SPACE)
               .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString())
           );
@@ -816,9 +823,9 @@ export class BridgeToolsParameter {
     if (isPrCommentOrFixPrEnabled) {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
-          "Missing required azure token for fix pull request/automation comment"
-            .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+          MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT.concat(
+            constants.SPACE
+          ).concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
         );
       }
 
@@ -882,9 +889,7 @@ export class BridgeToolsParameter {
       ) || "";
     taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
     if (azurePullRequestNumber == "") {
-      taskLib.debug(
-        "azurePullRequestNumber is empty, setting environment.scan.pull as true"
-      );
+      taskLib.debug(AZURE_PULL_REQUEST_NUMBER_IS_EMPTY);
       const environment: Environment = {
         scan: {
           pull: true,
@@ -1040,8 +1045,7 @@ export class BridgeToolsParameter {
         blackDuckDetectInputData.data.scan = { full: scanFullValue };
       } else {
         throw new Error(
-          "Missing boolean value for "
-            .concat(constants.DETECT_SCAN_FULL_KEY)
+          MISSING_BOOL_VALUE.concat(constants.DETECT_SCAN_FULL_KEY)
             .concat(constants.SPACE)
             .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
         );

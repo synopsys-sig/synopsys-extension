@@ -872,7 +872,7 @@ describe("Synopsys Tools Parameter test", () => {
 
             synopsysToolsParameter.getFormattedCommandForBlackduck().catch(errorObj =>{
                 expect(errorObj.message).contains('Invalid value for '.concat(constants.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY))
-                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+                expect(errorObj.message).contains(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString())
             })
         });
 
@@ -1190,7 +1190,7 @@ describe("Synopsys Tools Parameter test", () => {
             } catch (e) {
                 const errorObj = e as Error;
                 console.log("errorObj",errorObj)
-                expect(errorObj.message).includes('Missing required azure token for fix pull request/automation comment');
+                expect(errorObj.message).includes('bridge-cli');
                 expect(errorObj.message).includes(ErrorCode.MISSING_AZURE_TOKEN.toString());
             }
         });

@@ -25,9 +25,31 @@ import {
   BRIDGE_CLI_INSTALL_DIRECTORY_KEY,
 } from "./input";
 import {
+  BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS,
+  BRIDGE_CLI_DOWNLOAD_COMPLETED,
+  BRIDGE_CLI_FOUND_AT,
+  BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS,
+  BRIDGE_CLI_URL_MESSAGE,
+  BRIDGE_CLI_VERSION_NOT_FOUND,
+  BRIDGE_EXECUTABLE_FILE_NOT_FOUND,
+  CHECK_LATEST_BRIDGE_CLI_VERSION,
+  DOWNLOADING_BRIDGE_CLI,
+  EMPTY_BRIDGE_CLI_URL,
+  ERROR_READING_VERSION_FILE,
+  GETTING_ALL_BRIDGE_VERSIONS_RETRY,
+  GETTING_LATEST_BRIDGE_VERSIONS_RETRY,
+  INVALID_BRIDGE_CLI_URL,
+  INVALID_BRIDGE_CLI_URL_SPECIFIED_OS,
+  LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH,
+  LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR,
   NON_RETRY_HTTP_CODES,
+  REQUIRE_ONE_SCAN_TYPE,
   RETRY_COUNT,
   RETRY_DELAY_IN_MILLISECONDS,
+  SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND,
+  UNABLE_TO_GET_RECENT_BRIDGE_VERSION,
+  VERSION_FILE_FOUND_AT,
+  VERSION_FILE_NOT_FOUND_AT,
 } from "./application-constant";
 import os from "os";
 import semver from "semver";
@@ -77,8 +99,7 @@ export class Bridge {
     );
     if (!taskLib.exist(executableBridgePath)) {
       throw new Error(
-        "Bridge CLI executable file could not be found at "
-          .concat(executableBridgePath)
+        BRIDGE_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
           .concat(constants.SPACE)
           .concat(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString())
       );
@@ -101,8 +122,7 @@ export class Bridge {
       if (invalidParams.length === 4) {
         return Promise.reject(
           new Error(
-            "Requires at least one scan type: ("
-              .concat(constants.POLARIS_SERVER_URL_KEY)
+            REQUIRE_ONE_SCAN_TYPE.concat(constants.POLARIS_SERVER_URL_KEY)
               .concat(",")
               .concat(constants.COVERITY_URL_KEY)
               .concat(",")
@@ -281,7 +301,7 @@ export class Bridge {
           tempDir,
           bridgeUrl
         );
-        console.info("Download of Bridge CLI completed");
+        console.info(BRIDGE_CLI_DOWNLOAD_COMPLETED);
         // Extracting bridge
         return await this.extractBridge(downloadBridge);
       }
@@ -302,8 +322,10 @@ export class Bridge {
       ) {
         return Promise.reject(
           new Error(
-            "Provided Bridge CLI url is not valid for the configured "
-              .concat(process.platform, " runner")
+            INVALID_BRIDGE_CLI_URL_SPECIFIED_OS.concat(
+              process.platform,
+              " runner"
+            )
               .concat(constants.SPACE)
               .concat(ErrorCode.INVALID_BRIDGE_CLI_URL.toString())
           )
@@ -311,9 +333,9 @@ export class Bridge {
       } else if (errorObject.toLowerCase().includes("empty")) {
         return Promise.reject(
           new Error(
-            "Provided Bridge CLI URL cannot be empty"
-              .concat(constants.SPACE)
-              .concat(ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())
+            EMPTY_BRIDGE_CLI_URL.concat(constants.SPACE).concat(
+              ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString()
+            )
           )
         );
       } else {
@@ -331,9 +353,9 @@ export class Bridge {
       if (!validateBridgeUrl(inputs.BRIDGE_CLI_DOWNLOAD_URL)) {
         return Promise.reject(
           new Error(
-            "Invalid URL"
-              .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_URL.toString())
+            INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(
+              ErrorCode.INVALID_URL.toString()
+            )
           )
         );
       }
@@ -359,16 +381,14 @@ export class Bridge {
       } else {
         return Promise.reject(
           new Error(
-            "Provided Bridge CLI version not found in artifactory"
-              .concat(constants.SPACE)
-              .concat(ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString())
+            BRIDGE_CLI_VERSION_NOT_FOUND.concat(constants.SPACE).concat(
+              ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString()
+            )
           )
         );
       }
     } else {
-      taskLib.debug(
-        "Checking for latest version of Bridge CLI to download and configure"
-      );
+      taskLib.debug(CHECK_LATEST_BRIDGE_CLI_VERSION);
       version = await this.getBridgeVersionFromLatestURL(
         this.bridgeArtifactoryURL.concat("/latest/versions.txt")
       );
@@ -377,13 +397,13 @@ export class Bridge {
 
     if (version != "") {
       if (await this.checkIfBridgeVersionExists(version)) {
-        console.log("Skipping download as same Bridge CLI version found");
+        console.log(SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
         return Promise.resolve("");
       }
     }
 
-    console.info("Downloading and configuring Bridge CLI");
-    console.info("Bridge CLI URL is - ".concat(bridgeUrl));
+    console.info(DOWNLOADING_BRIDGE_CLI);
+    console.info(BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
     return bridgeUrl;
   }
 
@@ -398,18 +418,14 @@ export class Bridge {
       versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
     }
     if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
-      taskLib.debug(
-        "Bridge CLI executable found at ".concat(this.bridgeExecutablePath)
-      );
-      taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
+      taskLib.debug(BRIDGE_CLI_FOUND_AT.concat(this.bridgeExecutablePath));
+      taskLib.debug(VERSION_FILE_FOUND_AT.concat(this.bridgeExecutablePath));
       if (await this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
         return Promise.resolve(true);
       }
     } else {
       taskLib.debug(
-        "Bridge CLI version file could not be found at ".concat(
-          this.bridgeExecutablePath
-        )
+        VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeExecutablePath)
       );
     }
     return Promise.resolve(false);
@@ -430,7 +446,7 @@ export class Bridge {
 
       if (!NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
         retryDelay = await this.retrySleepHelper(
-          "Getting all available bridge versions has been failed, Retries left: ",
+          GETTING_ALL_BRIDGE_VERSIONS_RETRY,
           retryCountLocal,
           retryDelay
         );
@@ -458,9 +474,7 @@ export class Bridge {
       }
 
       if (retryCountLocal === 0 && !(versionArray.length > 0)) {
-        taskLib.warning(
-          "Unable to retrieve the Bridge CLI Versions from Artifactory"
-        );
+        taskLib.warning(UNABLE_TO_GET_RECENT_BRIDGE_VERSION);
       }
     } while (retryCountLocal > 0);
     return versionArray;
@@ -474,9 +488,7 @@ export class Bridge {
       const contents = readFileSync(bridgeVersionFilePath, "utf-8");
       return contents.includes("Bridge CLI Package: ".concat(bridgeVersion));
     } catch (e) {
-      console.info(
-        "Error reading version file content: ".concat((e as Error).message)
-      );
+      console.info(ERROR_READING_VERSION_FILE.concat((e as Error).message));
     }
     return false;
   }
@@ -499,7 +511,7 @@ export class Bridge {
           !NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))
         ) {
           retryDelay = await this.retrySleepHelper(
-            "Getting latest Bridge CLI versions has been failed, Retries left: ",
+            GETTING_LATEST_BRIDGE_VERSIONS_RETRY,
             retryCountLocal,
             retryDelay
           );
@@ -516,15 +528,11 @@ export class Bridge {
         }
 
         if (retryCountLocal == 0) {
-          taskLib.warning(
-            "Unable to retrieve the most recent version from Artifactory URL"
-          );
+          taskLib.warning(UNABLE_TO_GET_RECENT_BRIDGE_VERSION);
         }
       } while (retryCountLocal > 0);
     } catch (e) {
-      taskLib.debug(
-        "Error reading version file content: ".concat((e as Error).message)
-      );
+      taskLib.debug(ERROR_READING_VERSION_FILE.concat((e as Error).message));
     }
     return "";
   }
@@ -633,22 +641,22 @@ export class Bridge {
     let bridgeDirectoryPath = this.getBridgeDefaultPath();
     if (BRIDGE_CLI_INSTALL_DIRECTORY_KEY) {
       bridgeDirectoryPath = BRIDGE_CLI_INSTALL_DIRECTORY_KEY;
-      console.info("Looking for bridge in Bridge CLI Install Directory");
+      console.info(LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
       if (!taskLib.exist(bridgeDirectoryPath)) {
         throw new Error(
-          "Bridge CLI Install Directory does not exist"
-            .concat(constants.SPACE)
-            .concat(ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString())
+          BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(
+            constants.SPACE
+          ).concat(ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString())
         );
       }
     } else {
-      console.info("Looking for Bridge CLI in default path");
+      console.info(LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH);
       if (ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
         if (!taskLib.exist(this.getBridgeDefaultPath())) {
           throw new Error(
-            "Bridge CLI default directory does not exist"
-              .concat(constants.SPACE)
-              .concat(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
+            BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS.concat(
+              constants.SPACE
+            ).concat(ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString())
           );
         }
       }

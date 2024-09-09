@@ -4,6 +4,7 @@ import * as constants from "./application-constant";
 import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { ErrorCode } from "./enum/ErrorCodes";
+import { INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES } from "./application-constant";
 
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
@@ -114,9 +115,9 @@ export function validateBlackduckFailureSeverities(
 ): boolean {
   if (severities == null || severities.length === 0) {
     taskLib.error(
-      "Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES"
-        .concat(constants.SPACE)
-        .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+      INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES.concat(
+        constants.SPACE
+      ).concat(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString())
     );
     return false;
   }

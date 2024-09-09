@@ -50,6 +50,7 @@ const inputs = __importStar(__nccwpck_require__(7533));
 const input_1 = __nccwpck_require__(7533);
 const diagnostics_1 = __nccwpck_require__(2926);
 const ErrorCodes_1 = __nccwpck_require__(4487);
+const application_constant_1 = __nccwpck_require__(3051);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Black Duck Security Scan Task started...");
@@ -68,14 +69,14 @@ function run() {
                 bridgePath = yield bridge.downloadAndExtractBridge(tempDir);
             }
             else {
-                console.log("Network air gap is enabled, skipping Bridge CLI download.");
+                console.log(application_constant_1.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
                 bridgePath = yield bridge.getBridgePath();
             }
             // Execute prepared commands
             const result = yield bridge.executeBridgeCommand(bridgePath, (0, utility_1.getWorkSpaceDirectory)(), command);
             // The statement set the exit code in the 'status' variable which can be used in the YAML file
             if ((0, utility_1.parseToBoolean)(inputs.RETURN_STATUS)) {
-                console.log(`##vso[task.setvariable variable=status;isoutput=true]${result}`);
+                console.log(application_constant_1.TASK_RETURN_STATUS);
             }
         }
         catch (error) {
@@ -84,13 +85,13 @@ function run() {
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_SCA_REPORTS_SARIF_CREATE)) {
                 if (!utility_1.IS_PR_EVENT) {
-                    console.log("BLACKDUCK_SCA_REPORTS_SARIF_CREATE is enabled");
+                    console.log(application_constant_1.BLACKDUCK_SCA_SARIF_REPOST_ENABLED);
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH);
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
                 if (!utility_1.IS_PR_EVENT) {
-                    console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+                    console.log(application_constant_1.POLARIS_SCA_SARIF_REPOST_ENABLED);
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
                 }
             }
@@ -98,7 +99,7 @@ function run() {
                 (0, diagnostics_1.uploadDiagnostics)(workSpaceDir);
             }
         }
-        console.log("Black Duck Security Scan completed");
+        console.log(application_constant_1.BLACKDUCK_SECURITY_SCAN_COMPLETED);
     });
 }
 exports.run = run;
@@ -123,14 +124,13 @@ function markBuildStatusIfIssuesArePresent(status, taskResult, errorMessage) {
         if (taskResult === task_1.TaskResult.Succeeded) {
             console.log(exitMessage);
         }
-        console.log(`Marking the build ${task_1.TaskResult[taskResult]} as configured in the task`);
+        console.log(application_constant_1.MARK_THE_BUILD_ON_BRIDGE_BREAK);
         taskLib.setResult(taskResult, exitMessage);
     }
     else {
-        const ignoreMessageForBuildStatus = `Marking build status ${task_1.TaskResult[taskResult]} is ignored since exit code is: ${status}`;
         taskLib.error(errorMessage);
-        console.log(ignoreMessageForBuildStatus);
-        taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(exitMessage));
+        console.log(application_constant_1.MARK_THE_BUILD_STATUS);
+        taskLib.setResult(taskLib.TaskResult.Failed, application_constant_1.WORKFLOW_FAILED.concat(exitMessage));
     }
 }
 run().catch((error) => {
@@ -139,7 +139,7 @@ run().catch((error) => {
         const status = getStatusFromError(error);
         // The statement set the exit code in the 'status' variable which can be used in the YAML file
         if (isReturnStatusEnabled) {
-            console.log(`##vso[task.setvariable variable=status;isoutput=true]${status}`);
+            console.log(application_constant_1.TASK_RETURN_STATUS);
         }
         const taskResult = (0, utility_1.getMappedTaskResult)(inputs.MARK_BUILD_STATUS);
         if (taskResult !== undefined && taskResult !== task_1.TaskResult.Failed) {
@@ -147,7 +147,7 @@ run().catch((error) => {
         }
         else {
             taskLib.error(error.message);
-            taskLib.setResult(taskLib.TaskResult.Failed, "Workflow failed! ".concat(getExitMessage(error.message, status)));
+            taskLib.setResult(taskLib.TaskResult.Failed, application_constant_1.WORKFLOW_FAILED.concat(getExitMessage(error.message, status)));
         }
     }
 });
@@ -162,11 +162,12 @@ run().catch((error) => {
 
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PROJECT_SOURCE_ARCHIVE_KEY = exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY = exports.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_MODE_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_ENABLED_KEY = exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_PARENT_NAME_KEY = exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_ACCESS_TOKEN_KEY = exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = exports.POLARIS_SERVER_URL_KEY = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.AZURE_TOKEN_KEY = exports.SRM_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.APPLICATION_NAME = exports.BRIDGE_CLI_ZIP_FILE_NAME = exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_LINUX = exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_MAC = void 0;
-exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCK_SCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_URL_KEY = exports.BLACKDUCK_URL_KEY = exports.SPACE = exports.EXIT_CODE_MAP = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = exports.COVERITY_ARGS_KEY = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_CONFIG_PATH_KEY = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_CLEAN_COMMAND_KEY = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_BUILD_COMMAND_KEY = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_EXECUTION_PATH_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_EXCLUDES_KEY = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = void 0;
+exports.PROJECT_DIRECTORY_KEY = exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = exports.POLARIS_TEST_SCA_TYPE_KEY = exports.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_MODE_KEY = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_SEVERITIES_KEY = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_FILE_PATH_KEY = exports.POLARIS_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.POLARIS_REPORTS_SARIF_CREATE_KEY = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_SEVERITIES_KEY = exports.POLARIS_PR_COMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.POLARIS_PR_COMMENT_ENABLED_KEY = exports.POLARIS_BRANCH_PARENT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_PARENT_NAME_KEY = exports.POLARIS_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_BRANCH_NAME_KEY = exports.POLARIS_TRIAGE_KEY_CLASSIC_EDITOR = exports.POLARIS_TRIAGE_KEY = exports.POLARIS_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.POLARIS_ASSESSMENT_TYPES_KEY = exports.POLARIS_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_PROJECT_NAME_KEY = exports.POLARIS_APPLICATION_NAME_KEY_CLASSIC_EDITOR = exports.POLARIS_APPLICATION_NAME_KEY = exports.POLARIS_ACCESS_TOKEN_KEY_CLASSIC_EDITOR = exports.POLARIS_ACCESS_TOKEN_KEY = exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = exports.POLARIS_SERVER_URL_KEY = exports.SRM_KEY = exports.BLACKDUCK_KEY = exports.COVERITY_KEY = exports.POLARIS_KEY = exports.SPACE = exports.SCAN_TYPE_KEY = exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = exports.AZURE_TOKEN_KEY = exports.APPLICATION_NAME = exports.BRIDGE_CLI_ZIP_FILE_NAME = exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_LINUX = exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = exports.BRIDGE_CLI_DEFAULT_PATH_MAC = void 0;
+exports.BLACKDUCK_TOKEN_KEY = exports.BLACKDUCK_SCA_URL_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_URL_KEY = exports.BLACKDUCK_URL_KEY = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = exports.COVERITY_ARGS_KEY = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_CONFIG_PATH_KEY = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_CLEAN_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_CLEAN_COMMAND_KEY = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_SRM = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.COVERITY_BUILD_COMMAND_KEY_CLASSIC_EDITOR = exports.COVERITY_BUILD_COMMAND_KEY = exports.COVERITY_VERSION_KEY_CLASSIC_EDITOR = exports.COVERITY_VERSION_KEY = exports.COVERITY_LOCAL_KEY_CLASSIC_EDITOR = exports.COVERITY_LOCAL_KEY = exports.COVERITY_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.COVERITY_PRCOMMENT_ENABLED_KEY = exports.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = exports.COVERITY_POLICY_VIEW_KEY = exports.COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.COVERITY_EXECUTION_PATH_KEY = exports.COVERITY_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.COVERITY_INSTALL_DIRECTORY_KEY = exports.COVERITY_STREAM_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_STREAM_NAME_KEY = exports.COVERITY_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.COVERITY_PROJECT_NAME_KEY = exports.COVERITY_PASSPHRASE_KEY_CLASSIC_EDITOR = exports.COVERITY_PASSPHRASE_KEY = exports.COVERITY_USER_KEY_CLASSIC_EDITOR = exports.COVERITY_USER_KEY = exports.COVERITY_URL_KEY_CLASSIC_EDITOR = exports.COVERITY_URL_KEY = exports.PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_EXCLUDES_KEY = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = exports.PROJECT_SOURCE_ARCHIVE_KEY = exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = void 0;
 exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_DEPTH_KEY_CLASSIC_EDITOR = exports.DETECT_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SEARCH_DEPTH_KEY = exports.BLACKDUCK_SCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES_KEY = exports.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = exports.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = exports.BLACKDUCK_SCA_REPORTS_SARIF_CREATE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_REPORTS_SARIF_CREATE_KEY = exports.BLACKDUCK_SCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_FIX_PR_UPGRADE_GUIDANCE_KEY = exports.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_FIX_PR_FILTER_SEVERITIES_KEY = exports.BLACKDUCK_SCA_FIX_PR_CREATE_SINGLE_PR_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_FIX_PR_CREATE_SINGLE_PR_KEY = exports.BLACKDUCK_SCA_FIX_PR_MAX_COUNT_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_MAX_COUNT_KEY = exports.BLACKDUCK_FIX_PR_MAX_COUNT_KEY = exports.BLACKDUCK_SCA_FIX_PR_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_FIX_PR_ENABLED_KEY = exports.BLACKDUCK_FIX_PR_ENABLED_KEY = exports.BLACKDUCK_SCA_PRCOMMENT_ENABLED_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_PRCOMMENT_ENABLED_KEY = exports.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY = exports.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = exports.DETECT_SCAN_FULL_KEY_CLASSIC_EDITOR = exports.DETECT_SCAN_FULL_KEY = exports.BLACKDUCK_SCAN_FULL_KEY = exports.DETECT_EXECUTION_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_EXECUTION_PATH_KEY = exports.BLACKDUCK_EXECUTION_PATH_KEY = exports.DETECT_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.DETECT_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_INSTALL_DIRECTORY_KEY = exports.BLACKDUCK_SCA_TOKEN_KEY_CLASSIC_EDITOR = exports.BLACKDUCK_SCA_TOKEN_KEY = void 0;
-exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.PROJECT_DIRECTORY_KEY = exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGE_CLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGE_CLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = void 0;
-exports.BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = exports.RETRY_COUNT = void 0;
+exports.RETRY_COUNT = exports.RETRY_DELAY_IN_MILLISECONDS = exports.SARIF_UPLOAD_FOLDER_ARTIFACT_NAME = exports.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY = exports.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY = exports.SARIF_DEFAULT_FILE_NAME = exports.BRIDGE_LOCAL_DIRECTORY = exports.UPLOAD_FOLDER_ARTIFACT_NAME = exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY = exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = exports.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = exports.MARK_BUILD_STATUS_KEY = exports.RETURN_STATUS_KEY = exports.BRIDGE_CLI_DOWNLOAD_VERSION_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_DOWNLOAD_VERSION_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION_KEY = exports.BRIDGE_CLI_DOWNLOAD_URL_KEY_CLASSIC_EDITOR = exports.BRIDGE_CLI_DOWNLOAD_URL_KEY = exports.SYNOPSYS_BRIDGE_DOWNLOAD_URL_KEY = exports.NETWORK_AIRGAP_KEY_CLASSIC_EDITOR = exports.NETWORK_AIRGAP_KEY = exports.BRIDGE_NETWORK_AIRGAP_KEY = exports.INCLUDE_DIAGNOSTICS_KEY_CLASSIC_EDITOR = exports.INCLUDE_DIAGNOSTICS_KEY = exports.SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_PARENT_KEY = exports.SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = exports.SRM_BRANCH_NAME_KEY = exports.SRM_PROJECT_ID_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_ID_KEY = exports.SRM_PROJECT_NAME_KEY_CLASSIC_EDITOR = exports.SRM_PROJECT_NAME_KEY = exports.SRM_ASSESSMENT_TYPES_KEY_CLASSIC_EDITOR = exports.SRM_ASSESSMENT_TYPES_KEY = exports.SRM_APIKEY_KEY_CLASSIC_EDITOR = exports.SRM_APIKEY_KEY = exports.SRM_URL_KEY_CLASSIC_EDITOR = exports.SRM_URL_KEY = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_ARGS_KEY_CLASSIC_EDITOR = exports.DETECT_ARGS_KEY = exports.BLACKDUCK_ARGS_KEY = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_SRM = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR_FOR_POLARIS = exports.DETECT_CONFIG_PATH_KEY_CLASSIC_EDITOR = exports.DETECT_CONFIG_PATH_KEY = exports.BLACKDUCK_CONFIG_PATH_KEY = void 0;
+exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = exports.MARK_THE_BUILD_STATUS = exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = exports.BLACKDUCK_SECURITY_SCAN_COMPLETED = exports.POLARIS_SCA_SARIF_REPOST_ENABLED = exports.BLACKDUCK_SCA_SARIF_REPOST_ENABLED = exports.TASK_RETURN_STATUS = exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = exports.ERROR_READING_VERSION_FILE = exports.VERSION_FILE_NOT_FOUND_AT = exports.VERSION_FILE_FOUND_AT = exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = exports.BRIDGE_CLI_FOUND_AT = exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = exports.BRIDGE_CLI_URL_MESSAGE = exports.DOWNLOADING_BRIDGE_CLI = exports.CHECK_LATEST_BRIDGE_CLI_VERSION = exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = exports.FAILED_TO_GET_PULL_REQUEST_INFO = exports.MISSING_BOOL_VALUE = exports.REQUIRE_ONE_SCAN_TYPE = exports.INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES = exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = exports.WORKSPACE_DIR_NOT_FOUND = exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = exports.BRIDGE_CLI_DOWNLOAD_FAILED = exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = exports.WORKFLOW_FAILED = exports.INVALID_BRIDGE_CLI_URL = exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = exports.EMPTY_BRIDGE_CLI_URL = exports.BRIDGE_EXECUTABLE_FILE_NOT_FOUND = exports.BRIDGE_CLI_VERSION_NOT_FOUND = exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = exports.BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = exports.DEFAULT_AZURE_API_URL = exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = exports.MAC_INTEL_PLATFORM = exports.MAC_ARM_PLATFORM = exports.LINUX_PLATFORM = exports.WINDOWS_PLATFORM = exports.NON_RETRY_HTTP_CODES = void 0;
+exports.EXIT_CODE_MAP = exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = exports.MISSING_BOOLEAN_VALUE_ERROR = exports.INVALID_VALUE_ERROR = exports.BRIDGE_DOWNLOAD_RETRY_ERROR = exports.SCAN_TYPE_REQUIRED_ERROR = exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = void 0;
 const ErrorCodes_1 = __nccwpck_require__(4487);
 exports.BRIDGE_CLI_DEFAULT_PATH_MAC = "/bridge-cli"; //Path will be in home
 exports.BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli";
@@ -175,14 +176,15 @@ exports.BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 exports.BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
 exports.BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
 exports.APPLICATION_NAME = "blackduck-extension";
+exports.AZURE_TOKEN_KEY = "azure_token";
+exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
+exports.SCAN_TYPE_KEY = "scanType";
+exports.SPACE = " ";
 // Scan Types
 exports.POLARIS_KEY = "polaris";
 exports.COVERITY_KEY = "coverity";
 exports.BLACKDUCK_KEY = "blackduck";
 exports.SRM_KEY = "srm";
-exports.AZURE_TOKEN_KEY = "azure_token";
-exports.AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
-exports.SCAN_TYPE_KEY = "scanType";
 // Polaris
 exports.POLARIS_SERVER_URL_KEY = "polaris_server_url";
 exports.POLARIS_SERVER_URL_KEY_CLASSIC_EDITOR = "polarisServerUrl";
@@ -218,6 +220,7 @@ exports.POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
 exports.POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR = "polarisAssessmentMode";
 exports.POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 exports.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
+exports.PROJECT_DIRECTORY_KEY = "project_directory";
 exports.POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "polarisProjectDirectory";
 exports.PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 exports.PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
@@ -265,136 +268,6 @@ exports.COVERITY_ARGS_KEY = "coverity_args";
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR = "coverityArgs";
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS = "coverityArgsForPolaris";
 exports.COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "coverityArgsForSrm";
-// Bridge and ADO Exit Codes
-exports.EXIT_CODE_MAP = new Map([
-    [
-        ErrorCodes_1.ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
-        "Bridge execution successfully completed",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_BRIDGE.toString(),
-        "Undefined error, check error logs",
-    ],
-    [ErrorCodes_1.ErrorCode.ADAPTER_ERROR.toString(), "Error from adapter end"],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_SHUTDOWN_FAILURE.toString(),
-        "Failed to shutdown the bridge",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString(),
-        "The config option bridge.break has been set to true",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
-        "Bridge initialization failed",
-    ],
-    // The list of ADO extension related error codes begins below
-    [
-        ErrorCodes_1.ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
-        "Requires at least one scan type",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
-        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
-        "Agent.TempDirectory is not set",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
-        "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
-        "Invalid value for polaris_assessment_types",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString(),
-        "Invalid value for blackducksca_scan_failure_severities",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
-        "Invalid value for blackduck_fixpr_maxCount",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
-        "Missing boolean value for blackduck_scan_full",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_BRIDGE_CLI_URL.toString(),
-        "Provided Bridge CLI URL is not valid for the configured platform runner",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString(),
-        "Provided Bridge CLI URL cannot be empty",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_URL.toString(),
-        "Invalid URL (Invalid Synopysys Bridge Download URL)",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString(),
-        "Provided Bridge CLI version not found in artifactory",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString(),
-        "Bridge CLI download has been failed",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString(),
-        "Bridge CLI Install Directory does not exist",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString(),
-        "Bridge CLI default directory does not exist",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString(),
-        "Bridge CLI executable file could not be found at executable Bridge path",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
-        "Workspace directory could not be located",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.FILE_DOES_NOT_EXIST.toString(),
-        "File (Bridge CLI zip) does not exist",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
-        "No destination directory found for unzipping Bridge CLI",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
-        "Failed to get pull request Id for current build from source branch",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.MISSING_AZURE_TOKEN.toString(),
-        "Missing required azure token for fix pull request/automation comment",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
-        "coverity_install_directory parameter for Coverity is invalid",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
-        "COVERITY_STREAM_NAME is mandatory for azure manual trigger",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
-        "Failed to download Bridge CLI zip from specified URL. HTTP status code: ",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
-        "Content-Length of Bridge CLI in the artifactory did not match downloaded file size",
-    ],
-    [
-        ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString(),
-        "Undefined error from extension",
-    ],
-]);
-exports.SPACE = " ";
 // Blackduck
 /**
  * @deprecated Use blackducksca_url instead. This can be removed in future release.
@@ -563,7 +436,6 @@ exports.MARK_BUILD_STATUS_KEY_CLASSIC_EDITOR = "markBuildStatus";
 exports.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY_KEY = "synopsys_bridge_install_directory";
 exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY = "bridgecli_install_directory";
 exports.BRIDGE_CLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR = "bridgeCliInstallDirectory";
-exports.PROJECT_DIRECTORY_KEY = "project_directory";
 exports.UPLOAD_FOLDER_ARTIFACT_NAME = "bridge_cli_diagnostics";
 exports.BRIDGE_LOCAL_DIRECTORY = ".bridge";
 exports.SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
@@ -580,6 +452,188 @@ exports.MAC_INTEL_PLATFORM = "macosx";
 exports.MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 exports.DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 exports.BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL = "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
+// Error Messages
+exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT = "Missing required azure token for fix pull request/automation comment";
+exports.BRIDGE_CLI_VERSION_NOT_FOUND = "Provided Bridge CLI version not found in artifactory";
+exports.BRIDGE_EXECUTABLE_FILE_NOT_FOUND = "Bridge CLI executable file could not be found at ";
+exports.EMPTY_BRIDGE_CLI_URL = "Provided Bridge CLI URL cannot be empty ";
+exports.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS = "Provided Bridge CLI url is not valid for the configured ";
+exports.INVALID_BRIDGE_CLI_URL = "Invalid URL";
+exports.WORKFLOW_FAILED = "Workflow failed! ";
+exports.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = "File does not exist";
+exports.BRIDGE_CLI_DOWNLOAD_FAILED = "Bridge CLI download has been failed";
+exports.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY = "Bridge CLI download has been failed, Retries left: ";
+exports.WORKSPACE_DIR_NOT_FOUND = "Workspace directory could not be located";
+exports.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND = "No destination directory found";
+exports.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS = "Bridge CLI Install Directory does not exist";
+exports.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS = "Bridge CLI default directory does not exist";
+exports.INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES = "Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES";
+exports.REQUIRE_ONE_SCAN_TYPE = "Requires at least one scan type: (";
+exports.MISSING_BOOL_VALUE = "Missing boolean value for ";
+exports.FAILED_TO_GET_PULL_REQUEST_INFO = "Failed to get pull request info for current build from source branch: ";
+// Info Messages
+exports.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND = "Skipping download as same Bridge CLI version found";
+exports.CHECK_LATEST_BRIDGE_CLI_VERSION = "Checking for latest version of Bridge CLI to download and configure";
+exports.DOWNLOADING_BRIDGE_CLI = "Downloading and configuring Bridge CLI";
+exports.BRIDGE_CLI_URL_MESSAGE = "Bridge CLI URL is - ";
+exports.BRIDGE_CLI_DOWNLOAD_COMPLETED = "Download of Bridge CLI has been completed";
+exports.BRIDGE_CLI_FOUND_AT = "Bridge CLI executable found at ";
+exports.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR = "Looking for bridge in Bridge CLI Install Directory";
+exports.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH = "Looking for Bridge CLI in default path";
+exports.VERSION_FILE_FOUND_AT = "Version file found at ";
+exports.VERSION_FILE_NOT_FOUND_AT = "Bridge CLI version file could not be found at ";
+exports.ERROR_READING_VERSION_FILE = "Error reading version file content: ";
+exports.GETTING_LATEST_BRIDGE_VERSIONS_RETRY = "Getting latest Bridge CLI versions has been failed, Retries left: ";
+exports.UNABLE_TO_GET_RECENT_BRIDGE_VERSION = "Unable to retrieve the most recent version from Artifactory URL";
+exports.GETTING_ALL_BRIDGE_VERSIONS_RETRY = "Getting all available bridge versions has been failed, Retries left: ";
+exports.UNABLE_TO_FIND_PULL_REQUEST_INFO = "Unable to find pull request info for the current source build with branch: ";
+exports.NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI = "Network air gap is enabled, skipping Bridge CLI download.";
+exports.TASK_RETURN_STATUS = "`##vso[task.setvariable variable=status;isoutput=true]${result}`";
+exports.BLACKDUCK_SCA_SARIF_REPOST_ENABLED = "BLACKDUCK_SCA_REPORTS_SARIF_CREATE is enabled";
+exports.POLARIS_SCA_SARIF_REPOST_ENABLED = "POLARIS_REPORTS_SARIF_CREATE is enabled";
+exports.BLACKDUCK_SECURITY_SCAN_COMPLETED = "Black Duck Security Scan completed";
+exports.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY = "azurePullRequestNumber is empty, setting environment.scan.pull as true";
+exports.MARK_THE_BUILD_ON_BRIDGE_BREAK = "`Marking the build ${TaskResult[taskResult]} as configured in the task`";
+exports.MARK_THE_BUILD_STATUS = "`Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`";
+//export const BRIDGE_VERSION_NOT_FOUND_ERROR = 'Skipping download as same Bridge CLI version found'
+exports.BRIDGE_EXECUTABLE_NOT_FOUND_ERROR = "Bridge executable could not be found at ";
+exports.BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR = "Bridge install directory does not exist";
+exports.BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR = "Bridge default directory does not exist";
+exports.SCAN_TYPE_REQUIRED_ERROR = "Requires at least one scan type: ({0},{1},{2},{3})";
+exports.BRIDGE_DOWNLOAD_RETRY_ERROR = "max attempts should be greater than or equal to 1";
+exports.INVALID_VALUE_ERROR = "Invalid value for ";
+exports.MISSING_BOOLEAN_VALUE_ERROR = "Missing boolean value for ";
+exports.PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR = "Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES";
+exports.SARIF_GAS_API_RATE_LIMIT_FOR_ERROR = "GitHub API rate limit has been exceeded, retry after {0} minutes.";
+// Bridge and ADO Exit Codes
+exports.EXIT_CODE_MAP = new Map([
+    [
+        ErrorCodes_1.ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
+        "Bridge execution successfully completed",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_BRIDGE.toString(),
+        "Undefined error, check error logs",
+    ],
+    [ErrorCodes_1.ErrorCode.ADAPTER_ERROR.toString(), "Error from adapter end"],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_SHUTDOWN_FAILURE.toString(),
+        "Failed to shutdown the bridge",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_BREAK_ENABLED.toString(),
+        "The config option bridge.break has been set to true",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
+        "Bridge initialization failed",
+    ],
+    // The list of ADO extension related error codes begins below
+    [
+        ErrorCodes_1.ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
+        "Requires at least one scan type",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
+        "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
+        "Agent.TempDirectory is not set",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
+        "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
+        "Invalid value for polaris_assessment_types",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString(),
+        "Invalid value for blackducksca_scan_failure_severities",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
+        "Invalid value for blackduck_fixpr_maxCount",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
+        "Missing boolean value for blackduck_scan_full",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_BRIDGE_CLI_URL.toString(),
+        "Provided Bridge CLI URL is not valid for the configured platform runner",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString(),
+        "Provided Bridge CLI URL cannot be empty",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_URL.toString(),
+        "Invalid URL (Invalid Synopysys Bridge Download URL)",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString(),
+        "Provided Bridge CLI version not found in artifactory",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString(),
+        "Bridge CLI download has been failed",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString(),
+        "Bridge CLI Install Directory does not exist",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString(),
+        "Bridge CLI default directory does not exist",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString(),
+        "Bridge CLI executable file could not be found at executable Bridge path",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
+        "Workspace directory could not be located",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.FILE_DOES_NOT_EXIST.toString(),
+        "File (Bridge CLI zip) does not exist",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
+        "No destination directory found for unzipping Bridge CLI",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
+        "Failed to get pull request Id for current build from source branch",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.MISSING_AZURE_TOKEN.toString(),
+        exports.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT,
+    ],
+    [
+        ErrorCodes_1.ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
+        "coverity_install_directory parameter for Coverity is invalid",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
+        "COVERITY_STREAM_NAME is mandatory for azure manual trigger",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
+        "Failed to download Bridge CLI zip from specified URL. HTTP status code: ",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
+        "Content-Length of Bridge CLI in the artifactory did not match downloaded file size",
+    ],
+    [
+        ErrorCodes_1.ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString(),
+        "Undefined error from extension",
+    ],
+]);
 
 
 /***/ }),
@@ -628,6 +682,7 @@ const HttpClient_1 = __nccwpck_require__(5538);
 const taskLib = __importStar(__nccwpck_require__(347));
 const constants = __importStar(__nccwpck_require__(3051));
 const ErrorCodes_1 = __nccwpck_require__(4487);
+const application_constant_1 = __nccwpck_require__(3051);
 class SynopsysAzureService {
     constructor() {
         this.azureGetMergeRequestsAPI =
@@ -644,7 +699,7 @@ class SynopsysAzureService {
                 taskLib.debug(`Azure check pull request API: ${endpoint}`);
                 const token = ":".concat(azureData.user.token);
                 const encodedToken = Buffer.from(token, "utf8").toString("base64");
-                const httpClient = new HttpClient_1.HttpClient("blackduck-azure-service");
+                const httpClient = new HttpClient_1.HttpClient("blackduck-sca-azure-service");
                 const httpResponse = yield httpClient.get(endpoint, {
                     Authorization: "Basic ".concat(encodedToken),
                     Accept: "application/json",
@@ -658,12 +713,11 @@ class SynopsysAzureService {
                         };
                     }
                     else {
-                        console.info("Unable to find pull request info for the current source build with branch: ".concat(azureData.repository.branch.name));
+                        console.info(application_constant_1.UNABLE_TO_FIND_PULL_REQUEST_INFO.concat(azureData.repository.branch.name));
                     }
                 }
                 else {
-                    throw new Error("Failed to get pull request info for current build from source branch: "
-                        .concat(azureData.repository.branch.name)
+                    throw new Error(application_constant_1.FAILED_TO_GET_PULL_REQUEST_INFO.concat(azureData.repository.branch.name)
                         .concat(constants.SPACE)
                         .concat(ErrorCodes_1.ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString()));
                 }
@@ -759,8 +813,7 @@ class Bridge {
             taskLib.debug("extractedPath: ".concat(executablePath));
             const executableBridgePath = yield this.setBridgeExecutablePath(executablePath);
             if (!taskLib.exist(executableBridgePath)) {
-                throw new Error("Bridge CLI executable file could not be found at "
-                    .concat(executableBridgePath)
+                throw new Error(application_constant_1.BRIDGE_EXECUTABLE_FILE_NOT_FOUND.concat(executableBridgePath)
                     .concat(constants.SPACE)
                     .concat(ErrorCodes_1.ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString()));
             }
@@ -781,8 +834,7 @@ class Bridge {
                 let formattedCommand = "";
                 const invalidParams = (0, validator_1.validateScanTypes)();
                 if (invalidParams.length === 4) {
-                    return Promise.reject(new Error("Requires at least one scan type: ("
-                        .concat(constants.POLARIS_SERVER_URL_KEY)
+                    return Promise.reject(new Error(application_constant_1.REQUIRE_ONE_SCAN_TYPE.concat(constants.POLARIS_SERVER_URL_KEY)
                         .concat(",")
                         .concat(constants.COVERITY_URL_KEY)
                         .concat(",")
@@ -905,7 +957,7 @@ class Bridge {
                 const bridgeUrl = yield this.getBridgeUrl();
                 if (bridgeUrl != "" && bridgeUrl != null) {
                     const downloadBridge = yield (0, utility_2.getRemoteFile)(tempDir, bridgeUrl);
-                    console.info("Download of Bridge CLI completed");
+                    console.info(application_constant_1.BRIDGE_CLI_DOWNLOAD_COMPLETED);
                     // Extracting bridge
                     return yield this.extractBridge(downloadBridge);
                 }
@@ -919,15 +971,12 @@ class Bridge {
                 const errorObject = e.message;
                 if (errorObject.includes("404") ||
                     errorObject.toLowerCase().includes("invalid url")) {
-                    return Promise.reject(new Error("Provided Bridge CLI url is not valid for the configured "
-                        .concat(process.platform, " runner")
+                    return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL_SPECIFIED_OS.concat(process.platform, " runner")
                         .concat(constants.SPACE)
                         .concat(ErrorCodes_1.ErrorCode.INVALID_BRIDGE_CLI_URL.toString())));
                 }
                 else if (errorObject.toLowerCase().includes("empty")) {
-                    return Promise.reject(new Error("Provided Bridge CLI URL cannot be empty"
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())));
+                    return Promise.reject(new Error(application_constant_1.EMPTY_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())));
                 }
                 else {
                     return Promise.reject(new Error(errorObject));
@@ -942,9 +991,7 @@ class Bridge {
             if (inputs.BRIDGE_CLI_DOWNLOAD_URL) {
                 bridgeUrl = inputs.BRIDGE_CLI_DOWNLOAD_URL;
                 if (!(0, validator_1.validateBridgeUrl)(inputs.BRIDGE_CLI_DOWNLOAD_URL)) {
-                    return Promise.reject(new Error("Invalid URL"
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
+                    return Promise.reject(new Error(application_constant_1.INVALID_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_URL.toString())));
                 }
                 // To check whether bridge already exists with same version mentioned in bridge url
                 const versionsArray = bridgeUrl.match(".*bridge-cli-([0-9.]*).*");
@@ -962,24 +1009,22 @@ class Bridge {
                     version = inputs.BRIDGE_CLI_DOWNLOAD_VERSION;
                 }
                 else {
-                    return Promise.reject(new Error("Provided Bridge CLI version not found in artifactory"
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString())));
+                    return Promise.reject(new Error(application_constant_1.BRIDGE_CLI_VERSION_NOT_FOUND.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString())));
                 }
             }
             else {
-                taskLib.debug("Checking for latest version of Bridge CLI to download and configure");
+                taskLib.debug(application_constant_1.CHECK_LATEST_BRIDGE_CLI_VERSION);
                 version = yield this.getBridgeVersionFromLatestURL(this.bridgeArtifactoryURL.concat("/latest/versions.txt"));
                 bridgeUrl = this.getLatestVersionUrl();
             }
             if (version != "") {
                 if (yield this.checkIfBridgeVersionExists(version)) {
-                    console.log("Skipping download as same Bridge CLI version found");
+                    console.log(application_constant_1.SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND);
                     return Promise.resolve("");
                 }
             }
-            console.info("Downloading and configuring Bridge CLI");
-            console.info("Bridge CLI URL is - ".concat(bridgeUrl));
+            console.info(application_constant_1.DOWNLOADING_BRIDGE_CLI);
+            console.info(application_constant_1.BRIDGE_CLI_URL_MESSAGE.concat(bridgeUrl));
             return bridgeUrl;
         });
     }
@@ -995,14 +1040,14 @@ class Bridge {
                 versionFilePath = this.bridgeExecutablePath.concat("/versions.txt");
             }
             if (taskLib.exist(versionFilePath) && this.bridgeExecutablePath) {
-                taskLib.debug("Bridge CLI executable found at ".concat(this.bridgeExecutablePath));
-                taskLib.debug("Version file found at ".concat(this.bridgeExecutablePath));
+                taskLib.debug(application_constant_1.BRIDGE_CLI_FOUND_AT.concat(this.bridgeExecutablePath));
+                taskLib.debug(application_constant_1.VERSION_FILE_FOUND_AT.concat(this.bridgeExecutablePath));
                 if (yield this.checkIfVersionExists(bridgeVersion, versionFilePath)) {
                     return Promise.resolve(true);
                 }
             }
             else {
-                taskLib.debug("Bridge CLI version file could not be found at ".concat(this.bridgeExecutablePath));
+                taskLib.debug(application_constant_1.VERSION_FILE_NOT_FOUND_AT.concat(this.bridgeExecutablePath));
             }
             return Promise.resolve(false);
         });
@@ -1020,7 +1065,7 @@ class Bridge {
                     Accept: "text/html",
                 });
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                    retryDelay = yield this.retrySleepHelper("Getting all available bridge versions has been failed, Retries left: ", retryCountLocal, retryDelay);
+                    retryDelay = yield this.retrySleepHelper(application_constant_1.GETTING_ALL_BRIDGE_VERSIONS_RETRY, retryCountLocal, retryDelay);
                     retryCountLocal--;
                 }
                 else {
@@ -1042,7 +1087,7 @@ class Bridge {
                     }
                 }
                 if (retryCountLocal === 0 && !(versionArray.length > 0)) {
-                    taskLib.warning("Unable to retrieve the Bridge CLI Versions from Artifactory");
+                    taskLib.warning(application_constant_1.UNABLE_TO_GET_RECENT_BRIDGE_VERSION);
                 }
             } while (retryCountLocal > 0);
             return versionArray;
@@ -1055,7 +1100,7 @@ class Bridge {
                 return contents.includes("Bridge CLI Package: ".concat(bridgeVersion));
             }
             catch (e) {
-                console.info("Error reading version file content: ".concat(e.message));
+                console.info(application_constant_1.ERROR_READING_VERSION_FILE.concat(e.message));
             }
             return false;
         });
@@ -1072,7 +1117,7 @@ class Bridge {
                         Accept: "text/html",
                     });
                     if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(httpResponse.message.statusCode))) {
-                        retryDelay = yield this.retrySleepHelper("Getting latest Bridge CLI versions has been failed, Retries left: ", retryCountLocal, retryDelay);
+                        retryDelay = yield this.retrySleepHelper(application_constant_1.GETTING_LATEST_BRIDGE_VERSIONS_RETRY, retryCountLocal, retryDelay);
                         retryCountLocal--;
                     }
                     else if (httpResponse.message.statusCode === 200) {
@@ -1086,12 +1131,12 @@ class Bridge {
                         }
                     }
                     if (retryCountLocal == 0) {
-                        taskLib.warning("Unable to retrieve the most recent version from Artifactory URL");
+                        taskLib.warning(application_constant_1.UNABLE_TO_GET_RECENT_BRIDGE_VERSION);
                     }
                 } while (retryCountLocal > 0);
             }
             catch (e) {
-                taskLib.debug("Error reading version file content: ".concat(e.message));
+                taskLib.debug(application_constant_1.ERROR_READING_VERSION_FILE.concat(e.message));
             }
             return "";
         });
@@ -1174,20 +1219,16 @@ class Bridge {
             let bridgeDirectoryPath = this.getBridgeDefaultPath();
             if (input_1.BRIDGE_CLI_INSTALL_DIRECTORY_KEY) {
                 bridgeDirectoryPath = input_1.BRIDGE_CLI_INSTALL_DIRECTORY_KEY;
-                console.info("Looking for bridge in Bridge CLI Install Directory");
+                console.info(application_constant_1.LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR);
                 if (!taskLib.exist(bridgeDirectoryPath)) {
-                    throw new Error("Bridge CLI Install Directory does not exist"
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString()));
+                    throw new Error(application_constant_1.BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString()));
                 }
             }
             else {
-                console.info("Looking for Bridge CLI in default path");
+                console.info(application_constant_1.LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH);
                 if (input_1.ENABLE_NETWORK_AIRGAP && this.getBridgeDefaultPath()) {
                     if (!taskLib.exist(this.getBridgeDefaultPath())) {
-                        throw new Error("Bridge CLI default directory does not exist"
-                            .concat(constants.SPACE)
-                            .concat(ErrorCodes_1.ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString()));
+                        throw new Error(application_constant_1.BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString()));
                     }
                 }
             }
@@ -1521,7 +1562,7 @@ var ErrorCode;
     ErrorCode[ErrorCode["AGENT_TEMP_DIRECTORY_NOT_SET"] = 103] = "AGENT_TEMP_DIRECTORY_NOT_SET";
     ErrorCode[ErrorCode["BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE"] = 104] = "BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE";
     ErrorCode[ErrorCode["INVALID_POLARIS_ASSESSMENT_TYPES"] = 105] = "INVALID_POLARIS_ASSESSMENT_TYPES";
-    ErrorCode[ErrorCode["INVALID_BLACKDUCK_FAILURE_SEVERITIES"] = 106] = "INVALID_BLACKDUCK_FAILURE_SEVERITIES";
+    ErrorCode[ErrorCode["INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES"] = 106] = "INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES";
     ErrorCode[ErrorCode["INVALID_BLACKDUCK_FIXPR_MAXCOUNT"] = 107] = "INVALID_BLACKDUCK_FIXPR_MAXCOUNT";
     ErrorCode[ErrorCode["MISSING_BOOLEAN_VALUE"] = 108] = "MISSING_BOOLEAN_VALUE";
     ErrorCode[ErrorCode["INVALID_BRIDGE_CLI_URL"] = 109] = "INVALID_BRIDGE_CLI_URL";
@@ -1888,6 +1929,7 @@ const utility_1 = __nccwpck_require__(837);
 const url = __importStar(__nccwpck_require__(7310));
 const azure_service_client_1 = __nccwpck_require__(5601);
 const ErrorCodes_1 = __nccwpck_require__(4487);
+const application_constant_1 = __nccwpck_require__(3051);
 class BridgeToolsParameter {
     constructor(tempDir) {
         this.tempDir = tempDir;
@@ -2058,7 +2100,7 @@ class BridgeToolsParameter {
                         throw new Error("Invalid value for "
                             .concat(constants.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY)
                             .concat(constants.SPACE)
-                            .concat(ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString()));
+                            .concat(ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()));
                     }
                     else {
                         failureSeverityEnums.push(blackduck_1.BLACKDUCK_SCAN_FAILURE_SEVERITIES[failureSeverity]);
@@ -2303,8 +2345,7 @@ class BridgeToolsParameter {
                         assessmentTypeArray.push(assessmentType.trim());
                     }
                     else {
-                        throw new Error("Invalid value for "
-                            .concat(constants.SRM_ASSESSMENT_TYPES_KEY)
+                        throw new Error(application_constant_1.INVALID_VALUE_ERROR.concat(constants.SRM_ASSESSMENT_TYPES_KEY)
                             .concat(constants.SPACE)
                             .concat(ErrorCodes_1.ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString()));
                     }
@@ -2426,9 +2467,7 @@ class BridgeToolsParameter {
             let azurePrResponse;
             if (isPrCommentOrFixPrEnabled) {
                 if ((azureData === null || azureData === void 0 ? void 0 : azureData.user.token) == undefined || azureData.user.token == "") {
-                    throw new Error("Missing required azure token for fix pull request/automation comment"
-                        .concat(constants.SPACE)
-                        .concat(ErrorCodes_1.ErrorCode.MISSING_AZURE_TOKEN.toString()));
+                    throw new Error(application_constant_1.MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.MISSING_AZURE_TOKEN.toString()));
                 }
                 if (azureData && azureData.repository.pull.number === 0) {
                     const synopsysAzureService = new azure_service_client_1.SynopsysAzureService();
@@ -2472,7 +2511,7 @@ class BridgeToolsParameter {
         const azurePullRequestNumber = taskLib.getVariable(azure_1.AZURE_ENVIRONMENT_VARIABLES.AZURE_PULL_REQUEST_NUMBER) || "";
         taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
         if (azurePullRequestNumber == "") {
-            taskLib.debug("azurePullRequestNumber is empty, setting environment.scan.pull as true");
+            taskLib.debug(application_constant_1.AZURE_PULL_REQUEST_NUMBER_IS_EMPTY);
             const environment = {
                 scan: {
                     pull: true,
@@ -2592,8 +2631,7 @@ class BridgeToolsParameter {
                 blackDuckDetectInputData.data.scan = { full: scanFullValue };
             }
             else {
-                throw new Error("Missing boolean value for "
-                    .concat(constants.DETECT_SCAN_FULL_KEY)
+                throw new Error(application_constant_1.MISSING_BOOL_VALUE.concat(constants.DETECT_SCAN_FULL_KEY)
                     .concat(constants.SPACE)
                     .concat(ErrorCodes_1.ErrorCode.MISSING_BOOLEAN_VALUE.toString()));
             }
@@ -2700,15 +2738,11 @@ exports.getTempDir = getTempDir;
 function extractZipped(file, destinationPath) {
     return __awaiter(this, void 0, void 0, function* () {
         if (file == null || file.length === 0) {
-            return Promise.reject(new Error("File does not exist"
-                .concat(constants.SPACE)
-                .concat(ErrorCodes_1.ErrorCode.FILE_DOES_NOT_EXIST.toString())));
+            return Promise.reject(new Error(application_constant_1.BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.FILE_DOES_NOT_EXIST.toString())));
         }
         // Extract file name from file with full path
         if (destinationPath == null || destinationPath.length === 0) {
-            return Promise.reject(new Error("No destination directory found"
-                .concat(constants.SPACE)
-                .concat(ErrorCodes_1.ErrorCode.NO_DESTINATION_DIRECTORY.toString())));
+            return Promise.reject(new Error(application_constant_1.BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.NO_DESTINATION_DIRECTORY.toString())));
         }
         try {
             yield toolLib.extractZip(file, destinationPath);
@@ -2723,9 +2757,7 @@ exports.extractZipped = extractZipped;
 function getRemoteFile(destFilePath, url) {
     return __awaiter(this, void 0, void 0, function* () {
         if (url == null || url.length === 0) {
-            return Promise.reject(new Error("URL cannot be empty"
-                .concat(constants.SPACE)
-                .concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())));
+            return Promise.reject(new Error(application_constant_1.EMPTY_BRIDGE_CLI_URL.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())));
         }
         let fileNameFromUrl = "";
         if (taskLib.stats(destFilePath).isDirectory()) {
@@ -2749,8 +2781,7 @@ function getRemoteFile(destFilePath, url) {
                 }
                 if (!application_constant_1.NON_RETRY_HTTP_CODES.has(Number(getStatusCode(error.message))) ||
                     error.message.includes("did not match downloaded file size")) {
-                    console.info("Bridge CLI download has been failed, Retries left: "
-                        .concat(String(retryCountLocal))
+                    console.info(application_constant_1.BRIDGE_CLI_DOWNLOAD_FAILED_RETRY.concat(String(retryCountLocal))
                         .concat(", Waiting: ")
                         .concat(String(retryDelay / 1000))
                         .concat(" Seconds"));
@@ -2763,9 +2794,7 @@ function getRemoteFile(destFilePath, url) {
                 }
             }
         } while (retryCountLocal >= 0);
-        return Promise.reject("Bridge CLI download has been failed"
-            .concat(constants.SPACE)
-            .concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString()));
+        return Promise.reject(application_constant_1.BRIDGE_CLI_DOWNLOAD_FAILED.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString()));
     });
 }
 exports.getRemoteFile = getRemoteFile;
@@ -2797,9 +2826,7 @@ function getWorkSpaceDirectory() {
         return repoLocalPath;
     }
     else {
-        throw new Error("Workspace directory could not be located"
-            .concat(constants.SPACE)
-            .concat(ErrorCodes_1.ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString()));
+        throw new Error(application_constant_1.WORKSPACE_DIR_NOT_FOUND.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString()));
     }
 }
 exports.getWorkSpaceDirectory = getWorkSpaceDirectory;
@@ -2914,6 +2941,7 @@ const constants = __importStar(__nccwpck_require__(3051));
 const inputs = __importStar(__nccwpck_require__(7533));
 const taskLib = __importStar(__nccwpck_require__(347));
 const ErrorCodes_1 = __nccwpck_require__(4487);
+const application_constant_1 = __nccwpck_require__(3051);
 function validateScanTypes() {
     const paramsMap = new Map();
     paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
@@ -3003,9 +3031,7 @@ function validateCoverityInstallDirectoryParam(installDir) {
 exports.validateCoverityInstallDirectoryParam = validateCoverityInstallDirectoryParam;
 function validateBlackduckFailureSeverities(severities) {
     if (severities == null || severities.length === 0) {
-        taskLib.error("Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES"
-            .concat(constants.SPACE)
-            .concat(ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString()));
+        taskLib.error(application_constant_1.INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES.concat(constants.SPACE).concat(ErrorCodes_1.ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()));
         return false;
     }
     return true;
@@ -3214,8 +3240,8 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = __nccwpck_require__.ab + "lib1.json";
-        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib1.json", _resourceCulture);
+        var libResourceFile = __nccwpck_require__.ab + "lib.json";
+        var libLocStrs = _loadLocStrings(__nccwpck_require__.ab + "lib.json", _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
             _locStringCache[libKey] = libLocStrs[libKey];
@@ -7574,7 +7600,7 @@ exports.commandFromString = tcm.commandFromString;
 exports.ToolRunner = trm.ToolRunner;
 //-----------------------------------------------------
 // Validation Checks
-//-----------------------------------------------------
+//---------------(--------------------------------------
 // async await needs generators in node 4.x+
 if (semver.lt(process.versions.node, '4.2.0')) {
     exports.warning('Tasks require a new agent.  Upgrade your agent or node to 4.2.0 or later');
@@ -10409,7 +10435,7 @@ let requestOptions = {
     allowRetries: true,
     maxRetries: 2
 };
-tl.setResourcePath(__nccwpck_require__.ab + "lib.json");
+tl.setResourcePath(__nccwpck_require__.ab + "lib1.json");
 function debug(message) {
     tl.debug(message);
 }

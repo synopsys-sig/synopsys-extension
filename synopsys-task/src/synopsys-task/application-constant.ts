@@ -4,23 +4,21 @@ import { ErrorCode } from "./enum/ErrorCodes";
 export const BRIDGE_CLI_DEFAULT_PATH_MAC = "/bridge-cli"; //Path will be in home
 export const BRIDGE_CLI_DEFAULT_PATH_WINDOWS = "\\bridge-cli";
 export const BRIDGE_CLI_DEFAULT_PATH_LINUX = "/bridge-cli";
-
 export const BRIDGE_CLI_EXECUTABLE_WINDOWS = "bridge-cli.exe";
 export const BRIDGE_CLI_EXECUTABLE_MAC_LINUX = "bridge-cli";
-
 export const BRIDGE_CLI_ZIP_FILE_NAME = "bridge-cli.zip";
 
 export const APPLICATION_NAME = "blackduck-extension";
+export const AZURE_TOKEN_KEY = "azure_token";
+export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
+export const SCAN_TYPE_KEY = "scanType";
+export const SPACE = " ";
 
 // Scan Types
 export const POLARIS_KEY = "polaris";
 export const COVERITY_KEY = "coverity";
 export const BLACKDUCK_KEY = "blackduck";
 export const SRM_KEY = "srm";
-
-export const AZURE_TOKEN_KEY = "azure_token";
-export const AZURE_TOKEN_KEY_CLASSIC_EDITOR = "azureToken";
-export const SCAN_TYPE_KEY = "scanType";
 
 // Polaris
 export const POLARIS_SERVER_URL_KEY = "polaris_server_url";
@@ -81,25 +79,31 @@ export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY =
   "polaris_reports_sarif_issue_types";
 export const POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY_CLASSIC_EDITOR =
   "polarisReportsSarifIssueTypes";
+
 export const POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
 export const POLARIS_ASSESSMENT_MODE_KEY_CLASSIC_EDITOR =
   "polarisAssessmentMode";
+
 export const POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 export const POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR = "polarisTestScaType";
+
+export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
+
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
+
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY =
   "project_source_preserveSymLinks";
 export const PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY_CLASSIC_EDITOR =
   "projectSourcePreserveSymLinks";
+
 export const PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";
 export const PROJECT_SOURCE_EXCLUDES_KEY_CLASSIC_EDITOR =
   "projectSourceExcludes";
 
 // Coverity
-
 export const COVERITY_URL_KEY = "coverity_url";
 export const COVERITY_URL_KEY_CLASSIC_EDITOR = "coverityUrl";
 
@@ -165,138 +169,6 @@ export const COVERITY_ARGS_KEY_CLASSIC_EDITOR = "coverityArgs";
 export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_POLARIS =
   "coverityArgsForPolaris";
 export const COVERITY_ARGS_KEY_CLASSIC_EDITOR_FOR_SRM = "coverityArgsForSrm";
-
-// Bridge and ADO Exit Codes
-export const EXIT_CODE_MAP = new Map<string, string>([
-  [
-    ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
-    "Bridge execution successfully completed",
-  ],
-  [
-    ErrorCode.UNDEFINED_ERROR_FROM_BRIDGE.toString(),
-    "Undefined error, check error logs",
-  ],
-  [ErrorCode.ADAPTER_ERROR.toString(), "Error from adapter end"],
-  [
-    ErrorCode.BRIDGE_SHUTDOWN_FAILURE.toString(),
-    "Failed to shutdown the bridge",
-  ],
-  [
-    ErrorCode.BRIDGE_BREAK_ENABLED.toString(),
-    "The config option bridge.break has been set to true",
-  ],
-  [
-    ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
-    "Bridge initialization failed",
-  ],
-  // The list of ADO extension related error codes begins below
-  [
-    ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
-    "Requires at least one scan type",
-  ],
-  [
-    ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
-    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
-  ],
-  [
-    ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
-    "Agent.TempDirectory is not set",
-  ],
-  [
-    ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
-    "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
-  ],
-  [
-    ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
-    "Invalid value for polaris_assessment_types",
-  ],
-  [
-    ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString(),
-    "Invalid value for blackducksca_scan_failure_severities",
-  ],
-  [
-    ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
-    "Invalid value for blackduck_fixpr_maxCount",
-  ],
-  [
-    ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
-    "Missing boolean value for blackduck_scan_full",
-  ],
-  [
-    ErrorCode.INVALID_BRIDGE_CLI_URL.toString(),
-    "Provided Bridge CLI URL is not valid for the configured platform runner",
-  ],
-  [
-    ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString(),
-    "Provided Bridge CLI URL cannot be empty",
-  ],
-  [
-    ErrorCode.INVALID_URL.toString(),
-    "Invalid URL (Invalid Synopysys Bridge Download URL)",
-  ],
-  [
-    ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString(),
-    "Provided Bridge CLI version not found in artifactory",
-  ],
-  [
-    ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString(),
-    "Bridge CLI download has been failed",
-  ],
-  [
-    ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString(),
-    "Bridge CLI Install Directory does not exist",
-  ],
-  [
-    ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString(),
-    "Bridge CLI default directory does not exist",
-  ],
-  [
-    ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString(),
-    "Bridge CLI executable file could not be found at executable Bridge path",
-  ],
-  [
-    ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
-    "Workspace directory could not be located",
-  ],
-  [
-    ErrorCode.FILE_DOES_NOT_EXIST.toString(),
-    "File (Bridge CLI zip) does not exist",
-  ],
-  [
-    ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
-    "No destination directory found for unzipping Bridge CLI",
-  ],
-  [
-    ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
-    "Failed to get pull request Id for current build from source branch",
-  ],
-  [
-    ErrorCode.MISSING_AZURE_TOKEN.toString(),
-    "Missing required azure token for fix pull request/automation comment",
-  ],
-  [
-    ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
-    "coverity_install_directory parameter for Coverity is invalid",
-  ],
-  [
-    ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
-    "COVERITY_STREAM_NAME is mandatory for azure manual trigger",
-  ],
-  [
-    ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
-    "Failed to download Bridge CLI zip from specified URL. HTTP status code: ",
-  ],
-  [
-    ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
-    "Content-Length of Bridge CLI in the artifactory did not match downloaded file size",
-  ],
-  [
-    ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString(),
-    "Undefined error from extension",
-  ],
-]);
-
-export const SPACE = " ";
 
 // Blackduck
 /**
@@ -527,7 +399,6 @@ export const BRIDGE_CLI_INSTALL_DIRECTORY_KEY = "bridgecli_install_directory";
 export const BRIDGE_CLI_INSTALL_DIRECTORY_KEY_CLASSIC_EDITOR =
   "bridgeCliInstallDirectory";
 
-export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const UPLOAD_FOLDER_ARTIFACT_NAME = "bridge_cli_diagnostics";
 export const BRIDGE_LOCAL_DIRECTORY = ".bridge";
 export const SARIF_DEFAULT_FILE_NAME = "report.sarif.json";
@@ -547,3 +418,233 @@ export const MIN_SUPPORTED_BRIDGE_CLI_MAC_ARM_VERSION = "2.1.0";
 export const DEFAULT_AZURE_API_URL = "https://dev.azure.com";
 export const BLACKDUCK_SECURITY_SCAN_AZURE_DEVOPS_DOCS_URL =
   "https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html";
+
+// Error Messages
+export const MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT =
+  "Missing required azure token for fix pull request/automation comment";
+export const BRIDGE_CLI_VERSION_NOT_FOUND =
+  "Provided Bridge CLI version not found in artifactory";
+export const BRIDGE_EXECUTABLE_FILE_NOT_FOUND =
+  "Bridge CLI executable file could not be found at ";
+export const EMPTY_BRIDGE_CLI_URL = "Provided Bridge CLI URL cannot be empty ";
+export const INVALID_BRIDGE_CLI_URL_SPECIFIED_OS =
+  "Provided Bridge CLI url is not valid for the configured ";
+export const INVALID_BRIDGE_CLI_URL = "Invalid URL";
+export const WORKFLOW_FAILED = "Workflow failed! ";
+export const BRIDGE_CLI_ZIP_NOT_FOUND_FOR_EXTRACT = "File does not exist";
+export const BRIDGE_CLI_DOWNLOAD_FAILED = "Bridge CLI download has been failed";
+export const BRIDGE_CLI_DOWNLOAD_FAILED_RETRY =
+  "Bridge CLI download has been failed, Retries left: ";
+export const WORKSPACE_DIR_NOT_FOUND =
+  "Workspace directory could not be located";
+export const BRIDGE_CLI_EXTRACT_DIRECTORY_NOT_FOUND =
+  "No destination directory found";
+export const BRIDGE_CLI_INSTALL_DIRECTORY_NOT_EXISTS =
+  "Bridge CLI Install Directory does not exist";
+export const BRIDGE_CLI_DEFAULT_DIRECTORY_NOT_EXISTS =
+  "Bridge CLI default directory does not exist";
+
+export const INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES =
+  "Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES";
+export const REQUIRE_ONE_SCAN_TYPE = "Requires at least one scan type: (";
+export const MISSING_BOOL_VALUE = "Missing boolean value for ";
+export const FAILED_TO_GET_PULL_REQUEST_INFO =
+  "Failed to get pull request info for current build from source branch: ";
+
+// Info Messages
+export const SKIP_DOWNLOAD_BRIDGE_CLI_WHEN_VERSION_NOT_FOUND =
+  "Skipping download as same Bridge CLI version found";
+export const CHECK_LATEST_BRIDGE_CLI_VERSION =
+  "Checking for latest version of Bridge CLI to download and configure";
+export const DOWNLOADING_BRIDGE_CLI = "Downloading and configuring Bridge CLI";
+export const BRIDGE_CLI_URL_MESSAGE = "Bridge CLI URL is - ";
+export const BRIDGE_CLI_DOWNLOAD_COMPLETED =
+  "Download of Bridge CLI has been completed";
+export const BRIDGE_CLI_FOUND_AT = "Bridge CLI executable found at ";
+export const LOOKING_FOR_BRIDGE_CLI_INSTALL_DIR =
+  "Looking for bridge in Bridge CLI Install Directory";
+export const LOOKING_FOR_BRIDGE_CLI_DEFAULT_PATH =
+  "Looking for Bridge CLI in default path";
+export const VERSION_FILE_FOUND_AT = "Version file found at ";
+export const VERSION_FILE_NOT_FOUND_AT =
+  "Bridge CLI version file could not be found at ";
+export const ERROR_READING_VERSION_FILE =
+  "Error reading version file content: ";
+export const GETTING_LATEST_BRIDGE_VERSIONS_RETRY =
+  "Getting latest Bridge CLI versions has been failed, Retries left: ";
+export const UNABLE_TO_GET_RECENT_BRIDGE_VERSION =
+  "Unable to retrieve the most recent version from Artifactory URL";
+export const GETTING_ALL_BRIDGE_VERSIONS_RETRY =
+  "Getting all available bridge versions has been failed, Retries left: ";
+
+export const UNABLE_TO_FIND_PULL_REQUEST_INFO =
+  "Unable to find pull request info for the current source build with branch: ";
+export const NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI =
+  "Network air gap is enabled, skipping Bridge CLI download.";
+export const TASK_RETURN_STATUS =
+  "`##vso[task.setvariable variable=status;isoutput=true]${result}`";
+export const BLACKDUCK_SCA_SARIF_REPOST_ENABLED =
+  "BLACKDUCK_SCA_REPORTS_SARIF_CREATE is enabled";
+export const POLARIS_SCA_SARIF_REPOST_ENABLED =
+  "POLARIS_REPORTS_SARIF_CREATE is enabled";
+export const BLACKDUCK_SECURITY_SCAN_COMPLETED =
+  "Black Duck Security Scan completed";
+
+export const AZURE_PULL_REQUEST_NUMBER_IS_EMPTY =
+  "azurePullRequestNumber is empty, setting environment.scan.pull as true";
+
+export const MARK_THE_BUILD_ON_BRIDGE_BREAK =
+  "`Marking the build ${TaskResult[taskResult]} as configured in the task`";
+
+export const MARK_THE_BUILD_STATUS =
+  "`Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`";
+
+//export const BRIDGE_VERSION_NOT_FOUND_ERROR = 'Skipping download as same Bridge CLI version found'
+
+export const BRIDGE_EXECUTABLE_NOT_FOUND_ERROR =
+  "Bridge executable could not be found at ";
+export const BRIDGE_INSTALL_DIRECTORY_NOT_FOUND_ERROR =
+  "Bridge install directory does not exist";
+export const BRIDGE_DEFAULT_DIRECTORY_NOT_FOUND_ERROR =
+  "Bridge default directory does not exist";
+export const SCAN_TYPE_REQUIRED_ERROR =
+  "Requires at least one scan type: ({0},{1},{2},{3})";
+
+export const BRIDGE_DOWNLOAD_RETRY_ERROR =
+  "max attempts should be greater than or equal to 1";
+export const INVALID_VALUE_ERROR = "Invalid value for ";
+export const MISSING_BOOLEAN_VALUE_ERROR = "Missing boolean value for ";
+export const PROVIDED_BLACKDUCKSCA_FAILURE_SEVERITIES_ERROR =
+  "Provided value is not valid - BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES";
+export const SARIF_GAS_API_RATE_LIMIT_FOR_ERROR =
+  "GitHub API rate limit has been exceeded, retry after {0} minutes.";
+
+// Bridge and ADO Exit Codes
+export const EXIT_CODE_MAP = new Map<string, string>([
+  [
+    ErrorCode.SUCCESSFULLY_COMPLETED.toString(),
+    "Bridge execution successfully completed",
+  ],
+  [
+    ErrorCode.UNDEFINED_ERROR_FROM_BRIDGE.toString(),
+    "Undefined error, check error logs",
+  ],
+  [ErrorCode.ADAPTER_ERROR.toString(), "Error from adapter end"],
+  [
+    ErrorCode.BRIDGE_SHUTDOWN_FAILURE.toString(),
+    "Failed to shutdown the bridge",
+  ],
+  [
+    ErrorCode.BRIDGE_BREAK_ENABLED.toString(),
+    "The config option bridge.break has been set to true",
+  ],
+  [
+    ErrorCode.BRIDGE_INITIALIZATION_FAILED.toString(),
+    "Bridge initialization failed",
+  ],
+  // The list of ADO extension related error codes begins below
+  [
+    ErrorCode.MISSING_AT_LEAST_ONE_SCAN_TYPE.toString(),
+    "Requires at least one scan type",
+  ],
+  [
+    ErrorCode.MISSING_REQUIRED_PARAMETERS.toString(),
+    "Required Parameters for Scan Type (Polaris/BlackDuck/Coverity/SRM) are missing",
+  ],
+  [
+    ErrorCode.AGENT_TEMP_DIRECTORY_NOT_SET.toString(),
+    "Agent.TempDirectory is not set",
+  ],
+  [
+    ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString(),
+    "blackduck_fixpr_maxCount is not applicable with blackduck_fixpr_createSinglePR",
+  ],
+  [
+    ErrorCode.INVALID_POLARIS_ASSESSMENT_TYPES.toString(),
+    "Invalid value for polaris_assessment_types",
+  ],
+  [
+    ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString(),
+    "Invalid value for blackducksca_scan_failure_severities",
+  ],
+  [
+    ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString(),
+    "Invalid value for blackduck_fixpr_maxCount",
+  ],
+  [
+    ErrorCode.MISSING_BOOLEAN_VALUE.toString(),
+    "Missing boolean value for blackduck_scan_full",
+  ],
+  [
+    ErrorCode.INVALID_BRIDGE_CLI_URL.toString(),
+    "Provided Bridge CLI URL is not valid for the configured platform runner",
+  ],
+  [
+    ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString(),
+    "Provided Bridge CLI URL cannot be empty",
+  ],
+  [
+    ErrorCode.INVALID_URL.toString(),
+    "Invalid URL (Invalid Synopysys Bridge Download URL)",
+  ],
+  [
+    ErrorCode.BRIDGE_CLI_VERSION_NOT_FOUND.toString(),
+    "Provided Bridge CLI version not found in artifactory",
+  ],
+  [
+    ErrorCode.BRIDGE_CLI_DOWNLOAD_FAILED.toString(),
+    "Bridge CLI download has been failed",
+  ],
+  [
+    ErrorCode.BRIDGE_INSTALL_DIRECTORY_NOT_EXIST.toString(),
+    "Bridge CLI Install Directory does not exist",
+  ],
+  [
+    ErrorCode.DEFAULT_DIRECTORY_NOT_FOUND.toString(),
+    "Bridge CLI default directory does not exist",
+  ],
+  [
+    ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND.toString(),
+    "Bridge CLI executable file could not be found at executable Bridge path",
+  ],
+  [
+    ErrorCode.WORKSPACE_DIRECTORY_NOT_FOUND.toString(),
+    "Workspace directory could not be located",
+  ],
+  [
+    ErrorCode.FILE_DOES_NOT_EXIST.toString(),
+    "File (Bridge CLI zip) does not exist",
+  ],
+  [
+    ErrorCode.NO_DESTINATION_DIRECTORY.toString(),
+    "No destination directory found for unzipping Bridge CLI",
+  ],
+  [
+    ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString(),
+    "Failed to get pull request Id for current build from source branch",
+  ],
+  [
+    ErrorCode.MISSING_AZURE_TOKEN.toString(),
+    MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT,
+  ],
+  [
+    ErrorCode.INVALID_COVERITY_INSTALL_DIRECTORY.toString(),
+    "coverity_install_directory parameter for Coverity is invalid",
+  ],
+  [
+    ErrorCode.REQUIRED_COVERITY_STREAM_NAME_FOR_MANUAL_TRIGGER.toString(),
+    "COVERITY_STREAM_NAME is mandatory for azure manual trigger",
+  ],
+  [
+    ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString(),
+    "Failed to download Bridge CLI zip from specified URL. HTTP status code: ",
+  ],
+  [
+    ErrorCode.CONTENT_LENGTH_MISMATCH.toString(),
+    "Content-Length of Bridge CLI in the artifactory did not match downloaded file size",
+  ],
+  [
+    ErrorCode.UNDEFINED_ERROR_FROM_EXTENSION.toString(),
+    "Undefined error from extension",
+  ],
+]);

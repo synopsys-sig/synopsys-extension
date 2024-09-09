@@ -102,7 +102,7 @@ describe("Bridge CLI test", () => {
 
             sandbox.stub(validator, "validateScanTypes").returns([]);
             sandbox.stub(BridgeToolsParameter.prototype, "getFormattedCommandForBlackduck").callsFake(() => {
-                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString()))
+                throw new Error("Invalid value for failureSeverities".concat(constants.SPACE).concat(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()))
             });
             sandbox.stub(validator, "validateBlackDuckInputs").returns([]);
 
@@ -111,7 +111,7 @@ describe("Bridge CLI test", () => {
             } catch (e) {
                 const errorObject = e as Error;
                 expect(errorObject.message).includes("Invalid value for failureSeverities");
-                expect(errorObject.message).includes(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString());
+                expect(errorObject.message).includes(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString());
             }
 
             Object.defineProperty(inputs, 'BLACKDUCK_SCA_URL', {value: ''})
@@ -629,11 +629,13 @@ describe("Download Bridge", () => {
         versionArray.push("0.1.244")
 
         it("When version is available", async () => {
+            sandbox.stub(bridge, "getAllAvailableBridgeVersions").returns(Promise.resolve(versionArray));
             const result = await bridge.validateBridgeVersion("0.1.244")
             expect(result).equals(true);
         });
 
         it("When version is not available", async () => {
+            sandbox.stub(bridge, "getAllAvailableBridgeVersions").returns(Promise.resolve(versionArray));
             const result = await bridge.validateBridgeVersion("0.1.245")
             expect(result).equals(false);
         });
