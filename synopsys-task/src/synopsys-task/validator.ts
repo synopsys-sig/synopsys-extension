@@ -1,12 +1,15 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as constants from "./application-constant";
 import * as inputs from "./input";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { ErrorCode } from "./enum/ErrorCodes";
+import { INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES } from "./application-constant";
 
 export function validateScanTypes(): string[] {
   const paramsMap = new Map();
   paramsMap.set(constants.POLARIS_SERVER_URL_KEY, inputs.POLARIS_SERVER_URL);
-  paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_URL);
+  paramsMap.set(constants.BLACKDUCK_SCA_URL_KEY, inputs.BLACKDUCK_SCA_URL);
   paramsMap.set(constants.COVERITY_URL_KEY, inputs.COVERITY_URL);
   paramsMap.set(constants.SRM_URL_KEY, inputs.SRM_URL);
   return isNullOrEmpty(paramsMap);
@@ -112,9 +115,9 @@ export function validateBlackduckFailureSeverities(
 ): boolean {
   if (severities == null || severities.length === 0) {
     taskLib.error(
-      "Provided value is not valid - BLACKDUCK_SCAN_FAILURE_SEVERITIES"
-        .concat(constants.SPACE)
-        .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+      INVALID_BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES.concat(
+        constants.SPACE
+      ).concat(ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString())
     );
     return false;
   }
@@ -123,10 +126,13 @@ export function validateBlackduckFailureSeverities(
 
 export function validateBlackDuckInputs(): string[] {
   let errors: string[] = [];
-  if (inputs.BLACKDUCK_URL) {
+  if (inputs.BLACKDUCK_SCA_URL) {
     const paramsMap = new Map();
-    paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_URL);
-    paramsMap.set(constants.BLACKDUCK_TOKEN_KEY, inputs.BLACKDUCK_API_TOKEN);
+    paramsMap.set(constants.BLACKDUCK_URL_KEY, inputs.BLACKDUCK_SCA_URL);
+    paramsMap.set(
+      constants.BLACKDUCK_TOKEN_KEY,
+      inputs.BLACKDUCK_SCA_API_TOKEN
+    );
     errors = validateParameters(paramsMap, constants.BLACKDUCK_KEY);
   }
   return errors;

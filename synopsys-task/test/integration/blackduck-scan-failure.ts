@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as tmrm from "azure-pipelines-task-lib/mock-run";
 import * as ta from "azure-pipelines-task-lib/mock-answer";
 import * as process from 'process';
@@ -27,16 +29,16 @@ tmr.registerMock("fs", fsMock);
 
 const toolLibMock = {
     downloadTool: (url: string, fileName?: string) => {
-        return path.join(__dirname, "synopsys-bridge.zip");
+        return path.join(__dirname, "bridge-cli.zip");
     },
     extractZip: (file: string, destination?: string) => {
-        return path.join(__dirname, "synopsys-bridge");
+        return path.join(__dirname, "bridge-cli");
     }
 }
 tmr.registerMock("azure-pipelines-tool-lib", toolLibMock);
 
 tmr.registerMockExport("exec", () => {
-    throw new Error("synopsys-bridge failed with exit code 2")
+    throw new Error("Bridge CLI failed with exit code 2")
 });
 
 tmr.setInput('bridge_blackduck_url', 'http://testurl.com')
@@ -66,17 +68,17 @@ function getBridgeDefaultPath() {
     if (osName === "darwin") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_MAC
+            constants.BRIDGE_CLI_DEFAULT_PATH_MAC
         );
     } else if (osName === "linux") {
         bridgeDefaultPath = path.join(
             process.env["HOME"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_LINUX
+            constants.BRIDGE_CLI_DEFAULT_PATH_LINUX
         );
     } else if (osName === "win32") {
         bridgeDefaultPath = path.join(
             process.env["USERPROFILE"] as string,
-            constants.SYNOPSYS_BRIDGE_DEFAULT_PATH_WINDOWS
+            constants.BRIDGE_CLI_DEFAULT_PATH_WINDOWS
         );
     }
     return bridgeDefaultPath;

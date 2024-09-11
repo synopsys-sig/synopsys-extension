@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import {
   getMappedTaskResult,
   getTempDir,
@@ -5,7 +7,7 @@ import {
   IS_PR_EVENT,
   parseToBoolean,
 } from "./synopsys-task/utility";
-import { SynopsysBridge } from "./synopsys-task/synopsys-bridge";
+import { Bridge } from "./synopsys-task/bridge";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { TaskResult } from "azure-pipelines-task-lib/task";
 import * as constants from "./synopsys-task/application-constant";
@@ -17,32 +19,40 @@ import {
 } from "./synopsys-task/diagnostics";
 import { AzurePrResponse } from "./synopsys-task/model/azure";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
+import {
+  BLACKDUCK_SCA_SARIF_REPOST_ENABLED,
+  BLACKDUCK_SECURITY_SCAN_COMPLETED,
+  MARK_THE_BUILD_ON_BRIDGE_BREAK,
+  MARK_THE_BUILD_STATUS,
+  NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI,
+  POLARIS_SCA_SARIF_REPOST_ENABLED,
+  TASK_RETURN_STATUS,
+  WORKFLOW_FAILED,
+} from "./synopsys-task/application-constant";
 
 export async function run() {
-  console.log("Synopsys Task started...");
+  console.log("Black Duck Security Scan Task started...");
   const tempDir = getTempDir();
   taskLib.debug(`tempDir: ${tempDir}`);
   const workSpaceDir = getWorkSpaceDirectory();
   taskLib.debug(`workSpaceDir: ${workSpaceDir}`);
   let azurePrResponse: AzurePrResponse | undefined;
   try {
-    const sb = new SynopsysBridge();
+    const bridge = new Bridge();
 
     showLogForDeprecatedInputs();
     // Prepare tool commands
-    const command: string = await sb.prepareCommand(tempDir);
+    const command: string = await bridge.prepareCommand(tempDir);
     let bridgePath = "";
     if (!inputs.ENABLE_NETWORK_AIRGAP) {
-      bridgePath = await sb.downloadAndExtractBridge(tempDir);
+      bridgePath = await bridge.downloadAndExtractBridge(tempDir);
     } else {
-      console.log(
-        "Network air gap is enabled, skipping synopsys-bridge download."
-      );
-      bridgePath = await sb.getSynopsysBridgePath();
+      console.log(NETWORK_AIR_GAP_ENABLED_SKIP_DOWNLOAD_BRIDGE_CLI);
+      bridgePath = await bridge.getBridgePath();
     }
 
     // Execute prepared commands
-    const result: number = await sb.executeBridgeCommand(
+    const result: number = await bridge.executeBridgeCommand(
       bridgePath,
       getWorkSpaceDirectory(),
       command
@@ -50,26 +60,24 @@ export async function run() {
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (parseToBoolean(inputs.RETURN_STATUS)) {
-      console.log(
-        `##vso[task.setvariable variable=status;isoutput=true]${result}`
-      );
+      console.log(TASK_RETURN_STATUS);
     }
   } catch (error: any) {
     throw error;
   } finally {
-    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
+    if (parseToBoolean(inputs.BLACKDUCK_SCA_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
-        console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
+        console.log(BLACKDUCK_SCA_SARIF_REPOST_ENABLED);
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
-          inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH
+          inputs.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH
         );
       }
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
       if (!IS_PR_EVENT) {
-        console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
+        console.log(POLARIS_SCA_SARIF_REPOST_ENABLED);
         uploadSarifResultAsArtifact(
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
           inputs.POLARIS_REPORTS_SARIF_FILE_PATH
@@ -82,7 +90,7 @@ export async function run() {
     }
   }
 
-  console.log("Synopsys Task workflow execution completed");
+  console.log(BLACKDUCK_SECURITY_SCAN_COMPLETED);
 }
 
 export function getExitMessage(message: string, exitCode: string): string {
@@ -111,17 +119,14 @@ function markBuildStatusIfIssuesArePresent(
     if (taskResult === TaskResult.Succeeded) {
       console.log(exitMessage);
     }
-    console.log(
-      `Marking the build ${TaskResult[taskResult]} as configured in the task`
-    );
+    console.log(MARK_THE_BUILD_ON_BRIDGE_BREAK);
     taskLib.setResult(taskResult, exitMessage);
   } else {
-    const ignoreMessageForBuildStatus = `Marking build status ${TaskResult[taskResult]} is ignored since exit code is: ${status}`;
     taskLib.error(errorMessage);
-    console.log(ignoreMessageForBuildStatus);
+    console.log(MARK_THE_BUILD_STATUS);
     taskLib.setResult(
       taskLib.TaskResult.Failed,
-      "Workflow failed! ".concat(exitMessage)
+      WORKFLOW_FAILED.concat(exitMessage)
     );
   }
 }
@@ -133,9 +138,7 @@ run().catch((error) => {
 
     // The statement set the exit code in the 'status' variable which can be used in the YAML file
     if (isReturnStatusEnabled) {
-      console.log(
-        `##vso[task.setvariable variable=status;isoutput=true]${status}`
-      );
+      console.log(TASK_RETURN_STATUS);
     }
 
     const taskResult: TaskResult | undefined = getMappedTaskResult(
@@ -148,7 +151,7 @@ run().catch((error) => {
       taskLib.error(error.message);
       taskLib.setResult(
         taskLib.TaskResult.Failed,
-        "Workflow failed! ".concat(getExitMessage(error.message, status))
+        WORKFLOW_FAILED.concat(getExitMessage(error.message, status))
       );
     }
   }

@@ -1,8 +1,14 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import { HttpClient } from "typed-rest-client/HttpClient";
 import { AzureData, AzurePrResponse } from "./model/azure";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import { ErrorCode } from "./enum/ErrorCodes";
+import {
+  FAILED_TO_GET_PULL_REQUEST_INFO,
+  UNABLE_TO_FIND_PULL_REQUEST_INFO,
+} from "./application-constant";
 
 export class SynopsysAzureService {
   azureGetMergeRequestsAPI: string;
@@ -42,7 +48,7 @@ export class SynopsysAzureService {
         "base64"
       );
 
-      const httpClient = new HttpClient("synopsys-azure-service");
+      const httpClient = new HttpClient("blackduck-sca-azure-service");
       const httpResponse = await httpClient.get(endpoint, {
         Authorization: "Basic ".concat(encodedToken),
         Accept: "application/json",
@@ -56,15 +62,16 @@ export class SynopsysAzureService {
           };
         } else {
           console.info(
-            "Unable to find pull request info for the current source build with branch: ".concat(
+            UNABLE_TO_FIND_PULL_REQUEST_INFO.concat(
               azureData.repository.branch.name
             )
           );
         }
       } else {
         throw new Error(
-          "Failed to get pull request info for current build from source branch: "
-            .concat(azureData.repository.branch.name)
+          FAILED_TO_GET_PULL_REQUEST_INFO.concat(
+            azureData.repository.branch.name
+          )
             .concat(constants.SPACE)
             .concat(
               ErrorCode.FAILED_TO_GET_PULL_REQUEST_INFO_FROM_SOURCE_BRANCH.toString()

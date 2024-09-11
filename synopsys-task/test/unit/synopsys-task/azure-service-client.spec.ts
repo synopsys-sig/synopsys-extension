@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as sinon from "sinon";
 import {SynopsysAzureService} from "../../../src/synopsys-task/azure-service-client";
 import {SinonStub} from "sinon";

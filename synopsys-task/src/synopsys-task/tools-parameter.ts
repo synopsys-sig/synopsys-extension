@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import path from "path";
 import * as inputs from "./input";
 import { AZURE_TOKEN } from "./input";
@@ -7,8 +9,7 @@ import { Srm } from "./model/srm";
 import {
   Blackduck,
   BLACKDUCK_SCAN_FAILURE_SEVERITIES,
-  BlackDuckArbitrary,
-  BlackduckData,
+  BlackDuckDetect,
   BlackDuckFixPrData,
   Environment,
 } from "./model/blackduck";
@@ -37,8 +38,14 @@ import * as url from "url";
 import { SynopsysAzureService } from "./azure-service-client";
 import { Reports } from "./model/reports";
 import { ErrorCode } from "./enum/ErrorCodes";
+import {
+  AZURE_PULL_REQUEST_NUMBER_IS_EMPTY,
+  INVALID_VALUE_ERROR,
+  MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT,
+  MISSING_BOOL_VALUE,
+} from "./application-constant";
 
-export class SynopsysToolsParameter {
+export class BridgeToolsParameter {
   tempDir: string;
   private static STAGE_OPTION = "--stage";
   private static BLACKDUCK_STAGE = "blackduck";
@@ -176,7 +183,7 @@ export class SynopsysToolsParameter {
 
     // Set Coverity or Blackduck Arbitrary Arguments
     polData.data.coverity = this.setCoverityArbitraryArgs();
-    polData.data.blackduck = this.setBlackDuckArbitraryArgs();
+    polData.data.detect = this.setBlackDuckDetectArgs();
 
     const azureData = this.getAzureRepoInfo();
 
@@ -237,7 +244,7 @@ export class SynopsysToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      SynopsysToolsParameter.POLARIS_STATE_FILE_NAME
+      BridgeToolsParameter.POLARIS_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -246,73 +253,44 @@ export class SynopsysToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = SynopsysToolsParameter.STAGE_OPTION.concat(
-      SynopsysToolsParameter.SPACE
+    command = BridgeToolsParameter.STAGE_OPTION.concat(
+      BridgeToolsParameter.SPACE
     )
-      .concat(SynopsysToolsParameter.POLARIS_STAGE)
-      .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.INPUT_OPTION)
-      .concat(SynopsysToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.POLARIS_STAGE)
+      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.INPUT_OPTION)
+      .concat(BridgeToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(SynopsysToolsParameter.SPACE);
+      .concat(BridgeToolsParameter.SPACE);
     return command;
   }
 
   async getFormattedCommandForBlackduck(): Promise<string> {
     const failureSeverities: string[] =
-      inputs.BLACKDUCK_SCAN_FAILURE_SEVERITIES;
+      inputs.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES;
     let command = "";
     let blackduckData: InputData<Blackduck> = {
       data: {
-        blackduck: {
-          url: inputs.BLACKDUCK_URL,
-          token: inputs.BLACKDUCK_API_TOKEN,
+        blackducksca: {
+          url: inputs.BLACKDUCK_SCA_URL,
+          token: inputs.BLACKDUCK_SCA_API_TOKEN,
         },
       },
     };
 
-    if (isBoolean(inputs.BLACKDUCK_WAITFORSCAN)) {
-      blackduckData.data.blackduck.waitForScan = parseToBoolean(
-        inputs.BLACKDUCK_WAITFORSCAN
+    if (isBoolean(inputs.BLACKDUCK_SCA_WAIT_FOR_SCAN)) {
+      blackduckData.data.blackducksca.waitForScan = parseToBoolean(
+        inputs.BLACKDUCK_SCA_WAIT_FOR_SCAN
       );
     }
 
-    if (inputs.BLACKDUCK_PROJECT_DIRECTORY) {
+    if (inputs.BLACKDUCK_SCA_PROJECT_DIRECTORY) {
       blackduckData.data.project = {
-        directory: inputs.BLACKDUCK_PROJECT_DIRECTORY,
+        directory: inputs.BLACKDUCK_SCA_PROJECT_DIRECTORY,
       };
     }
 
-    if (inputs.BLACKDUCK_INSTALL_DIRECTORY) {
-      blackduckData.data.blackduck.install = {
-        directory: inputs.BLACKDUCK_INSTALL_DIRECTORY,
-      };
-    }
-
-    if (inputs.BLACKDUCK_SCAN_FULL) {
-      if (
-        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true" ||
-        inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "false"
-      ) {
-        const scanFullValue =
-          inputs.BLACKDUCK_SCAN_FULL.toLowerCase() === "true";
-        blackduckData.data.blackduck.scan = { full: scanFullValue };
-      } else {
-        throw new Error(
-          "Missing boolean value for "
-            .concat(constants.BLACKDUCK_SCAN_FULL_KEY)
-            .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
-        );
-      }
-    }
-
-    // Set arbitrary (To support both BlackDuck and Polaris)
-    blackduckData.data.blackduck = Object.assign(
-      {},
-      this.setBlackDuckArbitraryArgs() as BlackduckData,
-      blackduckData.data.blackduck
-    );
+    blackduckData.data.detect = this.setBlackDuckDetectArgs();
 
     if (failureSeverities && failureSeverities.length > 0) {
       validateBlackduckFailureSeverities(failureSeverities);
@@ -332,9 +310,11 @@ export class SynopsysToolsParameter {
         if (values.indexOf(failureSeverity) == -1) {
           throw new Error(
             "Invalid value for "
-              .concat(constants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY)
+              .concat(constants.BLACKDUCK_SCA_SCAN_FAILURE_SEVERITIES_KEY)
               .concat(constants.SPACE)
-              .concat(ErrorCode.INVALID_BLACKDUCK_FAILURE_SEVERITIES.toString())
+              .concat(
+                ErrorCode.INVALID_BLACKDUCK_SCA_FAILURE_SEVERITIES.toString()
+              )
           );
         } else {
           failureSeverityEnums.push(
@@ -345,12 +325,12 @@ export class SynopsysToolsParameter {
         }
       }
 
-      if (blackduckData.data.blackduck.scan) {
-        blackduckData.data.blackduck.scan.failure = {
+      if (blackduckData.data.blackducksca.scan) {
+        blackduckData.data.blackducksca.scan.failure = {
           severities: failureSeverityEnums,
         };
       } else {
-        blackduckData.data.blackduck.scan = {
+        blackduckData.data.blackducksca.scan = {
           failure: { severities: failureSeverityEnums },
         };
       }
@@ -359,9 +339,9 @@ export class SynopsysToolsParameter {
     const azureData = this.getAzureRepoInfo();
 
     const isPrCommentEnabled = parseToBoolean(
-      inputs.BLACKDUCK_AUTOMATION_PRCOMMENT
+      inputs.BLACKDUCK_SCA_AUTOMATION_PR_COMMENT
     );
-    const isFixPrEnabled = parseToBoolean(inputs.BLACKDUCK_FIXPR_ENABLED);
+    const isFixPrEnabled = parseToBoolean(inputs.BLACKDUCK_SCA_FIX_PR_ENABLED);
 
     const azurePrResponse = await this.updateAzurePrNumberForManualTriggerFlow(
       azureData,
@@ -376,7 +356,7 @@ export class SynopsysToolsParameter {
         console.info("Black Duck Fix PR ignored for pull request scan");
       } else {
         console.log("Black Duck Fix PR is enabled");
-        blackduckData.data.blackduck.fixpr = this.setBlackDuckFixPrInputs();
+        blackduckData.data.blackducksca.fixpr = this.setBlackDuckFixPrInputs();
         blackduckData.data.azure = azureData;
       }
     }
@@ -390,7 +370,7 @@ export class SynopsysToolsParameter {
         console.info("BlackDuck PR comment is enabled");
         blackduckData.data.azure = azureData;
         blackduckData.data.environment = this.setEnvironmentScanPullData();
-        blackduckData.data.blackduck.automation = { prcomment: true };
+        blackduckData.data.blackducksca.automation = { prcomment: true };
         blackduckData.data;
       }
     }
@@ -399,9 +379,9 @@ export class SynopsysToolsParameter {
       blackduckData.data.network = { airGap: true };
     }
 
-    if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
+    if (parseToBoolean(inputs.BLACKDUCK_SCA_REPORTS_SARIF_CREATE)) {
       if (!isPullRequest) {
-        blackduckData.data.blackduck.reports =
+        blackduckData.data.blackducksca.reports =
           this.setSarifReportsInputsForBlackduck();
       } else {
         console.info(
@@ -417,7 +397,7 @@ export class SynopsysToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      SynopsysToolsParameter.BD_STATE_FILE_NAME
+      BridgeToolsParameter.BD_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -426,15 +406,15 @@ export class SynopsysToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = SynopsysToolsParameter.STAGE_OPTION.concat(
-      SynopsysToolsParameter.SPACE
+    command = BridgeToolsParameter.STAGE_OPTION.concat(
+      BridgeToolsParameter.SPACE
     )
-      .concat(SynopsysToolsParameter.BLACKDUCK_STAGE)
-      .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.INPUT_OPTION)
-      .concat(SynopsysToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.BLACKDUCK_STAGE)
+      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.INPUT_OPTION)
+      .concat(BridgeToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(SynopsysToolsParameter.SPACE);
+      .concat(BridgeToolsParameter.SPACE);
     return command;
   }
 
@@ -588,7 +568,7 @@ export class SynopsysToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      SynopsysToolsParameter.COVERITY_STATE_FILE_NAME
+      BridgeToolsParameter.COVERITY_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -597,39 +577,39 @@ export class SynopsysToolsParameter {
 
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = SynopsysToolsParameter.STAGE_OPTION.concat(
-      SynopsysToolsParameter.SPACE
+    command = BridgeToolsParameter.STAGE_OPTION.concat(
+      BridgeToolsParameter.SPACE
     )
-      .concat(SynopsysToolsParameter.COVERITY_STAGE)
-      .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.INPUT_OPTION)
-      .concat(SynopsysToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.COVERITY_STAGE)
+      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.INPUT_OPTION)
+      .concat(BridgeToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(SynopsysToolsParameter.SPACE);
+      .concat(BridgeToolsParameter.SPACE);
     return command;
   }
 
   private setBlackDuckFixPrInputs(): BlackDuckFixPrData | undefined {
     if (
-      inputs.BLACKDUCK_FIXPR_MAXCOUNT &&
-      isNaN(Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT))
+      inputs.BLACKDUCK_SCA_FIX_PR_MAX_COUNT &&
+      isNaN(Number(inputs.BLACKDUCK_SCA_FIX_PR_MAX_COUNT))
     ) {
       throw new Error(
         "Invalid value for "
-          .concat(constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY)
+          .concat(constants.BLACKDUCK_FIX_PR_MAX_COUNT_KEY)
           .concat(constants.SPACE)
           .concat(ErrorCode.INVALID_BLACKDUCK_FIXPR_MAXCOUNT.toString())
       );
     }
     const createSinglePr = parseToBoolean(
-      inputs.BLACKDUCK_FIXPR_CREATE_SINGLE_PR
+      inputs.BLACKDUCK_SCA_FIX_PR_CREATE_SINGLE_PR
     );
-    if (createSinglePr && inputs.BLACKDUCK_FIXPR_MAXCOUNT) {
+    if (createSinglePr && inputs.BLACKDUCK_SCA_FIX_PR_MAX_COUNT) {
       throw new Error(
-        constants.BLACKDUCK_FIXPR_MAXCOUNT_KEY.concat(
+        constants.BLACKDUCK_FIX_PR_MAX_COUNT_KEY.concat(
           " is not applicable with "
         )
-          .concat(constants.BLACKDUCK_FIXPR_CREATE_SINGLE_PR_KEY)
+          .concat(constants.BLACKDUCK_FIX_PR_CREATE_SINGLE_PR_KEY)
           .concat(constants.SPACE)
           .concat(ErrorCode.BLACKDUCK_FIXPR_MAX_COUNT_NOT_APPLICABLE.toString())
       );
@@ -637,24 +617,26 @@ export class SynopsysToolsParameter {
     const blackDuckFixPrData: BlackDuckFixPrData = {};
     blackDuckFixPrData.enabled = true;
     blackDuckFixPrData.createSinglePR = createSinglePr;
-    if (inputs.BLACKDUCK_FIXPR_MAXCOUNT && !createSinglePr) {
-      blackDuckFixPrData.maxCount = Number(inputs.BLACKDUCK_FIXPR_MAXCOUNT);
+    if (inputs.BLACKDUCK_SCA_FIX_PR_MAX_COUNT && !createSinglePr) {
+      blackDuckFixPrData.maxCount = Number(
+        inputs.BLACKDUCK_SCA_FIX_PR_MAX_COUNT
+      );
     }
     if (
-      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE &&
-      inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE.length > 0
+      inputs.BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE &&
+      inputs.BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE.length > 0
     ) {
       blackDuckFixPrData.useUpgradeGuidance =
-        inputs.BLACKDUCK_FIXPR_UPGRADE_GUIDANCE;
+        inputs.BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE;
     }
 
     const fixPRFilterSeverities: string[] = [];
     if (
-      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES &&
-      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES != null &&
-      inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES.length > 0
+      inputs.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES &&
+      inputs.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES != null &&
+      inputs.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES.length > 0
     ) {
-      for (const fixPrSeverity of inputs.BLACKDUCK_FIXPR_FILTER_SEVERITIES) {
+      for (const fixPrSeverity of inputs.BLACKDUCK_SCA_FIX_PR_FILTER_SEVERITIES) {
         if (fixPrSeverity != null && fixPrSeverity.trim() !== "") {
           fixPRFilterSeverities.push(fixPrSeverity.trim());
         }
@@ -680,8 +662,7 @@ export class SynopsysToolsParameter {
           assessmentTypeArray.push(assessmentType.trim());
         } else {
           throw new Error(
-            "Invalid value for "
-              .concat(constants.SRM_ASSESSMENT_TYPES_KEY)
+            INVALID_VALUE_ERROR.concat(constants.SRM_ASSESSMENT_TYPES_KEY)
               .concat(constants.SPACE)
               .concat(ErrorCode.INVALID_SRM_ASSESSMENT_TYPES.toString())
           );
@@ -719,10 +700,10 @@ export class SynopsysToolsParameter {
         name: azureRepositoryName,
       };
     }
-    if (inputs.BLACKDUCK_EXECUTION_PATH) {
-      srmData.data.blackduck = {
+    if (inputs.DETECT_EXECUTION_PATH) {
+      srmData.data.detect = {
         execution: {
-          path: inputs.BLACKDUCK_EXECUTION_PATH,
+          path: inputs.DETECT_EXECUTION_PATH,
         },
       };
     }
@@ -747,13 +728,13 @@ export class SynopsysToolsParameter {
 
     // Set Coverity or Blackduck Arbitrary Arguments
     const coverityArgs = this.setCoverityArbitraryArgs();
-    const blackduckArgs = this.setBlackDuckArbitraryArgs();
+    const blackduckArgs = this.setBlackDuckDetectArgs();
 
     if (Object.keys(coverityArgs).length > 0) {
       srmData.data.coverity = { ...srmData.data.coverity, ...coverityArgs };
     }
     if (Object.keys(blackduckArgs).length > 0) {
-      srmData.data.blackduck = { ...srmData.data.blackduck, ...blackduckArgs };
+      srmData.data.detect = blackduckArgs;
     }
     // Remove empty data from json object
     srmData = filterEmptyData(srmData);
@@ -761,7 +742,7 @@ export class SynopsysToolsParameter {
 
     let stateFilePath = path.join(
       this.tempDir,
-      SynopsysToolsParameter.SRM_STATE_FILE_NAME
+      BridgeToolsParameter.SRM_STATE_FILE_NAME
     );
     taskLib.writeFile(stateFilePath, inputJson);
 
@@ -769,15 +750,15 @@ export class SynopsysToolsParameter {
     stateFilePath = '"'.concat(stateFilePath).concat('"');
     taskLib.debug("Generated state json file at - ".concat(stateFilePath));
 
-    command = SynopsysToolsParameter.STAGE_OPTION.concat(
-      SynopsysToolsParameter.SPACE
+    command = BridgeToolsParameter.STAGE_OPTION.concat(
+      BridgeToolsParameter.SPACE
     )
-      .concat(SynopsysToolsParameter.SRM_STAGE)
-      .concat(SynopsysToolsParameter.SPACE)
-      .concat(SynopsysToolsParameter.INPUT_OPTION)
-      .concat(SynopsysToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.SRM_STAGE)
+      .concat(BridgeToolsParameter.SPACE)
+      .concat(BridgeToolsParameter.INPUT_OPTION)
+      .concat(BridgeToolsParameter.SPACE)
       .concat(stateFilePath)
-      .concat(SynopsysToolsParameter.SPACE);
+      .concat(BridgeToolsParameter.SPACE);
 
     return command;
   }
@@ -865,9 +846,9 @@ export class SynopsysToolsParameter {
     if (isPrCommentOrFixPrEnabled) {
       if (azureData?.user.token == undefined || azureData.user.token == "") {
         throw new Error(
-          "Missing required azure token for fix pull request/automation comment"
-            .concat(constants.SPACE)
-            .concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
+          MISSING_AZURE_TOKEN_FOR_FIX_PR_AND_PR_COMMENT.concat(
+            constants.SPACE
+          ).concat(ErrorCode.MISSING_AZURE_TOKEN.toString())
         );
       }
 
@@ -931,9 +912,7 @@ export class SynopsysToolsParameter {
       ) || "";
     taskLib.debug(`Azure Pull Request Number: ${azurePullRequestNumber}`);
     if (azurePullRequestNumber == "") {
-      taskLib.debug(
-        "azurePullRequestNumber is empty, setting environment.scan.pull as true"
-      );
+      taskLib.debug(AZURE_PULL_REQUEST_NUMBER_IS_EMPTY);
       const environment: Environment = {
         scan: {
           pull: true,
@@ -951,29 +930,33 @@ export class SynopsysToolsParameter {
       },
     };
 
-    if (inputs.BLACKDUCK_URL && inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH) {
+    if (
+      inputs.BLACKDUCK_SCA_URL &&
+      inputs.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH
+    ) {
       reportData.sarif.file = {
-        path: inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH,
+        path: inputs.BLACKDUCK_SCA_REPORTS_SARIF_FILE_PATH,
       };
     }
 
     const sarifReportFilterSeverities: string[] = [];
     if (
-      inputs.BLACKDUCK_URL &&
-      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES &&
-      inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.length > 0
+      inputs.BLACKDUCK_SCA_URL &&
+      inputs.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES &&
+      inputs.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES.length > 0
     ) {
-      const sarifSeverities = inputs.BLACKDUCK_REPORTS_SARIF_SEVERITIES.filter(
-        (severity) => severity && severity.trim() !== ""
-      ).map((severity) => severity.trim());
+      const sarifSeverities =
+        inputs.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES.filter(
+          (severity) => severity && severity.trim() !== ""
+        ).map((severity) => severity.trim());
       sarifReportFilterSeverities.push(...sarifSeverities);
     }
     if (sarifReportFilterSeverities.length > 0) {
       reportData.sarif.severities = sarifReportFilterSeverities;
     }
 
-    const groupSCAIssues = inputs.BLACKDUCK_REPORTS_SARIF_GROUP_SCA_ISSUES;
-    if (inputs.BLACKDUCK_URL && isBoolean(groupSCAIssues)) {
+    const groupSCAIssues = inputs.BLACKDUCK_SCA_REPORTS_SARIF_GROUP_SCA_ISSUES;
+    if (inputs.BLACKDUCK_SCA_URL && isBoolean(groupSCAIssues)) {
       if (groupSCAIssues !== undefined) {
         reportData.sarif.groupSCAIssues = JSON.parse(groupSCAIssues);
       }
@@ -1068,26 +1051,49 @@ export class SynopsysToolsParameter {
     return covData.data;
   }
 
-  private setBlackDuckArbitraryArgs(): BlackDuckArbitrary {
-    const blackduckData: InputData<BlackDuckArbitrary> = { data: {} };
+  private setBlackDuckDetectArgs(): BlackDuckDetect {
+    const blackDuckDetectInputData: InputData<BlackDuckDetect> = { data: {} };
+    if (inputs.DETECT_INSTALL_DIRECTORY) {
+      blackDuckDetectInputData.data.install = {
+        directory: inputs.DETECT_INSTALL_DIRECTORY,
+      };
+    }
+
+    if (inputs.DETECT_SCAN_FULL) {
+      if (
+        inputs.DETECT_SCAN_FULL.toLowerCase() === "true" ||
+        inputs.DETECT_SCAN_FULL.toLowerCase() === "false"
+      ) {
+        const scanFullValue = inputs.DETECT_SCAN_FULL.toLowerCase() === "true";
+        blackDuckDetectInputData.data.scan = { full: scanFullValue };
+      } else {
+        throw new Error(
+          MISSING_BOOL_VALUE.concat(constants.DETECT_SCAN_FULL_KEY)
+            .concat(constants.SPACE)
+            .concat(ErrorCode.MISSING_BOOLEAN_VALUE.toString())
+        );
+      }
+    }
+
     if (
-      inputs.BLACKDUCK_SEARCH_DEPTH &&
-      Number.isInteger(parseInt(inputs.BLACKDUCK_SEARCH_DEPTH))
+      inputs.DETECT_SEARCH_DEPTH &&
+      Number.isInteger(parseInt(inputs.DETECT_SEARCH_DEPTH))
     ) {
-      blackduckData.data.search = {
-        depth: parseInt(inputs.BLACKDUCK_SEARCH_DEPTH),
+      blackDuckDetectInputData.data.search = {
+        depth: parseInt(inputs.DETECT_SEARCH_DEPTH),
       };
     }
 
-    if (inputs.BLACKDUCK_CONFIG_PATH) {
-      blackduckData.data.config = {
-        path: inputs.BLACKDUCK_CONFIG_PATH,
+    if (inputs.DETECT_CONFIG_PATH) {
+      blackDuckDetectInputData.data.config = {
+        path: inputs.DETECT_CONFIG_PATH,
       };
     }
 
-    if (inputs.BLACKDUCK_ARGS) {
-      blackduckData.data.args = inputs.BLACKDUCK_ARGS;
+    if (inputs.DETECT_ARGS) {
+      blackDuckDetectInputData.data.args = inputs.DETECT_ARGS;
     }
-    return blackduckData.data;
+
+    return blackDuckDetectInputData.data;
   }
 }

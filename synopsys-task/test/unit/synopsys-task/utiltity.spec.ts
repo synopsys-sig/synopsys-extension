@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import {expect} from "chai";
 import * as utility from "../../../src/synopsys-task/utility";
 import {
@@ -109,7 +111,7 @@ describe("Utilities", () => {
         it('getRemoteFile - failure - url empty', async function () {
             await utility.getRemoteFile("/", "").catch(error => {
                 expect(error.message).includes("URL cannot be empty")
-                expect(error.message).includes(ErrorCode.SYNOPSYS_BRIDGE_URL_CANNOT_BE_EMPTY.toString())
+                expect(error.message).includes(ErrorCode.BRIDGE_CLI_URL_CANNOT_BE_EMPTY.toString())
             });
 
         });

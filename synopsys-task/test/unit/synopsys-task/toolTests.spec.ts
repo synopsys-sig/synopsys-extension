@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import assert = require('assert');
 import path = require('path');
 import fs = require('fs');
@@ -124,7 +126,7 @@ describe('Tool Tests', function () {
                 reject('a file was downloaded but it shouldnt have been');
             }
             catch (err){
-                assert.equal((err as Error).message, "Failed to download synopsys-bridge zip from specified URL. HTTP status code: 400".concat(constants.SPACE)
+                assert.equal((err as Error).message, "Failed to download Bridge CLI zip from specified URL. HTTP status code: 400".concat(constants.SPACE)
                     .concat(
                         ErrorCode.DOWNLOAD_FAILED_WITH_HTTP_STATUS_CODE.toString()
                     ), 'status code exists');

@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import { AzureData } from "./azure";
 import { Reports } from "./reports";
 import { AsyncMode } from "./async-mode";
@@ -14,17 +16,17 @@ export enum BLACKDUCK_SCAN_FAILURE_SEVERITIES {
 }
 
 export interface Blackduck {
-  blackduck: BlackduckData;
+  blackducksca: BlackduckData;
+  detect?: BlackDuckDetect;
   project?: ProjectData;
   azure?: AzureData;
   network?: NetworkAirGap;
   environment?: Environment;
 }
 
-export interface BlackduckData extends BlackDuckArbitrary, AsyncMode {
+export interface BlackduckData extends AsyncMode {
   url: string;
   token: string;
-  install?: { directory: string };
   scan?: {
     full?: boolean;
     failure?: { severities: BLACKDUCK_SCAN_FAILURE_SEVERITIES[] };
@@ -34,11 +36,15 @@ export interface BlackduckData extends BlackDuckArbitrary, AsyncMode {
   reports?: Reports;
 }
 
-export interface BlackDuckArbitrary {
+export interface BlackDuckDetect {
+  scan?: { full?: boolean };
+  install?: Install;
   search?: Search;
   config?: Config;
   args?: string;
 }
+
+export interface Install extends ProjectData {}
 
 export interface AutomationData {
   fixpr?: boolean;

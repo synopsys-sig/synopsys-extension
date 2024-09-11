@@ -1,11 +1,14 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import { CoverityArbitrary } from "./coverity";
-import { BlackDuckArbitrary } from "./blackduck";
+import { BlackDuckDetect } from "./blackduck";
 import { AsyncMode } from "./async-mode";
 
 export interface Srm {
   srm: SrmData;
   coverity?: CoverityDetails;
-  blackduck?: BlackduckDetails;
+  blackducksca?: BlackduckDetails;
+  detect?: BlackduckDetails;
   project?: ProjectData;
 }
 
@@ -30,4 +33,4 @@ export interface ProjectData {
 }
 
 export interface CoverityDetails extends ExecutionPath, CoverityArbitrary {}
-export interface BlackduckDetails extends ExecutionPath, BlackDuckArbitrary {}
+export interface BlackduckDetails extends ExecutionPath, BlackDuckDetect {}

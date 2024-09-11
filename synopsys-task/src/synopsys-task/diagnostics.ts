@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
+
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as constants from "./application-constant";
 import * as path from "path";
