@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Black Duck Software Inc. All rights reserved worldwide.
 
 import { AzureData } from "./azure";
-
+import { AsyncMode } from "./async-mode";
 import { Reports } from "./reports";
 import { CoverityArbitrary } from "./coverity";
 import { BlackDuckDetect } from "./blackduck";
@@ -14,7 +14,7 @@ export interface Polaris {
   detect?: BlackDuckDetect;
 }
 
-export interface PolarisData {
+export interface PolarisData extends AsyncMode {
   triage?: string;
   accesstoken: string;
   serverUrl: string;

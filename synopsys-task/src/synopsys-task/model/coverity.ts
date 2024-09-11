@@ -2,6 +2,7 @@
 
 import { AzureData } from "./azure";
 import { Environment } from "./blackduck";
+import { AsyncMode } from "./async-mode";
 
 export interface Coverity {
   coverity: CoverityConnect;
@@ -20,7 +21,7 @@ export interface AutomationData {
   prcomment?: boolean;
 }
 
-export interface CoverityConnect extends CoverityArbitrary {
+export interface CoverityConnect extends CoverityArbitrary, AsyncMode {
   connect: CoverityData;
   install?: { directory: string };
   automation?: AutomationData;

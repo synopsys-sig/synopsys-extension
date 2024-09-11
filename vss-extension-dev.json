@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "id": "QAExt",
-  "name": "Synopsys Security Scan",
-  "version": "1.9.0",
+  "name": "Black Duck Security Scan",
+  "version": "1.10.0",
   "publisher": "QAExt",
   "targets": [
     {
@@ -38,13 +38,13 @@
   },
   "contributions": [
     {
-      "id": "synopsys-task",
+      "id": "BlackDuckSecurityScan",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "synopsys-task"
+        "name": "BlackDuckSecurityScan"
       }
     }
   ]

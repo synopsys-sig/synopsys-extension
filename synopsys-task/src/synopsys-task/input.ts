@@ -231,6 +231,11 @@ export const POLARIS_TEST_SCA_TYPE = getInput(
   constants.POLARIS_TEST_SCA_TYPE_KEY_CLASSIC_EDITOR,
   null
 );
+export const POLARIS_WAITFORSCAN = getInput(
+  constants.POLARIS_WAITFORSCAN_KEY,
+  constants.POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR,
+  null
+);
 
 export const POLARIS_ASSESSMENT_MODE = getInputForPolarisAssessmentMode();
 
@@ -348,6 +353,11 @@ export const COVERITY_VERSION = getInput(
   constants.COVERITY_VERSION_KEY_CLASSIC_EDITOR,
   null
 );
+export const COVERITY_WAITFORSCAN = getInput(
+  constants.COVERITY_WAITFORSCAN_KEY,
+  constants.COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR,
+  null
+);
 export const COVERITY_PROJECT_DIRECTORY = getInput(
   constants.PROJECT_DIRECTORY_KEY,
   constants.COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
@@ -460,6 +470,11 @@ export const BLACKDUCK_SCA_PROJECT_DIRECTORY = getInput(
   constants.BLACKDUCK_SCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR,
   null
 );
+export const BLACKDUCK_SCA_WAIT_FOR_SCAN = getInput(
+  constants.BLACKDUCK_SCA_WAIT_FOR_SCAN_KEY,
+  constants.BLACKDUCK_SCA_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR,
+  null
+);
 
 export const BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES = getDelimitedInput(
   constants.BLACKDUCK_SCA_REPORTS_SARIF_SEVERITIES_KEY,
@@ -529,6 +544,11 @@ export const SRM_BRANCH_NAME = getInput(
 export const SRM_BRANCH_PARENT = getInput(
   constants.SRM_BRANCH_PARENT_KEY,
   constants.SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR,
+  null
+);
+export const SRM_WAITFORSCAN = getInput(
+  constants.SRM_WAITFORSCAN_KEY,
+  constants.SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR,
   null
 );
 export const SRM_PROJECT_DIRECTORY = getInput(

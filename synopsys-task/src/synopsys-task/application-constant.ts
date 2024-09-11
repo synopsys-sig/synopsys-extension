@@ -91,6 +91,9 @@ export const PROJECT_DIRECTORY_KEY = "project_directory";
 export const POLARIS_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "polarisProjectDirectory";
 
+export const POLARIS_WAITFORSCAN_KEY = "polaris_waitForScan";
+export const POLARIS_WAITFORSCAN_KEY_CLASSIC_EDITOR = "polarisWaitForScan";
+
 export const PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
 export const PROJECT_SOURCE_ARCHIVE_KEY_CLASSIC_EDITOR = "projectSourceArchive";
 
@@ -130,6 +133,8 @@ export const COVERITY_EXECUTION_PATH_KEY_CLASSIC_EDITOR =
 export const COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
 export const COVERITY_POLICY_VIEW_KEY_CLASSIC_EDITOR = "coverityPolicyView";
 
+export const COVERITY_WAITFORSCAN_KEY = "coverity_waitForScan";
+export const COVERITY_WAITFORSCAN_KEY_CLASSIC_EDITOR = "coverityWaitForScan";
 export const COVERITY_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
   "coverityProjectDirectory";
 
@@ -263,8 +268,12 @@ export const BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE_KEY =
 export const BLACKDUCK_SCA_FIX_PR_UPGRADE_GUIDANCE_KEY_CLASSIC_EDITOR =
   "blackduckScaFixPrUseUpgradeGuidance";
 
+export const BLACKDUCK_SCA_WAIT_FOR_SCAN_KEY = "blackduck_waitForScan";
+export const BLACKDUCK_SCA_WAIT_FOR_SCAN_KEY_CLASSIC_EDITOR =
+  "blackduckWaitForScan";
+
 export const BLACKDUCK_SCA_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR =
-  "blackduckScaProjectDirectory";
+  "blackduckProjectDirectory";
 
 /**
  * @deprecated Use blackducksca_reports_sarif_create instead. This can be removed in future release.
@@ -356,6 +365,9 @@ export const SRM_BRANCH_NAME_KEY_CLASSIC_EDITOR = "srmBranchName";
 
 export const SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
 export const SRM_BRANCH_PARENT_KEY_CLASSIC_EDITOR = "srmBranchParent";
+
+export const SRM_WAITFORSCAN_KEY = "srm_waitForScan";
+export const SRM_WAITFORSCAN_KEY_CLASSIC_EDITOR = "srmWaitForScan";
 
 export const SRM_PROJECT_DIRECTORY_KEY_CLASSIC_EDITOR = "srmProjectDirectory";
 

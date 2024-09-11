@@ -137,6 +137,12 @@ export class BridgeToolsParameter {
       };
     }
 
+    if (isBoolean(inputs.POLARIS_WAITFORSCAN)) {
+      polData.data.polaris.waitForScan = parseToBoolean(
+        inputs.POLARIS_WAITFORSCAN
+      );
+    }
+
     if (
       inputs.POLARIS_PROJECT_DIRECTORY ||
       inputs.PROJECT_SOURCE_ARCHIVE ||
@@ -271,6 +277,12 @@ export class BridgeToolsParameter {
         },
       },
     };
+
+    if (isBoolean(inputs.BLACKDUCK_SCA_WAIT_FOR_SCAN)) {
+      blackduckData.data.blackducksca.waitForScan = parseToBoolean(
+        inputs.BLACKDUCK_SCA_WAIT_FOR_SCAN
+      );
+    }
 
     if (inputs.BLACKDUCK_SCA_PROJECT_DIRECTORY) {
       blackduckData.data.project = {
@@ -509,6 +521,12 @@ export class BridgeToolsParameter {
       };
     }
 
+    if (isBoolean(inputs.COVERITY_WAITFORSCAN)) {
+      covData.data.coverity.waitForScan = parseToBoolean(
+        inputs.COVERITY_WAITFORSCAN
+      );
+    }
+
     if (inputs.COVERITY_PROJECT_DIRECTORY) {
       covData.data.project = {
         directory: inputs.COVERITY_PROJECT_DIRECTORY,
@@ -697,6 +715,11 @@ export class BridgeToolsParameter {
         },
       };
     }
+
+    if (isBoolean(inputs.SRM_WAITFORSCAN)) {
+      srmData.data.srm.waitForScan = parseToBoolean(inputs.SRM_WAITFORSCAN);
+    }
+
     if (inputs.SRM_PROJECT_DIRECTORY) {
       srmData.data.project = {
         directory: inputs.SRM_PROJECT_DIRECTORY,
