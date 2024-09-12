@@ -86,7 +86,7 @@ export async function run() {
 }
 
 export function isWaitForScanEnabled(waitForScan: string): boolean {
-  return waitForScan === "true" || waitForScan === "" || waitForScan == null;
+  return waitForScan === "true" || waitForScan === "";
 }
 
 export function getExitMessage(message: string, exitCode: string): string {

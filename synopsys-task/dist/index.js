@@ -102,7 +102,7 @@ function run() {
 }
 exports.run = run;
 function isWaitForScanEnabled(waitForScan) {
-    return waitForScan === "true" || waitForScan === "" || waitForScan == null;
+    return waitForScan === "true" || waitForScan === "";
 }
 exports.isWaitForScanEnabled = isWaitForScanEnabled;
 function getExitMessage(message, exitCode) {
