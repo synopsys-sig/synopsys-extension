@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getStatusFromError = exports.getExitMessage = exports.run = void 0;
+exports.getStatusFromError = exports.getExitMessage = exports.isWaitForScanEnabled = exports.run = void 0;
 const utility_1 = __nccwpck_require__(837);
 const synopsys_bridge_1 = __nccwpck_require__(403);
 const taskLib = __importStar(__nccwpck_require__(347));
@@ -82,13 +82,13 @@ function run() {
         }
         finally {
             if ((0, utility_1.parseToBoolean)(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-                if (!utility_1.IS_PR_EVENT) {
+                if (!utility_1.IS_PR_EVENT && isWaitForScanEnabled(inputs.BLACKDUCK_WAITFORSCAN)) {
                     console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY, inputs.BLACKDUCK_REPORTS_SARIF_FILE_PATH);
                 }
             }
             if ((0, utility_1.parseToBoolean)(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-                if (!utility_1.IS_PR_EVENT) {
+                if (!utility_1.IS_PR_EVENT && isWaitForScanEnabled(inputs.POLARIS_WAITFORSCAN)) {
                     console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
                     (0, diagnostics_1.uploadSarifResultAsArtifact)(constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY, inputs.POLARIS_REPORTS_SARIF_FILE_PATH);
                 }
@@ -101,6 +101,10 @@ function run() {
     });
 }
 exports.run = run;
+function isWaitForScanEnabled(waitForScan) {
+    return waitForScan === "true" || waitForScan === "";
+}
+exports.isWaitForScanEnabled = isWaitForScanEnabled;
 function getExitMessage(message, exitCode) {
     return constants.EXIT_CODE_MAP.has(exitCode)
         ? "Exit Code: " + exitCode + " - " + constants.EXIT_CODE_MAP.get(exitCode)

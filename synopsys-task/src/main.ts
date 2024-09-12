@@ -58,7 +58,7 @@ export async function run() {
     throw error;
   } finally {
     if (parseToBoolean(inputs.BLACKDUCK_REPORTS_SARIF_CREATE)) {
-      if (!IS_PR_EVENT) {
+      if (!IS_PR_EVENT && isWaitForScanEnabled(inputs.BLACKDUCK_WAITFORSCAN)) {
         console.log("BLACKDUCK_REPORTS_SARIF_CREATE is enabled");
         uploadSarifResultAsArtifact(
           constants.DEFAULT_BLACKDUCK_SARIF_GENERATOR_DIRECTORY,
@@ -68,7 +68,7 @@ export async function run() {
     }
 
     if (parseToBoolean(inputs.POLARIS_REPORTS_SARIF_CREATE)) {
-      if (!IS_PR_EVENT) {
+      if (!IS_PR_EVENT && isWaitForScanEnabled(inputs.POLARIS_WAITFORSCAN)) {
         console.log("POLARIS_REPORTS_SARIF_CREATE is enabled");
         uploadSarifResultAsArtifact(
           constants.DEFAULT_POLARIS_SARIF_GENERATOR_DIRECTORY,
@@ -83,6 +83,10 @@ export async function run() {
   }
 
   console.log("Synopsys Task workflow execution completed");
+}
+
+export function isWaitForScanEnabled(waitForScan: string): boolean {
+  return waitForScan === "true" || waitForScan === "";
 }
 
 export function getExitMessage(message: string, exitCode: string): string {
