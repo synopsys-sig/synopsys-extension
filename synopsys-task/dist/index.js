@@ -51,6 +51,7 @@ const diagnostics_1 = __nccwpck_require__(2926);
 const ErrorCodes_1 = __nccwpck_require__(4487);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("WARNING: This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
         console.log("Synopsys Task started...");
         const tempDir = (0, utility_1.getTempDir)();
         taskLib.debug(`tempDir: ${tempDir}`);
