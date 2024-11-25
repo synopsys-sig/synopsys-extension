@@ -19,8 +19,8 @@ import { AzurePrResponse } from "./synopsys-task/model/azure";
 import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 
 export async function run() {
-  console.log(
-    "WARNING: This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>"
+  taskLib.warning(
+    "This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>"
   );
   console.log("Synopsys Task started...");
   const tempDir = getTempDir();
