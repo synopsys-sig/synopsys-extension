@@ -1,4 +1,4 @@
-# [DEPRECATED] Synopsys Security Scan for Azure DevOps
+# DEPRECATED: Synopsys Security Scan for Azure DevOps
 
 **NOTE:** This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>
 

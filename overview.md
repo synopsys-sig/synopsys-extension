@@ -1,4 +1,4 @@
-# [DEPRECATED] Synopsys Security Scan for Azure DevOps
+# DEPRECATED: Synopsys Security Scan for Azure DevOps
 
 **NOTE:** This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>
 
@@ -15,4 +15,4 @@ Synopsys Security Scan supports Azure integration with the following Synopsys se
 Synopsys solution functionality is invoked directly by Synopsys Bridge, and indirectly by the Synopsys Security Scan, which downloads Synopsys Bridge and calls the respective adapters to run corresponding scans.
 
 
-Documentation - https://documentation.blackduck.com/bundle/bridge/page/documentation/c_security-scan-for-azure-devops.html
+Documentation - https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_synopsys-security-scan-for-azure-devops.html

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "synopsys-security-scan",
-  "name": "[DEPRECATED] Synopsys Security Scan",
+  "name": "DEPRECATED: Synopsys Security Scan",
   "version": "1.10.0",
   "publisher": "synopsys-security-scan",
   "public": true,

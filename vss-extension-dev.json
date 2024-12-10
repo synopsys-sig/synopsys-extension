@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "QAExt",
-  "name": "[DEPRECATED] Synopsys Security Scan",
+  "name": "DEPRECATED: Synopsys Security Scan",
   "version": "1.10.1",
   "publisher": "QAExt",
   "targets": [
