@@ -51,7 +51,7 @@ const diagnostics_1 = __nccwpck_require__(2926);
 const ErrorCodes_1 = __nccwpck_require__(4487);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        taskLib.warning("This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
+        taskLib.warning("This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan - https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-security-scan . Instructions can be found at https://documentation.blackduck.com/bundle/bridge/page/documentation/c_security-scan-for-azure-devops.html");
         console.log("Synopsys Task started...");
         const tempDir = (0, utility_1.getTempDir)();
         taskLib.debug(`tempDir: ${tempDir}`);

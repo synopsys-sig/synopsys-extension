@@ -20,7 +20,7 @@ import { ErrorCode } from "./synopsys-task/enum/ErrorCodes";
 
 export async function run() {
   taskLib.warning(
-    "This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>"
+    "This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan - https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-security-scan . Instructions can be found at https://documentation.blackduck.com/bundle/bridge/page/documentation/c_security-scan-for-azure-devops.html"
   );
   console.log("Synopsys Task started...");
   const tempDir = getTempDir();
