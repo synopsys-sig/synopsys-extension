@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "id": "synopsys-security-scan",
-  "name": "Synopsys Security Scan",
-  "version": "1.10.0",
+  "name": "DEPRECATED: Synopsys Security Scan",
+  "version": "1.10.1",
   "publisher": "synopsys-security-scan",
   "public": true,
   "targets": [
@@ -11,6 +11,7 @@
     }
   ],
   "tags": [
+    "Deprecated",
     "Polaris",
     "Synopsys",
     "Coverity",

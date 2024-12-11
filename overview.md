@@ -1,4 +1,6 @@
-# Synopsys Security Scan for Azure DevOps
+# DEPRECATED: Synopsys Security Scan for Azure DevOps
+
+**NOTE:** This extension has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-security-scan">Black Duck Security Scan</a>. Instructions can be found <a href="https://documentation.blackduck.com/bundle/bridge/page/documentation/c_security-scan-for-azure-devops.html">here</a>
 
 Synopsys Security Scan Extension for Azure DevOps enables you to configure your Azure pipeline to run Synopsys security testing and take action on the results. 
 Synopsys Security Scan leverages Synopsys Bridge, allowing you to run tests for several Synopsys products from the command line.
